@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">WOD Timer</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_1">AMRAP</string>
+    <string name="tab_text_2">FOR TIME</string>
+    <string name="tab_text_3">EMOM</string>
+    <string name="tab_text_4">TABATA</string>
 </resources>
