@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.tabata.TabataFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/picker_minutes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            app:np_wrapSelectorWheel="false"
+            app:np_dividerColor="@color/colorAccent"
+            app:np_selectedTextColor="@color/colorPrimary"
+            app:np_selectedTextSize="44dp"
+            app:np_textColor="@color/colorPrimary"
+            app:np_textSize="44dp" />
+
+        <TextView
+            android:text=":"
+            android:textSize="64dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/picker_seconds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            app:np_wrapSelectorWheel="false"
+            app:np_dividerColor="@color/colorAccent"
+            app:np_selectedTextColor="@color/colorPrimary"
+            app:np_selectedTextSize="44dp"
+            app:np_textColor="@color/colorPrimary"
+            app:np_textSize="44dp"/>
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/picker_minutes_rest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            app:np_wrapSelectorWheel="false"
+            app:np_dividerColor="@color/colorAccent"
+            app:np_selectedTextColor="@color/colorPrimary"
+            app:np_selectedTextSize="44dp"
+            app:np_textColor="@color/colorPrimary"
+            app:np_textSize="44dp" />
+
+        <TextView
+            android:text=":"
+            android:textSize="64dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/picker_seconds_rest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            app:np_wrapSelectorWheel="false"
+            app:np_dividerColor="@color/colorAccent"
+            app:np_selectedTextColor="@color/colorPrimary"
+            app:np_selectedTextSize="44dp"
+            app:np_textColor="@color/colorPrimary"
+            app:np_textSize="44dp"/>
+
+        <TextView
+            android:text="x"
+            android:textSize="64dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:id="@+id/picker_rounds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            app:np_max="120"
+            app:np_min="1"
+            app:np_value="8"
+
+            app:np_wrapSelectorWheel="false"
+            app:np_dividerColor="@color/colorAccent"
+            app:np_selectedTextColor="@color/colorPrimary"
+            app:np_selectedTextSize="44dp"
+            app:np_textColor="@color/colorPrimary"
+            app:np_textSize="44dp"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

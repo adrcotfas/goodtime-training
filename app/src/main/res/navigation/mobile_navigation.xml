@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_amrap">
+
+    <fragment
+        android:id="@+id/nav_amrap"
+        android:name="com.adrcotfas.wod.ui.amrap.AmrapFragment"
+        android:label="@string/menu_amrap"
+        tools:layout="@layout/fragment_amrap" />
+
+    <fragment
+        android:id="@+id/nav_for_time"
+        android:name="com.adrcotfas.wod.ui.for_time.ForTimeFragment"
+        android:label="@string/menu_for_time"
+        tools:layout="@layout/fragment_emom" />
+
+    <fragment
+        android:id="@+id/nav_tabata"
+        android:name="com.adrcotfas.wod.ui.tabata.TabataFragment"
+        android:label="@string/menu_tabata"
+        tools:layout="@layout/fragment_share" />
+
+    <fragment
+        android:id="@+id/nav_emom"
+        android:name="com.adrcotfas.wod.ui.emom.EmomFragment"
+        android:label="@string/menu_emom"
+        tools:layout="@layout/fragment_tabata" />
+</navigation>

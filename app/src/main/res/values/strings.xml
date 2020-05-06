@@ -1,7 +1,14 @@
 <resources>
-    <string name="app_name">WOD Timer</string>
-    <string name="tab_text_1">AMRAP</string>
-    <string name="tab_text_2">FOR TIME</string>
-    <string name="tab_text_3">EMOM</string>
-    <string name="tab_text_4">TABATA</string>
+    <string name="app_name">Drawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_amrap">AMRAP</string>
+    <string name="menu_for_time">FOR TIME</string>
+    <string name="menu_emom">EMOM</string>
+    <string name="menu_tabata">TABATA</string>
 </resources>

@@ -8,8 +8,9 @@ class TimerUtils {
 
     companion object {
 
-        const val SECONDS_STEP = 5
-        const val MINUTES_STEP = 1
+        private const val MINUTES_STEP_1 = 1
+        const val SECONDS_STEP_5 = 5
+        const val SECONDS_STEP_15 = 15
 
         /**
          * Put an extra "0" at the beginning if the unit is smaller than 10
@@ -25,7 +26,7 @@ class TimerUtils {
          * @param max   the maximum value of the range
          * @param step  the step of the range
          */
-        private fun generateTimeValues(min: Int, max: Int, step : Int) : ArrayList<String> {
+        private fun generateTimeValues(min: Int = 0, max: Int, step : Int) : ArrayList<String> {
             val data = ArrayList<String>()
             for (i in min until max step step) {
                 data.add(unitToTimerStyle(i))
@@ -33,8 +34,8 @@ class TimerUtils {
             return data
         }
 
-        fun generateTimeValuesMinutes(max: Int) = generateTimeValues(0, max, MINUTES_STEP)
-        fun generateTimeValuesSeconds(max: Int) = generateTimeValues(0, max, SECONDS_STEP)
+        fun generateTimeValuesMinutes(max: Int) = generateTimeValues(max = max, step = MINUTES_STEP_1)
+        fun generateTimeValuesSeconds(step: Int) = generateTimeValues(max = 60, step = step)
 
         fun <T, K, R> combine(
             liveData1: LiveData<T>,
