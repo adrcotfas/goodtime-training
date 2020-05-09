@@ -52,7 +52,7 @@ class EmomFragment : Fragment() {
     }
 
     private fun setupPickers() {
-        val dataMinutes = TimerUtils.generateTimeValuesMinutes(20)
+        val dataMinutes = TimerUtils.generateTimeValuesMinutes(5 + 1)
         pickerMinutes.minValue = 0
         pickerMinutes.maxValue = dataMinutes.size - 1
         pickerMinutes.displayedValues = dataMinutes.toTypedArray()

@@ -68,16 +68,16 @@ class TabataFragment : Fragment() {
     }
 
     private fun setupPickers() {
-        val dataMinutes = TimerUtils.generateTimeValuesMinutes(20)
+        val dataMinutes = TimerUtils.generateTimeValuesMinutes(5 + 1)
         pickerMinutesWork.minValue = 0
         pickerMinutesWork.maxValue = dataMinutes.size - 1
         pickerMinutesWork.displayedValues = dataMinutes.toTypedArray()
-        pickerMinutesWork.value = 1
+        pickerMinutesWork.value = 0
 
         pickerMinutesRest.minValue = 0
         pickerMinutesRest.maxValue = dataMinutes.size - 1
         pickerMinutesRest.displayedValues = dataMinutes.toTypedArray()
-        pickerMinutesRest.value = 12
+        pickerMinutesRest.value = 0
 
         val dataSeconds = TimerUtils.generateTimeValuesSeconds(SECONDS_STEP_5)
         pickerSecondsWork.minValue = 0

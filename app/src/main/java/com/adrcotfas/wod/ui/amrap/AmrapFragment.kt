@@ -46,7 +46,7 @@ class AmrapFragment : Fragment() {
     }
 
     private fun setupPickers() {
-        val dataMinutes = TimerUtils.generateTimeValuesMinutes(120)
+        val dataMinutes = TimerUtils.generateTimeValuesMinutes(60 + 1)
         pickerMinutes.minValue = 0
         pickerMinutes.maxValue = dataMinutes.size - 1
         pickerMinutes.displayedValues = dataMinutes.toTypedArray()
