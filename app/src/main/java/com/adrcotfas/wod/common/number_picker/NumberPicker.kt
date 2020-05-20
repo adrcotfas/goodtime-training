@@ -10,7 +10,7 @@ import com.bekawestberg.loopinglayout.library.LoopingSnapHelper
 
 class NumberPicker(
     context: Context, private val recyclerView: RecyclerView, data: ArrayList<Int>, default: Int,
-    private val rowHeight: Float, private val listener : Listener
+    private val rowHeight: Float, prefixWithZero: Boolean, largeText: Boolean, private val listener : Listener
 ) : NumberPickerAdapter.Listener {
 
     interface Listener {
@@ -18,7 +18,7 @@ class NumberPicker(
     }
 
     private val viewManager : LoopingLayoutManager = LoopingLayoutManager(context)
-    private val viewAdapter : NumberPickerAdapter = NumberPickerAdapter(this)
+    private val viewAdapter : NumberPickerAdapter = NumberPickerAdapter(this, prefixWithZero, largeText)
     private val snapHelper = LoopingSnapHelper()
 
     init {

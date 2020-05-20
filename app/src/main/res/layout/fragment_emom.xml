@@ -7,73 +7,79 @@
     android:layout_height="match_parent"
     tools:context=".ui.emom.EmomFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.shawnlin.numberpicker.NumberPicker
-            android:id="@+id/picker_minutes"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            app:np_wrapSelectorWheel="false"
-            app:np_dividerColor="@color/colorAccent"
-            app:np_dividerDistance="80dp"
-            app:np_selectedTextColor="@color/colorPrimary"
-            app:np_selectedTextSize="44dp"
-            app:np_textColor="@color/colorPrimary"
-            app:np_textSize="44dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/picker_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:layout_gravity="center_vertical"/>
 
-        <TextView
-            android:text=":"
-            android:textSize="64dp"
-            android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_thin"
+                android:paddingHorizontal="16dp"
+                android:text=":"
+                android:textSize="70sp"
+                android:layout_gravity="center_vertical"/>
 
-        <com.shawnlin.numberpicker.NumberPicker
-            android:id="@+id/picker_seconds"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/picker_seconds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:layout_gravity="center"/>
 
-            app:np_wrapSelectorWheel="false"
-            app:np_dividerColor="@color/colorAccent"
-            app:np_dividerDistance="80dp"
-            app:np_selectedTextColor="@color/colorPrimary"
-            app:np_selectedTextSize="44dp"
-            app:np_textColor="@color/colorPrimary"
-            app:np_textSize="44dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_thin"
+                android:paddingHorizontal="16dp"
+                android:text="×"
+                android:textSize="70sp"
+                android:layout_gravity="center_vertical"/>
 
-        <TextView
-            android:text="x"
-            android:textSize="64dp"
-            android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/picker_rounds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:layout_gravity="center"/>
 
-        <com.shawnlin.numberpicker.NumberPicker
-            android:id="@+id/picker_rounds"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+        </LinearLayout>
 
-            app:np_max="120"
-            app:np_min="1"
-            app:np_value="20"
+        <View
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/transparent_dark"
+            />
 
-            app:np_wrapSelectorWheel="false"
-            app:np_dividerColor="@color/colorAccent"
-            app:np_dividerDistance="80dp"
-            app:np_selectedTextColor="@color/colorPrimary"
-            app:np_selectedTextSize="44dp"
-            app:np_textColor="@color/colorPrimary"
-            app:np_textSize="44dp"/>
+        <View
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/transparent_dark"
+            />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

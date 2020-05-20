@@ -4,10 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
+import com.adrcotfas.wod.R
 
 fun EditText.onDone(callback: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -39,4 +42,11 @@ fun View.hideKeyboard(activity: Activity) {
     val view = activity.findViewById<View>(android.R.id.content)
     val inputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun calculateRowHeight(layoutInflater : LayoutInflater, large: Boolean = true): Float {
+    val textView = layoutInflater
+        .inflate(if (large) R.layout.row_number_picker_large else R.layout.row_number_picker, null) as TextView
+    val fm = textView.paint.fontMetrics
+    return fm.descent - fm.ascent
 }

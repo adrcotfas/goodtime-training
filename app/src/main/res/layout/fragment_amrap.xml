@@ -44,7 +44,6 @@
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 android:layout_gravity="center"/>
-
         </LinearLayout>
 
         <View

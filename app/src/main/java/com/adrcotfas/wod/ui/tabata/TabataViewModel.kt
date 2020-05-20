@@ -6,6 +6,6 @@ import com.adrcotfas.wod.ui.common.TimeSpinnerData
 
 class TabataViewModel : ViewModel() {
     val workSpinnerData = TimeSpinnerData(0, 20)
-    val restSpinnerData = TimeSpinnerData(0, 10)
+    val breakSpinnerData = TimeSpinnerData(0, 10)
     val roundSpinnerData = RoundSpinnerData(8)
 }

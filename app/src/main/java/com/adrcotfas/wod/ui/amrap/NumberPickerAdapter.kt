@@ -7,8 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
 
-class NumberPickerAdapter(private val listener: Listener) :
-    RecyclerView.Adapter<NumberPickerAdapter.ViewHolder>() {
+class NumberPickerAdapter(
+    private val listener: Listener,
+    private val prefixWithZero: Boolean,
+    private val largeText : Boolean) : RecyclerView.Adapter<NumberPickerAdapter.ViewHolder>() {
 
     interface Listener {
         fun onClick(position: Int)
@@ -28,21 +30,30 @@ class NumberPickerAdapter(private val listener: Listener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(parent, prefixWithZero, largeText)
     }
 
-    class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder private constructor(itemView: View, private val prefixWithZero: Boolean)
+        : RecyclerView.ViewHolder(itemView) {
+
         private val text: TextView = itemView.findViewById(R.id.text)
         fun bind(item: Int) {
-            text.text = if (item < 10)  {"0$item"} else item.toString()
+            text.text =
+                if (prefixWithZero) {
+                    if (item < 10)  {"0$item"} else item.toString()
+                } else {
+                    item.toString()
+                }
         }
 
         companion object {
-            fun from(parent: ViewGroup) : ViewHolder {
+            fun from(parent: ViewGroup, prefixWithZero: Boolean, largeText: Boolean) : ViewHolder {
                 val layoutInflater =  LayoutInflater.from(parent.context)
                 val view = layoutInflater
-                    .inflate(R.layout.row_number_picker, parent, false)
-                return ViewHolder(view)
+                    .inflate(
+                        if (largeText) R.layout.row_number_picker_large else R.layout.row_number_picker,
+                        parent, false)
+                return ViewHolder(view, prefixWithZero)
             }
         }
     }
