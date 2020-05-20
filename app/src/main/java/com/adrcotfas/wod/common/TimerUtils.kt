@@ -2,40 +2,19 @@ package com.adrcotfas.wod.common
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import java.util.concurrent.TimeUnit
 
 class TimerUtils {
 
-
     companion object {
 
-        private const val MINUTES_STEP_1 = 1
-        const val SECONDS_STEP_5 = 5
-        const val SECONDS_STEP_15 = 15
-
-        /**
-         * Put an extra "0" at the beginning if the unit is smaller than 10
-         * for a nice timer style
-         */
-        fun unitToTimerStyle(unit : Int) : String {
-            return if (unit < 10) "0$unit" else unit.toString()
-        }
-
-        /**
-         * Generates an array of formatted strings corresponding to the given arguments
-         * @param min   the minimum value of the range
-         * @param max   the maximum value of the range
-         * @param step  the step of the range
-         */
-        private fun generateTimeValues(min: Int = 0, max: Int, step : Int) : ArrayList<String> {
-            val data = ArrayList<String>()
-            for (i in min until max step step) {
-                data.add(unitToTimerStyle(i))
+        fun generateNumbers(min: Int = 0, max: Int, step : Int) : ArrayList<Int> {
+            val data = ArrayList<Int>()
+            for (i in min..max step step) {
+                data.add(i)
             }
             return data
         }
-
-        fun generateTimeValuesMinutes(max: Int) = generateTimeValues(max = max, step = MINUTES_STEP_1)
-        fun generateTimeValuesSeconds(step: Int) = generateTimeValues(max = 60, step = step)
 
         fun <T, K, R> combine(
             liveData1: LiveData<T>,
@@ -50,6 +29,20 @@ class TimerUtils {
                 result.value = block.invoke(liveData1.value, liveData2.value)
             }
             return result
+        }
+
+        fun secondsToTimerFormat(elapsed: Int): String {
+            val hours = TimeUnit.SECONDS.toHours(elapsed.toLong())
+            val minutes =
+                TimeUnit.SECONDS.toMinutes(elapsed.toLong()) - hours * 60
+            val seconds = elapsed - minutes * 60
+            return (insertPrefixZero(hours)
+                    + ":" + insertPrefixZero(minutes)
+                    + ":" + insertPrefixZero(seconds))
+        }
+
+        private fun insertPrefixZero(value: Long): String {
+            return if (value < 10) "0$value" else value.toString()
         }
     }
 }
