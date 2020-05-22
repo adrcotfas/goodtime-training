@@ -9,5 +9,7 @@
     android:textSize="45sp"
     android:maxLines="1"
     android:singleLine="true"
+    android:lineSpacingExtra="0dp"
+    android:includeFontPadding="false"
     android:fontFamily="@font/roboto_thin"
     tools:text="25" />
