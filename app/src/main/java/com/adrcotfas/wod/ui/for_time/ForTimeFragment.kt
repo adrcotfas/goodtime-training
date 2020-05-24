@@ -11,20 +11,30 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
+import com.adrcotfas.wod.data.model.Session
+import com.adrcotfas.wod.data.workout.WorkoutManager
 import com.google.android.material.snackbar.Snackbar
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class ForTimeFragment : Fragment() {
+class ForTimeFragment : Fragment(), KodeinAware {
+
+    override val kodein by closestKodein()
+
+    private val workoutManager : WorkoutManager by instance()
 
     private lateinit var viewModel: ForTimeViewModel
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
 
     private val minuteListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.timeSpinnerData.setMinutes(value) }
+        override fun onScroll(value: Int) { viewModel.timeData.setMinutes(value) }
     }
 
     private val secondsListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.timeSpinnerData.setSeconds(value) }
+        override fun onScroll(value: Int) { viewModel.timeData.setSeconds(value) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,11 +63,11 @@ class ForTimeFragment : Fragment() {
             0, rowHeight, prefixWithZero = true, largeText = true, listener = secondsListener
         )
 
-        viewModel.timeSpinnerData.getDuration().observe(
+        workoutManager.session.type = Session.SessionType.FOR_TIME
+        viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
                 run {
-                    Snackbar.make(requireView(),
-                        TimerUtils.secondsToTimerFormat(duration), Snackbar.LENGTH_LONG).show()
+                    workoutManager.session.duration = duration
                 }})
 
         return root

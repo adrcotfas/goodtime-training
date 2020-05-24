@@ -13,10 +13,18 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.Menu
+import android.widget.TextView
+import androidx.navigation.NavController
+import com.adrcotfas.wod.common.currentNavigationFragment
+import com.adrcotfas.wod.ui.amrap.AmrapFragment
+import com.adrcotfas.wod.ui.emom.EmomFragment
+import com.adrcotfas.wod.ui.for_time.ForTimeFragment
+import com.adrcotfas.wod.ui.tabata.TabataFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +37,10 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
+        navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
@@ -41,6 +50,30 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val amrapButton : TextView = findViewById(R.id.amrap_button)
+        amrapButton.setOnClickListener {
+            if (supportFragmentManager.currentNavigationFragment !is AmrapFragment) {
+                navController.navigate(R.id.nav_amrap)
+            } }
+
+        val forTimeButton : TextView = findViewById(R.id.for_time_button)
+        forTimeButton.setOnClickListener {
+            if (supportFragmentManager.currentNavigationFragment !is ForTimeFragment) {
+                navController.navigate(R.id.nav_for_time)
+            } }
+
+        val emomButton : TextView = findViewById(R.id.emom_button)
+        emomButton.setOnClickListener {
+            if (supportFragmentManager.currentNavigationFragment !is EmomFragment) {
+            navController.navigate(R.id.nav_emom)
+        } }
+
+        val tabataButton : TextView = findViewById(R.id.tabata_button)
+        tabataButton.setOnClickListener {
+            if (supportFragmentManager.currentNavigationFragment !is TabataFragment) {
+                navController.navigate(R.id.nav_tabata)
+            } }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -52,5 +85,9 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun getCurrentDestinationId(): Int? {
+        return navController.currentDestination?.id
     }
 }

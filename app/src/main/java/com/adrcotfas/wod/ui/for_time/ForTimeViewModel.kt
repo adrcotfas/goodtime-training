@@ -4,5 +4,5 @@ import androidx.lifecycle.ViewModel
 import com.adrcotfas.wod.ui.common.TimeSpinnerData
 
 class ForTimeViewModel : ViewModel() {
-    val timeSpinnerData = TimeSpinnerData(15, 0)
+    val timeData = TimeSpinnerData(15, 0)
 }

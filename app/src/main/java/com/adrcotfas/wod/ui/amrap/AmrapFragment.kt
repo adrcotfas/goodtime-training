@@ -9,23 +9,29 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
-import com.adrcotfas.wod.common.TimerUtils.Companion.secondsToTimerFormat
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.google.android.material.snackbar.Snackbar
+import com.adrcotfas.wod.data.model.Session
+import com.adrcotfas.wod.data.workout.WorkoutManager
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class AmrapFragment : Fragment() {
+class AmrapFragment : Fragment(), KodeinAware {
+    override val kodein by closestKodein()
+
+    private val workoutManager : WorkoutManager by instance()
 
     private lateinit var viewModel: AmrapViewModel
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
 
     private val minuteListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.timeSpinnerData.setMinutes(value) }
+        override fun onScroll(value: Int) { viewModel.timeData.setMinutes(value) }
     }
 
     private val secondsListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.timeSpinnerData.setSeconds(value) }
+        override fun onScroll(value: Int) { viewModel.timeData.setSeconds(value) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,10 +60,11 @@ class AmrapFragment : Fragment() {
             0, rowHeight, prefixWithZero = true, largeText = true, listener = secondsListener
         )
 
-        viewModel.timeSpinnerData.getDuration().observe(
+        workoutManager.session.type = Session.SessionType.AMRAP
+        viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
                 run {
-                    Snackbar.make(requireView(), secondsToTimerFormat(duration), Snackbar.LENGTH_LONG).show()
+                    workoutManager.session.duration = duration
                 } })
 
         return root

@@ -10,6 +10,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.adrcotfas.wod.R
 
 fun EditText.onDone(callback: () -> Unit) {
@@ -50,3 +52,6 @@ fun calculateRowHeight(layoutInflater : LayoutInflater, large: Boolean = true): 
     val fm = textView.paint.fontMetrics
     return fm.descent - fm.ascent
 }
+
+val FragmentManager.currentNavigationFragment: Fragment?
+    get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()

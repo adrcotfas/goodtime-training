@@ -11,9 +11,16 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.google.android.material.snackbar.Snackbar
+import com.adrcotfas.wod.data.model.Session
+import com.adrcotfas.wod.data.workout.WorkoutManager
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class EmomFragment : Fragment() {
+class EmomFragment : Fragment(), KodeinAware {
+    override val kodein by closestKodein()
+
+    private val workoutManager : WorkoutManager by instance()
 
     private lateinit var viewModel: EmomViewModel
     private lateinit var minutePicker: NumberPicker
@@ -21,15 +28,15 @@ class EmomFragment : Fragment() {
     private lateinit var roundsPicker: NumberPicker
 
     private val minuteListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.timeSpinnerData.setMinutes(value) }
+        override fun onScroll(value: Int) { viewModel.emomData.setMinutes(value) }
     }
 
     private val secondsListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.timeSpinnerData.setSeconds(value) }
+        override fun onScroll(value: Int) { viewModel.emomData.setSeconds(value) }
     }
 
     private val roundsListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.roundSpinnerData.setRounds(value) }
+        override fun onScroll(value: Int) { viewModel.emomData.setRounds(value) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +70,14 @@ class EmomFragment : Fragment() {
             20, rowHeight, prefixWithZero = false, largeText = true, listener = roundsListener
         )
 
-        viewModel.timeSpinnerData.getDuration().observe(
-            viewLifecycleOwner, Observer { duration ->
+        workoutManager.session.type = Session.SessionType.EMOM
+        viewModel.emomData.get().observe(
+            viewLifecycleOwner, Observer { data ->
                 run {
-                    Snackbar.make(requireView(),
-                        TimerUtils.secondsToTimerFormat(duration), Snackbar.LENGTH_LONG).show()
+                    workoutManager.session.apply {
+                        duration = data.first
+                        numRounds = data.second
+                    }
                 } })
         return root
     }

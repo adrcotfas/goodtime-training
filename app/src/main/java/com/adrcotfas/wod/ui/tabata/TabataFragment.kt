@@ -11,9 +11,16 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.google.android.material.snackbar.Snackbar
+import com.adrcotfas.wod.data.model.Session
+import com.adrcotfas.wod.data.workout.WorkoutManager
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class TabataFragment : Fragment() {
+class TabataFragment : Fragment(), KodeinAware {
+    override val kodein by closestKodein()
+
+    private val workoutManager : WorkoutManager by instance()
 
     private lateinit var viewModel: TabataViewModel
     private lateinit var minuteWorkPicker:   NumberPicker
@@ -23,23 +30,23 @@ class TabataFragment : Fragment() {
     private lateinit var roundsPicker: NumberPicker
 
     private val minuteWorkListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.workSpinnerData.setMinutes(value) }
+        override fun onScroll(value: Int) { viewModel.tabataData.setMinutesWork(value) }
     }
 
     private val secondsWorkListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.workSpinnerData.setSeconds(value) }
+        override fun onScroll(value: Int) { viewModel.tabataData.setSecondsWork(value) }
     }
 
     private val minuteBreakListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.breakSpinnerData.setMinutes(value) }
+        override fun onScroll(value: Int) { viewModel.tabataData.setMinutesBreak(value) }
     }
 
     private val secondsBreakListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.breakSpinnerData.setSeconds(value) }
+        override fun onScroll(value: Int) { viewModel.tabataData.setSecondsBreak(value) }
     }
 
     private val roundsListener = object: NumberPicker.Listener {
-        override fun onScroll(value: Int) { viewModel.roundSpinnerData.setRounds(value) }
+        override fun onScroll(value: Int) { viewModel.tabataData.setRounds(value) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,12 +93,15 @@ class TabataFragment : Fragment() {
             18, rowHeight, prefixWithZero = false, largeText = false, listener = roundsListener
         )
 
-        viewModel.workSpinnerData.getDuration().observe(
-            viewLifecycleOwner, Observer { duration ->
+        workoutManager.session.type = Session.SessionType.TABATA
+        viewModel.tabataData.get().observe(
+            viewLifecycleOwner, Observer { tabataData ->
                 run {
-                    Snackbar.make(requireView(),
-                        TimerUtils.secondsToTimerFormat(duration), Snackbar.LENGTH_LONG).show()
-                } })
+                    workoutManager.session.apply {
+                        duration = tabataData.first
+                        breakDuration = tabataData.second
+                        numRounds = tabataData.third
+                    }} })
         return root
     }
 }

@@ -1,11 +1,8 @@
 package com.adrcotfas.wod.ui.tabata
 
 import androidx.lifecycle.ViewModel
-import com.adrcotfas.wod.ui.common.RoundSpinnerData
-import com.adrcotfas.wod.ui.common.TimeSpinnerData
+import com.adrcotfas.wod.ui.common.TabataSpinnerData
 
 class TabataViewModel : ViewModel() {
-    val workSpinnerData = TimeSpinnerData(0, 20)
-    val breakSpinnerData = TimeSpinnerData(0, 10)
-    val roundSpinnerData = RoundSpinnerData(8)
+    val tabataData =  TabataSpinnerData()
 }
