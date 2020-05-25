@@ -1,4 +1,6 @@
 package com.adrcotfas.wod.ui.workout
 
-class WorkoutFragment {
+import androidx.fragment.app.Fragment
+
+class WorkoutFragment : Fragment() {
 }

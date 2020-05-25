@@ -21,11 +21,15 @@
         android:id="@+id/nav_tabata"
         android:name="com.adrcotfas.wod.ui.tabata.TabataFragment"
         android:label="@string/menu_tabata"
-        tools:layout="@layout/fragment_share" />
+        tools:layout="@layout/fragment_tabata" />
 
     <fragment
         android:id="@+id/nav_emom"
         android:name="com.adrcotfas.wod.ui.emom.EmomFragment"
         android:label="@string/menu_emom"
         tools:layout="@layout/fragment_tabata" />
+    <fragment
+        android:id="@+id/workoutFragment"
+        android:name="com.adrcotfas.wod.ui.workout.WorkoutFragment"
+        android:label="WorkoutFragment" />
 </navigation>
