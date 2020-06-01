@@ -11,8 +11,9 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.adrcotfas.wod.data.model.Session
-import com.adrcotfas.wod.data.workout.WorkoutManager
+import com.adrcotfas.wod.common.preferences.PrefUtil
+import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionType
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -20,7 +21,7 @@ import org.kodein.di.generic.instance
 class TabataFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val workoutManager : WorkoutManager by instance()
+    private val preferences : PrefUtil by instance()
 
     private lateinit var viewModel: TabataViewModel
     private lateinit var minuteWorkPicker:   NumberPicker
@@ -66,25 +67,25 @@ class TabataFragment : Fragment(), KodeinAware {
         minuteWorkPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes_work),
             TimerUtils.generateNumbers(0, 5, 1),
-            0, rowHeight, prefixWithZero = true, largeText = false, listener = minuteWorkListener
+            0, rowHeight, largeText = false, listener = minuteWorkListener
         )
 
         secondsWorkPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds_work),
             TimerUtils.generateNumbers(0, 59, 1),
-            20, rowHeight, prefixWithZero = true, largeText = false, listener = secondsWorkListener
+            20, rowHeight, largeText = false, listener = secondsWorkListener
         )
 
         minuteBreakPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes_break),
             TimerUtils.generateNumbers(0, 5, 1),
-            0, rowHeight, prefixWithZero = true, largeText = false, listener = minuteBreakListener
+            0, rowHeight, largeText = false, listener = minuteBreakListener
         )
 
         secondsBreakPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds_break),
             TimerUtils.generateNumbers(0, 59, 1),
-            10, rowHeight, prefixWithZero = true, largeText = false, listener = secondsBreakListener
+            10, rowHeight, largeText = false, listener = secondsBreakListener
         )
 
         roundsPicker = NumberPicker(
@@ -93,15 +94,13 @@ class TabataFragment : Fragment(), KodeinAware {
             18, rowHeight, prefixWithZero = false, largeText = false, listener = roundsListener
         )
 
-        workoutManager.session.type = Session.SessionType.TABATA
+        //workoutDataHolder.session.type = SessionType.TABATA
         viewModel.tabataData.get().observe(
             viewLifecycleOwner, Observer { tabataData ->
-                run {
-                    workoutManager.session.apply {
-                        duration = tabataData.first
-                        breakDuration = tabataData.second
-                        numRounds = tabataData.third
-                    }} })
+                preferences.setSessionList(
+                    SessionMinimal(tabataData.first, tabataData.second, tabataData.third, SessionType.TABATA))
+            }
+        )
         return root
     }
 }

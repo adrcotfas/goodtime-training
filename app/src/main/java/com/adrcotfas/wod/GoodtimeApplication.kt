@@ -5,9 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.room.Room
-import com.adrcotfas.wod.common.notifications.NotificationHelper
+import com.adrcotfas.wod.common.preferences.PrefUtil
 import com.adrcotfas.wod.data.db.Database
-import com.adrcotfas.wod.data.workout.WorkoutManager
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.bind
@@ -20,8 +19,7 @@ class GoodtimeApplication : Application(), KodeinAware {
             Room.databaseBuilder(this@GoodtimeApplication, Database::class.java,
                 "goodtime-training-db")
                 .build() }
-        bind<WorkoutManager>() with singleton { WorkoutManager() }
-        bind<NotificationHelper>() with singleton { NotificationHelper(this@GoodtimeApplication) }
+        bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
     }
 
     companion object {

@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.adrcotfas.wod.data.model.Session
-import com.adrcotfas.wod.data.workout.WorkoutManager
+import com.adrcotfas.wod.common.preferences.PrefUtil
+import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionType
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -20,7 +23,7 @@ import org.kodein.di.generic.instance
 class AmrapFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val workoutManager : WorkoutManager by instance()
+    private val preferences : PrefUtil by instance()
 
     private lateinit var viewModel: AmrapViewModel
     private lateinit var minutePicker: NumberPicker
@@ -46,27 +49,37 @@ class AmrapFragment : Fragment(), KodeinAware {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_amrap, container, false)
-        val rowHeight = calculateRowHeight(layoutInflater)
+        setupNumberPickers(root)
 
+        val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
+
+        startButton.setOnClickListener {view ->
+            view.findNavController().navigate(R.id.action_nav_amrap_to_nav_workout)
+        }
+
+        return root
+    }
+
+    private fun setupNumberPickers(root: View) {
+        val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes),
-            TimerUtils.generateNumbers(0,45, 1),
-            15, rowHeight, prefixWithZero = true, largeText = true, listener = minuteListener
+            TimerUtils.generateNumbers(0, 45, 1),
+            15, rowHeight, listener = minuteListener
         )
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
             TimerUtils.generateNumbers(0, 45, 15),
-            0, rowHeight, prefixWithZero = true, largeText = true, listener = secondsListener
+            0, rowHeight, listener = secondsListener
         )
 
-        workoutManager.session.type = Session.SessionType.AMRAP
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
-                run {
-                    workoutManager.session.duration = duration
-                } })
-
-        return root
+                preferences.setSessionList(
+                    SessionMinimal(duration, 0, 0, SessionType.AMRAP)
+                )
+            }
+        )
     }
 }

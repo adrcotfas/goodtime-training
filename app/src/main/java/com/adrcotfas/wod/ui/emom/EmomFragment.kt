@@ -11,8 +11,9 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.adrcotfas.wod.data.model.Session
-import com.adrcotfas.wod.data.workout.WorkoutManager
+import com.adrcotfas.wod.common.preferences.PrefUtil
+import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionType
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -20,7 +21,7 @@ import org.kodein.di.generic.instance
 class EmomFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val workoutManager : WorkoutManager by instance()
+    private val preferences : PrefUtil by instance()
 
     private lateinit var viewModel: EmomViewModel
     private lateinit var minutePicker: NumberPicker
@@ -56,29 +57,26 @@ class EmomFragment : Fragment(), KodeinAware {
         minutePicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes),
             TimerUtils.generateNumbers(0, 5, 1),
-            1, rowHeight, true, true, minuteListener)
+            1, rowHeight, listener = minuteListener
+        )
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
             TimerUtils.generateNumbers(0, 55, 5),
-            0, rowHeight, prefixWithZero = true, largeText = true, listener = secondsListener
+            0, rowHeight, listener = secondsListener
         )
 
         roundsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_rounds),
             TimerUtils.generateNumbers(0, 90, 1),
-            20, rowHeight, prefixWithZero = false, largeText = true, listener = roundsListener
+            20, rowHeight, prefixWithZero = false, listener = roundsListener
         )
 
-        workoutManager.session.type = Session.SessionType.EMOM
         viewModel.emomData.get().observe(
             viewLifecycleOwner, Observer { data ->
-                run {
-                    workoutManager.session.apply {
-                        duration = data.first
-                        numRounds = data.second
-                    }
-                } })
+                preferences.setSessionList(
+                    SessionMinimal(data.first, 0, data.second, SessionType.EMOM))
+                 })
         return root
     }
 }

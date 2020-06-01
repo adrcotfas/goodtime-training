@@ -9,7 +9,11 @@
         android:id="@+id/nav_amrap"
         android:name="com.adrcotfas.wod.ui.amrap.AmrapFragment"
         android:label="@string/menu_amrap"
-        tools:layout="@layout/fragment_amrap" />
+        tools:layout="@layout/fragment_amrap" >
+        <action
+            android:id="@+id/action_nav_amrap_to_nav_workout"
+            app:destination="@id/nav_workout" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_for_time"
@@ -29,7 +33,8 @@
         android:label="@string/menu_emom"
         tools:layout="@layout/fragment_tabata" />
     <fragment
-        android:id="@+id/workoutFragment"
+        android:id="@+id/nav_workout"
         android:name="com.adrcotfas.wod.ui.workout.WorkoutFragment"
-        android:label="WorkoutFragment" />
+        android:label="WorkoutFragment"
+        tools:layout="@layout/fragment_workout"/>
 </navigation>

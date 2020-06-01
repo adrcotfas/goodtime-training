@@ -11,10 +11,9 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.adrcotfas.wod.data.model.Session
-import com.adrcotfas.wod.data.workout.WorkoutManager
-import com.google.android.material.snackbar.Snackbar
-import org.kodein.di.Kodein
+import com.adrcotfas.wod.common.preferences.PrefUtil
+import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionType
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -22,8 +21,7 @@ import org.kodein.di.generic.instance
 class ForTimeFragment : Fragment(), KodeinAware {
 
     override val kodein by closestKodein()
-
-    private val workoutManager : WorkoutManager by instance()
+    private val preferences : PrefUtil by instance()
 
     private lateinit var viewModel: ForTimeViewModel
     private lateinit var minutePicker: NumberPicker
@@ -54,21 +52,21 @@ class ForTimeFragment : Fragment(), KodeinAware {
         minutePicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes),
             TimerUtils.generateNumbers(0, 45, 1),
-            15, rowHeight, prefixWithZero = true, largeText = true, listener = minuteListener
+            15, rowHeight, listener = minuteListener
         )
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
             TimerUtils.generateNumbers(0, 45, 15),
-            0, rowHeight, prefixWithZero = true, largeText = true, listener = secondsListener
+            0, rowHeight, listener = secondsListener
         )
 
-        workoutManager.session.type = Session.SessionType.FOR_TIME
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
-                run {
-                    workoutManager.session.duration = duration
-                }})
+                preferences.setSessionList(
+                    SessionMinimal(duration, 0, 0, SessionType.AMRAP))
+            }
+        )
 
         return root
     }

@@ -25,6 +25,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -54,4 +58,11 @@ dependencies {
     // Room Database
     implementation "androidx.room:room-runtime:2.2.5"
     kapt "androidx.room:room-compiler:2.2.5"
+
+    // Worker
+    implementation "androidx.work:work-runtime-ktx:2.4.0-beta01"
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // Preferences
+    implementation "androidx.preference:preference:1.1.1"
 }

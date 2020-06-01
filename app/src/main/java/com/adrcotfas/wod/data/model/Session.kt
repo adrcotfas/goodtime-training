@@ -18,12 +18,4 @@ data class Session(
     var type: SessionType = SessionType.INVALID,
     var notes: String = "") {
 
-    enum class SessionType(val value: Int) {
-        INVALID(-1),
-        AMRAP(0),
-        EMOM(1),
-        FOR_TIME(2),
-        TABATA(3),
-        BREAK(4)
-    }
 }
