@@ -12,9 +12,9 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
+import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
-import com.adrcotfas.wod.ui.workout.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -23,9 +23,10 @@ class AmrapFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
     private lateinit var viewModel: AmrapViewModel
-    private lateinit var workViewModel: WorkoutViewModel
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
+
+    private lateinit var session : SessionMinimal
 
     private val minuteListener = object: NumberPicker.Listener {
         override fun onScroll(value: Int) { viewModel.timeData.setMinutes(value) }
@@ -38,7 +39,6 @@ class AmrapFragment : Fragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(AmrapViewModel::class.java)
-        workViewModel = ViewModelProvider(requireActivity()).get(WorkoutViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -52,7 +52,8 @@ class AmrapFragment : Fragment(), KodeinAware {
 
         val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
         startButton.setOnClickListener {view ->
-            view.findNavController().navigate(R.id.action_nav_amrap_to_nav_workout)
+            val action = AmrapFragmentDirections.startWorkoutAction(sessionsToString(session))
+            view.findNavController().navigate(action)
         }
 
         return root
@@ -74,8 +75,7 @@ class AmrapFragment : Fragment(), KodeinAware {
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
-                workViewModel.sessions = arrayListOf(
-                    SessionMinimal(duration, 0, 0, SessionType.AMRAP))
+                session = SessionMinimal(duration, 0, 0, SessionType.AMRAP)
             }
         )
     }

@@ -13,6 +13,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.adrcotfas.wod.R
+import com.adrcotfas.wod.data.model.SessionMinimal
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 fun EditText.onDone(callback: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -55,3 +58,14 @@ fun calculateRowHeight(layoutInflater : LayoutInflater, large: Boolean = true): 
 
 val FragmentManager.currentNavigationFragment: Fragment?
     get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
+
+fun sessionsToString(vararg sessions: SessionMinimal) : String {
+    val gson = Gson()
+    return gson.toJson(listOf(*sessions))
+}
+
+fun stringToSessions(string : String) : ArrayList<SessionMinimal> {
+    val gson = Gson()
+    val typeToken = object : TypeToken<ArrayList<SessionMinimal>>() {}
+    return gson.fromJson(string, typeToken.type)
+}

@@ -1,9 +1,12 @@
 package com.adrcotfas.wod.common.timers
 
 import java.util.concurrent.TimeUnit
+import kotlin.math.ceil
 
 class CountDownTimer(secondsInTheFuture: Long, private val listener: Listener)
     : android.os.CountDownTimer(TimeUnit.SECONDS.toMillis(secondsInTheFuture), 1000) {
+
+    private val halfway = ceil(secondsInTheFuture / 2.0).toInt()
 
     var seconds = 0
         private set
@@ -11,6 +14,7 @@ class CountDownTimer(secondsInTheFuture: Long, private val listener: Listener)
     interface Listener {
         fun onTick(seconds : Int)
         fun onFinishSet()
+        fun onHalfwayThere()
     }
 
     override fun onTick(millisUntilFinished: Long) {
@@ -19,8 +23,13 @@ class CountDownTimer(secondsInTheFuture: Long, private val listener: Listener)
         if (millisUntilFinished < 100) {
             return
         }
+
         seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt()
         listener.onTick(seconds)
+
+        if (seconds == halfway) {
+            listener.onHalfwayThere()
+        }
     }
 
     override fun onFinish() {

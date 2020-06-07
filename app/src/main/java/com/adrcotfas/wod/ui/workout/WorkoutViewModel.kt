@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.adrcotfas.wod.common.stringToSessions
 
 import com.adrcotfas.wod.common.timers.CountDownTimer
 import com.adrcotfas.wod.data.model.SessionMinimal
@@ -23,6 +24,13 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
 
     private var shouldRest : Boolean = false
 
+    fun init(sessionsRaw: String) {
+        sessions = stringToSessions(sessionsRaw)
+        currentRoundIdx = 0
+        currentSessionIdx = 0
+        currentTick.value = sessions[currentSessionIdx].duration
+    }
+
     fun startWorkout() {
         state.value = TimerState.ACTIVE
         val session = sessions[currentSessionIdx]
@@ -32,19 +40,18 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             else
                 sessions[currentSessionIdx].duration.toLong()
 
-        Log.e("WOD::startWorkout", "SessionType: ${session.type}, seconds: $seconds shouldRest: $shouldRest")
+        //TODO: add Timber
+        Log.e("WOD::startWorkout", "SessionType: ${session.type}, seconds: $seconds, shouldRest: $shouldRest" +
+                "currentSession: $currentSessionIdx, currentRound: $currentRoundIdx ")
 
         timer = CountDownTimer(seconds, object : CountDownTimer.Listener {
             override fun onTick(seconds: Int) { currentTick.value = seconds }
             override fun onFinishSet() { handleFinishTimer(session.type)}
+            override fun onHalfwayThere() {
+                //TODO: notify user according to preferences
+            }
         })
         timer.start()
-    }
-
-    fun init() {
-        currentRoundIdx = 0
-        currentSessionIdx = 0
-        currentTick.value = sessions[currentSessionIdx].duration
     }
 
     fun pauseTimer() {
@@ -81,7 +88,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                         currentSessionIdx++
                     }
                 } else {
-                    currentSessionIdx++
+                    currentRoundIdx++
                     currentTick.value = sessions[currentSessionIdx].duration
                     startWorkout()
                 }
