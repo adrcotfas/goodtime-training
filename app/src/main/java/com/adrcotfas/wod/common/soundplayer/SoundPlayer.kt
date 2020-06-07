@@ -9,13 +9,15 @@ import android.os.Handler
 //TODO: preference for sound every minute /
 // last x minutes, sound in the middle of a workout (Tabata)
 // find a cool synthesized voice or custom voice
-class SoundPlayer(base: Context?) : ContextWrapper(base) {
+//TODO: make it singleton
+class SoundPlayer(base: Context) : ContextWrapper(base) {
 
     companion object {
         const val COUNTDOWN: Int = com.adrcotfas.wod.R.raw.ding
         const val COUNTDOWN_LONG: Int = com.adrcotfas.wod.R.raw.long_ding
         const val REST: Int = com.adrcotfas.wod.R.raw.rest
         const val WORKOUT_COMPLETE: Int = com.adrcotfas.wod.R.raw.workout_complete
+        //TODO: LAST_ROUND, HALFWAY_THERE, X_SECONDS_REMAINING
     }
 
     fun play(sound: Int) {
@@ -27,6 +29,8 @@ class SoundPlayer(base: Context?) : ContextWrapper(base) {
         val soundPool = SoundPool.Builder()
             .setAudioAttributes(attributes)
             .build()
+
+        //TODO: load all sounds at once and reuse
         val soundId = soundPool.load(applicationContext, sound, 1)
 
         soundPool.setOnLoadCompleteListener { sp: SoundPool, _, _ ->

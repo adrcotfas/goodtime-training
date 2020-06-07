@@ -9,6 +9,7 @@ class CountDownTimer(secondsInTheFuture: Long, private val listener: Listener)
         private set
 
     interface Listener {
+        fun onTick(seconds : Int)
         fun onFinishSet()
     }
 
@@ -19,6 +20,7 @@ class CountDownTimer(secondsInTheFuture: Long, private val listener: Listener)
             return
         }
         seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt()
+        listener.onTick(seconds)
     }
 
     override fun onFinish() {

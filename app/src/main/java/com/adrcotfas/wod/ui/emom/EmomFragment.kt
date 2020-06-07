@@ -7,23 +7,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.adrcotfas.wod.common.preferences.PrefUtil
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
+import com.adrcotfas.wod.ui.workout.WorkoutViewModel
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
 
 class EmomFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val preferences : PrefUtil by instance()
-
     private lateinit var viewModel: EmomViewModel
+    private lateinit var workViewModel: WorkoutViewModel
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
     private lateinit var roundsPicker: NumberPicker
@@ -43,6 +43,7 @@ class EmomFragment : Fragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(EmomViewModel::class.java)
+        workViewModel = ViewModelProvider(requireActivity()).get(WorkoutViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -74,9 +75,15 @@ class EmomFragment : Fragment(), KodeinAware {
 
         viewModel.emomData.get().observe(
             viewLifecycleOwner, Observer { data ->
-                preferences.setSessionList(
+                workViewModel.sessions = arrayListOf(
                     SessionMinimal(data.first, 0, data.second, SessionType.EMOM))
                  })
+
+        val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
+        startButton.setOnClickListener {view ->
+            view.findNavController().navigate(R.id.action_nav_emom_to_nav_workout)
+        }
+
         return root
     }
 }

@@ -7,23 +7,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.adrcotfas.wod.common.preferences.PrefUtil
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
+import com.adrcotfas.wod.ui.workout.WorkoutViewModel
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
 
 class TabataFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val preferences : PrefUtil by instance()
-
     private lateinit var viewModel: TabataViewModel
+    private lateinit var workViewModel: WorkoutViewModel
     private lateinit var minuteWorkPicker:   NumberPicker
     private lateinit var secondsWorkPicker:  NumberPicker
     private lateinit var minuteBreakPicker:  NumberPicker
@@ -53,6 +53,7 @@ class TabataFragment : Fragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(TabataViewModel::class.java)
+        workViewModel = ViewModelProvider(requireActivity()).get(WorkoutViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -94,13 +95,17 @@ class TabataFragment : Fragment(), KodeinAware {
             18, rowHeight, prefixWithZero = false, largeText = false, listener = roundsListener
         )
 
-        //workoutDataHolder.session.type = SessionType.TABATA
         viewModel.tabataData.get().observe(
             viewLifecycleOwner, Observer { tabataData ->
-                preferences.setSessionList(
+                workViewModel.sessions = arrayListOf(
                     SessionMinimal(tabataData.first, tabataData.second, tabataData.third, SessionType.TABATA))
             }
         )
+
+        val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
+        startButton.setOnClickListener {view ->
+            view.findNavController().navigate(R.id.action_nav_tabata_to_nav_workout)
+        }
         return root
     }
 }

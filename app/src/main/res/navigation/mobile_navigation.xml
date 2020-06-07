@@ -19,19 +19,31 @@
         android:id="@+id/nav_for_time"
         android:name="com.adrcotfas.wod.ui.for_time.ForTimeFragment"
         android:label="@string/menu_for_time"
-        tools:layout="@layout/fragment_emom" />
+        tools:layout="@layout/fragment_emom" >
+        <action
+            android:id="@+id/action_nav_for_time_to_nav_workout"
+            app:destination="@id/nav_workout" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_tabata"
         android:name="com.adrcotfas.wod.ui.tabata.TabataFragment"
         android:label="@string/menu_tabata"
-        tools:layout="@layout/fragment_tabata" />
+        tools:layout="@layout/fragment_tabata" >
+        <action
+            android:id="@+id/action_nav_tabata_to_nav_workout"
+            app:destination="@id/nav_workout" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_emom"
         android:name="com.adrcotfas.wod.ui.emom.EmomFragment"
         android:label="@string/menu_emom"
-        tools:layout="@layout/fragment_tabata" />
+        tools:layout="@layout/fragment_tabata" >
+        <action
+            android:id="@+id/action_nav_emom_to_nav_workout"
+            app:destination="@id/nav_workout" />
+    </fragment>
     <fragment
         android:id="@+id/nav_workout"
         android:name="com.adrcotfas.wod.ui.workout.WorkoutFragment"
