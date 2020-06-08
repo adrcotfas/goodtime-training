@@ -1,7 +1,5 @@
 package com.adrcotfas.wod.common
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import java.util.concurrent.TimeUnit
 
 class TimerUtils {

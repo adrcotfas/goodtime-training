@@ -42,7 +42,7 @@ class WorkoutManager {
                 sessions[currentSessionIdx].duration.toLong()
 
         //TODO: add Timber
-        Log.e("WOD::startWorkout", "SessionType: ${session.type}, seconds: $seconds, shouldRest: $shouldRest" +
+        Log.e("WOD::startWorkout", "SessionType: ${session.type}, seconds: $seconds, shouldRest: $shouldRest, " +
                 "currentSession: $currentSessionIdx, currentRound: $currentRoundIdx ")
 
         timer = CountDownTimer(seconds, object : CountDownTimer.Listener {

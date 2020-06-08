@@ -12,6 +12,7 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
+import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
 import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
@@ -52,7 +53,8 @@ class AmrapFragment : Fragment(), KodeinAware {
 
         val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
         startButton.setOnClickListener {view ->
-            val action = AmrapFragmentDirections.startWorkoutAction(sessionsToString(session))
+            val action = AmrapFragmentDirections.startWorkoutAction(
+                sessionsToString(generatePreWorkoutSession(), session))
             view.findNavController().navigate(action)
         }
 
