@@ -1,8 +1,6 @@
 package com.adrcotfas.wod.ui.workout
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.adrcotfas.wod.common.stringToSessions
 
@@ -11,7 +9,7 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.workout.TimerState
 
-class WorkoutViewModel(application: Application) : AndroidViewModel(application) {
+class WorkoutManager {
 
     val state = MutableLiveData<TimerState>()
     var sessions = ArrayList<SessionMinimal>()
@@ -22,6 +20,9 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     var currentRoundIdx : Int = 0
     val currentTick = MutableLiveData<Int>()
 
+    /**
+     * used for Tabata workouts to signal the rest
+     */
     private var shouldRest : Boolean = false
 
     fun init(sessionsRaw: String) {

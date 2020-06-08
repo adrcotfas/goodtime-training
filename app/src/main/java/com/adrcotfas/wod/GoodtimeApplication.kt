@@ -7,6 +7,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import androidx.room.Room
 import com.adrcotfas.wod.common.preferences.PrefUtil
 import com.adrcotfas.wod.data.db.Database
+import com.adrcotfas.wod.ui.workout.WorkoutManager
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.bind
@@ -20,6 +21,7 @@ class GoodtimeApplication : Application(), KodeinAware {
                 "goodtime-training-db")
                 .build() }
         bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
+        bind<WorkoutManager>() with singleton {WorkoutManager() }
     }
 
     companion object {
