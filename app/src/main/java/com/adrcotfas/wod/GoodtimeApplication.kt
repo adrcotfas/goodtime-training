@@ -6,12 +6,14 @@ import android.content.Context
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.room.Room
 import com.adrcotfas.wod.common.preferences.PrefUtil
+import com.adrcotfas.wod.common.soundplayer.SoundPlayer
 import com.adrcotfas.wod.data.db.Database
 import com.adrcotfas.wod.ui.workout.WorkoutManager
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.eagerSingleton
+import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 
 class GoodtimeApplication : Application(), KodeinAware {
@@ -21,7 +23,8 @@ class GoodtimeApplication : Application(), KodeinAware {
                 "goodtime-training-db")
                 .build() }
         bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
-        bind<WorkoutManager>() with singleton {WorkoutManager() }
+        bind<SoundPlayer>() with singleton { SoundPlayer(applicationContext) }
+        bind<WorkoutManager>() with singleton {WorkoutManager(instance()) }
     }
 
     companion object {

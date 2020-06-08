@@ -4,39 +4,35 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.media.AudioAttributes
 import android.media.SoundPool
-import android.os.Handler
+import com.adrcotfas.wod.R
 
-//TODO: preference for sound every minute /
-// last x minutes, sound in the middle of a workout (Tabata)
-// find a cool synthesized voice or custom voice
-//TODO: make it singleton
 class SoundPlayer(base: Context) : ContextWrapper(base) {
+    private val soundPool = SoundPool.Builder()
+        .setAudioAttributes(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build())
+        .build()
+
+    private var sounds = HashMap<Int, Int>(4)
+
+    init {
+        sounds[COUNTDOWN] = soundPool.load(applicationContext, COUNTDOWN, 1)
+        sounds[COUNTDOWN_LONG] = (soundPool.load(applicationContext, COUNTDOWN_LONG, 1))
+        sounds[REST] = (soundPool.load(applicationContext, REST, 1))
+        sounds[WORKOUT_COMPLETE] = (soundPool.load(applicationContext, WORKOUT_COMPLETE, 1))
+    }
 
     companion object {
-        const val COUNTDOWN: Int = com.adrcotfas.wod.R.raw.ding
-        const val COUNTDOWN_LONG: Int = com.adrcotfas.wod.R.raw.long_ding
-        const val REST: Int = com.adrcotfas.wod.R.raw.rest
-        const val WORKOUT_COMPLETE: Int = com.adrcotfas.wod.R.raw.workout_complete
+        const val COUNTDOWN: Int = R.raw.ding
+        const val COUNTDOWN_LONG: Int = R.raw.long_ding
+        const val REST: Int = R.raw.rest
+        const val WORKOUT_COMPLETE: Int = R.raw.workout_complete
         //TODO: LAST_ROUND, HALFWAY_THERE, X_SECONDS_REMAINING
     }
 
-    fun play(sound: Int) {
-        val attributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_ALARM)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .build()
-
-        val soundPool = SoundPool.Builder()
-            .setAudioAttributes(attributes)
-            .build()
-
-        //TODO: load all sounds at once and reuse
-        val soundId = soundPool.load(applicationContext, sound, 1)
-
-        soundPool.setOnLoadCompleteListener { sp: SoundPool, _, _ ->
-            sp.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
-            //TODO: find a more elegant solution for the SoundPool crash
-            Handler().postDelayed({ sp.release()}, 3000)
-        }
+    fun play(soundId: Int) {
+        soundPool.play(sounds[soundId]!!, 1.0f, 1.0f, 1, 0, 1.0f)
     }
 }

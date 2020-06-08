@@ -2,6 +2,10 @@ package com.adrcotfas.wod.ui.workout
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.adrcotfas.wod.common.soundplayer.SoundPlayer
+import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.COUNTDOWN
+import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.COUNTDOWN_LONG
+import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLETE
 import com.adrcotfas.wod.common.stringToSessions
 
 import com.adrcotfas.wod.common.timers.CountDownTimer
@@ -9,7 +13,7 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.workout.TimerState
 
-class WorkoutManager {
+class WorkoutManager(private val soundPlayer : SoundPlayer) {
 
     val state = MutableLiveData<TimerState>()
     var sessions = ArrayList<SessionMinimal>()
@@ -46,10 +50,9 @@ class WorkoutManager {
                 "currentSession: $currentSessionIdx, currentRound: $currentRoundIdx ")
 
         timer = CountDownTimer(seconds, object : CountDownTimer.Listener {
-            override fun onTick(seconds: Int) { currentTick.value = seconds }
+            override fun onTick(seconds: Int) { handleTimerTick(seconds) }
             override fun onFinishSet() { handleFinishTimer(session.type)}
-            override fun onHalfwayThere() {
-                //TODO: notify user according to preferences
+            override fun onHalfwayThere() { //TODO: don't play for BREAK and REST
             }
         })
         timer.start()
@@ -68,12 +71,22 @@ class WorkoutManager {
         return sessions[currentSessionIdx].numRounds == currentRoundIdx + 1
     }
 
+    private fun handleTimerTick(seconds : Int) {
+        currentTick.value = seconds
+        if (seconds == 0) {
+            soundPlayer.play(COUNTDOWN_LONG)
+        } else if (seconds <= 3) {
+            soundPlayer.play(COUNTDOWN)
+        }
+    }
+
     private fun handleFinishTimer(type : SessionType) {
         Log.e("WOD::handleFinishTimer", "SessionType: $type")
         when (type) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.BREAK -> {
                 if (isLastSession()) {
                     state.value = TimerState.FINISHED
+                    soundPlayer.play(WORKOUT_COMPLETE)
                 } else {
                     currentSessionIdx++
                     currentTick.value = sessions[currentSessionIdx].duration
@@ -84,6 +97,7 @@ class WorkoutManager {
                 if (isLastRound()) {
                     if (isLastSession()) {
                         state.value = TimerState.FINISHED
+                        soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
                         currentRoundIdx = 0
                         currentSessionIdx++
@@ -98,6 +112,7 @@ class WorkoutManager {
                 if (isLastRound()) {
                     if (isLastSession()) {
                         state.value = TimerState.FINISHED
+                        soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
                         currentRoundIdx = 0
                         currentSessionIdx++
