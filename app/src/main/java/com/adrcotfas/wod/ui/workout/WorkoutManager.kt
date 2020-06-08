@@ -15,7 +15,7 @@ import com.adrcotfas.wod.data.workout.TimerState
 
 class WorkoutManager(private val soundPlayer : SoundPlayer) {
 
-    val state = MutableLiveData<TimerState>()
+    val state = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionMinimal>()
 
     lateinit var timer : CountDownTimer
