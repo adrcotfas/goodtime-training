@@ -17,11 +17,8 @@ import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
 
-class EmomFragment : Fragment(), KodeinAware {
-    override val kodein by closestKodein()
+class EmomFragment : Fragment() {
 
     private lateinit var viewModel: EmomViewModel
     private lateinit var minutePicker: NumberPicker

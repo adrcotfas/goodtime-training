@@ -17,12 +17,8 @@ import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
 
-class ForTimeFragment : Fragment(), KodeinAware {
-
-    override val kodein by closestKodein()
+class ForTimeFragment : Fragment() {
 
     private lateinit var viewModel: ForTimeViewModel
     private lateinit var minutePicker: NumberPicker
