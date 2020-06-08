@@ -20,6 +20,10 @@
             android:id="@+id/nav_emom"
             android:icon="@drawable/ic_menu_send"
             android:title="@string/menu_emom" />
+        <item
+            android:id="@+id/nav_log"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Log" />
     </group>
 
 </menu>

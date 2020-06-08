@@ -11,11 +11,9 @@ import com.adrcotfas.wod.data.model.SessionTypeConverter
 @Dao
 interface SessionDao {
 
-    //TODO: check room coroutines
-
     @Insert
     @TypeConverters(SessionTypeConverter::class)
-    fun addSession(session: Session)
+    suspend fun addSession(session: Session)
 
     @Query("select * from Session")
     @TypeConverters(SessionTypeConverter::class)

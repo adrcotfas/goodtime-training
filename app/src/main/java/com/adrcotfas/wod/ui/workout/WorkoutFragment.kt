@@ -51,7 +51,6 @@ class WorkoutFragment : Fragment(), KodeinAware {
         workoutManager.currentTick.observe( viewLifecycleOwner, Observer { seconds ->
             binding.timer.text = TimerUtils.secondsToTimerFormat(seconds)
         })
-
         return binding.root
     }
 }

@@ -54,4 +54,9 @@
             app:argType="string"
             android:defaultValue="null"/>
     </fragment>
+    <fragment
+        android:id="@+id/nav_log"
+        android:name="com.adrcotfas.wod.ui.log.LogFragment"
+        android:label="LogFragment"
+        tools:layout="@layout/fragment_log"/>
 </navigation>

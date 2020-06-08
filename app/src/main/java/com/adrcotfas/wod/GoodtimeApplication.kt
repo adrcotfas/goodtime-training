@@ -8,13 +8,14 @@ import androidx.room.Room
 import com.adrcotfas.wod.common.preferences.PrefUtil
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer
 import com.adrcotfas.wod.data.db.Database
+import com.adrcotfas.wod.data.db.SessionDao
+import com.adrcotfas.wod.data.repository.SessionRepositoryImpl
+import com.adrcotfas.wod.data.repository.SessionsRepository
+import com.adrcotfas.wod.ui.log.LogViewModelFactory
 import com.adrcotfas.wod.ui.workout.WorkoutManager
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.eagerSingleton
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.generic.*
 
 class GoodtimeApplication : Application(), KodeinAware {
     override val kodein = Kodein.lazy {
@@ -22,9 +23,12 @@ class GoodtimeApplication : Application(), KodeinAware {
             Room.databaseBuilder(this@GoodtimeApplication, Database::class.java,
                 "goodtime-training-db")
                 .build() }
+        bind<SessionDao>() with singleton { instance<Database>().sessionsDao() }
+        bind<SessionsRepository>() with singleton { SessionRepositoryImpl(instance()) }
         bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
         bind<SoundPlayer>() with singleton { SoundPlayer(applicationContext) }
-        bind<WorkoutManager>() with singleton {WorkoutManager(instance()) }
+        bind<WorkoutManager>() with singleton {WorkoutManager(instance(), instance()) }
+        bind<LogViewModelFactory>() with provider { LogViewModelFactory(instance()) }
     }
 
     companion object {

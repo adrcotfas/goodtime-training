@@ -24,6 +24,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="16dp"
@@ -88,9 +89,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tabata_button" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/content_main" />
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        layout="@layout/content_main"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

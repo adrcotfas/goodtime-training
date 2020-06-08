@@ -7,6 +7,10 @@ class IntArrayConverter {
     @TypeConverter
     fun toList(strings: String): List<Int> {
         val list = mutableListOf<Int>()
+        if (strings == "") {
+            return list
+        }
+
         val array = strings.split(",")
         for (s in array) {
             list.add(s.toInt())

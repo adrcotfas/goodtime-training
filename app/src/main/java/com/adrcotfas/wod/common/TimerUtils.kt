@@ -1,5 +1,7 @@
 package com.adrcotfas.wod.common
 
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 class TimerUtils {
@@ -26,6 +28,12 @@ class TimerUtils {
 
         private fun insertPrefixZero(value: Long): String {
             return if (value < 10) "0$value" else value.toString()
+        }
+
+        private val dateTimeFormatter: DateTimeFormatter =
+            DateTimeFormat.forPattern("EEE', 'MMM d', ' yyyy, HH:mm")
+        fun formatDateAndTime(millis: Long): String {
+            return dateTimeFormatter.print(millis)
         }
     }
 }

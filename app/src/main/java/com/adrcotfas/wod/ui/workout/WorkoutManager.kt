@@ -9,11 +9,13 @@ import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLE
 import com.adrcotfas.wod.common.stringToSessions
 
 import com.adrcotfas.wod.common.timers.CountDownTimer
+import com.adrcotfas.wod.data.model.Session.Companion.constructSession
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
+import com.adrcotfas.wod.data.repository.SessionsRepository
 import com.adrcotfas.wod.data.workout.TimerState
 
-class WorkoutManager(private val soundPlayer : SoundPlayer) {
+class WorkoutManager(private val soundPlayer : SoundPlayer, private val repository: SessionsRepository) {
 
     val state = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionMinimal>()
@@ -63,6 +65,10 @@ class WorkoutManager(private val soundPlayer : SoundPlayer) {
         state.value = TimerState.PAUSED
     }
 
+    fun stopTimer() {
+        //TODO: handle the cancellation of a workout
+    }
+
     private fun isLastSession() : Boolean {
         return sessions.size == currentSessionIdx + 1
     }
@@ -87,6 +93,7 @@ class WorkoutManager(private val soundPlayer : SoundPlayer) {
                 if (isLastSession()) {
                     state.value = TimerState.FINISHED
                     soundPlayer.play(WORKOUT_COMPLETE)
+                    repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
                 } else {
                     currentSessionIdx++
                     currentTick.value = sessions[currentSessionIdx].duration
@@ -98,6 +105,7 @@ class WorkoutManager(private val soundPlayer : SoundPlayer) {
                     if (isLastSession()) {
                         state.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
+                        repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
                     } else {
                         currentRoundIdx = 0
                         currentSessionIdx++
@@ -113,6 +121,7 @@ class WorkoutManager(private val soundPlayer : SoundPlayer) {
                     if (isLastSession()) {
                         state.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
+                        repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
                     } else {
                         currentRoundIdx = 0
                         currentSessionIdx++
