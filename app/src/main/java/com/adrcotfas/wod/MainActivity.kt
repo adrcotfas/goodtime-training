@@ -1,26 +1,26 @@
 package com.adrcotfas.wod
 
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.View
+import android.view.WindowManager
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import android.view.Menu
-import android.view.View
-import android.widget.TextView
-import androidx.navigation.NavController
 import com.adrcotfas.wod.common.currentNavigationFragment
 import com.adrcotfas.wod.databinding.ActivityMainBinding
 import com.adrcotfas.wod.ui.amrap.AmrapFragment
 import com.adrcotfas.wod.ui.emom.EmomFragment
 import com.adrcotfas.wod.ui.for_time.ForTimeFragment
 import com.adrcotfas.wod.ui.tabata.TabataFragment
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 
 class MainActivity : AppCompatActivity() {
@@ -45,6 +45,12 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val hideButtons =  destination.label == "LogFragment" || destination.label == "WorkoutFragment"
             binding.drawerLayout.buttons.visibility = if (hideButtons) View.GONE else View.VISIBLE
+
+            if (destination.label == "WorkoutFragment") {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
         }
 
         // Passing each menu ID as a set of Ids because each
@@ -91,9 +97,5 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
-    private fun getCurrentDestinationId(): Int? {
-        return navController.currentDestination?.id
     }
 }
