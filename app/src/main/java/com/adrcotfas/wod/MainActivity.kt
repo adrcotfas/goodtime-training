@@ -10,10 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.adrcotfas.wod.common.currentNavigationFragment
 import com.adrcotfas.wod.databinding.ActivityMainBinding
 import com.adrcotfas.wod.ui.amrap.AmrapFragment
@@ -43,7 +40,10 @@ class MainActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val hideButtons =  destination.label == "LogFragment" || destination.label == "WorkoutFragment"
+            val hideButtons =
+                destination.label == "LogFragment" ||
+                        destination.label == "WorkoutFragment" ||
+                        destination.label == "StopWorkoutDialog"
             binding.drawerLayout.buttons.visibility = if (hideButtons) View.GONE else View.VISIBLE
 
             if (destination.label == "WorkoutFragment") {
@@ -96,6 +96,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        val destination = navController.currentDestination
+
+        return if (destination != null && destination.id == R.id.nav_workout) {
+            navController.navigate(R.id.nav_dialog_stop_workout)
+            false
+        } else {
+            navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        }
     }
 }

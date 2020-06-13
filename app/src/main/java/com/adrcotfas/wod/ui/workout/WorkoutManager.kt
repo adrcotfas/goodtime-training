@@ -9,6 +9,7 @@ import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLE
 import com.adrcotfas.wod.common.stringToSessions
 
 import com.adrcotfas.wod.common.timers.CountDownTimer
+import com.adrcotfas.wod.data.model.Session.Companion.constructIncompleteSession
 import com.adrcotfas.wod.data.model.Session.Companion.constructSession
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
@@ -66,7 +67,19 @@ class WorkoutManager(private val soundPlayer : SoundPlayer, private val reposito
     }
 
     fun stopTimer() {
-        //TODO: handle the cancellation of a workout
+        timer.cancel()
+        state.value = TimerState.INACTIVE
+
+        val activeSeconds =
+            (currentSessionIdx + 1) * sessions[currentSessionIdx].duration +
+                    (currentTick.value?.toInt() ?: 0)
+
+        if (sessions[currentRoundIdx].type != SessionType.BREAK) {
+            repository.addSession(constructIncompleteSession(
+                sessions[currentSessionIdx].type,
+                activeSeconds,
+                System.currentTimeMillis()))
+        }
     }
 
     private fun isLastSession() : Boolean {
@@ -93,9 +106,11 @@ class WorkoutManager(private val soundPlayer : SoundPlayer, private val reposito
                 if (isLastSession()) {
                     state.value = TimerState.FINISHED
                     soundPlayer.play(WORKOUT_COMPLETE)
-                    repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
+                    if (sessions[currentRoundIdx].type != SessionType.BREAK) {
+                        repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
+                    }
                 } else {
-                    currentSessionIdx++
+                    ++currentSessionIdx
                     currentTick.value = sessions[currentSessionIdx].duration
                     startWorkout()
                 }
@@ -105,13 +120,15 @@ class WorkoutManager(private val soundPlayer : SoundPlayer, private val reposito
                     if (isLastSession()) {
                         state.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
-                        repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
+                        if (sessions[currentRoundIdx].type != SessionType.BREAK) {
+                            repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
+                        }
                     } else {
                         currentRoundIdx = 0
-                        currentSessionIdx++
+                        ++currentSessionIdx
                     }
                 } else {
-                    currentRoundIdx++
+                    ++currentRoundIdx
                     currentTick.value = sessions[currentSessionIdx].duration
                     startWorkout()
                 }
@@ -121,10 +138,12 @@ class WorkoutManager(private val soundPlayer : SoundPlayer, private val reposito
                     if (isLastSession()) {
                         state.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
-                        repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
+                        if (sessions[currentRoundIdx].type != SessionType.BREAK) {
+                            repository.addSession(constructSession(sessions[currentSessionIdx], System.currentTimeMillis()))
+                        }
                     } else {
                         currentRoundIdx = 0
-                        currentSessionIdx++
+                        ++currentSessionIdx
                     }
                 } else {
                     shouldRest = !shouldRest

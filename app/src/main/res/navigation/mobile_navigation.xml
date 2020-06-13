@@ -59,4 +59,12 @@
         android:name="com.adrcotfas.wod.ui.log.LogFragment"
         android:label="LogFragment"
         tools:layout="@layout/fragment_log"/>
+    <dialog
+        android:id="@+id/nav_dialog_stop_workout"
+        android:name="com.adrcotfas.wod.ui.workout.StopWorkoutDialog"
+        android:label="StopWorkoutDialog" >
+        <action
+            android:id="@+id/action_stopWorkoutDialog_to_nav_amrap"
+            app:destination="@id/nav_amrap" />
+    </dialog>
 </navigation>
