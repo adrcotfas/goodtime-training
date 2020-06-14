@@ -96,7 +96,8 @@ class TabataFragment : Fragment() {
         viewModel.tabataData.get().observe(
             viewLifecycleOwner, Observer { tabataData ->
                 session =
-                    SessionMinimal(tabataData.first, tabataData.second, tabataData.third, SessionType.TABATA)
+                    SessionMinimal(duration = tabataData.first, breakDuration = tabataData.second,
+                        numRounds = tabataData.third, type = SessionType.TABATA)
             }
         )
 

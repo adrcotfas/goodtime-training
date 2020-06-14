@@ -74,7 +74,7 @@ class AmrapFragment : Fragment() {
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
-                session = SessionMinimal(duration, 0, 0, SessionType.AMRAP)
+                session = SessionMinimal(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
             }
         )
     }

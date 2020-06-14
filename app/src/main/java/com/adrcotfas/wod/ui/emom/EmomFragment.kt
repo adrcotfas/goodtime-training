@@ -73,7 +73,8 @@ class EmomFragment : Fragment() {
 
         viewModel.emomData.get().observe(
             viewLifecycleOwner, Observer { data ->
-                session = SessionMinimal(data.first, 0, data.second, SessionType.EMOM)
+                session = SessionMinimal(duration = data.first, breakDuration = 0,
+                    numRounds = data.second, type = SessionType.EMOM)
             }
         )
 

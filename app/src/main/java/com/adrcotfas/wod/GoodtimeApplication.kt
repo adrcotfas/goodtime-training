@@ -9,6 +9,7 @@ import com.adrcotfas.wod.common.preferences.PrefUtil
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer
 import com.adrcotfas.wod.data.db.Database
 import com.adrcotfas.wod.data.db.SessionDao
+import com.adrcotfas.wod.data.db.SessionMinimalDao
 import com.adrcotfas.wod.data.repository.SessionRepositoryImpl
 import com.adrcotfas.wod.data.repository.SessionsRepository
 import com.adrcotfas.wod.ui.log.LogViewModelFactory
@@ -24,11 +25,17 @@ class GoodtimeApplication : Application(), KodeinAware {
                 "goodtime-training-db")
                 .build() }
         bind<SessionDao>() with singleton { instance<Database>().sessionsDao() }
-        bind<SessionsRepository>() with singleton { SessionRepositoryImpl(instance()) }
+        bind<SessionMinimalDao>() with singleton { instance<Database>().sessionMinimalDao() }
+        bind<SessionsRepository>() with singleton { SessionRepositoryImpl(instance(), instance()) }
         bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
         bind<SoundPlayer>() with singleton { SoundPlayer(applicationContext) }
         bind<WorkoutManager>() with singleton {WorkoutManager(instance(), instance()) }
         bind<LogViewModelFactory>() with provider { LogViewModelFactory(instance()) }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        // generate default sessionMinimal
     }
 
     companion object {
