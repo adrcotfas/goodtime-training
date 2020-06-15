@@ -14,4 +14,5 @@ interface SessionsRepository {
     // custom sessions selected before starting the workout
     fun addSessionMinimal(session: SessionMinimal)
     fun getSessionsMinimal(type: SessionType) : LiveData<List<SessionMinimal>>
+    fun removeSessionMinimal(id: Int)
 }

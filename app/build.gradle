@@ -71,4 +71,6 @@ dependencies {
     // Time
     implementation 'joda-time:joda-time:2.10.5'
 
+    // Flexbox for the favorites
+    implementation 'com.google.android:flexbox:2.0.1'
 }

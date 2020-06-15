@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
+import com.adrcotfas.wod.common.smoothSnapToPosition
 import com.adrcotfas.wod.ui.amrap.NumberPickerAdapter
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.bekawestberg.loopinglayout.library.LoopingSnapHelper
@@ -49,11 +50,13 @@ class NumberPicker(
         })
     }
 
+    fun setValue(value: Int) {
+        scrollToPosition(viewAdapter.data.indexOf(value))
+    }
+
     private fun scrollToPosition(position: Int) {
-        recyclerView.scrollToPosition(position)
-        recyclerView.post {
-            adjustScrollToSnap(position)
-        }
+        val pos = if (position == 0) viewAdapter.data.lastIndex else (position - 1)
+        recyclerView.smoothSnapToPosition(pos)
     }
 
     private fun adjustScrollToSnap(position: Int) {
@@ -78,6 +81,7 @@ class NumberPicker(
         val bottom = viewManager.bottomRightIndex
         if (position == top || position == bottom) {
             adjustScrollToSnap(position)
+            listener.onScroll(getCurrentValue())
         }
     }
 }

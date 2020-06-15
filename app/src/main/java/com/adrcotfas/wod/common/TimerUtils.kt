@@ -16,6 +16,12 @@ class TimerUtils {
             return data
         }
 
+        fun secondsToMinutesAndSeconds(seconds: Int) : Pair<Int, Int> {
+            val min = TimeUnit.SECONDS.toMinutes(seconds.toLong()).toInt()
+            val sec = seconds - min * 60
+            return Pair(min, sec)
+        }
+
         fun secondsToTimerFormat(elapsed: Int): String {
             val hours = TimeUnit.SECONDS.toHours(elapsed.toLong())
             val minutes =

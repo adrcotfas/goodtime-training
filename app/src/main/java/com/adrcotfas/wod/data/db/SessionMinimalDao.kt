@@ -1,10 +1,7 @@
 package com.adrcotfas.wod.data.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.TypeConverters
+import androidx.room.*
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.model.SessionTypeConverter
@@ -19,4 +16,7 @@ interface SessionMinimalDao {
     @Query("select * from SessionMinimal where type = :type")
     @TypeConverters(SessionTypeConverter::class)
     fun getSessions(type: SessionType) : LiveData<List<SessionMinimal>>
+
+    @Query("delete from SessionMinimal where id = :id")
+    suspend fun removeSession(id: Int)
 }

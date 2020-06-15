@@ -7,7 +7,7 @@ import androidx.room.TypeConverters
 @Entity
 data class Session(
     @PrimaryKey(autoGenerate = true)
-    var uid: Int = 0,
+    var id: Int = 0,
     var duration: Int = 0,
     var breakDuration: Int = 0, // for TABATA
     var numRounds: Int = 0,     // for TABATA and EMOM

@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 @TypeConverters(SessionTypeConverter::class)
 data class SessionMinimal (
     @PrimaryKey(autoGenerate = true)
-    var uid: Int = 0,
+    var id: Int = 0,
     var duration: Int,
     var breakDuration: Int,
     var numRounds: Int = 0,

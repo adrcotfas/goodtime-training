@@ -27,4 +27,10 @@ class SessionRepositoryImpl(private val sessionDao: SessionDao, private val sess
 
     override fun getSessionsMinimal(type: SessionType): LiveData<List<SessionMinimal>>
         = sessionMinimalDao.getSessions(type)
+
+    override fun removeSessionMinimal(id: Int) {
+      GlobalScope.launch {
+          sessionMinimalDao.removeSession(id)
+      }
+    }
 }

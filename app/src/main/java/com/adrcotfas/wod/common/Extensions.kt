@@ -12,6 +12,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.google.gson.Gson
@@ -68,4 +70,13 @@ fun stringToSessions(string : String) : ArrayList<SessionMinimal> {
     val gson = Gson()
     val typeToken = object : TypeToken<ArrayList<SessionMinimal>>() {}
     return gson.fromJson(string, typeToken.type)
+}
+
+fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
+    val smoothScroller = object : LinearSmoothScroller(this.context) {
+        override fun getVerticalSnapPreference(): Int = snapMode
+        override fun getHorizontalSnapPreference(): Int = snapMode
+    }
+    smoothScroller.targetPosition = position
+    layoutManager?.startSmoothScroll(smoothScroller)
 }
