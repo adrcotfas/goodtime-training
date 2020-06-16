@@ -13,7 +13,7 @@ class FavoritesAdapter (private val listener : Listener)
 
     interface Listener {
         fun onClick(session: SessionMinimal)
-        fun onLongClick(id: Int) : Boolean
+        fun onLongClick(session: SessionMinimal) : Boolean
     }
 
     var data = listOf<SessionMinimal>()
@@ -28,7 +28,9 @@ class FavoritesAdapter (private val listener : Listener)
         val session = data[position]
         holder.bind(session)
         holder.itemView.setOnClickListener { listener.onClick(session) }
-        holder.itemView.setOnLongClickListener { listener.onLongClick(session.id) }
+        holder.itemView.setOnLongClickListener {
+            listener.onLongClick(session)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder { return ViewHolder.from(parent) }

@@ -20,6 +20,7 @@ import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
 import com.adrcotfas.wod.ui.common.FavoritesAdapter
 import com.adrcotfas.wod.ui.common.ViewModelFactory
+import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -73,7 +74,6 @@ class AmrapFragment : Fragment(), KodeinAware {
                 session = SessionMinimal(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
             }
         )
-
         return binding.root
     }
 
@@ -88,20 +88,17 @@ class AmrapFragment : Fragment(), KodeinAware {
                 if (this@AmrapFragment.session.duration == session.duration) {
                     return
                 }
-
+                //TODO: change the background of the current item
                 triggerListener = false
-
-                val pickerData = secondsToMinutesAndSeconds(session.duration)
-                viewModel.timeData.setMinutes(pickerData.first)
-                viewModel.timeData.setSeconds(pickerData.second)
-
-                minutePicker.setValue(pickerData.first)
-                secondsPicker.setValue(pickerData.second)
-
+                val duration = secondsToMinutesAndSeconds(session.duration)
+                viewModel.setDuration(duration)
+                minutePicker.setValue(duration.first)
+                secondsPicker.setValue(duration.second)
                 triggerListener = true
             }
-            override fun onLongClick(id: Int): Boolean {
-                viewModel.removeFavorite(id)
+            override fun onLongClick(session: SessionMinimal): Boolean {
+                SaveFavoriteDialog.newInstance(true, session)
+                    .show(childFragmentManager, this.javaClass.toString())
                 return true
             }
         })
@@ -115,7 +112,7 @@ class AmrapFragment : Fragment(), KodeinAware {
         val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
-            TimerUtils.generateNumbers(0, 45, 1),
+            TimerUtils.generateNumbers(0, 60, 1),
             15, rowHeight, listener = object: NumberPicker.Listener {
                 override fun onScroll(value: Int) {
                     if (triggerListener) {
@@ -126,7 +123,7 @@ class AmrapFragment : Fragment(), KodeinAware {
         )
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
-            TimerUtils.generateNumbers(0, 45, 15),
+            TimerUtils.generateNumbers(0, 55, 5),
             0, rowHeight, listener = object: NumberPicker.Listener {
                 override fun onScroll(value: Int) {
                     if (triggerListener) {
@@ -135,5 +132,10 @@ class AmrapFragment : Fragment(), KodeinAware {
                 }
             }
         )
+    }
+
+    fun openSaveFavoriteDialog() {
+        SaveFavoriteDialog.newInstance(false, session)
+            .show(childFragmentManager, this.javaClass.toString())
     }
 }

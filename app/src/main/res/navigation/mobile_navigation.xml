@@ -67,4 +67,9 @@
             android:id="@+id/action_stopWorkoutDialog_to_nav_amrap"
             app:destination="@id/nav_amrap" />
     </dialog>
+    <dialog
+        android:id="@+id/nav_dialog_add_favorite"
+        android:name="com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog"
+        android:label="SaveFavoriteDialog">
+    </dialog>
 </navigation>

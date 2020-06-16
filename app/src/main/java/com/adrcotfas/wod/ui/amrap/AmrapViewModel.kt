@@ -13,4 +13,8 @@ class AmrapViewModel(private val sessionsRepository: SessionsRepository) : ViewM
 
     fun removeFavorite(id: Int) = sessionsRepository.removeSessionMinimal(id)
 
+    fun setDuration(duration: Pair<Int, Int>) {
+        timeData.setMinutes(duration.first)
+        timeData.setSeconds(duration.second)
+    }
 }

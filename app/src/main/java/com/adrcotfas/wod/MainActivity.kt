@@ -2,6 +2,7 @@ package com.adrcotfas.wod
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
@@ -17,6 +18,7 @@ import com.adrcotfas.wod.ui.amrap.AmrapFragment
 import com.adrcotfas.wod.ui.emom.EmomFragment
 import com.adrcotfas.wod.ui.for_time.ForTimeFragment
 import com.adrcotfas.wod.ui.tabata.TabataFragment
+import com.adrcotfas.wod.ui.workout.WorkoutFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 
@@ -95,14 +97,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        val destination = navController.currentDestination
-
-        return if (destination != null && destination.id == R.id.nav_workout) {
+        return if (supportFragmentManager.currentNavigationFragment is WorkoutFragment) {
+            // if we're in the workout fragment, open the stop confirmation dialog
             navController.navigate(R.id.nav_dialog_stop_workout)
             false
         } else {
             navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_save_favorite -> {
+                when (supportFragmentManager.currentNavigationFragment) {
+                    is AmrapFragment -> {
+                        val fragment = supportFragmentManager.currentNavigationFragment as AmrapFragment
+                        fragment.openSaveFavoriteDialog()
+                    }
+                    is ForTimeFragment -> {
+                        val fragment = supportFragmentManager.currentNavigationFragment as ForTimeFragment
+                        //TODO: fragment.openSaveFavoriteDialog()
+                    }
+                    is EmomFragment -> {
+                        val fragment = supportFragmentManager.currentNavigationFragment as EmomFragment
+                    }
+                    is TabataFragment -> {
+                        val fragment = supportFragmentManager.currentNavigationFragment as TabataFragment
+                    }
+                }
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return true
     }
 }

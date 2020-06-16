@@ -13,9 +13,9 @@ interface SessionDao {
 
     @Insert
     @TypeConverters(SessionTypeConverter::class)
-    suspend fun addSession(session: Session)
+    suspend fun add(session: Session)
 
     @Query("select * from Session")
     @TypeConverters(SessionTypeConverter::class)
-    fun getSessions(): LiveData<List<Session>>
+    fun get(): LiveData<List<Session>>
 }

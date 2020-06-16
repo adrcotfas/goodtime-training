@@ -56,7 +56,7 @@ class ForTimeFragment : Fragment() {
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
-            TimerUtils.generateNumbers(0, 45, 15),
+            TimerUtils.generateNumbers(0, 45, 5),
             0, rowHeight, listener = secondsListener
         )
 

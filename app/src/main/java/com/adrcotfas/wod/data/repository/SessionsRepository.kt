@@ -15,4 +15,5 @@ interface SessionsRepository {
     fun addSessionMinimal(session: SessionMinimal)
     fun getSessionsMinimal(type: SessionType) : LiveData<List<SessionMinimal>>
     fun removeSessionMinimal(id: Int)
+    fun editSessionMinimal(id: Int, session: SessionMinimal)
 }

@@ -13,4 +13,5 @@ data class SessionMinimal (
     var breakDuration: Int,
     var numRounds: Int = 0,
     var type: SessionType,
-    var name: String = "")
+    var name: String = "",
+    var notes: String = "")

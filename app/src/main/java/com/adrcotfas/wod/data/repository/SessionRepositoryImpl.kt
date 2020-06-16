@@ -13,24 +13,30 @@ class SessionRepositoryImpl(private val sessionDao: SessionDao, private val sess
     : SessionsRepository {
     override fun addSession(session: Session) {
         GlobalScope.launch {
-            sessionDao.addSession(session)
+            sessionDao.add(session)
         }
     }
 
-    override fun getSessions() : LiveData<List<Session>> = sessionDao.getSessions()
+    override fun getSessions() : LiveData<List<Session>> = sessionDao.get()
 
     override fun addSessionMinimal(session: SessionMinimal) {
         GlobalScope.launch {
-            sessionMinimalDao.addSession(session)
+            sessionMinimalDao.add(session)
         }
     }
 
     override fun getSessionsMinimal(type: SessionType): LiveData<List<SessionMinimal>>
-        = sessionMinimalDao.getSessions(type)
+        = sessionMinimalDao.get(type)
 
     override fun removeSessionMinimal(id: Int) {
       GlobalScope.launch {
-          sessionMinimalDao.removeSession(id)
+          sessionMinimalDao.remove(id)
       }
+    }
+
+    override fun editSessionMinimal(id: Int, session: SessionMinimal) {
+        GlobalScope.launch {
+            sessionMinimalDao.edit(id, session.name, session.duration, session.breakDuration, session.numRounds, session.type, session.notes)
+        }
     }
 }
