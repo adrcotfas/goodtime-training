@@ -50,13 +50,13 @@ class ForTimeFragment : Fragment() {
 
         minutePicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes),
-            TimerUtils.generateNumbers(0, 45, 1),
+            ArrayList<Int>().apply{ addAll(0..60)},
             15, rowHeight, listener = minuteListener
         )
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
-            TimerUtils.generateNumbers(0, 45, 5),
+            ArrayList<Int>().apply{ addAll(0..59)},
             0, rowHeight, listener = secondsListener
         )
 

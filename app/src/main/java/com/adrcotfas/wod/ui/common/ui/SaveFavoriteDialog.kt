@@ -5,8 +5,11 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.adrcotfas.wod.common.TimerUtils.Companion.insertPrefixZero
 import com.adrcotfas.wod.common.TimerUtils.Companion.secondsToMinutesAndSeconds
+import com.adrcotfas.wod.common.afterTextChanged
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.repository.SessionsRepository
@@ -37,7 +40,6 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
         binding = DialogSaveFavoriteBinding.inflate(layoutInflater, null, false)
-        isCancelable = false
         setupView()
 
         val b = MaterialAlertDialogBuilder(activity)
@@ -47,22 +49,21 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->
                 if (isEditDialog) {
-                    repo.editSessionMinimal(session.id, session);
+                    repo.editSessionMinimal(session.id, session)
                 } else {
                     repo.addSessionMinimal(session)
                 }
             }
             if (isEditDialog) {
                 setNegativeButton("Delete") { _: DialogInterface?, _: Int -> repo.removeSessionMinimal(session.id) }
-            } else {
-                setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int -> /* do nothing */ }
             }
+            setNeutralButton(R.string.cancel) { _: DialogInterface?, _: Int -> }
             setView(binding.root)
         }
         return b.create()
     }
 
-    fun setupView() {
+    private fun setupView() {
         val name = binding.name
         when(session.type) {
             SessionType.AMRAP -> {
@@ -70,8 +71,43 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
                 val minutes = binding.amrapSection.minutes
                 val seconds = binding.amrapSection.seconds
                 val minutesAndSeconds = secondsToMinutesAndSeconds(session.duration)
-                minutes.setText(minutesAndSeconds.first.toString())
-                seconds.setText(minutesAndSeconds.second.toString())
+                minutes.setText(insertPrefixZero(minutesAndSeconds.first))
+                seconds.setText(insertPrefixZero(minutesAndSeconds.second))
+
+                minutes.setOnClickListener { minutes.requestFocus() }
+                seconds.setOnClickListener { seconds.requestFocus() }
+
+                minutes.afterTextChanged {
+                    val dialog = dialog as AlertDialog
+                    if (it.isEmpty() || (it.toInt() == 0 && (seconds.text.isEmpty() || seconds.text.toString().toInt() == 0))) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                    } else {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                        if (it.length == 1 && it.toInt() > 6) {
+                            minutes.setText(insertPrefixZero(it.toInt()))
+                        } else if (it.length == 2 && it.elementAt(0) == '6' && it.elementAt(1) != '0') {
+                            minutes.setText(60.toString())
+                            seconds.requestFocus()
+                        } else if (it.length == 2) {
+                            seconds.requestFocus()
+                        }
+                    }
+                }
+
+                seconds.afterTextChanged {
+                    val dialog = dialog as AlertDialog
+                    if (it.isEmpty() || (it.toInt() == 0 && (minutes.text.isEmpty() || minutes.text.toString().toInt() == 0))) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                    } else {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                        if (it.length == 1 && it.toInt() > 5) {
+                            seconds.setText(insertPrefixZero(it.toInt()))
+                            seconds.clearFocus()
+                        } else if (it.length == 2) {
+                            seconds.clearFocus()
+                        }
+                    }
+                }
             }
         }
     }

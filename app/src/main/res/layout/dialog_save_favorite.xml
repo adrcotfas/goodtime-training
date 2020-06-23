@@ -23,15 +23,32 @@
             android:padding="16dp"
             android:visibility="gone"
             tools:visibility="visible">
+<!--            TODO: extract to style-->
             <EditText
                 android:id="@+id/minutes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLength="2"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:digits="0123456789"
+                android:selectAllOnFocus="true"
+                android:cursorVisible="false"
+                android:longClickable="false"
                 tools:text="15"/>
             <EditText
                 android:id="@+id/seconds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxLength="2"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:inputType="numberDecimal"
+                android:digits="0123456789"
+                android:selectAllOnFocus="true"
+                android:cursorVisible="false"
+                android:longClickable="false"
                 tools:text="00"/>
         </LinearLayout>
 

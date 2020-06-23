@@ -65,31 +65,31 @@ class TabataFragment : Fragment() {
 
         minuteWorkPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes_work),
-            TimerUtils.generateNumbers(0, 5, 1),
+            ArrayList<Int>().apply{ addAll(0..5)},
             0, rowHeight, largeText = false, listener = minuteWorkListener
         )
 
         secondsWorkPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds_work),
-            TimerUtils.generateNumbers(0, 59, 1),
+            ArrayList<Int>().apply{ addAll(0..59)},
             20, rowHeight, largeText = false, listener = secondsWorkListener
         )
 
         minuteBreakPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes_break),
-            TimerUtils.generateNumbers(0, 5, 1),
+            ArrayList<Int>().apply{ addAll(0..5)},
             0, rowHeight, largeText = false, listener = minuteBreakListener
         )
 
         secondsBreakPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds_break),
-            TimerUtils.generateNumbers(0, 59, 1),
+            ArrayList<Int>().apply{ addAll(0..59)},
             10, rowHeight, largeText = false, listener = secondsBreakListener
         )
 
         roundsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_rounds),
-            TimerUtils.generateNumbers(0, 90, 1),
+            ArrayList<Int>().apply{ addAll(0..50)},
             18, rowHeight, prefixWithZero = false, largeText = false, listener = roundsListener
         )
 

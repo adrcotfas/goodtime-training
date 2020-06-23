@@ -55,19 +55,19 @@ class EmomFragment : Fragment() {
 
         minutePicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes),
-            TimerUtils.generateNumbers(0, 5, 1),
+            ArrayList<Int>().apply{ addAll(0..5)},
             1, rowHeight, listener = minuteListener
         )
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
-            TimerUtils.generateNumbers(0, 55, 5),
+            ArrayList<Int>().apply{ addAll(0..59)},
             0, rowHeight, listener = secondsListener
         )
 
         roundsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_rounds),
-            TimerUtils.generateNumbers(0, 90, 1),
+            ArrayList<Int>().apply{ addAll(0..50)},
             20, rowHeight, prefixWithZero = false, listener = roundsListener
         )
 

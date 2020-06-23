@@ -7,15 +7,6 @@ import java.util.concurrent.TimeUnit
 class TimerUtils {
 
     companion object {
-
-        fun generateNumbers(min: Int = 0, max: Int, step : Int) : ArrayList<Int> {
-            val data = ArrayList<Int>()
-            for (i in min..max step step) {
-                data.add(i)
-            }
-            return data
-        }
-
         fun secondsToMinutesAndSeconds(seconds: Int) : Pair<Int, Int> {
             val min = TimeUnit.SECONDS.toMinutes(seconds.toLong()).toInt()
             val sec = seconds - min * 60
@@ -32,7 +23,11 @@ class TimerUtils {
                     + ":" + insertPrefixZero(seconds))
         }
 
-        private fun insertPrefixZero(value: Long): String {
+        fun insertPrefixZero(value: Long): String {
+            return if (value < 10) "0$value" else value.toString()
+        }
+
+        fun insertPrefixZero(value: Int): String {
             return if (value < 10) "0$value" else value.toString()
         }
 

@@ -112,7 +112,7 @@ class AmrapFragment : Fragment(), KodeinAware {
         val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
-            TimerUtils.generateNumbers(0, 60, 1),
+            ArrayList<Int>().apply{ addAll(0..60)},
             15, rowHeight, listener = object: NumberPicker.Listener {
                 override fun onScroll(value: Int) {
                     if (triggerListener) {
@@ -123,7 +123,7 @@ class AmrapFragment : Fragment(), KodeinAware {
         )
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
-            TimerUtils.generateNumbers(0, 55, 5),
+            ArrayList<Int>().apply{ addAll(0..59)},
             0, rowHeight, listener = object: NumberPicker.Listener {
                 override fun onScroll(value: Int) {
                     if (triggerListener) {
