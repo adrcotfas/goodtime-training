@@ -1,30 +1,23 @@
 package com.adrcotfas.wod
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.*
 import com.adrcotfas.wod.common.currentNavigationFragment
 import com.adrcotfas.wod.databinding.ActivityMainBinding
 import com.adrcotfas.wod.ui.amrap.AmrapFragment
 import com.adrcotfas.wod.ui.emom.EmomFragment
 import com.adrcotfas.wod.ui.for_time.ForTimeFragment
 import com.adrcotfas.wod.ui.tabata.TabataFragment
-import com.adrcotfas.wod.ui.workout.WorkoutFragment
-import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
 
     private lateinit var binding : ActivityMainBinding
@@ -34,19 +27,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val toolbar: Toolbar = binding.drawerLayout.toolbar
-        setSupportActionBar(toolbar)
-
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
         navController = findNavController(R.id.nav_host_fragment)
+        setupAppBar()
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val hideButtons =
                 destination.label == "LogFragment" ||
                         destination.label == "WorkoutFragment" ||
                         destination.label == "StopWorkoutDialog"
-            binding.drawerLayout.buttons.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            binding.mainLayout.buttons.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            binding.bottomAppBar.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            binding.startButton.visibility = if (hideButtons) View.GONE else View.VISIBLE
 
             if (destination.label == "WorkoutFragment") {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -55,79 +46,89 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_amrap, R.id.nav_for_time, R.id.nav_emom, R.id.nav_tabata
-            ), drawerLayout
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        binding.startButton.setOnClickListener{
+            when (supportFragmentManager.currentNavigationFragment) {
+                is AmrapFragment -> {
+                    val fragment = supportFragmentManager.currentNavigationFragment as AmrapFragment
+                    fragment.onStartWorkout()
+                }
+                is ForTimeFragment -> {
+                    val fragment = supportFragmentManager.currentNavigationFragment as ForTimeFragment
+                    fragment.onStartWorkout()
+                }
+                is EmomFragment -> {
+                    val fragment = supportFragmentManager.currentNavigationFragment as EmomFragment
+                    fragment.onStartWorkout()
+                }
+                is TabataFragment -> {
+                    val fragment = supportFragmentManager.currentNavigationFragment as TabataFragment
+                    fragment.onStartWorkout()
+                }
+            }
+        }
 
-        val amrapButton : TextView = binding.drawerLayout.amrap_button
+        val amrapButton : TextView = binding.mainLayout.amrap_button
         amrapButton.setOnClickListener {
             if (supportFragmentManager.currentNavigationFragment !is AmrapFragment) {
                 navController.navigate(R.id.nav_amrap)
             } }
 
-        val forTimeButton : TextView = binding.drawerLayout.for_time_button
+        val forTimeButton : TextView = binding.mainLayout.for_time_button
         forTimeButton.setOnClickListener {
             if (supportFragmentManager.currentNavigationFragment !is ForTimeFragment) {
                 navController.navigate(R.id.nav_for_time)
             } }
 
-        val emomButton : TextView = binding.drawerLayout.emom_button
+        val emomButton : TextView = binding.mainLayout.emom_button
         emomButton.setOnClickListener {
             if (supportFragmentManager.currentNavigationFragment !is EmomFragment) {
             navController.navigate(R.id.nav_emom)
         } }
 
-        val tabataButton : TextView = binding.drawerLayout.tabata_button
+        val tabataButton : TextView = binding.mainLayout.tabata_button
         tabataButton.setOnClickListener {
             if (supportFragmentManager.currentNavigationFragment !is TabataFragment) {
                 navController.navigate(R.id.nav_tabata)
             } }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
+    private fun setupAppBar() {
+        binding.bottomAppBar.replaceMenu(R.menu.main)
 
-    override fun onSupportNavigateUp(): Boolean {
-        return if (supportFragmentManager.currentNavigationFragment is WorkoutFragment) {
-            // if we're in the workout fragment, open the stop confirmation dialog
-            navController.navigate(R.id.nav_dialog_stop_workout)
-            false
-        } else {
-            navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_save_favorite -> {
-                when (supportFragmentManager.currentNavigationFragment) {
-                    is AmrapFragment -> {
-                        val fragment = supportFragmentManager.currentNavigationFragment as AmrapFragment
-                        fragment.openSaveFavoriteDialog()
-                    }
-                    is ForTimeFragment -> {
-                        val fragment = supportFragmentManager.currentNavigationFragment as ForTimeFragment
-                        //TODO: fragment.openSaveFavoriteDialog()
-                    }
-                    is EmomFragment -> {
-                        val fragment = supportFragmentManager.currentNavigationFragment as EmomFragment
-                    }
-                    is TabataFragment -> {
-                        val fragment = supportFragmentManager.currentNavigationFragment as TabataFragment
+        binding.bottomAppBar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_save_favorite -> {
+                    when (supportFragmentManager.currentNavigationFragment) {
+                        is AmrapFragment -> {
+                            val fragment =
+                                supportFragmentManager.currentNavigationFragment as AmrapFragment
+                            fragment.openSaveFavoriteDialog()
+                            true
+                        }
+                        is ForTimeFragment -> {
+                            val fragment =
+                                supportFragmentManager.currentNavigationFragment as ForTimeFragment
+                            //TODO: fragment.openSaveFavoriteDialog()
+                            true
+                        }
+                        is EmomFragment -> {
+                            val fragment =
+                                supportFragmentManager.currentNavigationFragment as EmomFragment
+                            true
+                        }
+                        is TabataFragment -> {
+                            val fragment =
+                                supportFragmentManager.currentNavigationFragment as TabataFragment
+                            true
+                        }
+                        else -> false
                     }
                 }
+                else -> false
             }
-            else -> return super.onOptionsItemSelected(item)
         }
-        return true
+        binding.bottomAppBar.setNavigationOnClickListener {
+            Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.TimerUtils.Companion.secondsToMinutesAndSeconds
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
@@ -61,13 +60,6 @@ class AmrapFragment : Fragment(), KodeinAware {
 
         favoritesRecycler = binding.favorites
         setupFavorites()
-
-        val startButton = binding.startButton
-        startButton.setOnClickListener {view ->
-            val action = AmrapFragmentDirections.startWorkoutAction(
-                sessionsToString(generatePreWorkoutSession(), session))
-            view.findNavController().navigate(action)
-        }
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
@@ -137,5 +129,11 @@ class AmrapFragment : Fragment(), KodeinAware {
     fun openSaveFavoriteDialog() {
         SaveFavoriteDialog.newInstance(false, session)
             .show(childFragmentManager, this.javaClass.toString())
+    }
+
+    fun onStartWorkout() {
+        val action = AmrapFragmentDirections.startWorkoutAction(
+            sessionsToString(generatePreWorkoutSession(), session))
+        view?.findNavController()?.navigate(action)
     }
 }

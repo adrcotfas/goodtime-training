@@ -9,14 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
-import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
 import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 class EmomFragment : Fragment() {
 
@@ -77,14 +75,13 @@ class EmomFragment : Fragment() {
                     numRounds = data.second, type = SessionType.EMOM)
             }
         )
-
-        val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
-        startButton.setOnClickListener {view ->
-            val action = EmomFragmentDirections.startWorkoutAction(
-                sessionsToString(generatePreWorkoutSession(), session))
-            view.findNavController().navigate(action)
-        }
-
         return root
     }
+
+    fun onStartWorkout() {
+        val action = EmomFragmentDirections.startWorkoutAction(
+            sessionsToString(generatePreWorkoutSession(), session))
+        view?.findNavController()?.navigate(action)
+    }
+
 }

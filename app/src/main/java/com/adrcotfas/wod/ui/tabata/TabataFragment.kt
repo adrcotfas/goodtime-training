@@ -100,13 +100,12 @@ class TabataFragment : Fragment() {
                         numRounds = tabataData.third, type = SessionType.TABATA)
             }
         )
-
-        val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
-        startButton.setOnClickListener {view ->
-            val action = TabataFragmentDirections.startWorkoutAction(
-                sessionsToString(generatePreWorkoutSession(),  session))
-            view.findNavController().navigate(action)
-        }
         return root
+    }
+
+    fun onStartWorkout() {
+        val action = TabataFragmentDirections.startWorkoutAction(
+            sessionsToString(generatePreWorkoutSession(),  session))
+        view?.findNavController()?.navigate(action)
     }
 }

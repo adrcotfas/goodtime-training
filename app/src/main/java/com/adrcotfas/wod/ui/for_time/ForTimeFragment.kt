@@ -66,14 +66,12 @@ class ForTimeFragment : Fragment() {
                     type = SessionType.AMRAP)
             }
         )
-
-        val startButton = root.findViewById<ExtendedFloatingActionButton>(R.id.start_button)
-        startButton.setOnClickListener {view ->
-            val action = ForTimeFragmentDirections.startWorkoutAction(
-                sessionsToString(generatePreWorkoutSession(), session))
-            view.findNavController().navigate(action)
-        }
-
         return root
+    }
+
+    fun onStartWorkout() {
+        val action = ForTimeFragmentDirections.startWorkoutAction(
+            sessionsToString(generatePreWorkoutSession(), session))
+        view?.findNavController()?.navigate(action)
     }
 }
