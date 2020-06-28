@@ -3,7 +3,6 @@ package com.adrcotfas.wod
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -14,6 +13,7 @@ import com.adrcotfas.wod.ui.amrap.AmrapFragment
 import com.adrcotfas.wod.ui.emom.EmomFragment
 import com.adrcotfas.wod.ui.for_time.ForTimeFragment
 import com.adrcotfas.wod.ui.tabata.TabataFragment
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.app_bar_main.view.*
 
 class MainActivity : AppCompatActivity() {
@@ -67,29 +67,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val amrapButton : TextView = binding.mainLayout.amrap_button
-        amrapButton.setOnClickListener {
-            if (supportFragmentManager.currentNavigationFragment !is AmrapFragment) {
-                navController.navigate(R.id.nav_amrap)
-            } }
-
-        val forTimeButton : TextView = binding.mainLayout.for_time_button
-        forTimeButton.setOnClickListener {
-            if (supportFragmentManager.currentNavigationFragment !is ForTimeFragment) {
-                navController.navigate(R.id.nav_for_time)
-            } }
-
-        val emomButton : TextView = binding.mainLayout.emom_button
-        emomButton.setOnClickListener {
-            if (supportFragmentManager.currentNavigationFragment !is EmomFragment) {
-            navController.navigate(R.id.nav_emom)
-        } }
-
-        val tabataButton : TextView = binding.mainLayout.tabata_button
-        tabataButton.setOnClickListener {
-            if (supportFragmentManager.currentNavigationFragment !is TabataFragment) {
-                navController.navigate(R.id.nav_tabata)
-            } }
+        binding.mainLayout.buttons.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                Toast.makeText(this@MainActivity, "Tab was reselected", Toast.LENGTH_SHORT).show()
+                binding.mainLayout.buttons.getTabAt(tab.position)?.badge?.number = 3
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) { }
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                when (tab.position) {
+                    0 -> {
+                        navController.navigate(R.id.nav_amrap)
+                    }
+                    1 -> {
+                        navController.navigate(R.id.nav_for_time)
+                    }
+                    2 -> {
+                        navController.navigate(R.id.nav_emom)
+                    }
+                    3 -> {
+                        navController.navigate(R.id.nav_tabata)
+                    }
+                    4 -> {
+                    }
+                }
+            }
+        })
     }
 
     private fun setupAppBar() {

@@ -5,6 +5,6 @@
         android:id="@+id/action_save_favorite"
         android:orderInCategory="100"
         android:title="Save Favorite"
-        android:icon="@drawable/ic_menu_share"
+        android:icon="@drawable/ic_star_border_black_24dp"
         app:showAsAction="ifRoom" />
 </menu>

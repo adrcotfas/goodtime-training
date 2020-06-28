@@ -1,13 +1,13 @@
 <resources>
-
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">#0288D1</item>
+        <item name="colorPrimary">@color/green600</item>
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorSurface">@android:color/black</item>
         <item name="colorOnSurface">@android:color/white</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

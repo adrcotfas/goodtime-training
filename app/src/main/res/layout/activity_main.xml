@@ -24,6 +24,9 @@
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#1E88E5"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
         android:text="START"
         app:layout_anchor="@id/bottomAppBar"
         android:layout_marginBottom="32dp"/>
