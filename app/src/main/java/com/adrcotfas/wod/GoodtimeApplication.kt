@@ -3,6 +3,7 @@ package com.adrcotfas.wod
 import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.room.Room
 import com.adrcotfas.wod.common.preferences.PrefUtil
@@ -38,8 +39,10 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind() from provider { ViewModelFactory(instance()) }
     }
 
+
     override fun onCreate() {
         super.onCreate()
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         val prefUtil: PrefUtil by instance()
         if (prefUtil.isFirstRun()) {
             generateDefaultSessions()
