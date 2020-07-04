@@ -53,24 +53,20 @@ class GoodtimeApplication : Application(), KodeinAware {
     private fun generateDefaultSessions() {
         val repo: SessionsRepository by instance()
         repo.addSessionMinimal(
-            SessionMinimal(0, TimeUnit.MINUTES.toSeconds(10).toInt(), 0, 1,
-                SessionType.AMRAP)
+            SessionMinimal(0, TimeUnit.MINUTES.toSeconds(10).toInt(), type = SessionType.AMRAP)
         )
         repo.addSessionMinimal(
-            SessionMinimal(0, TimeUnit.MINUTES.toSeconds(15).toInt(), 0, 1,
-            SessionType.AMRAP, "Default")
+            SessionMinimal(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.AMRAP)
         )
         repo.addSessionMinimal(
-            SessionMinimal(0, TimeUnit.MINUTES.toSeconds(20).toInt(), 0, 1,
-                SessionType.AMRAP, "Test a long name")
+            SessionMinimal(0, TimeUnit.MINUTES.toSeconds(20).toInt(), type = SessionType.AMRAP)
         )
 
-        repo.addSessionMinimal(SessionMinimal(0, TimeUnit.MINUTES.toSeconds(15).toInt(), 0, 1,
-            SessionType.FOR_TIME, "Default"))
+        repo.addSessionMinimal(SessionMinimal(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.FOR_TIME))
         repo.addSessionMinimal(SessionMinimal(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 10,
-            SessionType.EMOM, "Default"))
+            SessionType.EMOM))
         repo.addSessionMinimal(SessionMinimal(0, 20, 10,8,
-            SessionType.TABATA, "Default"))
+            SessionType.TABATA))
     }
 
     companion object {

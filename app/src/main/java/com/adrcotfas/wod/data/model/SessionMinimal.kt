@@ -10,8 +10,16 @@ data class SessionMinimal (
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var duration: Int,
-    var breakDuration: Int,
+    var breakDuration: Int = 0,
     var numRounds: Int = 0,
-    var type: SessionType,
-    var name: String = "",
-    var notes: String = "")
+    var type: SessionType
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        other as SessionMinimal
+        return (this.duration == other.duration &&
+                this.breakDuration == other.breakDuration &&
+                this.numRounds == other.numRounds &&
+                this.type == other.type)
+    }
+}

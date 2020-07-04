@@ -4,18 +4,17 @@ import android.R
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import com.adrcotfas.wod.common.TimerUtils.Companion.insertPrefixZero
-import com.adrcotfas.wod.common.TimerUtils.Companion.secondsToMinutesAndSeconds
-import com.adrcotfas.wod.common.afterTextChanged
+import androidx.lifecycle.Observer
+import com.adrcotfas.wod.common.TimerUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.data.model.SessionMinimal
-import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.repository.SessionsRepository
-import com.adrcotfas.wod.databinding.DialogSaveFavoriteBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.dialog_save_favorite.view.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -24,90 +23,50 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
     override val kodein by closestKodein()
 
     private val repo: SessionsRepository by instance()
-
-    private lateinit var binding: DialogSaveFavoriteBinding
-    private var isEditDialog: Boolean = false
-    private lateinit var session : SessionMinimal
+    private lateinit var favoriteCandidate : SessionMinimal
+    private lateinit var favorites : List<SessionMinimal>
 
     companion object {
-        fun newInstance(isEditDialog: Boolean, session: SessionMinimal) : SaveFavoriteDialog {
+        fun newInstance(session: SessionMinimal) : SaveFavoriteDialog {
             val dialog = SaveFavoriteDialog()
-            dialog.isEditDialog = isEditDialog
-            dialog.session = session
+            dialog.favoriteCandidate = session
             return dialog
         }
     }
 
-    override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        binding = DialogSaveFavoriteBinding.inflate(layoutInflater, null, false)
-        setupView()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val dialog =
+            dialog as AlertDialog?
+            dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = false
+        repo.getSessionsMinimal(favoriteCandidate.type).observe(this, Observer {
+            favorites = it
+            dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = true
+        })
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
+    override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
         val b = MaterialAlertDialogBuilder(requireContext())
         b.apply {
-            setTitle(if (isEditDialog) {"Edit favorite session"} else {"Save favorite session"})
+            setTitle("Save this favorite?")
+            setMessage("${favoriteCandidate.type.name} ${toFavoriteFormat(favoriteCandidate)}")
             setPositiveButton(
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->
-                if (isEditDialog) {
-                    repo.editSessionMinimal(session.id, session)
-                } else {
-                    repo.addSessionMinimal(session)
-                }
+                    for (f in favorites) {
+                        if (f == favoriteCandidate) {
+                            Toast.makeText(requireContext(), "Favorite already exists", Toast.LENGTH_SHORT).show()
+                            return@setPositiveButton
+                        }
+                    }
+                    repo.addSessionMinimal(favoriteCandidate)
             }
-            if (isEditDialog) {
-                setNegativeButton("Delete") { _: DialogInterface?, _: Int -> repo.removeSessionMinimal(session.id) }
-            }
-            setNeutralButton(R.string.cancel) { _: DialogInterface?, _: Int -> }
-            setView(binding.root)
+            setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int -> }
         }
         return b.create()
-    }
-
-    private fun setupView() {
-        when(session.type) {
-            SessionType.AMRAP -> {
-                binding.amrapSection.visibility = View.VISIBLE
-                val minutes = binding.amrapSection.minutes
-                val seconds = binding.amrapSection.seconds
-                val minutesAndSeconds = secondsToMinutesAndSeconds(session.duration)
-                minutes.setText(insertPrefixZero(minutesAndSeconds.first))
-                seconds.setText(insertPrefixZero(minutesAndSeconds.second))
-
-                minutes.setOnClickListener { minutes.requestFocus() }
-                seconds.setOnClickListener { seconds.requestFocus() }
-
-                minutes.afterTextChanged {
-                    val dialog = dialog as AlertDialog
-                    if (it.isEmpty() || (it.toInt() == 0 && (seconds.text.isEmpty() || seconds.text.toString().toInt() == 0))) {
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                    } else {
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                        if (it.length == 1 && it.toInt() > 6) {
-                            minutes.setText(insertPrefixZero(it.toInt()))
-                        } else if (it.length == 2 && it.elementAt(0) == '6' && it.elementAt(1) != '0') {
-                            minutes.setText(60.toString())
-                            seconds.requestFocus()
-                        } else if (it.length == 2) {
-                            seconds.requestFocus()
-                        }
-                    }
-                }
-
-                seconds.afterTextChanged {
-                    val dialog = dialog as AlertDialog
-                    if (it.isEmpty() || (it.toInt() == 0 && (minutes.text.isEmpty() || minutes.text.toString().toInt() == 0))) {
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-                    } else {
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                        if (it.length == 1 && it.toInt() > 5) {
-                            seconds.setText(insertPrefixZero(it.toInt()))
-                            seconds.clearFocus()
-                        } else if (it.length == 2) {
-                            seconds.clearFocus()
-                        }
-                    }
-                }
-            }
-        }
     }
 }

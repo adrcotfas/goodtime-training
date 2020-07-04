@@ -1,7 +1,10 @@
 package com.adrcotfas.wod.common
 
+import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionType
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
+import java.security.InvalidParameterException
 import java.util.concurrent.TimeUnit
 
 class TimerUtils {
@@ -14,20 +17,39 @@ class TimerUtils {
         }
 
         fun secondsToTimerFormat(elapsed: Int): String {
-            val hours = TimeUnit.SECONDS.toHours(elapsed.toLong())
-            val minutes =
-                TimeUnit.SECONDS.toMinutes(elapsed.toLong()) - hours * 60
+            val minutes = TimeUnit.SECONDS.toMinutes(elapsed.toLong())
             val seconds = elapsed - minutes * 60
-            return (insertPrefixZero(hours)
-                    + ":" + insertPrefixZero(minutes)
+            return (insertPrefixZero(minutes)
                     + ":" + insertPrefixZero(seconds))
         }
 
-        fun insertPrefixZero(value: Long): String {
-            return if (value < 10) "0$value" else value.toString()
+        fun toFavoriteFormat(sessionMinimal: SessionMinimal): String {
+            return when(sessionMinimal.type) {
+                SessionType.AMRAP, SessionType.FOR_TIME -> {
+                    secondsToNiceFormat(sessionMinimal.duration)
+                }
+                SessionType.EMOM -> {
+                    "${sessionMinimal.numRounds} ×" + secondsToNiceFormat(sessionMinimal.duration)
+                }
+                SessionType.TABATA -> {
+                    val workString = secondsToNiceFormat(sessionMinimal.duration)
+                    val breakString = secondsToNiceFormat(sessionMinimal.breakDuration)
+                    "${sessionMinimal.numRounds} × $workString / $breakString"
+                }
+                else -> throw InvalidParameterException("received: ${sessionMinimal.type}")
+            }
         }
 
-        fun insertPrefixZero(value: Int): String {
+        private fun secondsToNiceFormat(elapsed: Int): String {
+            val duration = secondsToMinutesAndSeconds(elapsed)
+            return when {
+                duration.first == 0 -> "$duration.second sec"
+                duration.second == 0 -> "${duration.first} min"
+                else -> "${duration.first} min ${duration.second} sec"
+            }
+        }
+
+        private fun insertPrefixZero(value: Long): String {
             return if (value < 10) "0$value" else value.toString()
         }
 

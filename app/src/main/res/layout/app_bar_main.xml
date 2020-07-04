@@ -11,13 +11,12 @@
         android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:paddingVertical="16dp"
+        app:tabRippleColor="@null"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabMode="scrollable"
-        >
+        app:tabMode="auto">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/amrap_button"
@@ -43,11 +42,12 @@
             android:layout_height="wrap_content"
             android:text="TABATA" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/custom_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CUSTOM" />
+<!--        TODO: enable later-->
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:id="@+id/custom_button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="CUSTOM" />-->
     </com.google.android.material.tabs.TabLayout>
 
     <include

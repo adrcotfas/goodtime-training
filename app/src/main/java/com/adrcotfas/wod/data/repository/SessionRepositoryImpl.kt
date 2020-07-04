@@ -36,7 +36,7 @@ class SessionRepositoryImpl(private val sessionDao: SessionDao, private val sess
 
     override fun editSessionMinimal(id: Int, session: SessionMinimal) {
         GlobalScope.launch {
-            sessionMinimalDao.edit(id, session.name, session.duration, session.breakDuration, session.numRounds, session.type, session.notes)
+            sessionMinimalDao.edit(id, session.duration, session.breakDuration, session.numRounds, session.type)
         }
     }
 }

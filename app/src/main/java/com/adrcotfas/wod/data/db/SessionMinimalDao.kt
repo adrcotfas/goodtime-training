@@ -13,14 +13,14 @@ interface SessionMinimalDao {
     @TypeConverters(SessionTypeConverter::class)
     suspend fun add(session: SessionMinimal)
 
-    @Query("select * from SessionMinimal where type = :type")
+    @Query("select * from SessionMinimal where type = :type order by duration")
     @TypeConverters(SessionTypeConverter::class)
     fun get(type: SessionType) : LiveData<List<SessionMinimal>>
 
     @Query("delete from SessionMinimal where id = :id")
     suspend fun remove(id: Int)
 
-    @Query("update SessionMinimal set name = :name, duration = :duration, breakDuration = :breakDuration, " +
-            "numRounds = :numRounds, type = :type, notes = :notes where id = :id")
-    fun edit(id: Int, name: String, duration: Int, breakDuration: Int, numRounds: Int, type: SessionType, notes: String)
+    @Query("update SessionMinimal set duration = :duration, breakDuration = :breakDuration, " +
+            "numRounds = :numRounds, type = :type where id = :id")
+    fun edit(id: Int, duration: Int, breakDuration: Int, numRounds: Int, type: SessionType)
 }

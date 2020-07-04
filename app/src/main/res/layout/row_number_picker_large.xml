@@ -12,4 +12,5 @@
     android:lineSpacingExtra="0dp"
     android:includeFontPadding="false"
     android:fontFamily="@font/roboto_thin"
+    android:textColor="@color/green_goodtime"
     tools:text="25" />

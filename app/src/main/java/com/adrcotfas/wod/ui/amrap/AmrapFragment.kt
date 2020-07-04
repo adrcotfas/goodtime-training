@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.TimerUtils.Companion.secondsToMinutesAndSeconds
+import com.adrcotfas.wod.common.TimerUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
@@ -18,9 +19,9 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
 import com.adrcotfas.wod.ui.common.ViewModelFactory
+import com.adrcotfas.wod.ui.common.ui.ConfirmDeleteFavoriteDialog
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -101,20 +102,18 @@ class AmrapFragment : Fragment(), KodeinAware {
             favoritesChipGroup.removeAllViews()
             for (favorite in favorites) {
                 val chip = Chip(requireContext()).apply {
-                    text = favorite.duration.toString()
-                    val chipDrawable = ChipDrawable.createFromAttributes(requireContext(),
-                        null, 0, R.style.ChipStyle)
-                    setChipDrawable(chipDrawable)
+                    setTextAppearance(R.style.FavoritesTextStyle)
+                    text = toFavoriteFormat(favorite)
                 }
                 chip.setOnLongClickListener(object : View.OnLongClickListener{
                     override fun onLongClick(v: View?): Boolean {
-                        SaveFavoriteDialog.newInstance(true, favorite)
+                        ConfirmDeleteFavoriteDialog.newInstance(favorite)
                             .show(childFragmentManager, this.javaClass.toString())
                         return true
                     }
                 })
-                chip.setOnCheckedChangeListener { _, isChecked ->
-                    if (!isChecked) return@setOnCheckedChangeListener
+                chip.setOnClickListener {
+                    if (favorite == session) return@setOnClickListener
                     triggerListener = false
                     val duration = secondsToMinutesAndSeconds(favorite.duration)
                     viewModel.setDuration(duration)
@@ -122,7 +121,6 @@ class AmrapFragment : Fragment(), KodeinAware {
                     secondsPicker.setValue(duration.second)
                     triggerListener = true
                 }
-
                 favoritesChipGroup.addView(chip)
             }
         })
@@ -143,7 +141,7 @@ class AmrapFragment : Fragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        SaveFavoriteDialog.newInstance(false, session)
+        SaveFavoriteDialog.newInstance(session)
             .show(childFragmentManager, this.javaClass.toString())
     }
 
