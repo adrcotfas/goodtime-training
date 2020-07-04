@@ -27,6 +27,8 @@
         android:backgroundTint="#1E88E5"
         android:textColor="@android:color/white"
         android:textAlignment="center"
+        app:icon="@drawable/ic_status_goodtime"
+        app:iconTint="@android:color/white"
         android:text="START"
         app:layout_anchor="@id/bottomAppBar"
         android:layout_marginBottom="32dp"/>

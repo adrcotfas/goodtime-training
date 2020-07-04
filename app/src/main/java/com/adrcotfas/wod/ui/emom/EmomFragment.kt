@@ -25,16 +25,22 @@ class EmomFragment : Fragment() {
 
     private lateinit var session : SessionMinimal
 
-    private val minuteListener = object: NumberPicker.Listener {
+    private val minuteListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.emomData.setMinutes(value) }
     }
 
-    private val secondsListener = object: NumberPicker.Listener {
+    private val secondsListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.emomData.setSeconds(value) }
     }
 
-    private val roundsListener = object: NumberPicker.Listener {
+    private val roundsListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.emomData.setRounds(value) }
+    }
+
+    private val saveFavoriteHandler = object: NumberPicker.ClickListener {
+        override fun onClick() {
+
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,19 +60,22 @@ class EmomFragment : Fragment() {
         minutePicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes),
             ArrayList<Int>().apply{ addAll(0..5)},
-            1, rowHeight, listener = minuteListener
+            1, rowHeight, scrollListener = minuteListener,
+            clickListener = saveFavoriteHandler
         )
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
             ArrayList<Int>().apply{ addAll(0..59)},
-            0, rowHeight, listener = secondsListener
+            0, rowHeight, scrollListener = secondsListener,
+            clickListener = saveFavoriteHandler
         )
 
         roundsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_rounds),
             ArrayList<Int>().apply{ addAll(0..50)},
-            20, rowHeight, prefixWithZero = false, listener = roundsListener
+            20, rowHeight, prefixWithZero = false, scrollListener = roundsListener,
+            clickListener = saveFavoriteHandler
         )
 
         viewModel.emomData.get().observe(

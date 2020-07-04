@@ -9,14 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
-import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
 import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 class ForTimeFragment : Fragment() {
 
@@ -26,12 +24,17 @@ class ForTimeFragment : Fragment() {
 
     private lateinit var session : SessionMinimal
 
-    private val minuteListener = object: NumberPicker.Listener {
+    private val minuteListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.timeData.setMinutes(value) }
     }
 
-    private val secondsListener = object: NumberPicker.Listener {
+    private val secondsListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.timeData.setSeconds(value) }
+    }
+
+    private val saveFavoriteHandler = object: NumberPicker.ClickListener {
+        override fun onClick() {
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,13 +54,13 @@ class ForTimeFragment : Fragment() {
         minutePicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes),
             ArrayList<Int>().apply{ addAll(0..60)},
-            15, rowHeight, listener = minuteListener
+            15, rowHeight, scrollListener = minuteListener, clickListener = saveFavoriteHandler
         )
 
         secondsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds),
             ArrayList<Int>().apply{ addAll(0..59)},
-            0, rowHeight, listener = secondsListener
+            0, rowHeight, scrollListener = secondsListener, clickListener = saveFavoriteHandler
         )
 
         viewModel.timeData.get().observe(

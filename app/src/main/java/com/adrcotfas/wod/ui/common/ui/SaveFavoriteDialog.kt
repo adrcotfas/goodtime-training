@@ -42,9 +42,9 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
         binding = DialogSaveFavoriteBinding.inflate(layoutInflater, null, false)
         setupView()
 
-        val b = MaterialAlertDialogBuilder(activity)
+        val b = MaterialAlertDialogBuilder(requireContext())
         b.apply {
-            setTitle(if (isEditDialog) {"Edit favorite session"} else {"Add favorite session"})
+            setTitle(if (isEditDialog) {"Edit favorite session"} else {"Save favorite session"})
             setPositiveButton(
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->
@@ -64,7 +64,6 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
     }
 
     private fun setupView() {
-        val name = binding.name
         when(session.type) {
             SessionType.AMRAP -> {
                 binding.amrapSection.visibility = View.VISIBLE

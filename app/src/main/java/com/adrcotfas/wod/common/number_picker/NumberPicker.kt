@@ -17,11 +17,19 @@ class NumberPicker(
     private val rowHeight: Float,
     prefixWithZero: Boolean = true,
     largeText: Boolean = true,
-    private val listener : Listener
+    private val scrollListener : ScrollListener,
+    private val clickListener : ClickListener
 ) : NumberPickerAdapter.Listener {
 
-    interface Listener {
+    interface ScrollListener {
         fun onScroll(value: Int)
+    }
+
+    /**
+     * handles the click on the center of the picker
+     */
+    interface ClickListener {
+        fun onClick()
     }
 
     private val viewManager : LoopingLayoutManager = LoopingLayoutManager(context)
@@ -43,7 +51,7 @@ class NumberPicker(
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
-                        listener.onScroll(getCurrentValue())
+                        scrollListener.onScroll(getCurrentValue())
                     }
                 }
             }
@@ -81,7 +89,9 @@ class NumberPicker(
         val bottom = viewManager.bottomRightIndex
         if (position == top || position == bottom) {
             adjustScrollToSnap(position)
-            listener.onScroll(getCurrentValue())
+            scrollListener.onScroll(getCurrentValue())
+        } else {
+            clickListener.onClick()
         }
     }
 }

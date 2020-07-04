@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/green600</item>
         <item name="colorPrimaryDark">@android:color/black</item>
@@ -18,5 +18,15 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_color</item>
+        <item name="chipSurfaceColor">@android:color/black</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.MaterialComponents.Chip" parent="" tools:override="true">
+        <item name="cornerSize">10%</item>
+    </style>
 
 </resources>

@@ -19,7 +19,7 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
         isCancelable = false
-        val b = MaterialAlertDialogBuilder(activity)
+        val b = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Stop workout?")
             .setMessage("Are you sure you want to stop this workout?")
             .setPositiveButton(

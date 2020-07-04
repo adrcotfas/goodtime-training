@@ -95,40 +95,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAppBar() {
-        binding.bottomAppBar.replaceMenu(R.menu.main)
-
-        binding.bottomAppBar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_save_favorite -> {
-                    when (supportFragmentManager.currentNavigationFragment) {
-                        is AmrapFragment -> {
-                            val fragment =
-                                supportFragmentManager.currentNavigationFragment as AmrapFragment
-                            fragment.openSaveFavoriteDialog()
-                            true
-                        }
-                        is ForTimeFragment -> {
-                            val fragment =
-                                supportFragmentManager.currentNavigationFragment as ForTimeFragment
-                            //TODO: fragment.openSaveFavoriteDialog()
-                            true
-                        }
-                        is EmomFragment -> {
-                            val fragment =
-                                supportFragmentManager.currentNavigationFragment as EmomFragment
-                            true
-                        }
-                        is TabataFragment -> {
-                            val fragment =
-                                supportFragmentManager.currentNavigationFragment as TabataFragment
-                            true
-                        }
-                        else -> false
-                    }
-                }
-                else -> false
-            }
-        }
         binding.bottomAppBar.setNavigationOnClickListener {
             Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
         }

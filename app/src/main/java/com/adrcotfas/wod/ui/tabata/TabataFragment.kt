@@ -9,14 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
-import com.adrcotfas.wod.common.TimerUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
 import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 class TabataFragment : Fragment() {
 
@@ -29,24 +27,29 @@ class TabataFragment : Fragment() {
 
     private lateinit var session : SessionMinimal
 
-    private val minuteWorkListener = object: NumberPicker.Listener {
+    private val minuteWorkListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.tabataData.setMinutesWork(value) }
     }
 
-    private val secondsWorkListener = object: NumberPicker.Listener {
+    private val secondsWorkListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.tabataData.setSecondsWork(value) }
     }
 
-    private val minuteBreakListener = object: NumberPicker.Listener {
+    private val minuteBreakListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.tabataData.setMinutesBreak(value) }
     }
 
-    private val secondsBreakListener = object: NumberPicker.Listener {
+    private val secondsBreakListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.tabataData.setSecondsBreak(value) }
     }
 
-    private val roundsListener = object: NumberPicker.Listener {
+    private val roundsListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.tabataData.setRounds(value) }
+    }
+
+    private val saveFavoriteHandler = object: NumberPicker.ClickListener {
+        override fun onClick() {
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,31 +69,36 @@ class TabataFragment : Fragment() {
         minuteWorkPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes_work),
             ArrayList<Int>().apply{ addAll(0..5)},
-            0, rowHeight, largeText = false, listener = minuteWorkListener
+            0, rowHeight, largeText = false, scrollListener = minuteWorkListener,
+            clickListener = saveFavoriteHandler
         )
 
         secondsWorkPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds_work),
             ArrayList<Int>().apply{ addAll(0..59)},
-            20, rowHeight, largeText = false, listener = secondsWorkListener
+            20, rowHeight, largeText = false, scrollListener= secondsWorkListener,
+            clickListener = saveFavoriteHandler
         )
 
         minuteBreakPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_minutes_break),
             ArrayList<Int>().apply{ addAll(0..5)},
-            0, rowHeight, largeText = false, listener = minuteBreakListener
+            0, rowHeight, largeText = false, scrollListener = minuteBreakListener,
+            clickListener = saveFavoriteHandler
         )
 
         secondsBreakPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_seconds_break),
             ArrayList<Int>().apply{ addAll(0..59)},
-            10, rowHeight, largeText = false, listener = secondsBreakListener
+            10, rowHeight, largeText = false, scrollListener = secondsBreakListener,
+            clickListener = saveFavoriteHandler
         )
 
         roundsPicker = NumberPicker(
             requireContext(), root.findViewById(R.id.picker_rounds),
             ArrayList<Int>().apply{ addAll(0..50)},
-            18, rowHeight, prefixWithZero = false, largeText = false, listener = roundsListener
+            18, rowHeight, prefixWithZero = false, largeText = false, scrollListener = roundsListener,
+            clickListener = saveFavoriteHandler
         )
 
         viewModel.tabataData.get().observe(
