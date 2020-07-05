@@ -1,16 +1,22 @@
 package com.adrcotfas.wod.ui.amrap
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
+import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
+import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 
 class NumberPickerAdapter(
+    private val context : Context,
     private val listener: Listener,
     private val prefixWithZero: Boolean,
-    private val largeText : Boolean) : RecyclerView.Adapter<NumberPickerAdapter.ViewHolder>() {
+    private val textSize : PickerSize,
+    private val textColor : Color
+) : RecyclerView.Adapter<NumberPickerAdapter.ViewHolder>() {
 
     interface Listener {
         fun onClick(position: Int)
@@ -30,7 +36,7 @@ class NumberPickerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent, prefixWithZero, largeText)
+        return ViewHolder.from(context, parent, prefixWithZero, textSize, textColor)
     }
 
     class ViewHolder private constructor(itemView: View, private val prefixWithZero: Boolean)
@@ -47,12 +53,22 @@ class NumberPickerAdapter(
         }
 
         companion object {
-            fun from(parent: ViewGroup, prefixWithZero: Boolean, largeText: Boolean) : ViewHolder {
+            fun from(context: Context, parent: ViewGroup, prefixWithZero: Boolean, textSize: PickerSize, textColor: Color) : ViewHolder {
                 val layoutInflater =  LayoutInflater.from(parent.context)
                 val view = layoutInflater
                     .inflate(
-                        if (largeText) R.layout.row_number_picker_large else R.layout.row_number_picker,
-                        parent, false)
+                        when (textSize) {
+                            PickerSize.LARGE -> R.layout.row_number_picker_large
+                            PickerSize.MEDIUM -> R.layout.row_number_picker_medium
+                            else -> R.layout.row_number_picker
+                        }, parent, false)
+                view as TextView
+                view.setTextColor(
+                    when(textColor) {
+                        Color.GREEN -> context.resources.getColor(R.color.green_goodtime)
+                        Color.RED -> context.resources.getColor(R.color.red_goodtime)
+                        Color.NEUTRAL -> context.resources.getColor(R.color.grey500)
+                    })
                 return ViewHolder(view, prefixWithZero)
             }
         }

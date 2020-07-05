@@ -35,87 +35,128 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pickers"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:background="@color/green_goodtime"
         app:layout_constraintTop_toBottomOf="@id/favorites_container"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_rounds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:overScrollMode="never"
-                android:layout_gravity="center"/>
+                app:layout_constraintEnd_toStartOf="@+id/separator3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/separator3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="@font/roboto_thin"
                 android:paddingHorizontal="8dp"
                 android:text="@string/x"
-                android:textSize="45sp"
-                android:layout_gravity="center_vertical"/>
+                android:textSize="40sp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/picker_minutes_work"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/picker_rounds"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_minutes_work"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:overScrollMode="never"
-                android:layout_gravity="center_vertical"/>
+                app:layout_constraintEnd_toStartOf="@+id/separator1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/separator3"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/separator1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="@font/roboto_thin"
                 android:paddingHorizontal="4dp"
                 android:text="@string/colon"
-                android:textSize="45sp"
-                android:layout_gravity="center_vertical"/>
+                android:textSize="40sp"
+                android:textColor="@color/green_goodtime"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/picker_seconds_work"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/picker_minutes_work"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_seconds_work"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="0dp"
-                android:paddingEnd="16dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
                 android:overScrollMode="never"
-                android:layout_gravity="center"/>
+                app:layout_constraintEnd_toStartOf="@+id/picker_minutes_break"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/separator1"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_minutes_break"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:overScrollMode="never"
-                android:layout_gravity="center_vertical"/>
+                app:layout_constraintEnd_toStartOf="@+id/separator2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/picker_seconds_work"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/separator2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="@font/roboto_thin"
                 android:paddingHorizontal="4dp"
                 android:text="@string/colon"
-                android:textSize="45sp"
-                android:layout_gravity="center_vertical"/>
+                android:textSize="40sp"
+                android:textColor="@color/red_goodtime"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/picker_seconds_break"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/picker_minutes_break"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_seconds_break"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:overScrollMode="never"
-                android:layout_gravity="center"/>
-        </LinearLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/separator2"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/top"

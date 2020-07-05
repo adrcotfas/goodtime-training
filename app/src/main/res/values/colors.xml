@@ -3,7 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="transparent_dark">#D9000000</color>
+    <color name="transparent_dark">#BF000000</color>
     <color name="grey500">#9E9E9E</color>
     <color name="green_goodtime">#31BD62</color>
+    <color name="red_goodtime">#F44336</color>
 </resources>

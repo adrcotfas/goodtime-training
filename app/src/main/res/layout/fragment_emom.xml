@@ -34,80 +34,106 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pickers"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:background="@color/green_goodtime"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/favorites_container"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:background="@color/green_goodtime">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_rounds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:overScrollMode="never"
-                android:layout_gravity="center"/>
+                app:layout_constraintEnd_toStartOf="@+id/separator2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
             <TextView
                 android:id="@+id/separator2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="@font/roboto_thin"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="8dp"
                 android:text="@string/x"
-                android:textSize="70sp"
-                android:layout_gravity="center_vertical"/>
+                android:textSize="60sp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintEnd_toStartOf="@+id/picker_minutes"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/picker_rounds"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_minutes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:overScrollMode="never"
-                android:layout_gravity="center_vertical"/>
+                app:layout_constraintEnd_toStartOf="@+id/separator1"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/separator2"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
                 android:id="@+id/separator1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="@font/roboto_thin"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="4dp"
                 android:text="@string/colon"
-                android:textSize="70sp"
                 android:textColor="@color/green_goodtime"
-                android:layout_gravity="center_vertical"/>
+                android:textSize="60sp"
+                android:layout_marginBottom="12dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/picker_seconds"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/picker_minutes"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_seconds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:overScrollMode="never"
-                android:layout_gravity="center"/>
-
-        </LinearLayout>
+                app:layout_constraintEnd_toStartOf="@+id/separator2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/separator1"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.33"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:background="@color/transparent_dark"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.33" />
 
         <View
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.33"
-            app:layout_constraintTop_toTopOf="parent"
             android:background="@color/transparent_dark"
-            />
+            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
+import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -52,9 +53,14 @@ fun View.hideKeyboard(activity: Activity) {
     inputManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun calculateRowHeight(layoutInflater : LayoutInflater, large: Boolean = true): Float {
+fun calculateRowHeight(layoutInflater : LayoutInflater, size: PickerSize = PickerSize.LARGE): Float {
     val textView = layoutInflater
-        .inflate(if (large) R.layout.row_number_picker_large else R.layout.row_number_picker, null) as TextView
+        .inflate(
+            when (size) {
+                PickerSize.LARGE -> R.layout.row_number_picker_large
+                PickerSize.MEDIUM -> R.layout.row_number_picker_medium
+                else -> R.layout.row_number_picker
+            }, null) as TextView
     val fm = textView.paint.fontMetrics
     return fm.descent - fm.ascent
 }

@@ -12,6 +12,8 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
+import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
+import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
 import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
@@ -98,44 +100,45 @@ class TabataFragment : Fragment(), KodeinAware {
     }
 
     private fun setupNumberPickers() {
-        val rowHeight = calculateRowHeight(layoutInflater, false)
+        val rowHeight = calculateRowHeight(layoutInflater, PickerSize.SMALL)
 
         minuteWorkPicker = NumberPicker(
             requireContext(), binding.pickerMinutesWork,
-            ArrayList<Int>().apply { addAll(0..5) },
-            0, rowHeight, largeText = false, scrollListener = minuteWorkListener,
+            ArrayList<Int>().apply { addAll(0..3) },
+            0, rowHeight, textSize = PickerSize.SMALL, scrollListener = minuteWorkListener,
             clickListener = saveFavoriteHandler
         )
 
         secondsWorkPicker = NumberPicker(
             requireContext(), binding.pickerSecondsWork,
             ArrayList<Int>().apply { addAll(0..59) },
-            20, rowHeight, largeText = false, scrollListener = secondsWorkListener,
+            20, rowHeight, textSize = PickerSize.SMALL, scrollListener = secondsWorkListener,
             clickListener = saveFavoriteHandler
         )
 
         minuteBreakPicker = NumberPicker(
             requireContext(), binding.pickerMinutesBreak,
-            ArrayList<Int>().apply { addAll(0..5) },
-            0, rowHeight, largeText = false, scrollListener = minuteBreakListener,
+            ArrayList<Int>().apply { addAll(0..3) },
+            0, rowHeight, textSize = PickerSize.SMALL, textColor = Color.RED, scrollListener = minuteBreakListener,
             clickListener = saveFavoriteHandler
         )
 
         secondsBreakPicker = NumberPicker(
             requireContext(), binding.pickerSecondsBreak,
             ArrayList<Int>().apply { addAll(0..59) },
-            10, rowHeight, largeText = false, scrollListener = secondsBreakListener,
+            10, rowHeight, textSize = PickerSize.SMALL, textColor = Color.RED, scrollListener = secondsBreakListener,
             clickListener = saveFavoriteHandler
         )
 
         roundsPicker = NumberPicker(
             requireContext(),
             binding.pickerRounds,
-            ArrayList<Int>().apply { addAll(0..50) },
+            ArrayList<Int>().apply { addAll(1..30) },
             8,
             rowHeight,
             prefixWithZero = false,
-            largeText = false,
+            textSize = PickerSize.SMALL,
+            textColor = Color.NEUTRAL,
             scrollListener = roundsListener,
             clickListener = saveFavoriteHandler
         )

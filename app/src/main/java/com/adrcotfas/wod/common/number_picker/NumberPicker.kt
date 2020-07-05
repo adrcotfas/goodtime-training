@@ -16,11 +16,24 @@ class NumberPicker(
     default: Int,
     private val rowHeight: Float,
     prefixWithZero: Boolean = true,
-    largeText: Boolean = true,
+    textSize: PickerSize = PickerSize.LARGE,
+    textColor: Color = Color.GREEN,
     private val scrollListener : ScrollListener,
     private val clickListener : ClickListener
 ) : NumberPickerAdapter.Listener {
 
+    companion object {
+        enum class PickerSize {
+            SMALL,
+            MEDIUM,
+            LARGE
+        }
+        enum class Color {
+            GREEN,
+            RED,
+            NEUTRAL
+        }
+    }
     interface ScrollListener {
         fun onScroll(value: Int)
     }
@@ -33,7 +46,8 @@ class NumberPicker(
     }
 
     private val viewManager : LoopingLayoutManager = LoopingLayoutManager(context)
-    private val viewAdapter : NumberPickerAdapter = NumberPickerAdapter(this, prefixWithZero, largeText)
+    private val viewAdapter : NumberPickerAdapter =
+        NumberPickerAdapter(context, this, prefixWithZero, textSize, textColor)
     private val snapHelper = LoopingSnapHelper()
 
     init {
@@ -43,6 +57,7 @@ class NumberPicker(
             layoutManager = viewManager
             adapter = viewAdapter
             layoutParams.height = 3 * rowHeight.toInt()
+            layoutParams.width = rowHeight.toInt()
         }
 
         scrollToPosition(data.indexOf(default))

@@ -12,6 +12,8 @@ import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
+import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
+import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
 import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
@@ -88,26 +90,30 @@ class EmomFragment : Fragment(), KodeinAware {
     }
 
     private fun setupNumberPickers() {
-        val rowHeight = calculateRowHeight(layoutInflater)
+        val rowHeight = calculateRowHeight(layoutInflater, PickerSize.MEDIUM)
 
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
-            ArrayList<Int>().apply { addAll(0..5) },
-            1, rowHeight, scrollListener = minuteListener,
+            ArrayList<Int>().apply { addAll(0..3) },
+            1, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener,
             clickListener = saveFavoriteHandler
         )
 
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
             ArrayList<Int>().apply { addAll(0..59) },
-            0, rowHeight, scrollListener = secondsListener,
+            0, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener,
             clickListener = saveFavoriteHandler
         )
 
         roundsPicker = NumberPicker(
             requireContext(), binding.pickerRounds,
-            ArrayList<Int>().apply { addAll(0..50) },
-            20, rowHeight, prefixWithZero = false, scrollListener = roundsListener,
+            ArrayList<Int>().apply { addAll(1..30) },
+            20, rowHeight,
+            textSize = PickerSize.MEDIUM,
+            textColor = Color.NEUTRAL,
+            prefixWithZero = false,
+            scrollListener = roundsListener,
             clickListener = saveFavoriteHandler
         )
     }
@@ -123,7 +129,7 @@ class EmomFragment : Fragment(), KodeinAware {
             for (favorite in favorites) {
                 val chip = Chip(requireContext()).apply {
                     setTextAppearance(R.style.FavoritesTextStyle)
-                    text = StringUtils.toFavoriteFormat(favorite)
+                    text = StringUtils.toFavoriteDescription(favorite)
                 }
                 chip.setOnLongClickListener(object : View.OnLongClickListener{
                     override fun onLongClick(v: View?): Boolean {

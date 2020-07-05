@@ -25,16 +25,23 @@ class StringUtils {
 
         fun toFavoriteFormat(sessionMinimal: SessionMinimal): String {
             return when(sessionMinimal.type) {
-                SessionType.AMRAP, SessionType.FOR_TIME -> {
+                SessionType.AMRAP -> {
                     secondsToNiceFormat(sessionMinimal.duration)
+                }
+                SessionType.FOR_TIME -> {
+                    "TC ${secondsToNiceFormat(sessionMinimal.duration)}"
                 }
                 SessionType.EMOM -> {
                     "${sessionMinimal.numRounds} × ${secondsToNiceFormat(sessionMinimal.duration)}"
                 }
                 SessionType.TABATA -> {
-                    val workString = secondsToNiceFormat(sessionMinimal.duration)
-                    val breakString = secondsToNiceFormat(sessionMinimal.breakDuration)
-                    "${sessionMinimal.numRounds} × $workString / $breakString"
+                    if (sessionMinimal.duration == 20 && sessionMinimal.breakDuration == 10 && sessionMinimal.numRounds == 8) {
+                        "default"
+                    } else {
+                        val workString = secondsToNiceFormat(sessionMinimal.duration)
+                        val breakString = secondsToNiceFormat(sessionMinimal.breakDuration)
+                        "${sessionMinimal.numRounds} × $workString / $breakString"
+                    }
                 }
                 else -> throw InvalidParameterException("received: ${sessionMinimal.type}")
             }
@@ -59,7 +66,7 @@ class StringUtils {
                         "EMOM ${favoriteCandidate.duration / 60 * favoriteCandidate.numRounds} min"
                     else toFavoriteFormat(favoriteCandidate)
                 }
-                SessionType.FOR_TIME -> "FOR TIME TC ${toFavoriteFormat(favoriteCandidate)}"
+                SessionType.FOR_TIME -> "FOR TIME ${toFavoriteFormat(favoriteCandidate)}"
                 else -> ""
             }
         }
