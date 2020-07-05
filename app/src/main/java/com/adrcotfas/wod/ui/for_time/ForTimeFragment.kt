@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -18,6 +17,7 @@ import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
+import com.adrcotfas.wod.ui.common.PortraitFragment
 import com.adrcotfas.wod.ui.common.ui.ConfirmDeleteFavoriteDialog
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.google.android.material.chip.Chip
@@ -26,7 +26,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class ForTimeFragment : Fragment(), KodeinAware {
+class ForTimeFragment : PortraitFragment(), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: ForTimeViewModelFactory by instance()
