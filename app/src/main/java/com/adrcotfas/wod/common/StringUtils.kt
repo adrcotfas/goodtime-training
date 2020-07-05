@@ -7,7 +7,7 @@ import org.joda.time.format.DateTimeFormatter
 import java.security.InvalidParameterException
 import java.util.concurrent.TimeUnit
 
-class TimerUtils {
+class StringUtils {
 
     companion object {
         fun secondsToMinutesAndSeconds(seconds: Int) : Pair<Int, Int> {
@@ -29,7 +29,7 @@ class TimerUtils {
                     secondsToNiceFormat(sessionMinimal.duration)
                 }
                 SessionType.EMOM -> {
-                    "${sessionMinimal.numRounds} ×" + secondsToNiceFormat(sessionMinimal.duration)
+                    "${sessionMinimal.numRounds} × ${secondsToNiceFormat(sessionMinimal.duration)}"
                 }
                 SessionType.TABATA -> {
                     val workString = secondsToNiceFormat(sessionMinimal.duration)
@@ -43,9 +43,24 @@ class TimerUtils {
         private fun secondsToNiceFormat(elapsed: Int): String {
             val duration = secondsToMinutesAndSeconds(elapsed)
             return when {
-                duration.first == 0 -> "$duration.second sec"
+                duration.first == 0 -> "${duration.second} sec"
                 duration.second == 0 -> "${duration.first} min"
                 else -> "${duration.first} min ${duration.second} sec"
+            }
+        }
+
+        fun toFavoriteDescription(favoriteCandidate : SessionMinimal): String {
+            return when (favoriteCandidate.type) {
+                SessionType.AMRAP, SessionType.TABATA -> "${favoriteCandidate.type.name} ${toFavoriteFormat(
+                    favoriteCandidate
+                )}"
+                SessionType.EMOM -> {
+                    if (favoriteCandidate.duration == 60)
+                        "EMOM ${favoriteCandidate.duration / 60 * favoriteCandidate.numRounds} min"
+                    else toFavoriteFormat(favoriteCandidate)
+                }
+                SessionType.FOR_TIME -> "FOR TIME with time cap ${toFavoriteFormat(favoriteCandidate)}"
+                else -> ""
             }
         }
 

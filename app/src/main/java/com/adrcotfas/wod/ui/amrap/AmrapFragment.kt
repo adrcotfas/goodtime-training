@@ -9,8 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.adrcotfas.wod.R
-import com.adrcotfas.wod.common.TimerUtils.Companion.secondsToMinutesAndSeconds
-import com.adrcotfas.wod.common.TimerUtils.Companion.toFavoriteFormat
+import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
+import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
@@ -18,7 +18,6 @@ import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
-import com.adrcotfas.wod.ui.common.ViewModelFactory
 import com.adrcotfas.wod.ui.common.ui.ConfirmDeleteFavoriteDialog
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.google.android.material.chip.Chip
@@ -31,7 +30,7 @@ class AmrapFragment : Fragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
-    private val viewModelFactory: ViewModelFactory by instance()
+    private val viewModelFactory: AmrapViewModelFactory by instance()
     private lateinit var viewModel: AmrapViewModel
     private lateinit var session: SessionMinimal
 
@@ -79,10 +78,7 @@ class AmrapFragment : Fragment(), KodeinAware {
     ): View? {
         binding = FragmentAmrapBinding.inflate(inflater, container, false)
         setupNumberPickers()
-
-        favoritesChipGroup = binding.favorites
         setupFavorites()
-        setupSaveFavorite()
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
@@ -92,11 +88,10 @@ class AmrapFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
-    private fun setupSaveFavorite() {
-        binding.pickerSeparator.setOnClickListener{openSaveFavoriteDialog()}
-    }
-
     private fun setupFavorites() {
+        binding.pickerSeparator.setOnClickListener{openSaveFavoriteDialog()}
+
+        favoritesChipGroup = binding.favorites
         favoritesChipGroup.isSingleSelection = true
         viewModel.favorites.observe( viewLifecycleOwner, Observer { favorites ->
             favoritesChipGroup.removeAllViews()

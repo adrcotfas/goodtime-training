@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.adrcotfas.wod.R
-import com.adrcotfas.wod.common.TimerUtils
+import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.notifications.NotificationHelper
 import com.adrcotfas.wod.data.workout.TimerState
 import com.adrcotfas.wod.databinding.FragmentWorkoutBinding
@@ -53,7 +53,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
     ): View? {
         binding = FragmentWorkoutBinding.inflate(layoutInflater, container, false)
         workoutManager.currentTick.observe( viewLifecycleOwner, Observer { seconds ->
-            binding.timer.text = TimerUtils.secondsToTimerFormat(seconds)
+            binding.timer.text = StringUtils.secondsToTimerFormat(seconds)
         })
         // TODO: observe for session finished and cancel the StopWorkoutDialog
         return binding.root

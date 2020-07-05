@@ -7,10 +7,37 @@
     android:layout_height="match_parent"
     tools:context=".ui.emom.EmomFragment">
 
+    <ScrollView
+        android:id="@+id/favorites_container"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="38dp"
+        android:overScrollMode="never"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@id/pickers"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:background="@color/grey500">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/favorites"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="16dp"
+            app:selectionRequired="true"
+            app:singleSelection="true" />
+    </ScrollView>
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pickers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/green_goodtime"
+        app:layout_constraintTop_toBottomOf="@id/favorites_container"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -22,6 +49,23 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/picker_rounds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/separator2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_thin"
+                android:paddingHorizontal="16dp"
+                android:text="@string/x"
+                android:textSize="70sp"
+                android:layout_gravity="center_vertical"/>
+
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_minutes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,32 +73,18 @@
                 android:layout_gravity="center_vertical"/>
 
             <TextView
+                android:id="@+id/separator1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_thin"
                 android:paddingHorizontal="16dp"
-                android:text=":"
+                android:text="@string/colon"
                 android:textSize="70sp"
+                android:textColor="@color/green_goodtime"
                 android:layout_gravity="center_vertical"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_seconds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:layout_gravity="center"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_thin"
-                android:paddingHorizontal="16dp"
-                android:text="×"
-                android:textSize="70sp"
-                android:layout_gravity="center_vertical"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/picker_rounds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
-import com.adrcotfas.wod.common.TimerUtils.Companion.formatDateAndTime
+import com.adrcotfas.wod.common.StringUtils.Companion.formatDateAndTime
 import com.adrcotfas.wod.data.model.Session
 
 class LogAdapter(private val listener: Listener) : RecyclerView.Adapter<LogAdapter.ViewHolder>() {

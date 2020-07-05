@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import com.adrcotfas.wod.common.TimerUtils.Companion.toFavoriteFormat
+import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteDescription
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.repository.SessionsRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -53,7 +53,7 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
         val b = MaterialAlertDialogBuilder(requireContext())
         b.apply {
             setTitle("Save this favorite?")
-            setMessage("${favoriteCandidate.type.name} ${toFavoriteFormat(favoriteCandidate)}")
+            setMessage(toFavoriteDescription(favoriteCandidate))
             setPositiveButton(
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->

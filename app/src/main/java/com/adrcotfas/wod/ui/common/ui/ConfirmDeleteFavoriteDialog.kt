@@ -5,7 +5,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import com.adrcotfas.wod.common.TimerUtils
+import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteDescription
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.repository.SessionsRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -31,7 +31,7 @@ class ConfirmDeleteFavoriteDialog : DialogFragment(), KodeinAware {
         val b = MaterialAlertDialogBuilder(requireContext())
         b.apply {
             setTitle("Delete this favorite?")
-            setMessage("${favoriteCandidate.type.name} ${TimerUtils.toFavoriteFormat(favoriteCandidate)}")
+            setMessage(toFavoriteDescription(favoriteCandidate))
             setPositiveButton(
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->

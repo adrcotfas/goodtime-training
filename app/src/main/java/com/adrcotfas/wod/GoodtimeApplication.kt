@@ -15,8 +15,11 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.repository.SessionRepositoryImpl
 import com.adrcotfas.wod.data.repository.SessionsRepository
-import com.adrcotfas.wod.ui.common.ViewModelFactory
+import com.adrcotfas.wod.ui.amrap.AmrapViewModelFactory
+import com.adrcotfas.wod.ui.emom.EmomViewModelFactory
+import com.adrcotfas.wod.ui.for_time.ForTimeViewModelFactory
 import com.adrcotfas.wod.ui.log.LogViewModelFactory
+import com.adrcotfas.wod.ui.tabata.TabataViewModelFactory
 import com.adrcotfas.wod.ui.workout.WorkoutManager
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -36,9 +39,11 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<SoundPlayer>() with singleton { SoundPlayer(applicationContext) }
         bind<WorkoutManager>() with singleton {WorkoutManager(instance(), instance()) }
         bind<LogViewModelFactory>() with provider { LogViewModelFactory(instance()) }
-        bind() from provider { ViewModelFactory(instance()) }
+        bind() from provider { AmrapViewModelFactory(instance()) }
+        bind() from provider { ForTimeViewModelFactory(instance()) }
+        bind() from provider { EmomViewModelFactory(instance()) }
+        bind() from provider { TabataViewModelFactory(instance()) }
     }
-
 
     override fun onCreate() {
         super.onCreate()
@@ -63,7 +68,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         )
 
         repo.addSessionMinimal(SessionMinimal(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.FOR_TIME))
-        repo.addSessionMinimal(SessionMinimal(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 10,
+        repo.addSessionMinimal(SessionMinimal(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 20,
             SessionType.EMOM))
         repo.addSessionMinimal(SessionMinimal(0, 20, 10,8,
             SessionType.TABATA))

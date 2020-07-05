@@ -7,11 +7,9 @@ import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.repository.SessionsRepository
 import com.adrcotfas.wod.ui.common.TimeSpinnerData
 
-class AmrapViewModel(private val sessionsRepository: SessionsRepository) : ViewModel() {
+class AmrapViewModel(sessionsRepository: SessionsRepository) : ViewModel() {
     val timeData = TimeSpinnerData(15, 0)
     val favorites : LiveData<List<SessionMinimal>> = sessionsRepository.getSessionsMinimal(SessionType.AMRAP)
-
-    fun removeFavorite(id: Int) = sessionsRepository.removeSessionMinimal(id)
 
     fun setDuration(duration: Pair<Int, Int>) {
         timeData.setMinutes(duration.first)

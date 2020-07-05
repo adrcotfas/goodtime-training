@@ -64,7 +64,7 @@
                 android:layout_gravity="center_vertical"
                 android:fontFamily="@font/roboto_thin"
                 android:paddingHorizontal="16dp"
-                android:text=":"
+                android:text="@string/colon"
                 android:textColor="@color/green_goodtime"
                 android:textSize="70sp" />
 
