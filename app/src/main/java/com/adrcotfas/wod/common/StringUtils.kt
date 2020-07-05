@@ -59,7 +59,7 @@ class StringUtils {
                         "EMOM ${favoriteCandidate.duration / 60 * favoriteCandidate.numRounds} min"
                     else toFavoriteFormat(favoriteCandidate)
                 }
-                SessionType.FOR_TIME -> "FOR TIME with time cap ${toFavoriteFormat(favoriteCandidate)}"
+                SessionType.FOR_TIME -> "FOR TIME TC ${toFavoriteFormat(favoriteCandidate)}"
                 else -> ""
             }
         }
