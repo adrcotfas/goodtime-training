@@ -33,7 +33,6 @@ class AmrapFragment : PortraitFragment(), KodeinAware {
 
     private val viewModelFactory: AmrapViewModelFactory by instance()
     private lateinit var viewModel: AmrapViewModel
-    private lateinit var session: SessionMinimal
 
     private lateinit var binding: FragmentAmrapBinding
     private lateinit var minutePicker: NumberPicker
@@ -83,8 +82,8 @@ class AmrapFragment : PortraitFragment(), KodeinAware {
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
-                session = SessionMinimal(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
-                (requireActivity() as MainActivity).setStartButtonState(session.duration != 0)
+                viewModel.session = SessionMinimal(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
+                (requireActivity() as MainActivity).setStartButtonState(viewModel.session.duration != 0)
             }
         )
         return binding.root
@@ -110,7 +109,7 @@ class AmrapFragment : PortraitFragment(), KodeinAware {
                     }
                 })
                 chip.setOnClickListener {
-                    if (favorite == session) return@setOnClickListener
+                    if (favorite == viewModel.session) return@setOnClickListener
                     triggerListener = false
                     val duration = secondsToMinutesAndSeconds(favorite.duration)
                     viewModel.setDuration(duration)
@@ -127,26 +126,26 @@ class AmrapFragment : PortraitFragment(), KodeinAware {
         val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
-            ArrayList<Int>().apply{ addAll(0..60)},
+            viewModel.minutesPickerData,
             15, rowHeight, scrollListener = minuteListener, clickListener = saveFavoriteHandler
         )
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
-            ArrayList<Int>().apply{ addAll(0..59)},
+            viewModel.secondsPickerData,
             0, rowHeight, scrollListener = secondsListener, clickListener = saveFavoriteHandler
         )
     }
 
     fun openSaveFavoriteDialog() {
-        if (session.duration != 0) {
-            SaveFavoriteDialog.newInstance(session)
+        if (viewModel.session.duration != 0) {
+            SaveFavoriteDialog.newInstance(viewModel.session)
                 .show(childFragmentManager, this.javaClass.toString())
         }
     }
 
     fun onStartWorkout() {
         val action = AmrapFragmentDirections.startWorkoutAction(
-            sessionsToString(generatePreWorkoutSession(), session))
+            sessionsToString(generatePreWorkoutSession(), viewModel.session))
         view?.findNavController()?.navigate(action)
     }
 }

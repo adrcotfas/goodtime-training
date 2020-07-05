@@ -19,4 +19,10 @@ class TabataViewModel(sessionsRepository: SessionsRepository) : ViewModel() {
         tabataData.setSecondsBreak(breakDuration.second)
         tabataData.setRounds(numRounds)
     }
+
+    lateinit var session : SessionMinimal
+
+    val minutesPickerData = ArrayList<Int>().apply { addAll(0..3) }
+    val secondsPickerData = ArrayList<Int>().apply { addAll(0..59) }
+    val roundsPickerData = ArrayList<Int>().apply { addAll(1..30) }
 }

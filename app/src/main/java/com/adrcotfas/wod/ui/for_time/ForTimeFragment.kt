@@ -37,8 +37,6 @@ class ForTimeFragment : PortraitFragment(), KodeinAware {
     private lateinit var secondsPicker: NumberPicker
     private lateinit var favoritesChipGroup: ChipGroup
 
-    private lateinit var session : SessionMinimal
-
     private val minuteListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.timeData.setMinutes(value) }
     }
@@ -74,7 +72,7 @@ class ForTimeFragment : PortraitFragment(), KodeinAware {
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
-                session = SessionMinimal(
+                viewModel.session = SessionMinimal(
                     duration = duration, breakDuration = 0, numRounds = 0,
                     type = SessionType.FOR_TIME
                 )
@@ -89,13 +87,13 @@ class ForTimeFragment : PortraitFragment(), KodeinAware {
 
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
-            ArrayList<Int>().apply { addAll(0..60) },
+            viewModel.minutesPickerData,
             15, rowHeight, scrollListener = minuteListener, clickListener = saveFavoriteHandler
         )
 
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
-            ArrayList<Int>().apply { addAll(0..59) },
+            viewModel.secondsPickerData,
             0, rowHeight, scrollListener = secondsListener, clickListener = saveFavoriteHandler
         )
     }
@@ -120,7 +118,7 @@ class ForTimeFragment : PortraitFragment(), KodeinAware {
                     }
                 })
                 chip.setOnClickListener {
-                    if (favorite == session) return@setOnClickListener
+                    if (favorite == viewModel.session) return@setOnClickListener
                     triggerListener = false
                     val duration = StringUtils.secondsToMinutesAndSeconds(favorite.duration)
                     viewModel.setDuration(duration)
@@ -134,15 +132,15 @@ class ForTimeFragment : PortraitFragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        if (session.duration != 0) {
-            SaveFavoriteDialog.newInstance(session)
+        if (viewModel.session.duration != 0) {
+            SaveFavoriteDialog.newInstance(viewModel.session)
                 .show(childFragmentManager, this.javaClass.toString())
         }
     }
 
     fun onStartWorkout() {
         val action = ForTimeFragmentDirections.startWorkoutAction(
-            sessionsToString(generatePreWorkoutSession(), session))
+            sessionsToString(generatePreWorkoutSession(), viewModel.session))
         view?.findNavController()?.navigate(action)
     }
 }

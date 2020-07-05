@@ -40,8 +40,6 @@ class EmomFragment : PortraitFragment(), KodeinAware {
     private lateinit var roundsPicker: NumberPicker
     private lateinit var favoritesChipGroup: ChipGroup
 
-    private lateinit var session : SessionMinimal
-
     private val minuteListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.emomData.setMinutes(value) }
     }
@@ -83,9 +81,9 @@ class EmomFragment : PortraitFragment(), KodeinAware {
 
         viewModel.emomData.get().observe(
             viewLifecycleOwner, Observer { data ->
-                session = SessionMinimal(duration = data.first, breakDuration = 0,
+                viewModel.session = SessionMinimal(duration = data.first, breakDuration = 0,
                     numRounds = data.second, type = SessionType.EMOM)
-                (requireActivity() as MainActivity).setStartButtonState(session.duration != 0)
+                (requireActivity() as MainActivity).setStartButtonState(viewModel.session.duration != 0)
             }
         )
         return binding.root
@@ -96,21 +94,21 @@ class EmomFragment : PortraitFragment(), KodeinAware {
 
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
-            ArrayList<Int>().apply { addAll(0..3) },
+            viewModel.minutesPickerData,
             1, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener,
             clickListener = saveFavoriteHandler
         )
 
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
-            ArrayList<Int>().apply { addAll(0..59) },
+            viewModel.secondsPickerData,
             0, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener,
             clickListener = saveFavoriteHandler
         )
 
         roundsPicker = NumberPicker(
             requireContext(), binding.pickerRounds,
-            ArrayList<Int>().apply { addAll(1..30) },
+            viewModel.roundsPickerData,
             20, rowHeight,
             textSize = PickerSize.MEDIUM,
             textColor = Color.NEUTRAL,
@@ -141,7 +139,7 @@ class EmomFragment : PortraitFragment(), KodeinAware {
                     }
                 })
                 chip.setOnClickListener {
-                    if (favorite == session) return@setOnClickListener
+                    if (favorite == viewModel.session) return@setOnClickListener
                     triggerListener = false
                     val duration = StringUtils.secondsToMinutesAndSeconds(favorite.duration)
                     viewModel.setEmomData(duration, favorite.numRounds)
@@ -156,15 +154,15 @@ class EmomFragment : PortraitFragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        if (session.duration != 0) {
-            SaveFavoriteDialog.newInstance(session)
+        if (viewModel.session.duration != 0) {
+            SaveFavoriteDialog.newInstance(viewModel.session)
                 .show(childFragmentManager, this.javaClass.toString())
         }
     }
 
     fun onStartWorkout() {
         val action = EmomFragmentDirections.startWorkoutAction(
-            sessionsToString(generatePreWorkoutSession(), session))
+            sessionsToString(generatePreWorkoutSession(), viewModel.session))
         view?.findNavController()?.navigate(action)
     }
 

@@ -42,8 +42,6 @@ class TabataFragment : PortraitFragment(), KodeinAware {
     private lateinit var roundsPicker: NumberPicker
     private lateinit var favoritesChipGroup: ChipGroup
 
-    private lateinit var session : SessionMinimal
-
     private val minuteWorkListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.tabataData.setMinutesWork(value) }
     }
@@ -92,11 +90,11 @@ class TabataFragment : PortraitFragment(), KodeinAware {
 
         viewModel.tabataData.get().observe(
             viewLifecycleOwner, Observer { tabataData ->
-                session =
+                viewModel.session =
                     SessionMinimal(duration = tabataData.first, breakDuration = tabataData.second,
                         numRounds = tabataData.third, type = SessionType.TABATA)
                 (requireActivity() as MainActivity)
-                    .setStartButtonState(session.duration != 0 && session.breakDuration != 0)
+                    .setStartButtonState(viewModel.session.duration != 0 && viewModel.session.breakDuration != 0)
             }
         )
         return binding.root
@@ -107,28 +105,28 @@ class TabataFragment : PortraitFragment(), KodeinAware {
 
         minuteWorkPicker = NumberPicker(
             requireContext(), binding.pickerMinutesWork,
-            ArrayList<Int>().apply { addAll(0..3) },
+            viewModel.minutesPickerData,
             0, rowHeight, textSize = PickerSize.SMALL, scrollListener = minuteWorkListener,
             clickListener = saveFavoriteHandler
         )
 
         secondsWorkPicker = NumberPicker(
             requireContext(), binding.pickerSecondsWork,
-            ArrayList<Int>().apply { addAll(0..59) },
+            viewModel.secondsPickerData,
             20, rowHeight, textSize = PickerSize.SMALL, scrollListener = secondsWorkListener,
             clickListener = saveFavoriteHandler
         )
 
         minuteBreakPicker = NumberPicker(
             requireContext(), binding.pickerMinutesBreak,
-            ArrayList<Int>().apply { addAll(0..3) },
+            viewModel.minutesPickerData,
             0, rowHeight, textSize = PickerSize.SMALL, textColor = Color.RED, scrollListener = minuteBreakListener,
             clickListener = saveFavoriteHandler
         )
 
         secondsBreakPicker = NumberPicker(
             requireContext(), binding.pickerSecondsBreak,
-            ArrayList<Int>().apply { addAll(0..59) },
+            viewModel.secondsPickerData,
             10, rowHeight, textSize = PickerSize.SMALL, textColor = Color.RED, scrollListener = secondsBreakListener,
             clickListener = saveFavoriteHandler
         )
@@ -136,7 +134,7 @@ class TabataFragment : PortraitFragment(), KodeinAware {
         roundsPicker = NumberPicker(
             requireContext(),
             binding.pickerRounds,
-            ArrayList<Int>().apply { addAll(1..30) },
+            viewModel.roundsPickerData,
             8,
             rowHeight,
             prefixWithZero = false,
@@ -169,7 +167,7 @@ class TabataFragment : PortraitFragment(), KodeinAware {
                     }
                 })
                 chip.setOnClickListener {
-                    if (favorite == session) return@setOnClickListener
+                    if (favorite == viewModel.session) return@setOnClickListener
                     triggerListener = false
                     val durationWork = StringUtils.secondsToMinutesAndSeconds(favorite.duration)
                     val breakDuration = StringUtils.secondsToMinutesAndSeconds(favorite.breakDuration)
@@ -187,15 +185,15 @@ class TabataFragment : PortraitFragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        if (session.duration != 0 && session.breakDuration != 0) {
-            SaveFavoriteDialog.newInstance(session)
+        if (viewModel.session.duration != 0 && viewModel.session.breakDuration != 0) {
+            SaveFavoriteDialog.newInstance(viewModel.session)
                 .show(childFragmentManager, this.javaClass.toString())
         }
     }
 
     fun onStartWorkout() {
         val action = TabataFragmentDirections.startWorkoutAction(
-            sessionsToString(generatePreWorkoutSession(),  session))
+            sessionsToString(generatePreWorkoutSession(),  viewModel.session))
         view?.findNavController()?.navigate(action)
     }
 }

@@ -17,4 +17,10 @@ class EmomViewModel(sessionsRepository: SessionsRepository) : ViewModel() {
         emomData.setSeconds(duration.second)
         emomData.setRounds(rounds)
     }
+
+    lateinit var session : SessionMinimal
+
+    val minutesPickerData = ArrayList<Int>().apply { addAll(0..3) }
+    val secondsPickerData = ArrayList<Int>().apply { addAll(0..59) }
+    val roundsPickerData = ArrayList<Int>().apply { addAll(1..30) }
 }
