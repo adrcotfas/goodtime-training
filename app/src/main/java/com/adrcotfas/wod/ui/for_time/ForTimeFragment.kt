@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.adrcotfas.wod.MainActivity
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
@@ -77,6 +78,7 @@ class ForTimeFragment : Fragment(), KodeinAware {
                     duration = duration, breakDuration = 0, numRounds = 0,
                     type = SessionType.FOR_TIME
                 )
+                (requireActivity() as MainActivity).setStartButtonState(duration != 0)
             }
         )
         return binding.root
@@ -132,8 +134,10 @@ class ForTimeFragment : Fragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        SaveFavoriteDialog.newInstance(session)
-            .show(childFragmentManager, this.javaClass.toString())
+        if (session.duration != 0) {
+            SaveFavoriteDialog.newInstance(session)
+                .show(childFragmentManager, this.javaClass.toString())
+        }
     }
 
     fun onStartWorkout() {

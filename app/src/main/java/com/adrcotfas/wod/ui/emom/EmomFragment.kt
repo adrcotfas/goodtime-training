@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.adrcotfas.wod.MainActivity
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
@@ -84,6 +85,7 @@ class EmomFragment : Fragment(), KodeinAware {
             viewLifecycleOwner, Observer { data ->
                 session = SessionMinimal(duration = data.first, breakDuration = 0,
                     numRounds = data.second, type = SessionType.EMOM)
+                (requireActivity() as MainActivity).setStartButtonState(session.duration != 0)
             }
         )
         return binding.root
@@ -154,8 +156,10 @@ class EmomFragment : Fragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        SaveFavoriteDialog.newInstance(session)
-            .show(childFragmentManager, this.javaClass.toString())
+        if (session.duration != 0) {
+            SaveFavoriteDialog.newInstance(session)
+                .show(childFragmentManager, this.javaClass.toString())
+        }
     }
 
     fun onStartWorkout() {

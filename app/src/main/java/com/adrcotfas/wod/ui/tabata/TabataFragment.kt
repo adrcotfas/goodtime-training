@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.adrcotfas.wod.MainActivity
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
@@ -94,6 +95,8 @@ class TabataFragment : Fragment(), KodeinAware {
                 session =
                     SessionMinimal(duration = tabataData.first, breakDuration = tabataData.second,
                         numRounds = tabataData.third, type = SessionType.TABATA)
+                (requireActivity() as MainActivity)
+                    .setStartButtonState(session.duration != 0 && session.breakDuration != 0)
             }
         )
         return binding.root
@@ -184,8 +187,10 @@ class TabataFragment : Fragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        SaveFavoriteDialog.newInstance(session)
-            .show(childFragmentManager, this.javaClass.toString())
+        if (session.duration != 0 && session.breakDuration != 0) {
+            SaveFavoriteDialog.newInstance(session)
+                .show(childFragmentManager, this.javaClass.toString())
+        }
     }
 
     fun onStartWorkout() {

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.adrcotfas.wod.MainActivity
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
 import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
@@ -83,6 +84,7 @@ class AmrapFragment : Fragment(), KodeinAware {
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
                 session = SessionMinimal(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
+                (requireActivity() as MainActivity).setStartButtonState(session.duration != 0)
             }
         )
         return binding.root
@@ -136,8 +138,10 @@ class AmrapFragment : Fragment(), KodeinAware {
     }
 
     fun openSaveFavoriteDialog() {
-        SaveFavoriteDialog.newInstance(session)
-            .show(childFragmentManager, this.javaClass.toString())
+        if (session.duration != 0) {
+            SaveFavoriteDialog.newInstance(session)
+                .show(childFragmentManager, this.javaClass.toString())
+        }
     }
 
     fun onStartWorkout() {

@@ -99,4 +99,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun setStartButtonState(enabled: Boolean) {
+        binding.startButton.isEnabled = enabled
+    }
 }
