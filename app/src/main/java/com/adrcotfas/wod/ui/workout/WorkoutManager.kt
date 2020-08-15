@@ -70,13 +70,14 @@ class WorkoutManager(private val soundPlayer : SoundPlayer, private val reposito
         timer.cancel()
         state.value = TimerState.INACTIVE
 
+        val currentSession = sessions[currentSessionIdx]
         val activeSeconds =
-            (currentSessionIdx + 1) * sessions[currentSessionIdx].duration +
+            (currentSessionIdx + 1) * currentSession.duration +
                     (currentTick.value?.toInt() ?: 0)
 
-        if (sessions[currentRoundIdx].type != SessionType.BREAK) {
+        if (currentSession.type != SessionType.BREAK) {
             repository.addSession(constructIncompleteSession(
-                sessions[currentSessionIdx].type,
+                currentSession.type,
                 activeSeconds,
                 System.currentTimeMillis()))
         }
