@@ -11,8 +11,10 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
         .setAudioAttributes(
             AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build())
+        .setMaxStreams(2)
         .build()
 
     private var sounds = HashMap<Int, Int>(4)
