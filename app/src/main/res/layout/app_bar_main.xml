@@ -16,7 +16,10 @@
         android:paddingVertical="16dp"
         app:tabRippleColor="@null"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabMode="auto">
+        app:tabMode="auto"
+        app:tabIndicator="@drawable/custom_tab_indicator"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorHeight="3dp">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/amrap_button"
