@@ -107,7 +107,6 @@ class ForTimeFragment : PortraitFragment(), KodeinAware {
             favoritesChipGroup.removeAllViews()
             for (favorite in favorites) {
                 val chip = Chip(requireContext()).apply {
-                    setTextAppearance(R.style.FavoritesTextStyle)
                     text = StringUtils.toFavoriteFormat(favorite)
                 }
                 chip.setOnLongClickListener(object : View.OnLongClickListener{

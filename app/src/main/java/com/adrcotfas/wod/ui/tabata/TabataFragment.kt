@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.adrcotfas.wod.MainActivity
-import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
@@ -156,7 +155,6 @@ class TabataFragment : PortraitFragment(), KodeinAware {
             favoritesChipGroup.removeAllViews()
             for (favorite in favorites) {
                 val chip = Chip(requireContext()).apply {
-                    setTextAppearance(R.style.FavoritesTextStyle)
                     text = StringUtils.toFavoriteFormat(favorite)
                 }
                 chip.setOnLongClickListener(object : View.OnLongClickListener{

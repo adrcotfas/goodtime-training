@@ -128,7 +128,6 @@ class EmomFragment : PortraitFragment(), KodeinAware {
             favoritesChipGroup.removeAllViews()
             for (favorite in favorites) {
                 val chip = Chip(requireContext()).apply {
-                    setTextAppearance(R.style.FavoritesTextStyle)
                     text = StringUtils.toFavoriteDescription(favorite)
                 }
                 chip.setOnLongClickListener(object : View.OnLongClickListener{

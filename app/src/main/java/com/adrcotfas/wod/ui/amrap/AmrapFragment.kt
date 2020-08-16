@@ -98,7 +98,6 @@ class AmrapFragment : PortraitFragment(), KodeinAware {
             favoritesChipGroup.removeAllViews()
             for (favorite in favorites) {
                 val chip = Chip(requireContext()).apply {
-                    setTextAppearance(R.style.FavoritesTextStyle)
                     text = toFavoriteFormat(favorite)
                 }
                 chip.setOnLongClickListener(object : View.OnLongClickListener{

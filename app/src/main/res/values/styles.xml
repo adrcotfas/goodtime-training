@@ -24,12 +24,15 @@
 
     <!--    Favorites-->
     <style name="FavoritesChipStyle" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textAppearance">@style/FavoritesTextStyle</item>
+        <item name="android:textColor">@color/green_goodtime</item>
         <item name="chipBackgroundColor">#0b2c17</item>
     </style>
 
-    <style name="FavoritesTextStyle">
+    <style name="FavoritesTextStyle" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/green_goodtime</item>
+        <item name="fontFamily">@font/app_font</item>
+        <item name="android:fontFamily">@font/app_font</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.MaterialComponents.Chip" parent="" tools:override="true">

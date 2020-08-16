@@ -21,6 +21,7 @@ import com.adrcotfas.wod.ui.for_time.ForTimeViewModelFactory
 import com.adrcotfas.wod.ui.log.LogViewModelFactory
 import com.adrcotfas.wod.ui.tabata.TabataViewModelFactory
 import com.adrcotfas.wod.ui.workout.WorkoutManager
+import com.google.android.material.resources.TextAppearanceConfig
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.*
@@ -47,6 +48,7 @@ class GoodtimeApplication : Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
+        TextAppearanceConfig.setShouldLoadFontSynchronously(true)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         val prefUtil: PrefUtil by instance()
         if (prefUtil.isFirstRun()) {
