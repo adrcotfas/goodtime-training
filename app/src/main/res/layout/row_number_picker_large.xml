@@ -6,11 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="end"
-    android:textSize="70sp"
-    android:maxLines="1"
-    android:singleLine="true"
-    android:lineSpacingExtra="0dp"
-    android:includeFontPadding="false"
-    android:fontFamily="@font/roboto_thin"
+    style="@style/PickerTextStyle.Large"
     android:textColor="@color/green_goodtime"
     tools:text="25" />

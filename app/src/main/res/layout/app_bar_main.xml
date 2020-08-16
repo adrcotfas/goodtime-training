@@ -18,8 +18,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tabMode="auto"
         app:tabIndicator="@drawable/custom_tab_indicator"
-        app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="3dp">
+        app:tabIndicatorHeight="3dp"
+        >
+<!--        app:tabTextAppearance="@style/TabTextStyle"-->
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/amrap_button"

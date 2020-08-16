@@ -62,12 +62,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:fontFamily="@font/roboto_thin"
-                android:paddingHorizontal="16dp"
                 android:text="@string/colon"
-                android:layout_marginBottom="6dp"
-                android:textColor="@color/green_goodtime"
-                android:textSize="70sp" />
+                style="@style/PickerTextStyle.Large"
+                android:textColor="@color/green_goodtime"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_seconds"

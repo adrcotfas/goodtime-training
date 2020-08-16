@@ -35,6 +35,41 @@
         <item name="android:fontFamily">@font/app_font</item>
     </style>
 
+    <style name="TabTextStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/app_font</item>
+        <item name="android:fontFamily">@font/app_font</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="WorkoutTimerTextStyle">
+        <item name="android:textSize">80sp</item>
+        <item name="fontFamily">@font/timer_font</item>
+        <item name="android:fontFamily">@font/timer_font</item>
+    </style>
+
+    <style name="PickerTextStyle">
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:lineSpacingExtra">0dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="fontFamily">@font/timer_font</item>
+        <item name="android:fontFamily">@font/timer_font</item>
+    </style>
+
+    <style name="PickerTextStyle.Small">
+        <item name="android:textSize">40sp</item>
+    </style>
+
+    <style name="PickerTextStyle.Medium">
+        <item name="android:textSize">60sp</item>
+    </style>
+
+    <style name="PickerTextStyle.Large">
+        <item name="android:textSize">70sp</item>
+    </style>
+
+
     <style name="ShapeAppearanceOverlay.MaterialComponents.Chip" parent="" tools:override="true">
         <item name="cornerSize">10%</item>
     </style>
