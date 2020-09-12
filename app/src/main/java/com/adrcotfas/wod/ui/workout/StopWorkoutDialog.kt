@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.kodein.di.KodeinAware
@@ -15,9 +16,11 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
-    private val workoutManager : WorkoutManager by instance()
+    private val viewModelFactory : WorkoutViewModelFactory by instance()
+    private lateinit var viewModel : WorkoutViewModel
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(WorkoutViewModel::class.java)
         isCancelable = false
         val b = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Stop workout?")
@@ -25,7 +28,7 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
             .setPositiveButton(
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->
-                workoutManager.stopTimer()
+                viewModel.stopTimer()
                 NavHostFragment.findNavController(this)
                     .navigate(StopWorkoutDialogDirections.actionStopWorkoutDialogToNavAmrap())
             }

@@ -10,8 +10,9 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
     private val soundPool = SoundPool.Builder()
         .setAudioAttributes(
             AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ALARM)
-                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                //TODO: override sound profile setting
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                //.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build())
         .setMaxStreams(2)

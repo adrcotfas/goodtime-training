@@ -43,7 +43,9 @@ class StringUtils {
                         "${sessionMinimal.numRounds} × $workString / $breakString"
                     }
                 }
-                else -> throw InvalidParameterException("received: ${sessionMinimal.type}")
+                else -> {
+                    //TODO: do something here
+                    "" }
             }
         }
 

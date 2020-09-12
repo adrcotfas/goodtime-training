@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.adrcotfas.wod.R
@@ -22,14 +23,26 @@ import org.kodein.di.generic.instance
 class WorkoutFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val workoutManager : WorkoutManager by instance()
+    private val viewModelFactory : WorkoutViewModelFactory by instance()
+    private lateinit var viewModel : WorkoutViewModel
     private lateinit var binding: FragmentWorkoutBinding
 
     private val args: WorkoutFragmentArgs by navArgs()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(WorkoutViewModel::class.java)
+        //TODO: handle states and screen lock
+        //TODO: make sure we have the args available
+        if (viewModel.state.value == TimerState.INACTIVE) {
+            viewModel.init(args.sessions)
+            viewModel.startWorkout()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
-        val state = workoutManager.state.value
+        val state = viewModel.state.value
         if (state != TimerState.INACTIVE && state != TimerState.FINISHED) {
             NotificationHelper.showNotification(requireContext())
         }
@@ -37,12 +50,6 @@ class WorkoutFragment : Fragment(), KodeinAware {
 
     override fun onResume() {
         super.onResume()
-        //TODO: handle states and screen lock
-        //TODO: make sure we have the args available
-        if (workoutManager.state.value == TimerState.INACTIVE) {
-            workoutManager.init(args.sessions)
-            workoutManager.startWorkout()
-        }
         NotificationHelper.hideNotification(requireContext())
     }
 
@@ -52,9 +59,25 @@ class WorkoutFragment : Fragment(), KodeinAware {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentWorkoutBinding.inflate(layoutInflater, container, false)
-        workoutManager.currentTick.observe( viewLifecycleOwner, Observer { seconds ->
+        viewModel.secondsUntilFinished.observe( viewLifecycleOwner, Observer { seconds ->
             binding.timer.text = StringUtils.secondsToTimerFormat(seconds)
         })
+
+        viewModel.currentSessionIdx.observe(viewLifecycleOwner, Observer {
+            binding.workoutDuration.text = viewModel.getDurationString()
+            binding.workoutType.text = viewModel.getCurrentSessionType().toString()
+            binding.round.text = "${viewModel.currentRoundIdx.value!! + 1} / ${viewModel.getTotalRounds()}"
+        })
+
+        viewModel.currentRoundIdx.observe(viewLifecycleOwner, Observer { currentRoundIdx ->
+            binding.round.text = "${currentRoundIdx + 1} / ${viewModel.getTotalRounds()}"
+        })
+
+        binding.fabFinish.setOnClickListener {
+            NavHostFragment.findNavController(this@WorkoutFragment)
+                .navigate(R.id.nav_dialog_stop_workout)
+        }
+
         // TODO: observe for session finished and cancel the StopWorkoutDialog
         return binding.root
     }
