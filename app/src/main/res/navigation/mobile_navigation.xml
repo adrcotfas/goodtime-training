@@ -3,47 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_amrap">
+    app:startDestination="@+id/nav_main">
 
     <fragment
-        android:id="@+id/nav_amrap"
-        android:name="com.adrcotfas.wod.ui.amrap.AmrapFragment"
-        android:label="@string/menu_amrap"
-        tools:layout="@layout/fragment_amrap" >
+        android:id="@+id/nav_main"
+        android:name="com.adrcotfas.wod.ui.main.MainFragment"
+        android:label="main" >
         <action
             android:id="@+id/start_workout_action"
             app:destination="@id/nav_workout" />
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_for_time"
-        android:name="com.adrcotfas.wod.ui.for_time.ForTimeFragment"
-        android:label="@string/menu_for_time"
-        tools:layout="@layout/fragment_emom" >
-        <action
-            android:id="@+id/start_workout_action"
-            app:destination="@id/nav_workout" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_tabata"
-        android:name="com.adrcotfas.wod.ui.tabata.TabataFragment"
-        android:label="@string/menu_tabata"
-        tools:layout="@layout/fragment_tabata" >
-        <action
-            android:id="@+id/start_workout_action"
-            app:destination="@id/nav_workout" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_emom"
-        android:name="com.adrcotfas.wod.ui.emom.EmomFragment"
-        android:label="@string/menu_emom"
-        tools:layout="@layout/fragment_tabata" >
-        <action
-            android:id="@+id/start_workout_action"
-            app:destination="@id/nav_workout" />
-    </fragment>
     <fragment
         android:id="@+id/nav_workout"
         android:name="com.adrcotfas.wod.ui.workout.WorkoutFragment"
@@ -54,22 +24,23 @@
             app:argType="string"
             android:defaultValue="null"/>
     </fragment>
+
     <fragment
         android:id="@+id/nav_log"
         android:name="com.adrcotfas.wod.ui.log.LogFragment"
         android:label="LogFragment"
         tools:layout="@layout/fragment_log"/>
+
     <dialog
         android:id="@+id/nav_dialog_stop_workout"
         android:name="com.adrcotfas.wod.ui.workout.StopWorkoutDialog"
         android:label="StopWorkoutDialog" >
         <action
-            android:id="@+id/action_stopWorkoutDialog_to_nav_amrap"
-            app:destination="@id/nav_amrap" />
+            android:id="@+id/action_stopWorkoutDialog_to_nav_main"
+            app:destination="@id/nav_main"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_main"
+            app:popUpToInclusive="true" />
     </dialog>
-    <dialog
-        android:id="@+id/nav_dialog_add_favorite"
-        android:name="com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog"
-        android:label="SaveFavoriteDialog">
-    </dialog>
+
 </navigation>

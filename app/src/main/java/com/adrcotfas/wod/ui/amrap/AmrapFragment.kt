@@ -1,35 +1,28 @@
 package com.adrcotfas.wod.ui.amrap
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.adrcotfas.wod.MainActivity
-import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
 import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
-import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
-import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
-import com.adrcotfas.wod.ui.common.PortraitFragment
+import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 import com.adrcotfas.wod.ui.common.ui.ConfirmDeleteFavoriteDialog
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class AmrapFragment : PortraitFragment(), KodeinAware {
-
-    override val kodein by closestKodein()
+class AmrapFragment : WorkoutTypeFragment() {
 
     private val viewModelFactory: AmrapViewModelFactory by instance()
     private lateinit var viewModel: AmrapViewModel
@@ -126,12 +119,12 @@ class AmrapFragment : PortraitFragment(), KodeinAware {
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
             viewModel.minutesPickerData,
-            15, rowHeight, scrollListener = minuteListener, clickListener = saveFavoriteHandler
+            viewModel.timeData.getMinutes(), rowHeight, scrollListener = minuteListener, clickListener = saveFavoriteHandler
         )
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
             viewModel.secondsPickerData,
-            0, rowHeight, scrollListener = secondsListener, clickListener = saveFavoriteHandler
+            viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener, clickListener = saveFavoriteHandler
         )
     }
 
@@ -142,9 +135,5 @@ class AmrapFragment : PortraitFragment(), KodeinAware {
         }
     }
 
-    fun onStartWorkout() {
-        val action = AmrapFragmentDirections.startWorkoutAction(
-            sessionsToString(generatePreWorkoutSession(), viewModel.session))
-        view?.findNavController()?.navigate(action)
-    }
+    override fun getSelectedSession(): SessionMinimal = viewModel.session
 }

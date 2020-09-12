@@ -1,36 +1,30 @@
 package com.adrcotfas.wod.ui.emom
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.adrcotfas.wod.MainActivity
-import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
-import com.adrcotfas.wod.common.preferences.PrefUtil.Companion.generatePreWorkoutSession
-import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentEmomBinding
-import com.adrcotfas.wod.ui.common.PortraitFragment
+import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 import com.adrcotfas.wod.ui.common.ui.ConfirmDeleteFavoriteDialog
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class EmomFragment : PortraitFragment(), KodeinAware {
+class EmomFragment : WorkoutTypeFragment() {
 
-    override val kodein by closestKodein()
     private val viewModelFactory: EmomViewModelFactory by instance()
     private lateinit var viewModel: EmomViewModel
 
@@ -159,10 +153,5 @@ class EmomFragment : PortraitFragment(), KodeinAware {
         }
     }
 
-    fun onStartWorkout() {
-        val action = EmomFragmentDirections.startWorkoutAction(
-            sessionsToString(generatePreWorkoutSession(), viewModel.session))
-        view?.findNavController()?.navigate(action)
-    }
-
+    override fun getSelectedSession(): SessionMinimal = viewModel.session
 }
