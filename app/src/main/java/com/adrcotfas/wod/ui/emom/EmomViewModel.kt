@@ -22,5 +22,5 @@ class EmomViewModel(sessionsRepository: SessionsRepository) : ViewModel() {
 
     val minutesPickerData = ArrayList<Int>().apply { addAll(0..3) }
     val secondsPickerData = ArrayList<Int>().apply { addAll(0..59) }
-    val roundsPickerData = ArrayList<Int>().apply { addAll(1..30) }
+    val roundsPickerData = ArrayList<Int>().apply { addAll(1..60) }
 }

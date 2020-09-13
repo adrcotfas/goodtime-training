@@ -30,34 +30,14 @@ class AmrapFragment : WorkoutTypeFragment() {
     private lateinit var binding: FragmentAmrapBinding
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
-    private lateinit var favoritesChipGroup: ChipGroup
 
     private val minuteListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) {
-            if (triggerListener) {
-                viewModel.timeData.setMinutes(value)
-            }
-        }
+        override fun onScroll(value: Int) { viewModel.timeData.setMinutes(value) }
     }
 
     private val secondsListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) {
-            if (triggerListener) {
-                viewModel.timeData.setSeconds(value)
-            }
-        }
+        override fun onScroll(value: Int) { viewModel.timeData.setSeconds(value) }
     }
-
-    private val saveFavoriteHandler = object: NumberPicker.ClickListener {
-        override fun onClick() {
-            openSaveFavoriteDialog()
-        }
-    }
-
-    /**
-     * Used to avoid the loop of pickers updating liveData updating pickers
-     */
-    private var triggerListener = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +51,6 @@ class AmrapFragment : WorkoutTypeFragment() {
     ): View? {
         binding = FragmentAmrapBinding.inflate(inflater, container, false)
         setupNumberPickers()
-        setupFavorites()
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
@@ -82,57 +61,18 @@ class AmrapFragment : WorkoutTypeFragment() {
         return binding.root
     }
 
-    private fun setupFavorites() {
-        binding.pickerSeparator.setOnClickListener{openSaveFavoriteDialog()}
-
-        favoritesChipGroup = binding.favorites
-        favoritesChipGroup.isSingleSelection = true
-        viewModel.favorites.observe( viewLifecycleOwner, Observer { favorites ->
-            favoritesChipGroup.removeAllViews()
-            for (favorite in favorites) {
-                val chip = Chip(requireContext()).apply {
-                    text = toFavoriteFormat(favorite)
-                }
-                chip.setOnLongClickListener(object : View.OnLongClickListener{
-                    override fun onLongClick(v: View?): Boolean {
-                        ConfirmDeleteFavoriteDialog.newInstance(favorite)
-                            .show(childFragmentManager, this.javaClass.toString())
-                        return true
-                    }
-                })
-                chip.setOnClickListener {
-                    if (favorite == viewModel.session) return@setOnClickListener
-                    triggerListener = false
-                    val duration = secondsToMinutesAndSeconds(favorite.duration)
-                    viewModel.setDuration(duration)
-                    minutePicker.setValue(duration.first)
-                    secondsPicker.setValue(duration.second)
-                    triggerListener = true
-                }
-                favoritesChipGroup.addView(chip)
-            }
-        })
-    }
-
     private fun setupNumberPickers() {
         val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
             viewModel.minutesPickerData,
-            viewModel.timeData.getMinutes(), rowHeight, scrollListener = minuteListener, clickListener = saveFavoriteHandler
+            viewModel.timeData.getMinutes(), rowHeight, scrollListener = minuteListener
         )
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
             viewModel.secondsPickerData,
-            viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener, clickListener = saveFavoriteHandler
+            viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener
         )
-    }
-
-    fun openSaveFavoriteDialog() {
-        if (viewModel.session.duration != 0) {
-            SaveFavoriteDialog.newInstance(viewModel.session)
-                .show(childFragmentManager, this.javaClass.toString())
-        }
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session

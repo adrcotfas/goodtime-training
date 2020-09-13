@@ -32,7 +32,6 @@ class EmomFragment : WorkoutTypeFragment() {
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
     private lateinit var roundsPicker: NumberPicker
-    private lateinit var favoritesChipGroup: ChipGroup
 
     private val minuteListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.emomData.setMinutes(value) }
@@ -45,17 +44,6 @@ class EmomFragment : WorkoutTypeFragment() {
     private val roundsListener = object: NumberPicker.ScrollListener {
         override fun onScroll(value: Int) { viewModel.emomData.setRounds(value) }
     }
-
-    private val saveFavoriteHandler = object: NumberPicker.ClickListener {
-        override fun onClick() {
-            openSaveFavoriteDialog()
-        }
-    }
-
-    /**
-     * Used to avoid the loop of pickers updating liveData updating pickers
-     */
-    private var triggerListener = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +59,6 @@ class EmomFragment : WorkoutTypeFragment() {
         binding = FragmentEmomBinding.inflate(inflater, container, false)
 
         setupNumberPickers()
-        setupFavorites()
 
         viewModel.emomData.get().observe(
             viewLifecycleOwner, Observer { data ->
@@ -89,15 +76,13 @@ class EmomFragment : WorkoutTypeFragment() {
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
             viewModel.minutesPickerData,
-            1, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener,
-            clickListener = saveFavoriteHandler
+            1, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener
         )
 
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
             viewModel.secondsPickerData,
-            0, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener,
-            clickListener = saveFavoriteHandler
+            0, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener
         )
 
         roundsPicker = NumberPicker(
@@ -106,51 +91,9 @@ class EmomFragment : WorkoutTypeFragment() {
             20, rowHeight,
             textSize = PickerSize.MEDIUM,
             textColor = Color.NEUTRAL,
-            prefixWithZero = false,
-            scrollListener = roundsListener,
-            clickListener = saveFavoriteHandler
+            prefixWithZero = true,
+            scrollListener = roundsListener
         )
-    }
-
-    private fun setupFavorites() {
-        binding.separator1.setOnClickListener{openSaveFavoriteDialog()}
-        binding.separator2.setOnClickListener{openSaveFavoriteDialog()}
-
-        favoritesChipGroup = binding.favorites
-        favoritesChipGroup.isSingleSelection = true
-        viewModel.favorites.observe( viewLifecycleOwner, Observer { favorites ->
-            favoritesChipGroup.removeAllViews()
-            for (favorite in favorites) {
-                val chip = Chip(requireContext()).apply {
-                    text = StringUtils.toFavoriteDescription(favorite)
-                }
-                chip.setOnLongClickListener(object : View.OnLongClickListener{
-                    override fun onLongClick(v: View?): Boolean {
-                        ConfirmDeleteFavoriteDialog.newInstance(favorite)
-                            .show(childFragmentManager, this.javaClass.toString())
-                        return true
-                    }
-                })
-                chip.setOnClickListener {
-                    if (favorite == viewModel.session) return@setOnClickListener
-                    triggerListener = false
-                    val duration = StringUtils.secondsToMinutesAndSeconds(favorite.duration)
-                    viewModel.setEmomData(duration, favorite.numRounds)
-                    minutePicker.setValue(duration.first)
-                    secondsPicker.setValue(duration.second)
-                    roundsPicker.setValue(favorite.numRounds)
-                    triggerListener = true
-                }
-                favoritesChipGroup.addView(chip)
-            }
-        })
-    }
-
-    fun openSaveFavoriteDialog() {
-        if (viewModel.session.duration != 0) {
-            SaveFavoriteDialog.newInstance(viewModel.session)
-                .show(childFragmentManager, this.javaClass.toString())
-        }
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session

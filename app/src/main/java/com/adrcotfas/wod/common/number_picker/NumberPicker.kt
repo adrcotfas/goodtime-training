@@ -18,13 +18,11 @@ class NumberPicker(
     prefixWithZero: Boolean = true,
     textSize: PickerSize = PickerSize.LARGE,
     textColor: Color = Color.GREEN,
-    private val scrollListener : ScrollListener,
-    private val clickListener : ClickListener
+    private val scrollListener : ScrollListener
 ) : NumberPickerAdapter.Listener {
 
     companion object {
         enum class PickerSize {
-            SMALL,
             MEDIUM,
             LARGE
         }
@@ -36,13 +34,6 @@ class NumberPicker(
     }
     interface ScrollListener {
         fun onScroll(value: Int)
-    }
-
-    /**
-     * handles the click on the center of the picker
-     */
-    interface ClickListener {
-        fun onClick()
     }
 
     private val viewManager : LoopingLayoutManager = LoopingLayoutManager(context)
@@ -106,7 +97,7 @@ class NumberPicker(
             adjustScrollToSnap(position)
             scrollListener.onScroll(getCurrentValue())
         } else {
-            clickListener.onClick()
+            // center of the picker was clicked
         }
     }
 }

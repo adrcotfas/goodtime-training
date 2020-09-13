@@ -6,6 +6,7 @@
     <color name="transparent_dark">#BF000000</color>
     <color name="grey500">#9E9E9E</color>
     <color name="green_goodtime">#31BD62</color>
+    <color name="green_goodtime_dark">#1B5E20</color>
     <color name="red_goodtime">#F44336</color>
     <color name="white">#FFFFFF</color>
 </resources>

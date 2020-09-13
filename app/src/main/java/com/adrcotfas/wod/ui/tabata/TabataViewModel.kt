@@ -22,7 +22,6 @@ class TabataViewModel(sessionsRepository: SessionsRepository) : ViewModel() {
 
     lateinit var session : SessionMinimal
 
-    val minutesPickerData = ArrayList<Int>().apply { addAll(0..3) }
-    val secondsPickerData = ArrayList<Int>().apply { addAll(0..59) }
-    val roundsPickerData = ArrayList<Int>().apply { addAll(1..30) }
+    val secondsPickerData = ArrayList<Int>().apply { addAll(1..90) }
+    val roundsPickerData = ArrayList<Int>().apply { addAll(1..60) }
 }

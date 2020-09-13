@@ -59,7 +59,6 @@ fun calculateRowHeight(layoutInflater : LayoutInflater, size: PickerSize = Picke
             when (size) {
                 PickerSize.LARGE -> R.layout.row_number_picker_large
                 PickerSize.MEDIUM -> R.layout.row_number_picker_medium
-                else -> R.layout.row_number_picker
             }, null) as TextView
     val fm = textView.paint.fontMetrics
     return fm.descent - fm.ascent

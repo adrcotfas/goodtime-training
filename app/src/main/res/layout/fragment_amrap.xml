@@ -8,38 +8,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.amrap.AmrapFragment">
 
-    <ScrollView
-        android:id="@+id/favorites_container"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="38dp"
-        android:overScrollMode="never"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@id/pickers"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:background="@color/grey500">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/favorites"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:chipSpacingHorizontal="16dp"
-            app:selectionRequired="true"
-            app:singleSelection="true" />
-    </ScrollView>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pickers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/favorites_container">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,19 +50,19 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/top"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@color/transparent_dark"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHeight_percent="0.33" />
-
-        <View
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/transparent_dark"
-            app:layout_constraintHeight_percent="0.33"
+            android:background="@drawable/gradient_cover_bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.5" />
+
+        <View
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/gradient_cover_top"
+            app:layout_constraintHeight_percent="0.5"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

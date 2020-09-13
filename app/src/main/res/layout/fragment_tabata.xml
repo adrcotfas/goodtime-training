@@ -8,40 +8,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.tabata.TabataFragment">
 
-    <ScrollView
-        android:id="@+id/favorites_container"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="38dp"
-        android:overScrollMode="never"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@id/pickers"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintVertical_chainStyle="packed"
-        tools:background="@color/grey500">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/favorites"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:chipSpacingHorizontal="16dp"
-            app:selectionRequired="true"
-            app:singleSelection="true" />
-    </ScrollView>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pickers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:background="@color/green_goodtime"
-        app:layout_constraintTop_toBottomOf="@id/favorites_container"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="64dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -67,16 +43,16 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/x"
-                style="@style/PickerTextStyle.Small"
+                style="@style/PickerTextStyle.Medium"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/picker_minutes_work"
+                app:layout_constraintEnd_toStartOf="@+id/picker_seconds_work"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/picker_rounds"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/picker_minutes_work"
+                android:id="@+id/picker_seconds_work"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -91,50 +67,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/colon"
-                style="@style/PickerTextStyle.Small"
-                android:textColor="@color/green_goodtime"
-                app:layout_constraintEnd_toStartOf="@+id/picker_seconds_work"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/picker_minutes_work"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/picker_seconds_work"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="16dp"
-                android:overScrollMode="never"
-                app:layout_constraintEnd_toStartOf="@+id/picker_minutes_break"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/separator1"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/picker_minutes_break"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:overScrollMode="never"
-                app:layout_constraintEnd_toStartOf="@+id/separator2"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/picker_seconds_work"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-            <TextView
-                android:id="@+id/separator2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/colon"
-                style="@style/PickerTextStyle.Small"
+                android:text="@string/backspace"
+                style="@style/PickerTextStyle.Medium"
                 android:textColor="@color/red_goodtime"
-                android:layout_marginBottom="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/picker_seconds_break"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/picker_minutes_break"
+                app:layout_constraintStart_toEndOf="@+id/picker_seconds_work"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
@@ -146,23 +84,23 @@
                 android:overScrollMode="never"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/separator2"
+                app:layout_constraintStart_toEndOf="@+id/separator1"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
-            android:id="@+id/top"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.33"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@color/transparent_dark"/>
-        <View
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintHeight_percent="0.33"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/gradient_cover_bottom"/>
+        <View
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.5"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/transparent_dark"/>
+            android:background="@drawable/gradient_cover_top"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

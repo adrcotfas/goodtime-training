@@ -2,4 +2,5 @@
 <resources>
     <string name="x">×</string>
     <string name="colon">:</string>
+    <string name="backspace">/</string>
 </resources>
