@@ -11,5 +11,5 @@
     <string name="menu_amrap">AMRAP</string>
     <string name="menu_for_time">FOR TIME</string>
     <string name="menu_emom">EMOM</string>
-    <string name="menu_tabata">TABATA</string>
+    <string name="menu_hiit">HIIT</string>
 </resources>
