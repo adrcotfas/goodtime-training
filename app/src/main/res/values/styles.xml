@@ -59,7 +59,7 @@
     </style>
 
     <style name="PickerTextStyle.Large">
-        <item name="android:textSize">70sp</item>
+        <item name="android:textSize">75sp</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.MaterialComponents.Chip" parent="" tools:override="true">
