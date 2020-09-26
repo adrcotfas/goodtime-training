@@ -12,7 +12,7 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
             AudioAttributes.Builder()
                 //TODO: override sound profile setting
                 .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                //.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build())
         .setMaxStreams(2)
