@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_save_favorite"
-        android:orderInCategory="100"
+        android:icon="@drawable/ic_heart_outline"
         android:title="Save Favorite"
-        android:icon="@drawable/ic_star_border_black_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

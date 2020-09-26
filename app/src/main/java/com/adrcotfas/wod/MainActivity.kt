@@ -1,7 +1,6 @@
 package com.adrcotfas.wod
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -47,6 +46,15 @@ class MainActivity : AppCompatActivity() {
         binding.startButton.setOnClickListener{
             ((supportFragmentManager.currentNavigationFragment as MainFragment)
                 .getFragment() as WorkoutTypeFragment).onStartWorkout()
+        }
+        binding.bottomAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_save_favorite -> {
+                    Toast.makeText(this, "Open favorites dialog", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
         }
     }
 
