@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
+        app:layout_constraintVertical_bias="0.6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -34,12 +35,12 @@
 
             <TextView
                 android:id="@+id/picker_separator"
+                style="@style/PickerTextStyle.Large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="@string/colon"
-                style="@style/PickerTextStyle.Large"
-                android:textColor="@color/green_goodtime"/>
+                android:textColor="@color/green_goodtime" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/picker_seconds"
