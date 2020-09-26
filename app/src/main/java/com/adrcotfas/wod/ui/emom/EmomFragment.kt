@@ -1,14 +1,12 @@
 package com.adrcotfas.wod.ui.emom
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.adrcotfas.wod.MainActivity
-import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
@@ -17,10 +15,7 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentEmomBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
-import com.adrcotfas.wod.ui.common.ui.ConfirmDeleteFavoriteDialog
-import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
+import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
 import org.kodein.di.generic.instance
 
 class EmomFragment : WorkoutTypeFragment() {
@@ -94,6 +89,18 @@ class EmomFragment : WorkoutTypeFragment() {
             prefixWithZero = true,
             scrollListener = roundsListener
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.pickers.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(1f)
+                .setDuration(FADE_ANIMATION_DURATION)
+                .setListener(null)
+        }
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session

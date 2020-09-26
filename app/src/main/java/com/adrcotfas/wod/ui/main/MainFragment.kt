@@ -28,19 +28,19 @@ class MainFragment: Fragment() {
         binding.workoutMenu.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_amrap -> {
-                    binding.pager.currentItem = 0
+                    binding.pager.setCurrentItem(0,  false)
                 }
                 R.id.nav_for_time -> {
-                    binding.pager.currentItem = 1
+                    binding.pager.setCurrentItem(1,  false)
                 }
                 R.id.nav_emom -> {
-                    binding.pager.currentItem = 2
+                    binding.pager.setCurrentItem(2,  false)
                 }
                 R.id.nav_hiit -> {
-                    binding.pager.currentItem = 3
+                    binding.pager.setCurrentItem(3,  false)
                 }
                 R.id.nav_custom -> {
-                    binding.pager.currentItem = 4
+                    binding.pager.setCurrentItem(4,  false)
                 }
             }
             true

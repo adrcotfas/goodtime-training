@@ -8,18 +8,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.adrcotfas.wod.MainActivity
-import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
-import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
-import com.adrcotfas.wod.ui.common.ui.ConfirmDeleteFavoriteDialog
-import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
+import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
 import org.kodein.di.generic.instance
 
 class AmrapFragment : WorkoutTypeFragment() {
@@ -59,6 +54,18 @@ class AmrapFragment : WorkoutTypeFragment() {
             }
         )
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.pickers.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(1f)
+                .setDuration(FADE_ANIMATION_DURATION)
+                .setListener(null)
+        }
     }
 
     private fun setupNumberPickers() {

@@ -15,6 +15,7 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentTabataBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
+import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
 import org.kodein.di.generic.instance
 
 class TabataFragment : WorkoutTypeFragment() {
@@ -63,6 +64,18 @@ class TabataFragment : WorkoutTypeFragment() {
             }
         )
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.pickers.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate()
+                .alpha(1f)
+                .setDuration(FADE_ANIMATION_DURATION)
+                .setListener(null)
+        }
     }
 
     private fun setupNumberPickers() {
