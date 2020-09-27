@@ -56,18 +56,6 @@ class AmrapFragment : WorkoutTypeFragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.pickers.apply {
-            alpha = 0f
-            visibility = View.VISIBLE
-            animate()
-                .alpha(1f)
-                .setDuration(FADE_ANIMATION_DURATION)
-                .setListener(null)
-        }
-    }
-
     private fun setupNumberPickers() {
         val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
