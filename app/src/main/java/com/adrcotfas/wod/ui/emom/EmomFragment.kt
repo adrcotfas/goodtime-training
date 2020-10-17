@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.adrcotfas.wod.MainActivity
+import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
@@ -15,12 +16,9 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentEmomBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
-import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
-import org.kodein.di.generic.instance
 
 class EmomFragment : WorkoutTypeFragment() {
 
-    private val viewModelFactory: EmomViewModelFactory by instance()
     private lateinit var viewModel: EmomViewModel
 
     private lateinit var binding: FragmentEmomBinding
@@ -42,7 +40,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(EmomViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(EmomViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -92,4 +90,11 @@ class EmomFragment : WorkoutTypeFragment() {
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session
+
+    override fun onFavoriteSelected(session: SessionMinimal) {
+        val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)
+        minutePicker.smoothScrollToPosition(duration.first)
+        secondsPicker.smoothScrollToPosition(duration.second)
+        roundsPicker.smoothScrollToPosition(session.numRounds - 1)
+    }
 }

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 
+//TODO: make it unique based on duration, breakDuration, rounds and type to avoid duplicates
 @Entity
 @TypeConverters(SessionTypeConverter::class)
 data class SessionMinimal (

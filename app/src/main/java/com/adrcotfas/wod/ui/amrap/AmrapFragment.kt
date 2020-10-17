@@ -1,25 +1,23 @@
 package com.adrcotfas.wod.ui.amrap
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.adrcotfas.wod.MainActivity
+import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
-import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
-import org.kodein.di.generic.instance
 
+//TODO: remove duplicate code with ForTimeFragment
 class AmrapFragment : WorkoutTypeFragment() {
 
-    private val viewModelFactory: AmrapViewModelFactory by instance()
     private lateinit var viewModel: AmrapViewModel
 
     private lateinit var binding: FragmentAmrapBinding
@@ -36,7 +34,7 @@ class AmrapFragment : WorkoutTypeFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AmrapViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(AmrapViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -71,4 +69,10 @@ class AmrapFragment : WorkoutTypeFragment() {
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session
+
+    override fun onFavoriteSelected(session: SessionMinimal) {
+        val duration = secondsToMinutesAndSeconds(session.duration)
+        minutePicker.smoothScrollToPosition(duration.first)
+        secondsPicker.smoothScrollToPosition(duration.second)
+    }
 }

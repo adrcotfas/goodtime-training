@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.databinding.FragmentMainBinding
+import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
 
 //TODO: persist last page and don't allow reselection
@@ -84,7 +84,7 @@ class MainFragment: Fragment() {
         }
     }
 
-    fun getFragment() : Fragment {
-        return pagerAdapter.getItem(binding.pager.currentItem)
+    fun getFragment() : WorkoutTypeFragment {
+        return pagerAdapter.getItem(binding.pager.currentItem) as WorkoutTypeFragment
     }
 }

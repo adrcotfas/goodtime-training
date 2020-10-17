@@ -19,11 +19,10 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/mobile_navigation" />
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
         app:menu="@menu/main"
         app:navigationIcon="@drawable/ic_menu_open"
         app:navigationContentDescription="Navigation icon"/>
@@ -34,7 +33,7 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_run"
         app:tint="@color/green_goodtime"
-        app:backgroundTint="@color/green_goodtime_dark"
+        app:backgroundTint="@color/green_goodtime_darker"
         app:fabCustomSize="70dp"
         app:maxImageSize="36dp"
         android:layout_marginBottom="96dp"

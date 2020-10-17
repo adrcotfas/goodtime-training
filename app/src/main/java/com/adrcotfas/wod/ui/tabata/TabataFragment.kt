@@ -15,12 +15,9 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentTabataBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
-import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
-import org.kodein.di.generic.instance
 
 class TabataFragment : WorkoutTypeFragment() {
 
-    private val viewModelFactory: TabataViewModelFactory by instance()
     private lateinit var viewModel: TabataViewModel
 
     private lateinit var binding: FragmentTabataBinding
@@ -42,7 +39,7 @@ class TabataFragment : WorkoutTypeFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(TabataViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(TabataViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -95,4 +92,10 @@ class TabataFragment : WorkoutTypeFragment() {
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session
+
+    override fun onFavoriteSelected(session: SessionMinimal) {
+        secondsWorkPicker.smoothScrollToPosition(session.duration - 1)
+        secondsBreakPicker.smoothScrollToPosition(session.breakDuration - 1)
+        roundsPicker.smoothScrollToPosition(session.numRounds - 1)
+    }
 }

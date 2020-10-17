@@ -1,20 +1,22 @@
 package com.adrcotfas.wod.ui.common.ui
 
-import android.R
+import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.DialogInterface
+import android.content.res.ColorStateList
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteDescription
+import com.adrcotfas.wod.R
+import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteDescriptionDetailed
+import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
+import com.adrcotfas.wod.common.StringUtils.Companion.toString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.repository.SessionsRepository
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.adrcotfas.wod.databinding.DialogSelectFavoriteBinding
+import com.google.android.material.chip.Chip
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -25,48 +27,64 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
     private val repo: SessionsRepository by instance()
     private lateinit var favoriteCandidate : SessionMinimal
     private lateinit var favorites : List<SessionMinimal>
+    private lateinit var binding: DialogSelectFavoriteBinding
+    private lateinit var listener: Listener
+
+    interface Listener {
+        fun onFavoriteSelected(session: SessionMinimal)
+    }
 
     companion object {
-        fun newInstance(session: SessionMinimal) : SaveFavoriteDialog {
+        fun newInstance(session: SessionMinimal, listener : Listener) : SaveFavoriteDialog {
             val dialog = SaveFavoriteDialog()
             dialog.favoriteCandidate = session
+            dialog.listener = listener
             return dialog
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val dialog =
-            dialog as AlertDialog?
-            dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = false
-        repo.getSessionsMinimal(favoriteCandidate.type).observe(this, Observer {
-            favorites = it
-            dialog?.getButton(AlertDialog.BUTTON_POSITIVE)?.isEnabled = true
-        })
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = MaterialAlertDialogBuilder(requireContext())
+        val b = AlertDialog.Builder(requireContext())
+
+        binding = DialogSelectFavoriteBinding.inflate(layoutInflater)
+        setupFavorites()
+        binding.currentSelectionDescription.text = toFavoriteDescriptionDetailed(favoriteCandidate)
         b.apply {
-            setTitle("Save this favorite?")
-            setMessage(toFavoriteDescription(favoriteCandidate))
-            setPositiveButton(
-                R.string.ok
-            ) { _: DialogInterface?, _: Int ->
-                    for (f in favorites) {
-                        if (f == favoriteCandidate) {
-                            Toast.makeText(requireContext(), "Favorite already exists", Toast.LENGTH_SHORT).show()
-                            return@setPositiveButton
-                        }
-                    }
-                    repo.addSessionMinimal(favoriteCandidate)
+            setView(binding.root)
+            binding.favoriteCandidateChip.text = toFavoriteFormat(favoriteCandidate)
+            binding.favoriteCandidateChip.setOnClickListener{
+                repo.addSessionMinimal(favoriteCandidate)
+                binding.currentSelectionSection.visibility = View.GONE
             }
-            setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int -> }
         }
         return b.create()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setupFavorites() {
+        binding.selectFavoriteTitle.text = "Select ${toString(favoriteCandidate.type)} favorite"
+        repo.getSessionsMinimal(favoriteCandidate.type).observe(
+            this, Observer { favorites = it
+
+                binding.emptyState.visibility = if (favorites.isEmpty()) View.VISIBLE else View.GONE
+
+                val favoritesChipGroup = binding.favorites
+                favoritesChipGroup.isSingleSelection = true
+                favoritesChipGroup.removeAllViews()
+                for (favorite in favorites) {
+                    val chip = Chip(requireContext()).apply {
+                        text = toFavoriteFormat(favorite)
+                    }
+                    chip.setOnCloseIconClickListener { repo.removeSessionMinimal(favorite.id) }
+                    chip.setOnClickListener {
+                        listener.onFavoriteSelected(favorite)
+                        dismiss()
+                    }
+                    favoritesChipGroup.addView(chip)
+                }
+                if (!favorites.contains(favoriteCandidate)) {
+                    binding.currentSelectionSection.visibility = View.VISIBLE
+                }
+            })
     }
 }

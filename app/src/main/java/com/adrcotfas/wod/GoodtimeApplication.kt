@@ -15,12 +15,7 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.repository.SessionRepositoryImpl
 import com.adrcotfas.wod.data.repository.SessionsRepository
-import com.adrcotfas.wod.ui.amrap.AmrapViewModelFactory
-import com.adrcotfas.wod.ui.emom.EmomViewModelFactory
-import com.adrcotfas.wod.ui.for_time.ForTimeViewModelFactory
 import com.adrcotfas.wod.ui.log.LogViewModelFactory
-import com.adrcotfas.wod.ui.tabata.TabataViewModelFactory
-import com.adrcotfas.wod.ui.workout.WorkoutViewModel
 import com.adrcotfas.wod.ui.workout.WorkoutViewModelFactory
 import com.google.android.material.resources.TextAppearanceConfig
 import org.kodein.di.Kodein
@@ -39,11 +34,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<SessionsRepository>() with singleton { SessionRepositoryImpl(instance(), instance()) }
         bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
         bind<SoundPlayer>() with singleton { SoundPlayer(applicationContext) }
-        bind<LogViewModelFactory>() with provider { LogViewModelFactory(instance()) }
-        bind() from provider { AmrapViewModelFactory(instance()) }
-        bind() from provider { ForTimeViewModelFactory(instance()) }
-        bind() from provider { EmomViewModelFactory(instance()) }
-        bind() from provider { TabataViewModelFactory(instance()) }
+        bind() from provider { LogViewModelFactory(instance()) }
         bind() from provider { WorkoutViewModelFactory(instance(), instance()) }
     }
 

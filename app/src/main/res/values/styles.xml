@@ -7,8 +7,14 @@
         <item name="colorSurface">@android:color/black</item>
         <item name="colorOnSurface">@android:color/white</item>
         <item name="android:navigationBarColor">?attr/colorSurface</item>
-        <item name="chipStyle">@style/FavoritesChipStyle</item>
+
+        <item name="fontFamily">@font/app_font</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="chipStyle">@style/FavoritesChipStyle.Green</item>
         <item name="bottomAppBarStyle">@style/BottomAppBar</item>
+
+        <item name="alertDialogTheme">@style/DialogTheme</item>
+        <item name="materialAlertDialogTheme">@style/DialogTheme</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -23,14 +29,21 @@
     </style>
 
     <!--    Favorites-->
-    <style name="FavoritesChipStyle" parent="Widget.MaterialComponents.Chip.Action">
+    <style name="FavoritesChipStyle.Green" parent="Widget.MaterialComponents.Chip.Entry">
         <item name="android:textAppearance">@style/FavoritesTextStyle</item>
         <item name="android:textColor">@color/green_goodtime</item>
-        <item name="chipBackgroundColor">#0b2c17</item>
+        <item name="chipBackgroundColor">@color/green_goodtime_dark</item>
+        <item name="closeIconTint">@color/transparent_dark</item>
+    </style>
+
+    <style name="FavoritesChipStyle.Grey" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textAppearance">@style/FavoritesTextStyle</item>
+        <item name="android:textColor">@color/grey200</item>
+        <item name="chipBackgroundColor">@color/grey800</item>
     </style>
 
     <style name="FavoritesTextStyle" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="fontFamily">@font/app_font</item>
         <item name="android:fontFamily">@font/app_font</item>
     </style>
@@ -63,7 +76,7 @@
     </style>
 
     <style name="ShapeAppearanceOverlay.MaterialComponents.Chip" parent="" tools:override="true">
-        <item name="cornerSize">10%</item>
+        <item name="cornerSize">50%</item>
     </style>
 
     <style name="WorkoutBottomAppBarStyle" parent="Widget.MaterialComponents.BottomNavigationView.PrimarySurface">
@@ -71,6 +84,11 @@
         <item name="itemTextAppearanceActive">?attr/textAppearanceOverline</item>
         <item name="itemTextAppearanceInactive">?attr/textAppearanceOverline</item>
         <item name="elevation">0dp</item>
+    </style>
+
+    <style name="DialogTheme" parent="Theme.MaterialComponents.Dialog.Alert" >
+        <item name="android:backgroundTint">@color/grey1000</item>
+        <item name="dialogCornerRadius">16dp</item>
     </style>
 
 </resources>

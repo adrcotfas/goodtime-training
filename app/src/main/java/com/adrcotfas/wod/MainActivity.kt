@@ -8,8 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.adrcotfas.wod.common.currentNavigationFragment
+import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.ActivityMainBinding
-import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
+import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.adrcotfas.wod.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                 destination.label == "LogFragment" ||
                         destination.label == "WorkoutFragment" ||
                         destination.label == "StopWorkoutDialog"
-            binding.bottomAppBar.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            binding.toolbar.visibility = if (hideButtons) View.GONE else View.VISIBLE
             binding.startButton.visibility = if (hideButtons) View.GONE else View.VISIBLE
 
             if (destination.label == "WorkoutFragment") {
@@ -45,13 +46,22 @@ class MainActivity : AppCompatActivity() {
 
         binding.startButton.setOnClickListener{
             ((supportFragmentManager.currentNavigationFragment as MainFragment)
-                .getFragment() as WorkoutTypeFragment).onStartWorkout()
+                .getFragment()).onStartWorkout()
         }
-        binding.bottomAppBar.setOnMenuItemClickListener { menuItem ->
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_save_favorite -> {
-                    Toast.makeText(this, "Open favorites dialog", Toast.LENGTH_SHORT).show()
-                    true
+                    val fragment =
+                        (supportFragmentManager.currentNavigationFragment as MainFragment)
+                            .getFragment()
+                    val session = fragment.getSelectedSession()
+                    if (session.type == SessionType.EMOM && session.duration == 0) {
+                        false
+                    } else {
+                        SaveFavoriteDialog.newInstance(
+                            session, fragment).show(supportFragmentManager, "")
+                        true
+                    }
                 }
                 else -> false
             }
@@ -59,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupAppBar() {
-        binding.bottomAppBar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
         }
     }

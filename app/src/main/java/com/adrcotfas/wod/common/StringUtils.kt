@@ -4,7 +4,6 @@ import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
-import java.security.InvalidParameterException
 import java.util.concurrent.TimeUnit
 
 class StringUtils {
@@ -23,24 +22,24 @@ class StringUtils {
                     + ":" + insertPrefixZero(seconds))
         }
 
-        fun toFavoriteFormat(sessionMinimal: SessionMinimal): String {
-            return when(sessionMinimal.type) {
+        fun toFavoriteFormat(session: SessionMinimal): String {
+            return when(session.type) {
                 SessionType.AMRAP -> {
-                    secondsToNiceFormat(sessionMinimal.duration)
+                    secondsToNiceFormat(session.duration)
                 }
                 SessionType.FOR_TIME -> {
-                    "TC ${secondsToNiceFormat(sessionMinimal.duration)}"
+                    "TC ${secondsToNiceFormat(session.duration)}"
                 }
                 SessionType.EMOM -> {
-                    "${sessionMinimal.numRounds} × ${secondsToNiceFormat(sessionMinimal.duration)}"
+                    "${session.numRounds} × ${secondsToNiceFormat(session.duration)}"
                 }
                 SessionType.TABATA -> {
-                    if (sessionMinimal.duration == 20 && sessionMinimal.breakDuration == 10 && sessionMinimal.numRounds == 8) {
-                        "default"
+                    if (session.duration == 20 && session.breakDuration == 10 && session.numRounds == 8) {
+                        "Tabata"
                     } else {
-                        val workString = secondsToNiceFormat(sessionMinimal.duration)
-                        val breakString = secondsToNiceFormat(sessionMinimal.breakDuration)
-                        "${sessionMinimal.numRounds} × $workString / $breakString"
+                        val workString = secondsToNiceFormat(session.duration)
+                        val breakString = secondsToNiceFormat(session.breakDuration)
+                        "${session.numRounds} × $workString / $breakString"
                     }
                 }
                 else -> {
@@ -55,6 +54,19 @@ class StringUtils {
                 duration.first == 0 -> "${duration.second} sec"
                 duration.second == 0 -> "${duration.first} min"
                 else -> "${duration.first} min ${duration.second} sec"
+            }
+        }
+
+        private fun secondsToNiceFormatExtended(elapsed: Int): String {
+            val duration = secondsToMinutesAndSeconds(elapsed)
+            return when {
+                duration.first == 0 -> "${duration.second} second" + if (duration.second > 1) "s" else ""
+                duration.second == 0 -> "${duration.first} minute" + if (duration.first > 1) "s" else ""
+                else -> {
+                    val seconds = duration.second.toString() + " second" + if (duration.second > 1) "s" else ""
+                    val minutes = duration.first.toString() + " minute" + if (duration.first > 1) "s" else ""
+                    "$minutes and $seconds"
+                }
             }
         }
 
@@ -73,6 +85,27 @@ class StringUtils {
             }
         }
 
+        fun toFavoriteDescriptionDetailed(session : SessionMinimal): String {
+            return when (session.type) {
+                SessionType.AMRAP -> "As many rounds as possible in ${secondsToNiceFormatExtended(session.duration)}"
+                SessionType.FOR_TIME -> "For time with a time cap of ${secondsToNiceFormatExtended(session.duration)}"
+                SessionType.EMOM -> {
+                    (if (session.duration == 60) "Every minute on the minute for ${secondsToNiceFormatExtended(session.numRounds * session.duration)}"
+                    else
+                        "Every ${secondsToNiceFormatExtended(session.duration)} for " +
+                                secondsToNiceFormatExtended(session.numRounds * session.duration)) +
+                            " (${session.numRounds} × ${secondsToNiceFormatExtended(session.duration)})"
+                }
+                SessionType.TABATA -> {
+                    val workString = session.duration.toString() + " second" +  if (session.duration > 1) "s" else ""
+                    val breakString = session.breakDuration.toString() + " second" +  if (session.breakDuration > 1) "s" else ""
+                    "${session.numRounds} high intensity intervals of $workString of work and $breakString of rest"
+                }
+                else -> ""
+            }
+        }
+
+
         private fun insertPrefixZero(value: Long): String {
             return if (value < 10) "0$value" else value.toString()
         }
@@ -81,6 +114,16 @@ class StringUtils {
             DateTimeFormat.forPattern("EEE', 'MMM d', ' yyyy, HH:mm")
         fun formatDateAndTime(millis: Long): String {
             return dateTimeFormatter.print(millis)
+        }
+
+        fun toString(sessionType : SessionType) : String {
+            return when (sessionType) {
+                SessionType.AMRAP -> "AMRAP"
+                SessionType.FOR_TIME -> "FOR TIME"
+                SessionType.EMOM -> "EMOM"
+                SessionType.TABATA -> "HIIT"
+                else -> ""
+            }
         }
     }
 }

@@ -3,10 +3,19 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="transparent_dark">#BF000000</color>
+    <color name="transparent_dark">#80000000</color>
+
+    <color name="grey200">#EEEEEE</color>
     <color name="grey500">#9E9E9E</color>
-    <color name="green_goodtime">#31BD62</color>
-    <color name="green_goodtime_dark">#1B5E20</color>
+    <color name="grey800">#424242</color>
+    <color name="grey1000">#141414</color>
+
+    <color name="green_goodtime">#4CAF50</color>
+    <color name="green_goodtime_dark">#17501B</color>
+    <color name="green_goodtime_darker">#0b2c17</color>
+
     <color name="red_goodtime">#F44336</color>
+    <color name="red_goodtime_dark">#421000</color>
+
     <color name="white">#FFFFFF</color>
 </resources>

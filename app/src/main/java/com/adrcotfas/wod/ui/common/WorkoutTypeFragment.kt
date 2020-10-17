@@ -8,11 +8,12 @@ import androidx.navigation.findNavController
 import com.adrcotfas.wod.common.preferences.PrefUtil
 import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.adrcotfas.wod.ui.main.MainFragmentDirections
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 
-abstract class WorkoutTypeFragment : Fragment(), KodeinAware {
+abstract class WorkoutTypeFragment : Fragment(), KodeinAware, SaveFavoriteDialog.Listener {
 
     override val kodein by closestKodein()
 
