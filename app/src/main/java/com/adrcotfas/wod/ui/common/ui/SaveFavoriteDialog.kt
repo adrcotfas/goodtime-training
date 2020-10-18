@@ -66,7 +66,7 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
         repo.getSessionsMinimal(favoriteCandidate.type).observe(
             this, Observer { favorites = it
 
-                binding.emptyState.visibility = if (favorites.isEmpty()) View.VISIBLE else View.GONE
+                binding.selectFavoriteTitle.visibility = if (favorites.isEmpty()) View.GONE else View.VISIBLE
 
                 val favoritesChipGroup = binding.favorites
                 favoritesChipGroup.isSingleSelection = true

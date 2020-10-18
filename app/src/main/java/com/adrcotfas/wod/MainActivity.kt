@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                         (supportFragmentManager.currentNavigationFragment as MainFragment)
                             .getFragment()
                     val session = fragment.getSelectedSession()
-                    if (session.type == SessionType.EMOM && session.duration == 0) {
+                    if (session.duration == 0) {
                         false
                     } else {
                         SaveFavoriteDialog.newInstance(
