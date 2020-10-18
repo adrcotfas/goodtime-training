@@ -33,7 +33,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<SessionMinimalDao>() with singleton { instance<Database>().sessionMinimalDao() }
         bind<SessionsRepository>() with singleton { SessionRepositoryImpl(instance(), instance()) }
         bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
-        bind<SoundPlayer>() with singleton { SoundPlayer(applicationContext) }
+        bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
         bind() from provider { LogViewModelFactory(instance()) }
         bind() from provider { WorkoutViewModelFactory(instance(), instance()) }
     }

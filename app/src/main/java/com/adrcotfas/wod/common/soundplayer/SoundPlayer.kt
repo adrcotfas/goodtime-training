@@ -2,18 +2,14 @@ package com.adrcotfas.wod.common.soundplayer
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.media.AudioAttributes
-import android.media.SoundPool
+import android.media.*
 import com.adrcotfas.wod.R
 
 class SoundPlayer(base: Context) : ContextWrapper(base) {
     private val soundPool = SoundPool.Builder()
         .setAudioAttributes(
             AudioAttributes.Builder()
-                //TODO: override sound profile setting
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
                 .build())
         .setMaxStreams(2)
         .build()
