@@ -1,6 +1,9 @@
 package com.adrcotfas.wod
 
+import android.graphics.PorterDuff
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -8,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.adrcotfas.wod.common.currentNavigationFragment
-import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.ActivityMainBinding
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.adrcotfas.wod.ui.main.MainFragment
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
     private lateinit var navHostFragment: NavHostFragment
+    private var favoritesButton: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +61,7 @@ class MainActivity : AppCompatActivity() {
                     if (session.duration == 0) {
                         false
                     } else {
-                        SaveFavoriteDialog.newInstance(
-                            session, fragment).show(supportFragmentManager, "")
+                        SaveFavoriteDialog.newInstance(session, fragment).show(supportFragmentManager, "")
                         true
                     }
                 }
@@ -68,7 +70,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        favoritesButton = menu!!.findItem(R.id.action_save_favorite)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     private fun setupAppBar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = null
+
         binding.toolbar.setNavigationOnClickListener {
             Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
         }
@@ -76,5 +87,16 @@ class MainActivity : AppCompatActivity() {
 
     fun setStartButtonState(enabled: Boolean) {
         binding.startButton.isEnabled = enabled
+        if (enabled) {
+            binding.startButton.background?.setTint(resources.getColor(R.color.green_goodtime_darker))
+            binding.startButton.drawable?.setTint(resources.getColor(R.color.green_goodtime))
+            favoritesButton?.icon?.setColorFilter(
+                resources.getColor(R.color.red_goodtime), PorterDuff.Mode.SRC_ATOP)
+        } else {
+            binding.startButton.background?.setTint(resources.getColor(R.color.grey1000))
+            binding.startButton.drawable?.setTint(resources.getColor(R.color.grey800))
+            favoritesButton?.icon?.setColorFilter(
+                resources.getColor(R.color.grey800), PorterDuff.Mode.SRC_ATOP)
+        }
     }
 }

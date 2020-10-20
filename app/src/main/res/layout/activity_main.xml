@@ -36,6 +36,7 @@
         app:backgroundTint="@color/green_goodtime_darker"
         app:fabCustomSize="70dp"
         app:maxImageSize="36dp"
+        app:borderWidth="0dp"
         android:layout_marginBottom="96dp"
         android:layout_gravity="bottom|center" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

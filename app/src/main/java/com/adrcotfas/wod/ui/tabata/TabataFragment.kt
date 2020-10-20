@@ -56,8 +56,6 @@ class TabataFragment : WorkoutTypeFragment() {
                 viewModel.session =
                     SessionMinimal(duration = tabataData.first, breakDuration = tabataData.second,
                         numRounds = tabataData.third, type = SessionType.TABATA)
-                (requireActivity() as MainActivity)
-                    .setStartButtonState(viewModel.session.duration != 0 && viewModel.session.breakDuration != 0)
             }
         )
         return binding.root

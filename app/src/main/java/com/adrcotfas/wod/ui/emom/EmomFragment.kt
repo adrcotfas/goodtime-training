@@ -55,9 +55,10 @@ class EmomFragment : WorkoutTypeFragment() {
 
         viewModel.emomData.get().observe(
             viewLifecycleOwner, Observer { data ->
-                viewModel.session = SessionMinimal(duration = data.first, breakDuration = 0,
+                val duration = data.first
+                viewModel.session = SessionMinimal(duration = duration, breakDuration = 0,
                     numRounds = data.second, type = SessionType.EMOM)
-                (requireActivity() as MainActivity).setStartButtonState(viewModel.session.duration != 0)
+                updateMainButtonsState(duration)
             }
         )
         return binding.root

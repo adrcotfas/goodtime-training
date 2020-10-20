@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.adrcotfas.wod.MainActivity
 import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
@@ -48,7 +47,7 @@ class AmrapFragment : WorkoutTypeFragment() {
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
                 viewModel.session = SessionMinimal(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
-                (requireActivity() as MainActivity).setStartButtonState(viewModel.session.duration != 0)
+                updateMainButtonsState(duration)
             }
         )
         return binding.root

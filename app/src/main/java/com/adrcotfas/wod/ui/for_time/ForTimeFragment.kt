@@ -50,7 +50,7 @@ class ForTimeFragment : WorkoutTypeFragment() {
                     duration = duration, breakDuration = 0, numRounds = 0,
                     type = SessionType.FOR_TIME
                 )
-                (requireActivity() as MainActivity).setStartButtonState(duration != 0)
+                updateMainButtonsState(duration)
             }
         )
         return binding.root
