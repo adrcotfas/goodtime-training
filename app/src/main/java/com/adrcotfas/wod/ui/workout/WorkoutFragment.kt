@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.notifications.NotificationHelper
+import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.workout.TimerState
 import com.adrcotfas.wod.databinding.FragmentWorkoutBinding
 import org.kodein.di.KodeinAware
@@ -40,6 +41,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
         }
     }
 
+    //TODO: pause the timer if it is not visible on screen
     override fun onPause() {
         super.onPause()
         val state = viewModel.state.value
@@ -60,23 +62,60 @@ class WorkoutFragment : Fragment(), KodeinAware {
     ): View? {
         binding = FragmentWorkoutBinding.inflate(layoutInflater, container, false)
         viewModel.secondsUntilFinished.observe( viewLifecycleOwner, Observer { seconds ->
-            binding.timer.text = StringUtils.secondsToTimerFormat(seconds)
+            val total = viewModel.getCurrentSessionDuration().toFloat()
+            val secondsToShow = seconds + 1
+            if ( viewModel.getCurrentSessionType() != SessionType.BREAK
+                && (seconds == total.toInt())) {
+                binding.timer.text = "" // or "REST"
+            } else {
+                binding.timer.text = StringUtils.secondsToTimerFormat(secondsToShow)
+            }
+            val newProgress = (total - seconds) / total
+            binding.circleProgress.onTick(newProgress)
+        })
+
+        viewModel.isResting.observe(viewLifecycleOwner, Observer { isResting ->
+            val color =
+                resources.getColor(if (isResting) R.color.red_goodtime else R.color.green_goodtime)
+            binding.circleProgress.setColor(isResting)
+            binding.timer.setTextColor(color)
+            binding.round.setTextColor(color)
+            binding.workoutImage.setColorFilter(color)
         })
 
         viewModel.currentSessionIdx.observe(viewLifecycleOwner, Observer {
-            binding.workoutDuration.text = viewModel.getDurationString()
-            binding.workoutType.text = viewModel.getCurrentSessionType().toString()
-            binding.round.text = "${viewModel.currentRoundIdx.value!! + 1} / ${viewModel.getTotalRounds()}"
+            val type = viewModel.getCurrentSessionType()
+            binding.finishButton.visibility =
+                if (type != SessionType.FOR_TIME) View.GONE
+                else View.VISIBLE
+            binding.round.visibility =
+                if (type != SessionType.TABATA && type != SessionType.EMOM) View.GONE
+                else View.VISIBLE
+
+            binding.round.text = "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
+            binding.workoutImage.setImageDrawable(resources.getDrawable(
+                when (type) {
+                    SessionType.AMRAP-> {
+                        R.drawable.ic_infinity
+                    }
+                    SessionType.FOR_TIME -> {
+                        R.drawable.ic_flash
+                    }
+                    SessionType.EMOM -> {
+                        R.drawable.ic_status_goodtime
+                    }
+                    SessionType.TABATA -> {
+                        R.drawable.ic_fire
+                    }
+                    SessionType.BREAK -> {
+                        R.drawable.ic_break
+                    }
+                }, null))
         })
 
         viewModel.currentRoundIdx.observe(viewLifecycleOwner, Observer { currentRoundIdx ->
-            binding.round.text = "${currentRoundIdx + 1} / ${viewModel.getTotalRounds()}"
+            binding.round.text = "${currentRoundIdx + 1}/${viewModel.getTotalRounds()}"
         })
-
-        binding.fabFinish.setOnClickListener {
-            NavHostFragment.findNavController(this@WorkoutFragment)
-                .navigate(R.id.nav_dialog_stop_workout)
-        }
 
         // TODO: observe for session finished and cancel the StopWorkoutDialog
         return binding.root

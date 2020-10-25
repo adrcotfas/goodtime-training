@@ -5,8 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer
-import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.COUNTDOWN
-import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.COUNTDOWN_LONG
+import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.START_COUNTDOWN
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLETE
 import com.adrcotfas.wod.common.stringToSessions
 
@@ -29,7 +28,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
      * Indicates the index of a session part of a custom workout
      * For a regular workout this will be maximum 1; 0 for the pre-workout countdown and 1 for the actual workout
      */
-    val currentSessionIdx = MutableLiveData<Int>(0)
+    val currentSessionIdx = MutableLiveData(0)
 
     fun getDurationString() : String {
         return toFavoriteFormat(sessions[currentSessionIdx.value!!])
@@ -42,39 +41,44 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
     val secondsUntilFinished = MutableLiveData<Int>()
 
+    /**
+     * used for Tabata workouts to signal the rest
+     */
+    val isResting = MutableLiveData(false)
+
     fun getTotalRounds() : Int  {
         val sessionId = currentSessionIdx.value!!
         return sessions[sessionId].numRounds
     }
 
     fun getCurrentSessionType() : SessionType = sessions[currentSessionIdx.value!!].type
-    fun getCurrentSessionDuration() : Int = sessions[currentSessionIdx.value!!].duration
-
-    /**
-     * used for Tabata workouts to signal the rest
-     */
-    private var shouldRest : Boolean = false
+    fun getCurrentSessionDuration() : Int =
+        if (isResting.value!!) sessions[currentSessionIdx.value!!].breakDuration
+        else sessions[currentSessionIdx.value!!].duration
 
     fun init(sessionsRaw: String) {
         sessions = stringToSessions(sessionsRaw)
         currentRoundIdx.value = 0
         currentSessionIdx.value = 0
         secondsUntilFinished.value = sessions[0].duration
+        isResting.value = false
     }
 
     fun startWorkout() {
         state.value = TimerState.ACTIVE
         val index = currentSessionIdx.value!!
         val session = sessions[index]
-        val seconds = secondsUntilFinished.value?.toLong()
-            ?: if (shouldRest)
-                sessions[index].breakDuration.toLong()
-            else
-                sessions[index].duration.toLong()
 
-        //TODO: add Timber
-        Log.e("WOD::startWorkout", "SessionType: ${session.type}, seconds: $seconds, shouldRest: $shouldRest, " +
-                "currentSession: $currentSessionIdx, currentRound: $currentRoundIdx ")
+        if (session.type == SessionType.BREAK) {
+            // pre-workout session is of type BREAK
+            isResting.value = true
+        }
+
+        val seconds = secondsUntilFinished.value?.toLong()
+            ?: if (isResting.value!!)
+                session.breakDuration.toLong()
+            else
+                session.duration.toLong()
 
         timer = CountDownTimer(seconds, object : CountDownTimer.Listener {
             override fun onTick(seconds: Int) { handleTimerTick(seconds) }
@@ -92,6 +96,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
     fun stopTimer() {
         timer.cancel()
+        soundPlayer.stop()
         state.value = TimerState.INACTIVE
         val index = currentSessionIdx.value!!
 
@@ -118,10 +123,8 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
     private fun handleTimerTick(seconds : Int) {
         secondsUntilFinished.value = seconds
-        if (seconds == 0) {
-            soundPlayer.play(COUNTDOWN_LONG)
-        } else if (seconds <= 3) {
-            soundPlayer.play(COUNTDOWN)
+        if (seconds == 2) {
+            soundPlayer.play(START_COUNTDOWN)
         }
     }
 
@@ -130,6 +133,12 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         var index = currentSessionIdx.value!!
         when (type) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.BREAK -> {
+
+                if (type == SessionType.BREAK) {
+                    // reset resting value here
+                    isResting.value = false
+                }
+
                 if (isLastSession()) {
                     state.value = TimerState.FINISHED
                     soundPlayer.play(WORKOUT_COMPLETE)
@@ -177,20 +186,17 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
                         currentSessionIdx.value = index
                     }
                 } else {
-                    shouldRest = !shouldRest
-                    if (!shouldRest) {
+                    isResting.value = !isResting.value!!
+                    if (!isResting.value!!) {
                         currentRoundIdx.value = currentRoundIdx.value!! + 1
                     }
                     secondsUntilFinished.value =
-                        if (shouldRest)
+                        if (isResting.value!!)
                             sessions[index].breakDuration
                         else
                             sessions[index].duration
                     startWorkout()
                 }
-            }
-            SessionType.INVALID -> {
-                //TODO: fail nice
             }
         }
     }

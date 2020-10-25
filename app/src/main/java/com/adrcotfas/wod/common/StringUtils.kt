@@ -34,13 +34,9 @@ class StringUtils {
                     "${session.numRounds} × ${secondsToNiceFormat(session.duration)}"
                 }
                 SessionType.TABATA -> {
-                    if (session.duration == 20 && session.breakDuration == 10 && session.numRounds == 8) {
-                        "Tabata"
-                    } else {
-                        val workString = secondsToNiceFormat(session.duration)
-                        val breakString = secondsToNiceFormat(session.breakDuration)
-                        "${session.numRounds} × $workString / $breakString"
-                    }
+                    val workString = secondsToNiceFormat(session.duration)
+                    val breakString = secondsToNiceFormat(session.breakDuration)
+                    "${session.numRounds} × $workString / $breakString"
                 }
                 else -> {
                     //TODO: do something here

@@ -11,6 +11,7 @@ import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 
 class NumberPickerAdapter(
+    var data : MutableList<Int>,
     private val context : Context,
     private val listener: Listener,
     private val prefixWithZero: Boolean,
@@ -21,12 +22,6 @@ class NumberPickerAdapter(
     interface Listener {
         fun onClick(position: Int)
     }
-
-    var data = listOf<Int>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
 
     override fun getItemCount() = data.size
 
@@ -60,7 +55,6 @@ class NumberPickerAdapter(
                         when (textSize) {
                             PickerSize.LARGE -> R.layout.row_number_picker_large
                             PickerSize.MEDIUM -> R.layout.row_number_picker_medium
-                            else -> R.layout.row_number_picker
                         }, parent, false)
                 view as TextView
                 view.setTextColor(

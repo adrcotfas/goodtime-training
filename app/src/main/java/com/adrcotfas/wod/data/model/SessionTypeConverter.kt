@@ -11,7 +11,8 @@ class SessionTypeConverter {
                 return type
             }
         }
-        return SessionType.INVALID
+        //TODO: log error for invalid input
+        return SessionType.BREAK
     }
 
     @TypeConverter

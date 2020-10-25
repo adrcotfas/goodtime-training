@@ -12,7 +12,7 @@ data class Session(
     var duration: Int = 0,
     var breakDuration: Int = 0,
     var numRounds: Int = 0,
-    var type: SessionType = SessionType.INVALID,
+    var type: SessionType = SessionType.BREAK,
 
     var rounds: Int,
     var timestamp: Long = System.currentTimeMillis(),

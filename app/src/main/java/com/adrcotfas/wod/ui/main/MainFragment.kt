@@ -84,7 +84,7 @@ class MainFragment: Fragment() {
         }
     }
 
-    fun getFragment() : WorkoutTypeFragment {
+    fun getVisibleFragment() : WorkoutTypeFragment {
         return pagerAdapter.getItem(binding.pager.currentItem) as WorkoutTypeFragment
     }
 }

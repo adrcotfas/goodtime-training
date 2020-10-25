@@ -38,11 +38,10 @@ class NumberPicker(
 
     private val viewManager : LoopingLayoutManager = LoopingLayoutManager(context)
     private val viewAdapter : NumberPickerAdapter =
-        NumberPickerAdapter(context, this, prefixWithZero, textSize, textColor)
+        NumberPickerAdapter(data, context, this, prefixWithZero, textSize, textColor)
     private val snapHelper = LoopingSnapHelper()
 
     init {
-        viewAdapter.data = data
         snapHelper.attachToRecyclerView(recyclerView)
         recyclerView.apply {
             layoutManager = viewManager

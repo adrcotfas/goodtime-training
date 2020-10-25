@@ -40,7 +40,7 @@
 
             <TextView
                 android:id="@+id/separator2"
-                style="@style/PickerTextStyle.Medium"
+                style="@style/TimerStyle.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -65,7 +65,7 @@
 
             <TextView
                 android:id="@+id/separator1"
-                style="@style/PickerTextStyle.Medium"
+                style="@style/TimerStyle.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

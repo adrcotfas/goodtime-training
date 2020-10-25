@@ -54,26 +54,39 @@
         <item name="android:fontFamily">@font/timer_font</item>
     </style>
 
-    <style name="PickerTextStyle">
+    <style name="TimerStyleBase">
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:lineSpacingExtra">0dp</item>
         <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="TimerStyle" parent="TimerStyleBase">
         <item name="fontFamily">@font/timer_font</item>
         <item name="android:fontFamily">@font/timer_font</item>
     </style>
 
-    <style name="PickerTextStyle.Small">
-        <item name="android:textSize">40sp</item>
-    </style>
-
-    <style name="PickerTextStyle.Medium">
+    <style name="TimerStyle.Medium">
         <item name="android:textSize">60sp</item>
     </style>
 
-    <style name="PickerTextStyle.Large">
+    <style name="TimerStyle.Large">
         <item name="android:textSize">80sp</item>
     </style>
+
+    <style name="TimerStyleLite" parent="TimerStyleBase">
+        <item name="fontFamily">@font/timer_font_lite</item>
+        <item name="android:fontFamily">@font/timer_font_lite</item>
+    </style>
+
+    <style name="TimerStyleLite.Small">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="TimerStyleLite.Large">
+        <item name="android:textSize">70sp</item>
+    </style>
+
 
     <style name="ShapeAppearanceOverlay.MaterialComponents.Chip" parent="" tools:override="true">
         <item name="cornerSize">50%</item>

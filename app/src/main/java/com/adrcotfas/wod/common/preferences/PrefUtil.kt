@@ -23,7 +23,7 @@ class PrefUtil(private val context: Context) {
 
         fun generatePreWorkoutSession() : SessionMinimal {
             //TODO: duration according to preferences
-            return SessionMinimal(duration = 5, breakDuration = 0, numRounds = 0, type = SessionType.BREAK)
+            return SessionMinimal(duration = 5, breakDuration = 5, numRounds = 0, type = SessionType.BREAK)
         }
     }
 }

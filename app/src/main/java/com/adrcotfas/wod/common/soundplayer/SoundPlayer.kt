@@ -15,23 +15,26 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
         .build()
 
     private var sounds = HashMap<Int, Int>(4)
+    private var streamID = 0
 
     init {
-        sounds[COUNTDOWN] = soundPool.load(applicationContext, COUNTDOWN, 1)
-        sounds[COUNTDOWN_LONG] = (soundPool.load(applicationContext, COUNTDOWN_LONG, 1))
+        sounds[START_COUNTDOWN] = soundPool.load(applicationContext, START_COUNTDOWN, 1)
         sounds[REST] = (soundPool.load(applicationContext, REST, 1))
         sounds[WORKOUT_COMPLETE] = (soundPool.load(applicationContext, WORKOUT_COMPLETE, 1))
     }
 
     companion object {
-        const val COUNTDOWN: Int = R.raw.ding
-        const val COUNTDOWN_LONG: Int = R.raw.long_ding
+        const val START_COUNTDOWN: Int = R.raw.start_full
         const val REST: Int = R.raw.rest
         const val WORKOUT_COMPLETE: Int = R.raw.workout_complete
         //TODO: LAST_ROUND, HALFWAY_THERE, X_SECONDS_REMAINING
     }
 
     fun play(soundId: Int) {
-        soundPool.play(sounds[soundId]!!, 1.0f, 1.0f, 1, 0, 1.0f)
+        streamID = soundPool.play(sounds[soundId]!!, 1.0f, 1.0f, 1, 0, 1.0f)
+    }
+
+    fun stop() {
+        soundPool.stop(streamID)
     }
 }
