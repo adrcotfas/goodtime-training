@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.adrcotfas.wod.common.currentNavigationFragment
 import com.adrcotfas.wod.databinding.ActivityMainBinding
+import com.adrcotfas.wod.ui.common.ui.FullscreenHelper
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
 import com.adrcotfas.wod.ui.main.MainFragment
 
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private lateinit var navHostFragment: NavHostFragment
     private var favoritesButton: MenuItem? = null
+    private lateinit var fullscreenHelper : FullscreenHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
         setupAppBar()
+        fullscreenHelper = FullscreenHelper(binding.mainLayout)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val hideButtons =
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity() {
                         destination.label == "StopWorkoutDialog"
             binding.toolbar.visibility = if (hideButtons) View.GONE else View.VISIBLE
             binding.startButton.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            toggleFullscreenMode(hideButtons)
 
             if (destination.label == "WorkoutFragment") {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -48,15 +52,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.startButton.setOnClickListener{
-            ((supportFragmentManager.currentNavigationFragment as MainFragment)
-                .getFragment()).onStartWorkout()
+            (getMainFragment().getVisibleFragment()).onStartWorkout()
         }
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_save_favorite -> {
-                    val fragment =
-                        (supportFragmentManager.currentNavigationFragment as MainFragment)
-                            .getFragment()
+                    val fragment = getMainFragment().getVisibleFragment()
                     val session = fragment.getSelectedSession()
                     if (session.duration == 0) {
                         false
@@ -69,6 +70,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun getMainFragment() =
+        (supportFragmentManager.currentNavigationFragment as MainFragment)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
@@ -97,6 +101,14 @@ class MainActivity : AppCompatActivity() {
             binding.startButton.drawable?.setTint(resources.getColor(R.color.grey800))
             favoritesButton?.icon?.setColorFilter(
                 resources.getColor(R.color.grey800), PorterDuff.Mode.SRC_ATOP)
+        }
+    }
+
+    private fun toggleFullscreenMode(newState: Boolean) {
+        if (newState) {
+            fullscreenHelper.enable()
+        } else {
+            fullscreenHelper.disable()
         }
     }
 }
