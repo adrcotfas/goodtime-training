@@ -33,7 +33,7 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
 
         private fun getBasicNotificationBuilder(context: Context) : NotificationCompat.Builder {
             return NotificationCompat.Builder(context, TRAINING_CHANNEL_ID)
-                .setContentText("Training in progress")
+                .setContentText("Training is paused. Click to resume.")
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(R.drawable.ic_menu_share)

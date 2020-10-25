@@ -3,7 +3,6 @@ package com.adrcotfas.wod.ui.workout
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.START_COUNTDOWN
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLETE
@@ -19,7 +18,7 @@ import com.adrcotfas.wod.data.workout.TimerState
 
 class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val repository: SessionsRepository) : ViewModel() {
 
-    val state = MutableLiveData(TimerState.INACTIVE)
+    val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionMinimal>()
 
     lateinit var timer : CountDownTimer
@@ -29,10 +28,6 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
      * For a regular workout this will be maximum 1; 0 for the pre-workout countdown and 1 for the actual workout
      */
     val currentSessionIdx = MutableLiveData(0)
-
-    fun getDurationString() : String {
-        return toFavoriteFormat(sessions[currentSessionIdx.value!!])
-    }
 
     /**
      * For EMOM and Tabata workouts this will indicate the current round
@@ -65,7 +60,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
     }
 
     fun startWorkout() {
-        state.value = TimerState.ACTIVE
+        timerState.value = TimerState.ACTIVE
         val index = currentSessionIdx.value!!
         val session = sessions[index]
 
@@ -89,15 +84,20 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         timer.start()
     }
 
-    fun pauseTimer() {
-        timer.cancel()
-        state.value = TimerState.PAUSED
+    fun toggleTimer() {
+        if (timerState.value == TimerState.ACTIVE) {
+            timer.cancel()
+            timerState.value = TimerState.PAUSED
+            soundPlayer.stop()
+        } else if (timerState.value == TimerState.PAUSED) {
+            startWorkout()
+        }
     }
 
     fun stopTimer() {
         timer.cancel()
         soundPlayer.stop()
-        state.value = TimerState.INACTIVE
+        timerState.value = TimerState.INACTIVE
         val index = currentSessionIdx.value!!
 
         val currentSession = sessions[index]
@@ -124,6 +124,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
     private fun handleTimerTick(seconds : Int) {
         secondsUntilFinished.value = seconds
         if (seconds == 2) {
+            //TODO: handle bug when pausing exactly here -> sound should not restart
             soundPlayer.play(START_COUNTDOWN)
         }
     }
@@ -140,7 +141,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
                 }
 
                 if (isLastSession()) {
-                    state.value = TimerState.FINISHED
+                    timerState.value = TimerState.FINISHED
                     soundPlayer.play(WORKOUT_COMPLETE)
                     if (sessions[index].type != SessionType.BREAK) {
                         repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
@@ -156,7 +157,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
             SessionType.EMOM -> {
                 if (isLastRound()) {
                     if (isLastSession()) {
-                        state.value = TimerState.FINISHED
+                        timerState.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
                         if (sessions[index].type != SessionType.BREAK) {
                             repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
@@ -175,7 +176,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
             SessionType.TABATA -> {
                 if (isLastRound()) {
                     if (isLastSession()) {
-                        state.value = TimerState.FINISHED
+                        timerState.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
                         if (sessions[index].type != SessionType.BREAK) {
                             repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))

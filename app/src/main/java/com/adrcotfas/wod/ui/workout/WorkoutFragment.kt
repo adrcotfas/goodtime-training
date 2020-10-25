@@ -1,10 +1,13 @@
 package com.adrcotfas.wod.ui.workout
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -35,26 +38,32 @@ class WorkoutFragment : Fragment(), KodeinAware {
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(WorkoutViewModel::class.java)
         //TODO: handle states and screen lock
         //TODO: make sure we have the args available
-        if (viewModel.state.value == TimerState.INACTIVE) {
+        if (viewModel.timerState.value == TimerState.INACTIVE) {
             viewModel.init(args.sessions)
             viewModel.startWorkout()
         }
     }
 
-    //TODO: pause the timer if it is not visible on screen
     override fun onPause() {
         super.onPause()
-        val state = viewModel.state.value
+        val state = viewModel.timerState.value
         if (state != TimerState.INACTIVE && state != TimerState.FINISHED) {
             NotificationHelper.showNotification(requireContext())
+        }
+        if (viewModel.timerState.value == TimerState.ACTIVE) {
+            viewModel.toggleTimer()
         }
     }
 
     override fun onResume() {
         super.onResume()
         NotificationHelper.hideNotification(requireContext())
+        if (viewModel.timerState.value == TimerState.PAUSED) {
+            viewModel.toggleTimer()
+        }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -116,6 +125,24 @@ class WorkoutFragment : Fragment(), KodeinAware {
         viewModel.currentRoundIdx.observe(viewLifecycleOwner, Observer { currentRoundIdx ->
             binding.round.text = "${currentRoundIdx + 1}/${viewModel.getTotalRounds()}"
         })
+
+        viewModel.timerState.observe(viewLifecycleOwner, Observer {  timerState ->
+            val handler = Handler()
+            if (timerState == TimerState.PAUSED) {
+                handler.postDelayed({
+                    binding.timer.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            requireContext(),
+                            R.anim.blink
+                        )
+                    )
+                }, 100)
+            } else if (timerState == TimerState.ACTIVE) {
+                handler.post { binding.timer.clearAnimation() }
+            }
+        })
+
+        binding.timer.setOnClickListener{ viewModel.toggleTimer()}
 
         // TODO: observe for session finished and cancel the StopWorkoutDialog
         return binding.root
