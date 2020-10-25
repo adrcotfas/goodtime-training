@@ -6,9 +6,10 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.navigation.NavDeepLinkBuilder
+import com.adrcotfas.wod.MainActivity
 import com.adrcotfas.wod.R
 
 class NotificationHelper(context: Context) : ContextWrapper(context) {
@@ -43,10 +44,13 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
         }
 
         private fun getPendingIntentWithStack(context: Context): PendingIntent {
-            return NavDeepLinkBuilder(context)
-                .setGraph(R.navigation.mobile_navigation)
-                .setDestination(R.id.nav_workout)
-                .createPendingIntent()
+            val notificationIntent = Intent(context, MainActivity::class.java)
+            notificationIntent.action = Intent.ACTION_MAIN
+            notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            return PendingIntent.getActivity(
+                context, 0,
+                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
         @TargetApi(26)
@@ -54,7 +58,7 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channel = NotificationChannel(
                     TRAINING_CHANNEL_ID, "Goodtime Training",
-                    NotificationManager.IMPORTANCE_LOW
+                    NotificationManager.IMPORTANCE_HIGH
                 )
                 channel.apply {
                     setBypassDnd(true)
