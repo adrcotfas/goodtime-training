@@ -95,7 +95,7 @@ class StringUtils {
                 SessionType.TABATA -> {
                     val workString = session.duration.toString() + " second" +  if (session.duration > 1) "s" else ""
                     val breakString = session.breakDuration.toString() + " second" +  if (session.breakDuration > 1) "s" else ""
-                    "${session.numRounds} high intensity intervals of $workString of work and $breakString of rest"
+                    "${session.numRounds} high intensity intervals of $workString of work with $breakString of rest"
                 }
                 else -> ""
             }
