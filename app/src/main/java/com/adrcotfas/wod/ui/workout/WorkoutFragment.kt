@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -30,6 +31,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
     private val viewModelFactory : WorkoutViewModelFactory by instance()
     private lateinit var viewModel : WorkoutViewModel
     private lateinit var binding: FragmentWorkoutBinding
+    private var finishSessionButtonPressedAt: Long = 0
 
     private val args: WorkoutFragmentArgs by navArgs()
 
@@ -141,6 +143,15 @@ class WorkoutFragment : Fragment(), KodeinAware {
                 handler.post { binding.timer.clearAnimation() }
             }
         })
+
+        binding.finishButton.setOnClickListener{
+            if (finishSessionButtonPressedAt + 2000 > System.currentTimeMillis()) {
+                viewModel.finishCurrentSession()
+            } else {
+                    Toast.makeText(requireContext(), "Press again to confirm finish.", Toast.LENGTH_SHORT).show()
+            }
+            finishSessionButtonPressedAt = System.currentTimeMillis()
+        }
 
         binding.timer.setOnClickListener{ viewModel.toggleTimer()}
 

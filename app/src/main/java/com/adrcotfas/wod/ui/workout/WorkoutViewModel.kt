@@ -77,7 +77,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
         timer = CountDownTimer(seconds, object : CountDownTimer.Listener {
             override fun onTick(seconds: Int) { handleTimerTick(seconds) }
-            override fun onFinishSet() { handleFinishTimer(session.type)}
+            override fun onFinishSet() { handleFinishTimer()}
             override fun onHalfwayThere() { //TODO: don't play for BREAK and REST
             }
         })
@@ -113,6 +113,13 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         }
     }
 
+    fun finishCurrentSession() {
+        timer.cancel()
+        soundPlayer.stop()
+        timerState.value = TimerState.INACTIVE
+        handleFinishTimer()
+    }
+
     private fun isLastSession() : Boolean {
         return sessions.size == currentSessionIdx.value!! + 1
     }
@@ -129,8 +136,8 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         }
     }
 
-    private fun handleFinishTimer(type : SessionType) {
-        Log.e("WOD::handleFinishTimer", "SessionType: $type")
+    private fun handleFinishTimer() {
+        val type = getCurrentSessionType()
         var index = currentSessionIdx.value!!
         when (type) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.BREAK -> {

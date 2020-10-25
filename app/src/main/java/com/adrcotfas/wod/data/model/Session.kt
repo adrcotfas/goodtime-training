@@ -21,6 +21,7 @@ data class Session(
     companion object {
         fun constructSession(minimal: SessionMinimal, timestamp: Long, rounds: Int = 0) : Session {
             return Session(0, minimal.duration, minimal.breakDuration, minimal.numRounds, minimal.type,
+                //TODO: but is "finished" important?
                 rounds, timestamp, true)
         }
 
