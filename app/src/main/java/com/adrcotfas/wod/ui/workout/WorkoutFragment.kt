@@ -67,15 +67,19 @@ class WorkoutFragment : Fragment(), KodeinAware {
     ): View? {
         binding = FragmentWorkoutBinding.inflate(layoutInflater, container, false)
         viewModel.secondsUntilFinished.observe( viewLifecycleOwner, Observer { seconds ->
-            val total = viewModel.getCurrentSessionDuration().toFloat()
-            val secondsToShow = seconds + 1
-            if ( viewModel.getCurrentSessionType() != SessionType.BREAK
-                && (seconds == total.toInt())) {
+            val type = viewModel.getCurrentSessionType()
+            val total = viewModel.getCurrentSessionDuration()
+
+            val secondsToShow =
+                if (type != SessionType.FOR_TIME) seconds + 1
+                else total - seconds
+            if (type  != SessionType.BREAK
+                && (seconds == total)) {
                 binding.timer.text = "" // or "REST"
             } else {
                 binding.timer.text = StringUtils.secondsToTimerFormat(secondsToShow)
             }
-            val newProgress = (total - seconds) / total
+            val newProgress = (total - seconds).toFloat() / total.toFloat()
             binding.circleProgress.onTick(newProgress)
         })
 
