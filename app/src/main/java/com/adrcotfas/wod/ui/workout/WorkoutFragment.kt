@@ -52,17 +52,11 @@ class WorkoutFragment : Fragment(), KodeinAware {
         if (state != TimerState.INACTIVE && state != TimerState.FINISHED) {
             NotificationHelper.showNotification(requireContext())
         }
-        if (viewModel.timerState.value == TimerState.ACTIVE) {
-            viewModel.toggleTimer()
-        }
     }
 
     override fun onResume() {
         super.onResume()
         NotificationHelper.hideNotification(requireContext())
-        if (viewModel.timerState.value == TimerState.PAUSED) {
-            viewModel.toggleTimer()
-        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -132,12 +126,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
             val handler = Handler()
             if (timerState == TimerState.PAUSED) {
                 handler.postDelayed({
-                    binding.timer.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            requireContext(),
-                            R.anim.blink
-                        )
-                    )
+                    binding.timer.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.blink))
                 }, 100)
             } else if (timerState == TimerState.ACTIVE) {
                 handler.post { binding.timer.clearAnimation() }
