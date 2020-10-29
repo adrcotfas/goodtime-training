@@ -42,7 +42,8 @@ class MainActivity : AppCompatActivity() {
                         destination.label == "StopWorkoutDialog"
             binding.toolbar.visibility = if (hideButtons) View.GONE else View.VISIBLE
             binding.startButton.visibility = if (hideButtons) View.GONE else View.VISIBLE
-            toggleFullscreenMode(hideButtons)
+            //TODO: maybe activate later with a setting
+            //toggleFullscreenMode(hideButtons)
 
             if (destination.label == "WorkoutFragment") {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
