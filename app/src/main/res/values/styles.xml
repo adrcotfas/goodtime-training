@@ -74,13 +74,25 @@
         <item name="android:textSize">80sp</item>
     </style>
 
+    <style name="TimerStyle.ExtraLarge">
+        <item name="android:textSize">150sp</item>
+    </style>
+
     <style name="TimerStyleLite" parent="TimerStyleBase">
         <item name="fontFamily">@font/timer_font_lite</item>
         <item name="android:fontFamily">@font/timer_font_lite</item>
     </style>
 
+    <style name="TimerStyleLite.Smaller">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="TimerStyleLite.Small">
         <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="TimerStyleLite.Medium">
+        <item name="android:textSize">45sp</item>
     </style>
 
     <style name="TimerStyleLite.Large">

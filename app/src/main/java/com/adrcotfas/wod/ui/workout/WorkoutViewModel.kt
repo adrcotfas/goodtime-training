@@ -1,6 +1,5 @@
 package com.adrcotfas.wod.ui.workout
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.adrcotfas.wod.common.soundplayer.SoundPlayer
@@ -20,6 +19,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
     val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionMinimal>()
+    var countedRounds = MutableLiveData(0)
 
     lateinit var timer : CountDownTimer
 
@@ -57,6 +57,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         currentSessionIdx.value = 0
         secondsUntilFinished.value = sessions[0].duration
         isResting.value = false
+        countedRounds.value = 0
     }
 
     fun startWorkout() {
@@ -109,7 +110,8 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
             repository.addSession(constructIncompleteSession(
                 currentSession.type,
                 activeSeconds,
-                System.currentTimeMillis()))
+                System.currentTimeMillis(),
+                countedRounds.value!!))
         }
     }
 
@@ -151,7 +153,11 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
                     timerState.value = TimerState.FINISHED
                     soundPlayer.play(WORKOUT_COMPLETE)
                     if (sessions[index].type != SessionType.BREAK) {
-                        repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
+                        repository.addSession(
+                            constructSession(
+                                sessions[index],
+                                System.currentTimeMillis(),
+                                countedRounds.value!!))
                     }
                 } else {
                     ++index

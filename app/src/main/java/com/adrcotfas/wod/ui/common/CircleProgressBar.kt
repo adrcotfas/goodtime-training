@@ -48,9 +48,9 @@ class CircleProgressBar @JvmOverloads constructor(
         animator.start()
     }
 
-    fun setColor(isResting: Boolean) {
-        backgroundPaint.color = resources.getColor(if (isResting) R.color.red_goodtime_dark else R.color.green_goodtime_darker)
-        progressPaint.color = resources.getColor(if (isResting) R.color.red_goodtime else R.color.green_goodtime)
+    fun setColor(color: Int, darkColor: Int) {
+        progressPaint.color = color
+        backgroundPaint.color = darkColor
     }
 
     private val oval = RectF()

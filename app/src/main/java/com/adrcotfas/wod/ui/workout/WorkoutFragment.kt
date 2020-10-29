@@ -2,13 +2,13 @@ package com.adrcotfas.wod.ui.workout
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -31,7 +31,6 @@ class WorkoutFragment : Fragment(), KodeinAware {
     private val viewModelFactory : WorkoutViewModelFactory by instance()
     private lateinit var viewModel : WorkoutViewModel
     private lateinit var binding: FragmentWorkoutBinding
-    private var finishSessionButtonPressedAt: Long = 0
 
     private val args: WorkoutFragmentArgs by navArgs()
 
@@ -80,22 +79,32 @@ class WorkoutFragment : Fragment(), KodeinAware {
                 binding.timer.text = StringUtils.secondsToTimerFormat(secondsToShow)
             }
             val newProgress = (total - seconds).toFloat() / total.toFloat()
-            binding.circleProgress.onTick(newProgress)
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                binding.circleProgress?.onTick(newProgress)
+            }
         })
 
         viewModel.isResting.observe(viewLifecycleOwner, Observer { isResting ->
             val color =
                 resources.getColor(if (isResting) R.color.red_goodtime else R.color.green_goodtime)
-            binding.circleProgress.setColor(isResting)
+            val darkColor = resources.getColor(if (isResting) R.color.red_goodtime_dark else R.color.green_goodtime_darker)
+
             binding.timer.setTextColor(color)
             binding.round.setTextColor(color)
             binding.workoutImage.setColorFilter(color)
+
+            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                binding.circleProgress?.setColor(color, darkColor)
+            }
         })
 
         viewModel.currentSessionIdx.observe(viewLifecycleOwner, Observer {
             val type = viewModel.getCurrentSessionType()
             binding.finishButton.visibility =
                 if (type != SessionType.FOR_TIME) View.GONE
+                else View.VISIBLE
+            binding.roundCounterButtonContainer.visibility =
+                if (type != SessionType.FOR_TIME && type != SessionType.AMRAP) View.GONE
                 else View.VISIBLE
             binding.round.visibility =
                 if (type != SessionType.TABATA && type != SessionType.EMOM) View.GONE
@@ -138,13 +147,18 @@ class WorkoutFragment : Fragment(), KodeinAware {
         })
 
         binding.finishButton.setOnClickListener{
-            if (finishSessionButtonPressedAt + 2000 > System.currentTimeMillis()) {
-                viewModel.finishCurrentSession()
-            } else {
-                    Toast.makeText(requireContext(), "Press again to confirm finish.", Toast.LENGTH_SHORT).show()
-            }
-            finishSessionButtonPressedAt = System.currentTimeMillis()
+            viewModel.finishCurrentSession()
         }
+
+        binding.roundCounterButton.setOnClickListener{
+            viewModel.countedRounds.value = viewModel.countedRounds.value?.plus(1)
+        }
+
+        viewModel.countedRounds.observe(viewLifecycleOwner, Observer {rounds ->
+            binding.roundCounterText.visibility = if (rounds == 0) View.GONE else View.VISIBLE
+            binding.roundCounterButton.drawable.alpha = if (rounds == 0) 255 else 0
+            binding.roundCounterText.text = rounds.toString()
+        })
 
         binding.timer.setOnClickListener{ viewModel.toggleTimer()}
 
