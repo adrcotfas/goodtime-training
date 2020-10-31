@@ -163,6 +163,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
         }
 
         binding.closeButton?.setOnClickListener{
+            binding.closeButton?.hide()
             requireActivity().onBackPressed()
         }
 

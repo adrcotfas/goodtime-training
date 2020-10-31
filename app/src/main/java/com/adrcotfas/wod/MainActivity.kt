@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                         destination.label == "WorkoutFragment" ||
                         destination.label == "StopWorkoutDialog"
             binding.toolbar.visibility = if (hideButtons) View.GONE else View.VISIBLE
-            binding.startButton.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            if (hideButtons) binding.startButton.hide() else binding.startButton.show()
             //TODO: maybe activate later with a setting
             //toggleFullscreenMode(hideButtons)
 
