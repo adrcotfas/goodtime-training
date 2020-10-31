@@ -29,10 +29,10 @@ class GoodtimeApplication : Application(), KodeinAware {
             Room.databaseBuilder(this@GoodtimeApplication, Database::class.java,
                 "goodtime-training-db")
                 .build() }
-        bind<SessionDao>() with singleton { instance<Database>().sessionsDao() }
-        bind<SessionMinimalDao>() with singleton { instance<Database>().sessionMinimalDao() }
-        bind<SessionsRepository>() with singleton { SessionRepositoryImpl(instance(), instance()) }
-        bind<PrefUtil>() with singleton { PrefUtil(applicationContext) }
+        bind<SessionDao>() with eagerSingleton { instance<Database>().sessionsDao() }
+        bind<SessionMinimalDao>() with eagerSingleton { instance<Database>().sessionMinimalDao() }
+        bind<SessionsRepository>() with eagerSingleton { SessionRepositoryImpl(instance(), instance()) }
+        bind<PrefUtil>() with eagerSingleton { PrefUtil(applicationContext) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
         bind() from provider { LogViewModelFactory(instance()) }
         bind() from provider { WorkoutViewModelFactory(instance(), instance()) }
