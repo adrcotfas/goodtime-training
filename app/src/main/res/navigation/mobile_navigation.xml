@@ -11,6 +11,10 @@
         android:label="main" >
         <action
             android:id="@+id/start_workout_action"
+            app:enterAnim="@animator/nav_default_enter_anim"
+            app:exitAnim="@animator/nav_default_exit_anim"
+            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
+            app:popExitAnim="@animator/nav_default_pop_exit_anim"
             app:destination="@id/nav_workout" />
     </fragment>
 
@@ -37,10 +41,11 @@
         android:label="StopWorkoutDialog" >
         <action
             android:id="@+id/action_stopWorkoutDialog_to_nav_main"
-            app:destination="@id/nav_main"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/nav_main"
-            app:popUpToInclusive="true" />
+            app:enterAnim="@animator/nav_default_enter_anim"
+            app:exitAnim="@animator/nav_default_exit_anim"
+            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
+            app:popExitAnim="@animator/nav_default_pop_exit_anim"
+            app:popUpTo="@id/nav_main" />
     </dialog>
 
 </navigation>
