@@ -1,111 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/workout_image"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="22dp"
-        app:layout_constraintBottom_toTopOf="@id/timer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:src="@drawable/ic_fire"
-        tools:tint="@color/green_goodtime" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/in_progress_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/timer"
-        style="@style/TimerStyle.Large"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45"
-        tools:text="15:00"
-        tools:textColor="@color/green_goodtime" />
-
-    <TextView
-        android:id="@+id/round"
-        style="@style/TimerStyleLite.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/timer"
-        tools:text="3 / 8"
-        tools:textColor="@color/green_goodtime"
-        tools:visibility="gone"/>
-
-    <com.adrcotfas.wod.ui.common.CircleProgressBar
-        android:id="@+id/circle_progress"
-        android:layout_width="320sp"
-        android:layout_height="320sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.42" />
-
-    <FrameLayout
-        android:id="@+id/round_counter_button_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/finish_button"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/circle_progress"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="48dp">
+        <ImageView
+            android:id="@+id/workout_image"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="22dp"
+            app:layout_constraintBottom_toTopOf="@id/timer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:src="@drawable/ic_fire"
+            tools:tint="@color/green_goodtime" />
 
         <TextView
-            android:id="@+id/round_counter_text"
+            android:id="@+id/timer"
+            style="@style/TimerStyle.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="32dp"
-            app:fontFamily="@font/timer_font_lite"
-            android:elevation="16dp"
-            android:textColor="@color/green_goodtime"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            tools:text="14"
-            />
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.45"
+            tools:text="15:00"
+            tools:textColor="@color/green_goodtime" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/round_counter_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/green_goodtime_darker"
-        app:borderWidth="0dp"
-        app:fabCustomSize="70dp"
-        app:maxImageSize="36dp"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@color/green_goodtime" />
-    </FrameLayout>
+        <TextView
+            android:id="@+id/round"
+            style="@style/TimerStyleLite.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timer"
+            tools:text="3 / 8"
+            tools:textColor="@color/green_goodtime"
+            tools:visibility="gone"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/finish_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        app:backgroundTint="@color/red_goodtime_dark"
-        app:borderWidth="0dp"
-        app:fabCustomSize="70dp"
-        app:layout_constraintBottom_toBottomOf="@id/round_counter_button_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/round_counter_button_container"
-        app:maxImageSize="36dp"
-        app:srcCompat="@drawable/ic_flag"
-        app:tint="@color/red_goodtime" />
+        <com.adrcotfas.wod.ui.common.CircleProgressBar
+            android:id="@+id/circle_progress"
+            android:layout_width="320sp"
+            android:layout_height="320sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.42" />
+
+        <FrameLayout
+            android:id="@+id/round_counter_button_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/finish_button"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/circle_progress"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="48dp">
+
+            <TextView
+                android:id="@+id/round_counter_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="32dp"
+                app:fontFamily="@font/timer_font_lite"
+                android:elevation="16dp"
+                android:textColor="@color/green_goodtime"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:text="14"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/round_counter_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/green_goodtime_darker"
+                app:borderWidth="0dp"
+                app:fabCustomSize="70dp"
+                app:maxImageSize="36dp"
+                app:srcCompat="@drawable/ic_add"
+                app:tint="@color/green_goodtime" />
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/finish_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:backgroundTint="@color/red_goodtime_dark"
+            app:borderWidth="0dp"
+            app:fabCustomSize="70dp"
+            app:layout_constraintBottom_toBottomOf="@id/round_counter_button_container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/round_counter_button_container"
+            app:maxImageSize="36dp"
+            app:srcCompat="@drawable/ic_flag"
+            app:tint="@color/red_goodtime" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/finished_workout_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/congrats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/summary"
+            android:text="Congratulations! 🤜🤛"
+            style="@style/TimerStyleLite.Small"/>
+
+        <ImageView
+            android:id="@+id/summary_drawable"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintEnd_toStartOf="@id/summary"
+            app:layout_constraintTop_toTopOf="@id/summary"
+            app:layout_constraintBottom_toBottomOf="@id/summary"
+            android:tint="@color/green_goodtime"
+            tools:src="@drawable/ic_done"/>
+
+        <TextView
+            android:id="@+id/summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/congrats"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/TimerStyleLite.Small"
+            tools:text=" ceva aici"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:backgroundTint="@color/green_goodtime_darker"
+            app:borderWidth="0dp"
+            app:fabCustomSize="70dp"
+            app:maxImageSize="36dp"
+            android:layout_marginBottom="96dp"
+            app:srcCompat="@drawable/ic_done"
+            app:tint="@color/green_goodtime" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

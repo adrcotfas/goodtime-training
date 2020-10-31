@@ -12,7 +12,6 @@ import com.adrcotfas.wod.databinding.FragmentMainBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
 
-//TODO: persist last page and don't allow reselection
 class MainFragment: Fragment() {
     private lateinit var pagerAdapter: MainPagerAdapter
     private lateinit var binding : FragmentMainBinding
@@ -25,8 +24,13 @@ class MainFragment: Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         pagerAdapter = MainPagerAdapter(childFragmentManager)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.pager.adapter = pagerAdapter
         binding.pager.setOnTouchListener { _, _ -> true } // disable swipe
 
@@ -35,30 +39,21 @@ class MainFragment: Fragment() {
 
         binding.workoutMenu.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_amrap -> {
-                    hideContent()
-                    binding.pager.setCurrentItem(0,  false)
-                    showContent()
-                }
-                R.id.nav_for_time -> {
-                    hideContent()
-                    binding.pager.setCurrentItem(1,  false)
-                    showContent()
-                }
-                R.id.nav_emom -> {
-                    hideContent()
-                    binding.pager.setCurrentItem(2,  false)
-                    showContent()
-                }
-                R.id.nav_hiit -> {
-                    hideContent()
-                    binding.pager.setCurrentItem(3,  false)
-                    showContent()
-                }
-                R.id.nav_custom -> {
-                }
+                R.id.nav_amrap -> onNavigationItemSelected(0)
+                R.id.nav_for_time -> onNavigationItemSelected(1)
+                R.id.nav_emom -> onNavigationItemSelected(2)
+                R.id.nav_hiit -> onNavigationItemSelected(3)
+                R.id.nav_custom -> { }
             }
             true
+        }
+    }
+
+    private fun onNavigationItemSelected(idx : Int) {
+        if (binding.pager.currentItem != idx) {
+            hideContent()
+            binding.pager.setCurrentItem(idx,  false)
+            showContent()
         }
     }
 

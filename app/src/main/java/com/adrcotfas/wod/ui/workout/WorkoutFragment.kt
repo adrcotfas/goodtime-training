@@ -1,8 +1,8 @@
 package com.adrcotfas.wod.ui.workout
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -37,12 +37,25 @@ class WorkoutFragment : Fragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(WorkoutViewModel::class.java)
-        //TODO: handle states and screen lock
-        //TODO: make sure we have the args available
+
         if (viewModel.timerState.value == TimerState.INACTIVE) {
             viewModel.init(args.sessions)
             viewModel.startWorkout()
         }
+
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (viewModel.timerState.value != TimerState.FINISHED) {
+                    NavHostFragment.findNavController(this@WorkoutFragment)
+                        .navigate(R.id.nav_dialog_stop_workout)
+                } else {
+                    viewModel.timerState.value = TimerState.INACTIVE
+                    NavHostFragment.findNavController(this@WorkoutFragment)
+                        .popBackStack()
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onPause() {
@@ -111,24 +124,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
                 else View.VISIBLE
 
             binding.round.text = "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
-            binding.workoutImage.setImageDrawable(resources.getDrawable(
-                when (type) {
-                    SessionType.AMRAP-> {
-                        R.drawable.ic_infinity
-                    }
-                    SessionType.FOR_TIME -> {
-                        R.drawable.ic_flash
-                    }
-                    SessionType.EMOM -> {
-                        R.drawable.ic_status_goodtime
-                    }
-                    SessionType.TABATA -> {
-                        R.drawable.ic_fire
-                    }
-                    SessionType.BREAK -> {
-                        R.drawable.ic_break
-                    }
-                }, null))
+            binding.workoutImage.setImageDrawable(toDrawable(type))
         })
 
         viewModel.currentRoundIdx.observe(viewLifecycleOwner, Observer { currentRoundIdx ->
@@ -137,12 +133,24 @@ class WorkoutFragment : Fragment(), KodeinAware {
 
         viewModel.timerState.observe(viewLifecycleOwner, Observer {  timerState ->
             val handler = Handler()
-            if (timerState == TimerState.PAUSED) {
-                handler.postDelayed({
-                    binding.timer.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.blink))
-                }, 100)
-            } else if (timerState == TimerState.ACTIVE) {
-                handler.post { binding.timer.clearAnimation() }
+            when (timerState) {
+                TimerState.PAUSED -> {
+                    handler.postDelayed({
+                        binding.timer.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.blink))
+                    }, 100)
+                }
+                TimerState.ACTIVE -> {
+                    handler.post { binding.timer.clearAnimation() }
+                }
+                TimerState.FINISHED -> {
+                    binding.summary?.text = " ${StringUtils.toString(viewModel.sessions[1].type)} ${StringUtils.toFavoriteFormat(viewModel.sessions[1])}"
+                    binding.summaryDrawable?.setImageDrawable(toDrawable(viewModel.sessions[1].type))
+
+                    binding.circleProgress?.visibility = View.GONE
+                    binding.inProgressContainer.visibility = View.GONE
+                    binding.finishedWorkoutContainer.visibility = View.VISIBLE
+                }
+                else -> return@Observer // do nothing
             }
         })
 
@@ -152,6 +160,10 @@ class WorkoutFragment : Fragment(), KodeinAware {
 
         binding.roundCounterButton.setOnClickListener{
             viewModel.countedRounds.value = viewModel.countedRounds.value?.plus(1)
+        }
+
+        binding.closeButton?.setOnClickListener{
+            requireActivity().onBackPressed()
         }
 
         viewModel.countedRounds.observe(viewLifecycleOwner, Observer {rounds ->
@@ -166,14 +178,24 @@ class WorkoutFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                NavHostFragment.findNavController(this@WorkoutFragment)
-                    .navigate(R.id.nav_dialog_stop_workout)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    private fun toDrawable(type : SessionType) : Drawable {
+        return resources.getDrawable(
+            when (type) {
+                SessionType.AMRAP-> {
+                    R.drawable.ic_infinity
+                }
+                SessionType.FOR_TIME -> {
+                    R.drawable.ic_flash
+                }
+                SessionType.EMOM -> {
+                    R.drawable.ic_status_goodtime
+                }
+                SessionType.TABATA -> {
+                    R.drawable.ic_fire
+                }
+                SessionType.BREAK -> {
+                    R.drawable.ic_break
+                }
+            }, null)
     }
 }

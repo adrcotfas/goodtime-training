@@ -33,8 +33,6 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->
                 viewModel.stopTimer()
-                //TODO: consider reusing the old fragments with parentFragmentManager.popBackStack()
-                // or some other way; currently the MainFragment is recreated
                 NavHostFragment.findNavController(this)
                     .navigate(StopWorkoutDialogDirections.actionStopWorkoutDialogToNavMain())
             }
