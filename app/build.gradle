@@ -70,4 +70,6 @@ dependencies {
 
     // Time
     implementation 'joda-time:joda-time:2.10.5'
+
+    implementation 'nl.dionsegijn:konfetti:1.2.5'
 }
