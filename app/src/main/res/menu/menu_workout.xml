@@ -14,7 +14,7 @@
         android:title="@string/menu_emom" />
     <item
         android:id="@+id/nav_hiit"
-        android:icon="@drawable/ic_fire"
+        android:icon="@drawable/ic_fire2"
         android:title="@string/menu_hiit" />
     <item
         android:id="@+id/nav_custom"

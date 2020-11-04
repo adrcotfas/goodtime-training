@@ -6,109 +6,195 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/konfetti"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/gradient_cover_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.5" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/in_progress_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/round"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="1 / 4"
-        style="@style/TimerStyleLite.Medium"
-        app:layout_constraintStart_toStartOf="@id/timer"
-        app:layout_constraintEnd_toEndOf="@id/timer"
-        app:layout_constraintTop_toBottomOf="@id/timer"
-        tools:textColor="@color/green_goodtime"
-        />
+        android:layout_height="match_parent"
+        tools:visibility="gone">
+        <TextView
+            android:id="@+id/round"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="1 / 4"
+            style="@style/TimerStyleLite.Medium"
+            app:layout_constraintStart_toStartOf="@id/timer"
+            app:layout_constraintEnd_toEndOf="@id/timer"
+            app:layout_constraintTop_toBottomOf="@id/timer"
+            tools:textColor="@color/green_goodtime"
+            />
 
-    <ImageView
-        android:id="@+id/workout_image"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        app:layout_constraintStart_toStartOf="@id/timer"
-        app:layout_constraintEnd_toEndOf="@id/timer"
-        app:layout_constraintBottom_toTopOf="@id/timer"
-        tools:src="@drawable/ic_fire"
-        tools:tint="@color/green_goodtime"
-        android:layout_gravity="center_horizontal"/>
-
-    <TextView
-        android:id="@+id/timer"
-        style="@style/TimerStyle.ExtraLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/round_counter_button_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4"
-        tools:text="15:00"
-        tools:textColor="@color/green_goodtime" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/finish_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_flag"
-        app:tint="@color/red_goodtime"
-        app:backgroundTint="@color/red_goodtime_dark"
-        app:borderWidth="0dp"
-        app:fabCustomSize="70dp"
-        app:maxImageSize="36dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/round_counter_button_container"
-        app:layout_constraintVertical_chainStyle="packed"
-        />
-
-    <FrameLayout
-        android:id="@+id/round_counter_button_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/finish_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp">
+        <ImageView
+            android:id="@+id/workout_image"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            app:layout_constraintStart_toStartOf="@id/timer"
+            app:layout_constraintEnd_toEndOf="@id/timer"
+            app:layout_constraintBottom_toTopOf="@id/timer"
+            tools:src="@drawable/ic_fire2"
+            tools:tint="@color/green_goodtime"
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
-            android:id="@+id/round_counter_text"
+            android:id="@+id/timer"
+            style="@style/TimerStyle.ExtraLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="32dp"
-            app:fontFamily="@font/timer_font_lite"
-            android:elevation="16dp"
-            android:textColor="@color/green_goodtime"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            tools:text="14"/>
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/round_counter_button_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.4"
+            tools:text="15:00"
+            tools:textColor="@color/green_goodtime" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/round_counter_button"
+            android:id="@+id/finish_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@color/green_goodtime_darker"
+            app:srcCompat="@drawable/ic_flag"
+            app:tint="@color/red_goodtime"
+            app:backgroundTint="@color/red_goodtime_dark"
             app:borderWidth="0dp"
             app:fabCustomSize="70dp"
             app:maxImageSize="36dp"
-            app:srcCompat="@drawable/ic_add"
-            app:tint="@color/green_goodtime" />
-    </FrameLayout>
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/round_counter_button_container"
+            app:layout_constraintVertical_chainStyle="packed"
+            />
 
+        <FrameLayout
+            android:id="@+id/round_counter_button_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/finish_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:id="@+id/round_counter_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="32dp"
+                app:fontFamily="@font/timer_font_lite"
+                android:elevation="16dp"
+                android:textColor="@color/green_goodtime"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                tools:text="14"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/round_counter_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/green_goodtime_darker"
+                app:borderWidth="0dp"
+                app:fabCustomSize="70dp"
+                app:maxImageSize="36dp"
+                app:srcCompat="@drawable/ic_add"
+                app:tint="@color/green_goodtime" />
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/finished_workout_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/congrats_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:backgroundTint="@color/transparent_dark"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintBottom_toTopOf="@id/summary_section"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.25"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/congrats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/app_font"
+                android:padding="16dp"
+                android:text="Good job! 🤜🤛"
+                android:textColor="@color/green_goodtime"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/summary_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHeight_max="250dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintTop_toBottomOf="@id/congrats_section"
+            app:layout_constraintEnd_toEndOf="@id/congrats_section"
+            app:layout_constraintStart_toStartOf="@id/congrats_section"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="@color/transparent_dark"
+            android:layout_marginHorizontal="32dp"
+            app:cardCornerRadius="16dp"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:id="@+id/summary_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="90dp"
+                android:padding="16dp">
+                <LinearLayout
+                    android:id="@+id/summary_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+                </LinearLayout>
+            </ScrollView>
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="96dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:backgroundTint="@color/green_goodtime_darker"
+            app:borderWidth="0dp"
+            app:fabCustomSize="70dp"
+            app:maxImageSize="36dp"
+            app:srcCompat="@drawable/ic_done"
+            app:tint="@color/green_goodtime" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

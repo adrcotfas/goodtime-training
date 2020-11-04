@@ -8,7 +8,6 @@ import com.adrcotfas.wod.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLE
 import com.adrcotfas.wod.common.stringToSessions
 
 import com.adrcotfas.wod.common.timers.CountDownTimer
-import com.adrcotfas.wod.data.model.Session.Companion.constructIncompleteSession
 import com.adrcotfas.wod.data.model.Session.Companion.constructSession
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
@@ -21,6 +20,8 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
     var sessions = ArrayList<SessionMinimal>()
     var countedRounds = MutableLiveData(0)
 
+    // store the working time for each session
+    var durations = ArrayList<Int>()
     lateinit var timer : CountDownTimer
 
     /**
@@ -53,6 +54,10 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
     fun init(sessionsRaw: String) {
         sessions = stringToSessions(sessionsRaw)
+        durations.clear()
+        for (index in 0 until sessions.size) {
+            durations.add(0)
+        }
         currentRoundIdx.value = 0
         currentSessionIdx.value = 0
         secondsUntilFinished.value = sessions[0].duration
@@ -101,20 +106,24 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         timerState.value = TimerState.INACTIVE
         val index = currentSessionIdx.value!!
 
-        val currentSession = sessions[index]
-        val activeSeconds =
-            (index + 1) * currentSession.duration +
-                    (secondsUntilFinished.value?.toInt() ?: 0)
+        //TODO: do we want to save unfinished sessions?
+//        val currentSession = sessions[index]
+//        val activeSeconds =
+//            (index + 1) * currentSession.duration +
+//                    (secondsUntilFinished.value?.toInt() ?: 0)
 
-        if (currentSession.type != SessionType.BREAK) {
-            repository.addSession(constructIncompleteSession(
-                currentSession.type,
-                activeSeconds,
-                System.currentTimeMillis(),
-                countedRounds.value!!))
-        }
+//if (currentSession.type != SessionType.BREAK) {
+//            repository.addSession(constructIncompleteSession(
+//                currentSession.type,
+//                activeSeconds,
+//                System.currentTimeMillis(),
+//                countedRounds.value!!))
+//        }
     }
 
+    /**
+     * Valid for FOR_TIME sessions
+     */
     fun finishCurrentSession() {
         timer.cancel()
         soundPlayer.stop()
@@ -150,15 +159,21 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
                 }
 
                 if (isLastSession()) {
-                    timerState.value = TimerState.FINISHED
-                    soundPlayer.play(WORKOUT_COMPLETE)
                     if (sessions[index].type != SessionType.BREAK) {
+                        if (sessions[index].type == SessionType.FOR_TIME) {
+                            durations[index] = sessions[index].duration - secondsUntilFinished.value!!
+                        } else {
+                            durations[index] = sessions[index].duration
+                        }
                         repository.addSession(
                             constructSession(
                                 sessions[index],
                                 System.currentTimeMillis(),
-                                countedRounds.value!!))
+                                countedRounds.value!!,
+                                durations[index]))
                     }
+                    timerState.value = TimerState.FINISHED
+                    soundPlayer.play(WORKOUT_COMPLETE)
                 } else {
                     ++index
                     currentSessionIdx.value = index
@@ -170,11 +185,12 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
             SessionType.EMOM -> {
                 if (isLastRound()) {
                     if (isLastSession()) {
-                        timerState.value = TimerState.FINISHED
-                        soundPlayer.play(WORKOUT_COMPLETE)
+                        durations[index] = sessions[index].duration * sessions[index].numRounds
                         if (sessions[index].type != SessionType.BREAK) {
                             repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                         }
+                        timerState.value = TimerState.FINISHED
+                        soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
                         currentRoundIdx.value = 0
                         ++index
@@ -189,11 +205,13 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
             SessionType.TABATA -> {
                 if (isLastRound()) {
                     if (isLastSession()) {
-                        timerState.value = TimerState.FINISHED
-                        soundPlayer.play(WORKOUT_COMPLETE)
+                        durations[index] = sessions[index].duration * sessions[index].numRounds +
+                                sessions[index].breakDuration * (sessions[index].numRounds - 1)
                         if (sessions[index].type != SessionType.BREAK) {
                             repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                         }
+                        timerState.value = TimerState.FINISHED
+                        soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
                         currentRoundIdx.value = 0
                         ++index

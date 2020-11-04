@@ -9,18 +9,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.adrcotfas.wod.R
+import com.adrcotfas.wod.common.DimensionsUtils
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.notifications.NotificationHelper
+import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.workout.TimerState
 import com.adrcotfas.wod.databinding.FragmentWorkoutBinding
+import nl.dionsegijn.konfetti.emitters.StreamEmitter
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -143,12 +152,20 @@ class WorkoutFragment : Fragment(), KodeinAware {
                     handler.post { binding.timer.clearAnimation() }
                 }
                 TimerState.FINISHED -> {
-                    binding.summary?.text = " ${StringUtils.toString(viewModel.sessions[1].type)} ${StringUtils.toFavoriteFormat(viewModel.sessions[1])}"
-                    binding.summaryDrawable?.setImageDrawable(toDrawable(viewModel.sessions[1].type))
-
                     binding.circleProgress?.visibility = View.GONE
                     binding.inProgressContainer.visibility = View.GONE
                     binding.finishedWorkoutContainer.visibility = View.VISIBLE
+
+                    var totalDuration = 0
+                    for (idx in 0 until viewModel.sessions.size) {
+                        if (idx == 0) { // skip the pre-workout countdown
+                            continue
+                        }
+                        binding.summaryContainer.addView(createSummaryRow(viewModel.sessions[idx], viewModel.durations[idx]))
+                        totalDuration += viewModel.durations[idx]
+                    }
+                    binding.summaryContainer.addView(createSummaryTotalRow(totalDuration))
+                    startConfetti()
                 }
                 else -> return@Observer // do nothing
             }
@@ -162,8 +179,8 @@ class WorkoutFragment : Fragment(), KodeinAware {
             viewModel.countedRounds.value = viewModel.countedRounds.value?.plus(1)
         }
 
-        binding.closeButton?.setOnClickListener{
-            binding.closeButton?.hide()
+        binding.closeButton.setOnClickListener{
+            binding.closeButton.hide()
             requireActivity().onBackPressed()
         }
 
@@ -180,7 +197,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
     }
 
     private fun toDrawable(type : SessionType) : Drawable {
-        return resources.getDrawable(
+        return ResourcesCompat.getDrawable(resources,
             when (type) {
                 SessionType.AMRAP-> {
                     R.drawable.ic_infinity
@@ -192,11 +209,60 @@ class WorkoutFragment : Fragment(), KodeinAware {
                     R.drawable.ic_status_goodtime
                 }
                 SessionType.TABATA -> {
-                    R.drawable.ic_fire
+                    R.drawable.ic_fire2
                 }
                 SessionType.BREAK -> {
                     R.drawable.ic_break
                 }
-            }, null)
+            }, null)!!
+    }
+
+    private fun startConfetti() {
+        binding.konfetti.build()
+            .addColors(
+                resources.getColor(R.color.red_goodtime_dark),
+                resources.getColor(R.color.red_goodtime),
+                resources.getColor(R.color.green_goodtime),
+                resources.getColor(R.color.green_goodtime_dark),
+                resources.getColor(R.color.grey500),
+                resources.getColor(R.color.grey800)
+            )
+            .setDirection(0.0, 359.0)
+            .setSpeed(1f, 5f)
+            .setFadeOutEnabled(true)
+            .setTimeToLive(3500)
+            .addShapes(Shape.Square, Shape.Circle)
+            .addSizes(Size(6))
+            .setPosition(-50f,
+                DimensionsUtils.getScreenResolution(requireContext()).first + 50f,
+                -50f,
+                -50f)
+            .streamFor(50, StreamEmitter.INDEFINITE)
+    }
+
+    private fun createSummaryRow(session : SessionMinimal, duration : Int) : ConstraintLayout {
+        val layout = layoutInflater.inflate(R.layout.row_summary_view, null, false) as ConstraintLayout
+        val image = layout.findViewById<ImageView>(R.id.summary_drawable)
+        val text = layout.findViewById<TextView>(R.id.summary_text)
+        image.setImageDrawable(toDrawable(session.type))
+
+        if (session.type == SessionType.FOR_TIME) {
+            text.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(session)} " +
+                    "(${StringUtils.secondsToNiceFormat(duration)})"
+        } else {
+            text.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(session)}"
+        }
+        return layout
+    }
+
+    private fun createSummaryTotalRow(totalSeconds : Int) : ConstraintLayout {
+        val layout = layoutInflater.inflate(R.layout.row_summary_view, null, false) as ConstraintLayout
+        val image = layout.findViewById<ImageView>(R.id.summary_drawable)
+        val text = layout.findViewById<TextView>(R.id.summary_text)
+
+        image.setImageDrawable(resources.getDrawable(R.drawable.ic_timer))
+        text.text = "Total: ${StringUtils.secondsToNiceFormat(totalSeconds)}"
+
+        return layout
     }
 }

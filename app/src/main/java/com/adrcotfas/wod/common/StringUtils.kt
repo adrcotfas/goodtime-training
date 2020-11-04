@@ -44,7 +44,7 @@ class StringUtils {
             }
         }
 
-        private fun secondsToNiceFormat(elapsed: Int): String {
+        fun secondsToNiceFormat(elapsed: Int): String {
             val duration = secondsToMinutesAndSeconds(elapsed)
             return when {
                 duration.first == 0 -> "${duration.second} sec"
