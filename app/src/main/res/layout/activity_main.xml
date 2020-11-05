@@ -40,4 +40,14 @@
         app:borderWidth="0dp"
         android:layout_marginBottom="96dp"
         android:layout_gravity="bottom|center" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/workout_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/menu_workout"
+        android:layout_gravity="bottom"
+        app:itemRippleColor="@color/green_goodtime_darker"
+        style="@style/WorkoutBottomAppBarStyle"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

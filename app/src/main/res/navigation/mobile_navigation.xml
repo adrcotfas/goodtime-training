@@ -3,18 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_main">
+    app:startDestination="@+id/nav_amrap">
 
     <fragment
-        android:id="@+id/nav_main"
-        android:name="com.adrcotfas.wod.ui.main.MainFragment"
+        android:id="@+id/nav_amrap"
+        android:name="com.adrcotfas.wod.ui.amrap.AmrapFragment"
         android:label="main" >
         <action
-            android:id="@+id/start_workout_action"
-            app:enterAnim="@animator/nav_default_enter_anim"
-            app:exitAnim="@animator/nav_default_exit_anim"
-            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
-            app:popExitAnim="@animator/nav_default_pop_exit_anim"
+            android:id="@+id/to_workout"
+            app:destination="@id/nav_workout" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_for_time"
+        android:name="com.adrcotfas.wod.ui.for_time.ForTimeFragment"
+        android:label="main" >
+        <action
+            android:id="@+id/to_workout"
+            app:destination="@id/nav_workout" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_emom"
+        android:name="com.adrcotfas.wod.ui.emom.EmomFragment"
+        android:label="main" >
+        <action
+            android:id="@+id/to_workout"
+            app:destination="@id/nav_workout" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_hiit"
+        android:name="com.adrcotfas.wod.ui.tabata.TabataFragment"
+        android:label="main" >
+        <action
+            android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
     </fragment>
 
@@ -39,13 +62,6 @@
         android:id="@+id/nav_dialog_stop_workout"
         android:name="com.adrcotfas.wod.ui.workout.StopWorkoutDialog"
         android:label="StopWorkoutDialog" >
-        <action
-            android:id="@+id/action_stopWorkoutDialog_to_nav_main"
-            app:enterAnim="@animator/nav_default_enter_anim"
-            app:exitAnim="@animator/nav_default_exit_anim"
-            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
-            app:popExitAnim="@animator/nav_default_pop_exit_anim"
-            app:popUpTo="@id/nav_main" />
     </dialog>
 
 </navigation>

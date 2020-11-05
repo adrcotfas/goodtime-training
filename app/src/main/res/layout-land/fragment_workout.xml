@@ -23,7 +23,7 @@
         android:id="@+id/in_progress_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
         <TextView
             android:id="@+id/round"
             android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="32dp"
-                app:fontFamily="@font/timer_font_lite"
+                app:fontFamily="@font/app_font"
                 android:elevation="16dp"
                 android:textColor="@color/green_goodtime"
                 android:textAppearance="?android:attr/textAppearanceMedium"

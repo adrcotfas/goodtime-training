@@ -8,13 +8,15 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.adrcotfas.wod.common.currentNavigationFragment
 import com.adrcotfas.wod.databinding.ActivityMainBinding
+import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 import com.adrcotfas.wod.ui.common.ui.FullscreenHelper
 import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
-import com.adrcotfas.wod.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
                         destination.label == "WorkoutFragment" ||
                         destination.label == "StopWorkoutDialog"
             binding.toolbar.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            binding.workoutMenu.visibility = if (hideButtons) View.GONE else View.VISIBLE
             if (hideButtons) binding.startButton.hide() else binding.startButton.show()
             //TODO: maybe activate later with a setting
             //toggleFullscreenMode(hideButtons)
@@ -52,13 +55,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.startButton.setOnClickListener{
-            (getMainFragment().getVisibleFragment()).onStartWorkout()
-        }
+        binding.startButton.setOnClickListener{ getMainFragment().onStartWorkout() }
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_save_favorite -> {
-                    val fragment = getMainFragment().getVisibleFragment()
+                    val fragment = getMainFragment()
                     val session = fragment.getSelectedSession()
                     if (session.duration == 0) {
                         false
@@ -70,10 +71,15 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        binding.workoutMenu.setupWithNavController(navController)
+        binding.workoutMenu.menu[4].isEnabled = false
+        binding.workoutMenu.setOnNavigationItemReselectedListener {
+            // Nothing here to disable reselect
+        }
     }
 
     private fun getMainFragment() =
-        (supportFragmentManager.currentNavigationFragment as MainFragment)
+        (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)

@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
+import com.adrcotfas.wod.common.preferences.PrefUtil
+import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentTabataBinding
@@ -86,6 +89,13 @@ class TabataFragment : WorkoutTypeFragment() {
             textColor = Color.NEUTRAL,
             scrollListener = roundsListener
         )
+    }
+
+    override fun onStartWorkout() {
+        val action = TabataFragmentDirections.toWorkout(
+            sessionsToString(PrefUtil.generatePreWorkoutSession(),  getSelectedSession())
+        )
+        findNavController().navigate(action)
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session

@@ -6,9 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
+import com.adrcotfas.wod.common.preferences.PrefUtil
+import com.adrcotfas.wod.common.sessionsToString
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
@@ -65,6 +68,13 @@ class AmrapFragment : WorkoutTypeFragment() {
             viewModel.secondsPickerData,
             viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener
         )
+    }
+
+    override fun onStartWorkout() {
+        val action = AmrapFragmentDirections.toWorkout(
+            sessionsToString(PrefUtil.generatePreWorkoutSession(),  getSelectedSession())
+        )
+        findNavController().navigate(action)
     }
 
     override fun getSelectedSession(): SessionMinimal = viewModel.session

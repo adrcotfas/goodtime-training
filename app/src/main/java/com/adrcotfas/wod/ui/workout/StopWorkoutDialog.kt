@@ -33,8 +33,9 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->
                 viewModel.stopTimer()
-                NavHostFragment.findNavController(this)
-                    .navigate(StopWorkoutDialogDirections.actionStopWorkoutDialogToNavMain())
+                //TODO: seems to work fine but is it a good idea?
+                NavHostFragment.findNavController(this).popBackStack()
+                NavHostFragment.findNavController(this).popBackStack()
             }
             .setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int ->
                 if (viewModel.timerState.value == TimerState.PAUSED) {

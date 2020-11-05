@@ -23,7 +23,7 @@
         android:id="@+id/in_progress_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <ImageView
             android:id="@+id/workout_image"
@@ -43,10 +43,10 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/circle_progress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/circle_progress"
             app:layout_constraintVertical_bias="0.45"
             tools:text="15:00"
             tools:textColor="@color/green_goodtime" />
@@ -62,7 +62,7 @@
             app:layout_constraintTop_toBottomOf="@id/timer"
             tools:text="3 / 8"
             tools:textColor="@color/green_goodtime"
-            tools:visibility="gone"/>
+            tools:visibility="visible"/>
 
         <com.adrcotfas.wod.ui.common.CircleProgressBar
             android:id="@+id/circle_progress"
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="32dp"
-                app:fontFamily="@font/timer_font_lite"
+                app:fontFamily="@font/app_font"
                 android:elevation="16dp"
                 android:textColor="@color/green_goodtime"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -109,7 +109,8 @@
                 app:fabCustomSize="70dp"
                 app:maxImageSize="36dp"
                 app:srcCompat="@drawable/ic_add"
-                app:tint="@color/green_goodtime" />
+                app:tint="@color/green_goodtime"
+                tools:srcCompat="null"/>
         </FrameLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -134,7 +135,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/congrats_section"
