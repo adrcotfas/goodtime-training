@@ -55,11 +55,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.startButton.setOnClickListener{ getMainFragment().onStartWorkout() }
+        binding.startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_save_favorite -> {
-                    val fragment = getMainFragment()
+                    val fragment = getVisibleFragment()
                     val session = fragment.getSelectedSession()
                     if (session.duration == 0) {
                         false
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getMainFragment() =
+    private fun getVisibleFragment() =
         (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
