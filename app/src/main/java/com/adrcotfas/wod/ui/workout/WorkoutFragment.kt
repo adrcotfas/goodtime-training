@@ -160,6 +160,8 @@ class WorkoutFragment : Fragment(), KodeinAware {
                     binding.inProgressContainer.visibility = View.GONE
                     binding.finishedWorkoutContainer.visibility = View.VISIBLE
 
+                    binding.congrats.text = StringUtils.generateCongrats()
+
                     var totalDuration = 0
                     for (idx in 0 until viewModel.sessions.size) {
                         if (idx == 0) { // skip the pre-workout countdown

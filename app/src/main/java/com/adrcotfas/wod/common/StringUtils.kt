@@ -5,6 +5,7 @@ import com.adrcotfas.wod.data.model.SessionType
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 class StringUtils {
 
@@ -120,6 +121,18 @@ class StringUtils {
                 SessionType.TABATA -> "HIIT"
                 else -> ""
             }
+        }
+
+        private val congratsStrings = arrayListOf(
+            "Good job! \uD83D\uDCAA",
+            "Not bad! \uD83E\uDD1C\uD83E\uDD1B",
+            "Well done! \uD83D\uDD25",
+            "Congrats! \uD83C\uDFC5",
+            "Congrats! \uD83C\uDFC6")
+
+        fun generateCongrats() : String {
+            val randomIdx = Random.nextInt(0, congratsStrings.size)
+            return congratsStrings[randomIdx]
         }
     }
 }

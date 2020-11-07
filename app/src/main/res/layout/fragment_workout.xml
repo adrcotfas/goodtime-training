@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:text="Good job! 🤜🤛"
                 android:padding="16dp"
-                android:textSize="36sp"
+                android:textSize="32sp"
                 android:fontFamily="@font/app_font"
                 android:textStyle="bold"
                 android:textColor="@color/green_goodtime"/>

@@ -144,10 +144,10 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/app_font"
                 android:padding="16dp"
-                android:text="Good job! 🤜🤛"
                 android:textColor="@color/green_goodtime"
-                android:textSize="36sp"
-                android:textStyle="bold" />
+                android:textSize="32sp"
+                android:textStyle="bold"
+                tools:text="Good job! 🤜🤛"/>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
