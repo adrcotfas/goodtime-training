@@ -23,7 +23,7 @@
         android:id="@+id/in_progress_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
         <TextView
             android:id="@+id/round"
             android:layout_width="wrap_content"
@@ -132,7 +132,7 @@
             android:layout_marginHorizontal="32dp"
             android:backgroundTint="@color/transparent_dark"
             app:cardCornerRadius="16dp"
-            app:layout_constraintBottom_toTopOf="@id/summary_section"
+            android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.25"
             app:layout_constraintStart_toStartOf="parent"
@@ -157,13 +157,15 @@
             app:layout_constraintHeight_max="250dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintTop_toBottomOf="@id/congrats_section"
-            app:layout_constraintEnd_toEndOf="@id/congrats_section"
             app:layout_constraintStart_toStartOf="@id/congrats_section"
+            app:layout_constraintEnd_toEndOf="@id/congrats_section"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="32dp"
             android:backgroundTint="@color/transparent_dark"
             android:layout_marginHorizontal="32dp"
             app:cardCornerRadius="16dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintVertical_bias="0.0">
 
             <ScrollView
                 android:id="@+id/summary_scroll_view"

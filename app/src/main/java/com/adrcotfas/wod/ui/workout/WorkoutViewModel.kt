@@ -18,7 +18,11 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
     val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionMinimal>()
-    var countedRounds = MutableLiveData(0)
+
+    /**
+     * Holds the counted rounds in seconds elapsed
+     */
+    var countedRounds = ArrayList<Int>(0)
 
     // store the working time for each session
     var durations = ArrayList<Int>()
@@ -62,7 +66,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         currentSessionIdx.value = 0
         secondsUntilFinished.value = sessions[0].duration
         isResting.value = false
-        countedRounds.value = 0
+        countedRounds = ArrayList(0)
     }
 
     fun startWorkout() {
@@ -104,9 +108,8 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
         timer.cancel()
         soundPlayer.stop()
         timerState.value = TimerState.INACTIVE
-        val index = currentSessionIdx.value!!
-
         //TODO: do we want to save unfinished sessions?
+        //val index = currentSessionIdx.value!!
 //        val currentSession = sessions[index]
 //        val activeSeconds =
 //            (index + 1) * currentSession.duration +
@@ -160,6 +163,9 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
 
                 if (isLastSession()) {
                     if (sessions[index].type != SessionType.BREAK) {
+                        if (countedRounds.isNotEmpty()) {
+                            addRound()
+                        }
                         if (sessions[index].type == SessionType.FOR_TIME) {
                             durations[index] = sessions[index].duration - secondsUntilFinished.value!!
                         } else {
@@ -169,7 +175,7 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
                             constructSession(
                                 sessions[index],
                                 System.currentTimeMillis(),
-                                countedRounds.value!!,
+                                countedRounds,
                                 durations[index]))
                     }
                     timerState.value = TimerState.FINISHED
@@ -231,5 +237,27 @@ class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val reposi
                 }
             }
         }
+    }
+
+    fun addRound() {
+        val totalSeconds = getCurrentSessionDuration()
+        if (countedRounds.isEmpty()) {
+            countedRounds.add(totalSeconds - secondsUntilFinished.value!!)
+        } else {
+            val elapsed = totalSeconds - secondsUntilFinished.value!!
+            countedRounds.add(elapsed)
+        }
+    }
+
+    fun getRounds() : ArrayList<Int> {
+        val result = ArrayList<Int>(0)
+        for (i in 0 until countedRounds.size) {
+            if (i == 0) {
+                result.add(countedRounds[i])
+            } else {
+                result.add(countedRounds[i] - countedRounds[i - 1])
+            }
+        }
+        return result
     }
 }

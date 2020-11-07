@@ -19,11 +19,11 @@ data class Session(
     var finished: Boolean) {
 
     companion object {
-        fun constructSession(minimal: SessionMinimal, timestamp: Long, rounds: Int = 0,  duration : Int = 0) : Session {
+        fun constructSession(minimal: SessionMinimal, timestamp: Long, rounds: ArrayList<Int> = arrayListOf(0),  duration : Int = 0) : Session {
             //TODO: use [duration] for FOR_TIME (or maybe for all)
             return Session(0, minimal.duration, minimal.breakDuration, minimal.numRounds, minimal.type,
                 //TODO: but is "finished" important?
-                rounds, timestamp, true)
+                0, timestamp, true)
         }
 
         fun constructIncompleteSession(
@@ -31,7 +31,7 @@ data class Session(
             activeSeconds: Int,
             timestamp: Long,
             rounds: Int = 0) : Session {
-            
+
             return Session(0, activeSeconds, 0, 0, type, rounds,
                 timestamp, false)
         }
