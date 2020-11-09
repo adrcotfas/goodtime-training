@@ -84,7 +84,7 @@ class StringUtils {
 
         fun toFavoriteDescriptionDetailed(session : SessionMinimal): String {
             return when (session.type) {
-                SessionType.AMRAP -> "As many rounds as possible in ${secondsToNiceFormatExtended(session.duration)}"
+                SessionType.AMRAP -> "As many rounds/reps as possible in ${secondsToNiceFormatExtended(session.duration)}"
                 SessionType.FOR_TIME -> "For time with a time cap of ${secondsToNiceFormatExtended(session.duration)}"
                 SessionType.EMOM -> {
                     (if (session.duration == 60) "Every minute on the minute for ${secondsToNiceFormatExtended(session.numRounds * session.duration)}"
