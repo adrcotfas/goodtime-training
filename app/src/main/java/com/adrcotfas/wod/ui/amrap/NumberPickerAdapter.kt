@@ -11,7 +11,7 @@ import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 
 class NumberPickerAdapter(
-    var data : MutableList<Int>,
+    private val data : List<Int>,
     private val context : Context,
     private val listener: Listener,
     private val prefixWithZero: Boolean,
@@ -33,6 +33,8 @@ class NumberPickerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(context, parent, prefixWithZero, textSize, textColor)
     }
+
+    fun getLastIndex() = data.lastIndex
 
     class ViewHolder private constructor(itemView: View, private val prefixWithZero: Boolean)
         : RecyclerView.ViewHolder(itemView) {

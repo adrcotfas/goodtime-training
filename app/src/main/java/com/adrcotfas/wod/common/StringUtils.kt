@@ -119,6 +119,7 @@ class StringUtils {
                 SessionType.FOR_TIME -> "FOR TIME"
                 SessionType.EMOM -> "EMOM"
                 SessionType.TABATA -> "HIIT"
+                SessionType.BREAK -> "REST"
                 else -> ""
             }
         }

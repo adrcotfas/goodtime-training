@@ -24,6 +24,7 @@ import androidx.navigation.fragment.navArgs
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.DimensionsUtils
 import com.adrcotfas.wod.common.StringUtils
+import com.adrcotfas.wod.common.ViewUtils
 import com.adrcotfas.wod.common.notifications.NotificationHelper
 import com.adrcotfas.wod.data.model.SessionMinimal
 import com.adrcotfas.wod.data.model.SessionType
@@ -132,7 +133,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
 
             binding.round.text =
                 "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
-            binding.workoutImage.setImageDrawable(toDrawable(type))
+            binding.workoutImage.setImageDrawable(ViewUtils.toDrawable(resources, type))
         })
 
         viewModel.currentRoundIdx.observe(viewLifecycleOwner, Observer { currentRoundIdx ->
@@ -225,29 +226,6 @@ class WorkoutFragment : Fragment(), KodeinAware {
         }
     }
 
-    private fun toDrawable(type: SessionType) : Drawable {
-        return ResourcesCompat.getDrawable(
-            resources,
-            when (type) {
-                SessionType.AMRAP -> {
-                    R.drawable.ic_infinity
-                }
-                SessionType.FOR_TIME -> {
-                    R.drawable.ic_flash
-                }
-                SessionType.EMOM -> {
-                    R.drawable.ic_status_goodtime
-                }
-                SessionType.TABATA -> {
-                    R.drawable.ic_fire2
-                }
-                SessionType.BREAK -> {
-                    R.drawable.ic_break
-                }
-            }, null
-        )!!
-    }
-
     private fun startConfetti() {
         binding.konfetti.build()
             .addColors(
@@ -277,7 +255,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
         val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
-        image.setImageDrawable(toDrawable(session.type))
+        image.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
 
         text.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(session)}"
         return layout
@@ -288,7 +266,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
         val headerImage = layout.findViewById<ImageView>(R.id.summary_drawable)
         val headerText = layout.findViewById<TextView>(R.id.summary_text)
 
-        headerImage.setImageDrawable(toDrawable(session.type))
+        headerImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
         headerText.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(
             session
         )}"

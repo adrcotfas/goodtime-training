@@ -60,19 +60,23 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.action_save_favorite -> {
                     val fragment = getVisibleFragment()
-                    val session = fragment.getSelectedSession()
-                    if (session.duration == 0) {
-                        false
+                    val sessions = fragment.getSelectedSessions()
+                    if (sessions.size == 1) {
+                        if (sessions.size == 1 && sessions[0].duration == 0) {
+                            false
+                        } else {
+                            SaveFavoriteDialog.newInstance(sessions[0], fragment).show(supportFragmentManager, "")
+                            true
+                        }
                     } else {
-                        SaveFavoriteDialog.newInstance(session, fragment).show(supportFragmentManager, "")
-                        true
+                        false
+                        //TODO: handle Custom
                     }
                 }
                 else -> false
             }
         }
         binding.workoutMenu.setupWithNavController(navController)
-        binding.workoutMenu.menu[4].isEnabled = false
         binding.workoutMenu.setOnNavigationItemReselectedListener {
             // Nothing here to disable reselect
         }

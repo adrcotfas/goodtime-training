@@ -67,7 +67,7 @@ class NumberPicker(
      * Used for smooth scrolling when selecting a favorite
      */
     fun smoothScrollToPosition(position: Int) {
-        val pos = if (position == 0) viewAdapter.data.lastIndex else (position - 1)
+        val pos = if (position == 0) viewAdapter.getLastIndex() else (position - 1)
         recyclerView.smoothSnapToPosition(pos)
     }
 
@@ -75,7 +75,7 @@ class NumberPicker(
      * Used for the initial scroll when opening the app
      */
     private fun scrollToPosition(position: Int) {
-        val pos = if (position == 0) viewAdapter.data.lastIndex else (position + 1)
+        val pos = if (position == 0) viewAdapter.getLastIndex() else (position + 1)
         recyclerView.scrollToPosition(pos)
     }
 

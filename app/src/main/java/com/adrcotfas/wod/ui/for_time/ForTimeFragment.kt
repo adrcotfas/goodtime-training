@@ -76,12 +76,12 @@ class ForTimeFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = ForTimeFragmentDirections.toWorkout(
-            sessionsToString(PrefUtil.generatePreWorkoutSession(),  getSelectedSession())
+            sessionsToString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSession(): SessionMinimal = viewModel.session
+    override fun getSelectedSessions(): ArrayList<SessionMinimal> = arrayListOf(viewModel.session)
 
     override fun onFavoriteSelected(session: SessionMinimal) {
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)

@@ -33,7 +33,7 @@ abstract class WorkoutTypeFragment : Fragment(), KodeinAware, SaveFavoriteDialog
 
     abstract fun onStartWorkout()
 
-    abstract fun getSelectedSession() : SessionMinimal
+    abstract fun getSelectedSessions() : ArrayList<SessionMinimal>
 
     fun updateMainButtonsState(duration: Int) {
         if (isDurationValid && duration != 0 || !isDurationValid && duration == 0) {
