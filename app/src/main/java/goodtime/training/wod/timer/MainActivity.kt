@@ -1,0 +1,130 @@
+package goodtime.training.wod.timer
+
+import android.graphics.PorterDuff
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import goodtime.training.wod.timer.common.currentNavigationFragment
+import goodtime.training.wod.timer.databinding.ActivityMainBinding
+import goodtime.training.wod.timer.ui.common.WorkoutTypeFragment
+import goodtime.training.wod.timer.ui.common.ui.FullscreenHelper
+import goodtime.training.wod.timer.ui.common.ui.SelectCustomWorkoutDialog
+import goodtime.training.wod.timer.ui.common.ui.SelectFavoriteDialog
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var navController: NavController
+
+    private lateinit var binding : ActivityMainBinding
+    private lateinit var navHostFragment: NavHostFragment
+    private var favoritesButton: MenuItem? = null
+    private lateinit var fullscreenHelper : FullscreenHelper
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+        setupAppBar()
+        fullscreenHelper = FullscreenHelper(binding.mainLayout)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val hideButtons =
+                destination.label == "LogFragment" ||
+                        destination.label == "WorkoutFragment" ||
+                        destination.label == "StopWorkoutDialog"
+            binding.toolbar.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            binding.workoutMenu.visibility = if (hideButtons) View.GONE else View.VISIBLE
+            if (hideButtons) binding.startButton.hide() else binding.startButton.show()
+            //TODO: maybe activate later with a setting
+            //toggleFullscreenMode(hideButtons)
+
+            if (destination.label == "WorkoutFragment") {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+        }
+
+        binding.startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_save_favorite -> {
+                    onFavoritesButtonClick()
+                }
+                else -> false
+            }
+        }
+        binding.workoutMenu.setupWithNavController(navController)
+        binding.workoutMenu.setOnNavigationItemReselectedListener {
+            // Nothing here to disable reselect
+        }
+    }
+
+    private fun onFavoritesButtonClick(): Boolean {
+        val fragment = getVisibleFragment()
+        val sessions = fragment.getSelectedSessions()
+        return if (sessions.size == 1) {
+            if (sessions.size == 1 && sessions[0].duration == 0) {
+                false
+            } else {
+                SelectFavoriteDialog.newInstance(sessions[0], fragment)
+                    .show(supportFragmentManager, "")
+                true
+            }
+        } else {
+            SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "")
+            true
+        }
+    }
+
+    private fun getVisibleFragment() =
+        (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        favoritesButton = menu!!.findItem(R.id.action_save_favorite)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setupAppBar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = null
+
+        binding.toolbar.setNavigationOnClickListener {
+            Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun setStartButtonState(enabled: Boolean) {
+        binding.startButton.isEnabled = enabled
+        if (enabled) {
+            binding.startButton.background?.setTint(resources.getColor(R.color.green_goodtime_darker))
+            binding.startButton.drawable?.setTint(resources.getColor(R.color.green_goodtime))
+            favoritesButton?.icon?.setColorFilter(
+                resources.getColor(R.color.red_goodtime), PorterDuff.Mode.SRC_ATOP)
+        } else {
+            binding.startButton.background?.setTint(resources.getColor(R.color.grey1000))
+            binding.startButton.drawable?.setTint(resources.getColor(R.color.grey800))
+            favoritesButton?.icon?.setColorFilter(
+                resources.getColor(R.color.grey800), PorterDuff.Mode.SRC_ATOP)
+        }
+    }
+
+    private fun toggleFullscreenMode(newState: Boolean) {
+        if (newState) {
+            fullscreenHelper.enable()
+        } else {
+            fullscreenHelper.disable()
+        }
+    }
+}

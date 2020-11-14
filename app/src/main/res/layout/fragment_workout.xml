@@ -64,7 +64,7 @@
             tools:textColor="@color/green_goodtime"
             tools:visibility="visible"/>
 
-        <com.adrcotfas.wod.ui.common.CircleProgressBar
+        <goodtime.training.wod.timer.ui.common.CircleProgressBar
             android:id="@+id/circle_progress"
             android:layout_width="320sp"
             android:layout_height="320sp"

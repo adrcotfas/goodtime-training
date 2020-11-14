@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_amrap"
-        android:name="com.adrcotfas.wod.ui.amrap.AmrapFragment">
+        android:name="goodtime.training.wod.timer.ui.amrap.AmrapFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/nav_for_time"
-        android:name="com.adrcotfas.wod.ui.for_time.ForTimeFragment">
+        android:name="goodtime.training.wod.timer.ui.for_time.ForTimeFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/nav_emom"
-        android:name="com.adrcotfas.wod.ui.emom.EmomFragment">
+        android:name="goodtime.training.wod.timer.ui.emom.EmomFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/nav_hiit"
-        android:name="com.adrcotfas.wod.ui.tabata.TabataFragment">
+        android:name="goodtime.training.wod.timer.ui.tabata.TabataFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/nav_custom"
-        android:name="com.adrcotfas.wod.ui.custom.CustomWorkoutFragment">
+        android:name="goodtime.training.wod.timer.ui.custom.CustomWorkoutFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/nav_workout"
-        android:name="com.adrcotfas.wod.ui.workout.WorkoutFragment"
+        android:name="goodtime.training.wod.timer.ui.workout.WorkoutFragment"
         android:label="WorkoutFragment"
         tools:layout="@layout/fragment_workout">
         <argument
@@ -58,13 +58,13 @@
 
     <fragment
         android:id="@+id/nav_log"
-        android:name="com.adrcotfas.wod.ui.log.LogFragment"
+        android:name="goodtime.training.wod.timer.ui.log.LogFragment"
         android:label="LogFragment"
         tools:layout="@layout/fragment_log"/>
 
     <dialog
         android:id="@+id/nav_dialog_stop_workout"
-        android:name="com.adrcotfas.wod.ui.workout.StopWorkoutDialog"
+        android:name="goodtime.training.wod.timer.ui.workout.StopWorkoutDialog"
         android:label="StopWorkoutDialog" >
     </dialog>
 
