@@ -11,9 +11,10 @@ import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.preferences.PrefUtil
-import com.adrcotfas.wod.common.sessionsToString
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.CustomWorkoutSkeleton
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.data.model.SessionType
+import com.adrcotfas.wod.data.model.TypeConverter
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 
@@ -48,7 +49,7 @@ class ForTimeFragment : WorkoutTypeFragment() {
 
         viewModel.timeData.get().observe(
             viewLifecycleOwner, Observer { duration ->
-                viewModel.session = SessionMinimal(
+                viewModel.session = SessionSkeleton(
                     duration = duration, breakDuration = 0, numRounds = 0,
                     type = SessionType.FOR_TIME
                 )
@@ -76,16 +77,18 @@ class ForTimeFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = ForTimeFragmentDirections.toWorkout(
-            sessionsToString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSessions(): ArrayList<SessionMinimal> = arrayListOf(viewModel.session)
+    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
 
-    override fun onFavoriteSelected(session: SessionMinimal) {
+    override fun onFavoriteSelected(session: SessionSkeleton) {
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)
         minutePicker.smoothScrollToPosition(duration.first)
         secondsPicker.smoothScrollToPosition(duration.second)
     }
+
+    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
 }

@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
 
-class CustomFragmentAddSessionAdapter(
+class CustomWorkoutAddSessionAdapter(
     private val listener: Listener
 )
-    : RecyclerView.Adapter<CustomFragmentAddSessionAdapter.FooterViewHolder>()
+    : RecyclerView.Adapter<CustomWorkoutAddSessionAdapter.FooterViewHolder>()
 {
     interface Listener {
         fun onAddSessionClicked()

@@ -5,5 +5,5 @@ enum class SessionType(val value: Int) {
     EMOM(1),
     FOR_TIME(2),
     TABATA(3),
-    BREAK(4)
+    REST(4)
 }

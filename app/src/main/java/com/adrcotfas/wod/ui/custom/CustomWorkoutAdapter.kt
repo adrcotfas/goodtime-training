@@ -1,6 +1,7 @@
 package com.adrcotfas.wod.ui.custom
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.ViewUtils
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionSkeleton
+import com.adrcotfas.wod.data.model.SessionType
 import com.google.android.material.chip.Chip
 
-class CustomFragmentSessionAdapter(
-    private val data : ArrayList<SessionMinimal>,
+class CustomWorkoutAdapter(
+    var data : ArrayList<SessionSkeleton>,
     private val context: Context,
     private val listener : Listener)
-    : RecyclerView.Adapter<CustomFragmentSessionAdapter.ViewHolder>()
+    : RecyclerView.Adapter<CustomWorkoutAdapter.ViewHolder>()
 {
 
     interface Listener {
@@ -45,9 +47,13 @@ class CustomFragmentSessionAdapter(
         private val sessionTypeText: TextView = view.findViewById(R.id.session_type_text)
         private val sessionChip: Chip = view.findViewById(R.id.session_chip)
 
-        fun bind(resources: Resources, session: SessionMinimal) {
+        fun bind(resources: Resources, session: SessionSkeleton) {
             sessionTypeImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
             sessionTypeText.text = StringUtils.toString(session.type)
+            if (session.type == SessionType.REST) {
+                sessionChip.setTextColor(resources.getColor(R.color.red_goodtime))
+                sessionChip.chipBackgroundColor = ColorStateList.valueOf(resources.getColor(R.color.red_goodtime_dark))
+            }
             sessionChip.text = StringUtils.toFavoriteFormat(session)
             sessionTypeImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
         }

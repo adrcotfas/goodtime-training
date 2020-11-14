@@ -13,9 +13,10 @@ import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 import com.adrcotfas.wod.common.preferences.PrefUtil
-import com.adrcotfas.wod.common.sessionsToString
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.CustomWorkoutSkeleton
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.data.model.SessionType
+import com.adrcotfas.wod.data.model.TypeConverter
 import com.adrcotfas.wod.databinding.FragmentEmomBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 
@@ -58,7 +59,7 @@ class EmomFragment : WorkoutTypeFragment() {
         viewModel.emomData.get().observe(
             viewLifecycleOwner, Observer { data ->
                 val duration = data.first
-                viewModel.session = SessionMinimal(duration = duration, breakDuration = 0,
+                viewModel.session = SessionSkeleton(duration = duration, breakDuration = 0,
                     numRounds = data.second, type = SessionType.EMOM)
                 updateMainButtonsState(duration)
             }
@@ -94,17 +95,19 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = EmomFragmentDirections.toWorkout(
-            sessionsToString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSessions(): ArrayList<SessionMinimal> = arrayListOf(viewModel.session)
+    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
 
-    override fun onFavoriteSelected(session: SessionMinimal) {
+    override fun onFavoriteSelected(session: SessionSkeleton) {
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)
         minutePicker.smoothScrollToPosition(duration.first)
         secondsPicker.smoothScrollToPosition(duration.second)
         roundsPicker.smoothScrollToPosition(session.numRounds - 1)
     }
+
+    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
 }

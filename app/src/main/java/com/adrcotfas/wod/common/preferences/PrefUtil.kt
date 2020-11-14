@@ -2,7 +2,7 @@ package com.adrcotfas.wod.common.preferences
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.data.model.SessionType
 
 class PrefUtil(private val context: Context) {
@@ -21,9 +21,9 @@ class PrefUtil(private val context: Context) {
     companion object {
         private const val IS_FIRST_RUN = "pref_is_first_run"
 
-        fun generatePreWorkoutSession() : SessionMinimal {
+        fun generatePreWorkoutSession() : SessionSkeleton {
             //TODO: duration according to preferences
-            return SessionMinimal(duration = 5, breakDuration = 5, numRounds = 0, type = SessionType.BREAK)
+            return SessionSkeleton(duration = 5, breakDuration = 5, numRounds = 0, type = SessionType.REST)
         }
     }
 }

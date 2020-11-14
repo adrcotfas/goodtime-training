@@ -2,10 +2,10 @@ package com.adrcotfas.wod.ui.log
 
 import androidx.lifecycle.ViewModel
 import com.adrcotfas.wod.data.model.Session
-import com.adrcotfas.wod.data.repository.SessionsRepository
+import com.adrcotfas.wod.data.repository.AppRepository
 
-class LogViewModel(private val sessionsRepository: SessionsRepository) : ViewModel() {
+class LogViewModel(private val appRepository: AppRepository) : ViewModel() {
 
-    fun addSession(session: Session) = sessionsRepository.addSession(session)
-    fun getSessions() = sessionsRepository.getSessions()
+    fun addSession(session: Session) = appRepository.addSession(session)
+    fun getSessions() = appRepository.getSessions()
 }

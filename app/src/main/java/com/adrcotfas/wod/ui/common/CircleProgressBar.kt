@@ -26,6 +26,7 @@ class CircleProgressBar @JvmOverloads constructor(
     }
 
     private val progressPaint = Paint().apply {
+        //TODO: refactoring needed for these colors
         color = Color.GREEN
         style = Paint.Style.STROKE
         strokeWidth = progressWidth

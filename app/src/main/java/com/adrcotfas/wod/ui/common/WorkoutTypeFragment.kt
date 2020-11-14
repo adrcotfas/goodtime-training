@@ -6,13 +6,18 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.adrcotfas.wod.MainActivity
-import com.adrcotfas.wod.data.model.SessionMinimal
-import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
+import com.adrcotfas.wod.data.model.SessionSkeleton
+import com.adrcotfas.wod.ui.common.ui.SelectCustomWorkoutDialog
+import com.adrcotfas.wod.ui.common.ui.SelectFavoriteDialog
 import com.adrcotfas.wod.ui.workout.FADE_ANIMATION_DURATION
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 
-abstract class WorkoutTypeFragment : Fragment(), KodeinAware, SaveFavoriteDialog.Listener {
+abstract class WorkoutTypeFragment:
+    Fragment(),
+    KodeinAware,
+    SelectFavoriteDialog.Listener,
+    SelectCustomWorkoutDialog.Listener {
 
     override val kodein by closestKodein()
     private var isDurationValid = true
@@ -33,7 +38,7 @@ abstract class WorkoutTypeFragment : Fragment(), KodeinAware, SaveFavoriteDialog
 
     abstract fun onStartWorkout()
 
-    abstract fun getSelectedSessions() : ArrayList<SessionMinimal>
+    abstract fun getSelectedSessions() : ArrayList<SessionSkeleton>
 
     fun updateMainButtonsState(duration: Int) {
         if (isDurationValid && duration != 0 || !isDurationValid && duration == 0) {

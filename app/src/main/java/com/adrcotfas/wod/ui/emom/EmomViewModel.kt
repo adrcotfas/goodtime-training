@@ -1,7 +1,7 @@
 package com.adrcotfas.wod.ui.emom
 
 import androidx.lifecycle.ViewModel
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.ui.common.EmomSpinnerData
 
 class EmomViewModel : ViewModel() {
@@ -13,7 +13,7 @@ class EmomViewModel : ViewModel() {
         emomData.setRounds(rounds)
     }
 
-    lateinit var session : SessionMinimal
+    lateinit var session : SessionSkeleton
 
     val minutesPickerData = ArrayList<Int>().apply { addAll(0..3) }
     val secondsPickerData = ArrayList<Int>().apply { addAll(0..59) }

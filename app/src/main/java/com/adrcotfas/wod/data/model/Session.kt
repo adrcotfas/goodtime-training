@@ -5,23 +5,23 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 
 @Entity
-@TypeConverters(SessionTypeConverter::class)
+@TypeConverters(TypeConverter::class)
 data class Session(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var duration: Int = 0,
     var breakDuration: Int = 0,
     var numRounds: Int = 0,
-    var type: SessionType = SessionType.BREAK,
+    var type: SessionType = SessionType.REST,
 
     var rounds: Int,
     var timestamp: Long = System.currentTimeMillis(),
     var finished: Boolean) {
 
     companion object {
-        fun constructSession(minimal: SessionMinimal, timestamp: Long, rounds: ArrayList<Int> = arrayListOf(0),  duration : Int = 0) : Session {
+        fun constructSession(skeleton: SessionSkeleton, timestamp: Long, rounds: ArrayList<Int> = arrayListOf(0), duration : Int = 0) : Session {
             //TODO: use [duration] for FOR_TIME (or maybe for all)
-            return Session(0, minimal.duration, minimal.breakDuration, minimal.numRounds, minimal.type,
+            return Session(0, skeleton.duration, skeleton.breakDuration, skeleton.numRounds, skeleton.type,
                 //TODO: but is "finished" important?
                 0, timestamp, true)
         }

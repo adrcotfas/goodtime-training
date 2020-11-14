@@ -2,41 +2,38 @@ package com.adrcotfas.wod.ui.common.ui
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteDescriptionDetailed
 import com.adrcotfas.wod.common.StringUtils.Companion.toFavoriteFormat
 import com.adrcotfas.wod.common.StringUtils.Companion.toString
-import com.adrcotfas.wod.data.model.SessionMinimal
-import com.adrcotfas.wod.data.repository.SessionsRepository
+import com.adrcotfas.wod.data.model.SessionSkeleton
+import com.adrcotfas.wod.data.repository.AppRepository
 import com.adrcotfas.wod.databinding.DialogSelectFavoriteBinding
 import com.google.android.material.chip.Chip
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SaveFavoriteDialog : DialogFragment(), KodeinAware {
+class SelectFavoriteDialog: DialogFragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val repo: SessionsRepository by instance()
-    private lateinit var favoriteCandidate : SessionMinimal
-    private lateinit var favorites : List<SessionMinimal>
+    private val repo: AppRepository by instance()
+    private lateinit var favoriteCandidate : SessionSkeleton
+    private lateinit var favorites : List<SessionSkeleton>
     private lateinit var binding: DialogSelectFavoriteBinding
     private lateinit var listener: Listener
 
     interface Listener {
-        fun onFavoriteSelected(session: SessionMinimal)
+        fun onFavoriteSelected(session: SessionSkeleton)
     }
 
     companion object {
-        fun newInstance(session: SessionMinimal, listener : Listener) : SaveFavoriteDialog {
-            val dialog = SaveFavoriteDialog()
+        fun newInstance(session: SessionSkeleton, listener : Listener) : SelectFavoriteDialog {
+            val dialog = SelectFavoriteDialog()
             dialog.favoriteCandidate = session
             dialog.listener = listener
             return dialog
@@ -53,7 +50,7 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
             setView(binding.root)
             binding.favoriteCandidateChip.text = toFavoriteFormat(favoriteCandidate)
             binding.favoriteCandidateChip.setOnClickListener{
-                repo.addSessionMinimal(favoriteCandidate)
+                repo.addSessionSkeleton(favoriteCandidate)
                 binding.currentSelectionSection.visibility = View.GONE
             }
         }
@@ -63,7 +60,7 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
     @SuppressLint("SetTextI18n")
     private fun setupFavorites() {
         binding.selectFavoriteTitle.text = "Select ${toString(favoriteCandidate.type)} favorite"
-        repo.getSessionsMinimal(favoriteCandidate.type).observe(
+        repo.getSessionSkeletons(favoriteCandidate.type).observe(
             this, Observer { favorites = it
 
                 binding.selectFavoriteTitle.visibility = if (favorites.isEmpty()) View.GONE else View.VISIBLE
@@ -75,7 +72,7 @@ class SaveFavoriteDialog : DialogFragment(), KodeinAware {
                     val chip = Chip(requireContext()).apply {
                         text = toFavoriteFormat(favorite)
                     }
-                    chip.setOnCloseIconClickListener { repo.removeSessionMinimal(favorite.id) }
+                    chip.setOnCloseIconClickListener { repo.removeSessionSkeleton(favorite.id) }
                     chip.setOnClickListener {
                         listener.onFavoriteSelected(favorite)
                         dismiss()

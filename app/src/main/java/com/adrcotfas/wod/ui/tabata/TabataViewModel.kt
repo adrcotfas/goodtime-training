@@ -1,7 +1,7 @@
 package com.adrcotfas.wod.ui.tabata
 
 import androidx.lifecycle.ViewModel
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.ui.common.TabataSpinnerData
 
 class TabataViewModel : ViewModel() {
@@ -15,7 +15,7 @@ class TabataViewModel : ViewModel() {
         tabataData.setRounds(numRounds)
     }
 
-    lateinit var session : SessionMinimal
+    lateinit var session : SessionSkeleton
 
     val secondsPickerData = ArrayList<Int>().apply { addAll(1..90) }
     val roundsPickerData = ArrayList<Int>().apply { addAll(1..60) }

@@ -12,9 +12,10 @@ import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.Color
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
 import com.adrcotfas.wod.common.preferences.PrefUtil
-import com.adrcotfas.wod.common.sessionsToString
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.CustomWorkoutSkeleton
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.data.model.SessionType
+import com.adrcotfas.wod.data.model.TypeConverter
 import com.adrcotfas.wod.databinding.FragmentTabataBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 
@@ -56,7 +57,7 @@ class TabataFragment : WorkoutTypeFragment() {
         viewModel.tabataData.get().observe(
             viewLifecycleOwner, Observer { tabataData ->
                 viewModel.session =
-                    SessionMinimal(duration = tabataData.first, breakDuration = tabataData.second,
+                    SessionSkeleton(duration = tabataData.first, breakDuration = tabataData.second,
                         numRounds = tabataData.third, type = SessionType.TABATA)
             }
         )
@@ -93,16 +94,20 @@ class TabataFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = TabataFragmentDirections.toWorkout(
-            sessionsToString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSessions(): ArrayList<SessionMinimal> = arrayListOf(viewModel.session)
+    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
 
-    override fun onFavoriteSelected(session: SessionMinimal) {
+    override fun onFavoriteSelected(session: SessionSkeleton) {
         secondsWorkPicker.smoothScrollToPosition(session.duration - 1)
         secondsBreakPicker.smoothScrollToPosition(session.breakDuration - 1)
         roundsPicker.smoothScrollToPosition(session.numRounds - 1)
+    }
+
+    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
+        // Do nothing
     }
 }

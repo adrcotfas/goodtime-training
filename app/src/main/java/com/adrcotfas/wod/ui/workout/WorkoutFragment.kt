@@ -3,7 +3,6 @@ package com.adrcotfas.wod.ui.workout
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -15,7 +14,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +24,7 @@ import com.adrcotfas.wod.common.DimensionsUtils
 import com.adrcotfas.wod.common.StringUtils
 import com.adrcotfas.wod.common.ViewUtils
 import com.adrcotfas.wod.common.notifications.NotificationHelper
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.data.model.SessionType
 import com.adrcotfas.wod.data.workout.TimerState
 import com.adrcotfas.wod.databinding.FragmentWorkoutBinding
@@ -251,7 +249,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
             .streamFor(50, StreamEmitter.INDEFINITE)
     }
 
-    private fun createSummaryRow(session: SessionMinimal) : ConstraintLayout {
+    private fun createSummaryRow(session: SessionSkeleton) : ConstraintLayout {
         val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
@@ -261,7 +259,7 @@ class WorkoutFragment : Fragment(), KodeinAware {
         return layout
     }
 
-    private fun createSummarySectionForTime(session: SessionMinimal, duration: Int, rounds : ArrayList<Int>) : ConstraintLayout {
+    private fun createSummarySectionForTime(session: SessionSkeleton, duration: Int, rounds : ArrayList<Int>) : ConstraintLayout {
         val layout = layoutInflater.inflate(R.layout.row_summary_view_for_time, null, false) as ConstraintLayout
         val headerImage = layout.findViewById<ImageView>(R.id.summary_drawable)
         val headerText = layout.findViewById<TextView>(R.id.summary_text)

@@ -16,9 +16,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.adrcotfas.wod.R
 import com.adrcotfas.wod.common.number_picker.NumberPicker.Companion.PickerSize
-import com.adrcotfas.wod.data.model.SessionMinimal
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 fun EditText.onDone(callback: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -66,17 +63,6 @@ fun calculateRowHeight(layoutInflater : LayoutInflater, size: PickerSize = Picke
 
 val FragmentManager.currentNavigationFragment: Fragment?
     get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
-
-fun sessionsToString(vararg sessions: SessionMinimal) : String {
-    val gson = Gson()
-    return gson.toJson(listOf(*sessions))
-}
-
-fun stringToSessions(string : String) : ArrayList<SessionMinimal> {
-    val gson = Gson()
-    val typeToken = object : TypeToken<ArrayList<SessionMinimal>>() {}
-    return gson.fromJson(string, typeToken.type)
-}
 
 fun RecyclerView.smoothSnapToPosition(position: Int) {
     val smoothScroller = object : LinearSmoothScroller(this.context) {

@@ -6,16 +6,16 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.TypeConverters
 import com.adrcotfas.wod.data.model.Session
-import com.adrcotfas.wod.data.model.SessionTypeConverter
+import com.adrcotfas.wod.data.model.TypeConverter
 
 @Dao
 interface SessionDao {
 
     @Insert
-    @TypeConverters(SessionTypeConverter::class)
+    @TypeConverters(TypeConverter::class)
     suspend fun add(session: Session)
 
     @Query("select * from Session")
-    @TypeConverters(SessionTypeConverter::class)
+    @TypeConverters(TypeConverter::class)
     fun get(): LiveData<List<Session>>
 }

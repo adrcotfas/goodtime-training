@@ -24,7 +24,7 @@ class ViewUtils {
                     SessionType.TABATA -> {
                         R.drawable.ic_fire2
                     }
-                    SessionType.BREAK -> {
+                    SessionType.REST -> {
                         R.drawable.ic_break
                     }
                 }, null

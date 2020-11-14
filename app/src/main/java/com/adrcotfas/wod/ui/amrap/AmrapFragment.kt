@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.adrcotfas.wod.common.StringUtils.Companion.secondsToMinutesAndSeconds
 import com.adrcotfas.wod.common.calculateRowHeight
 import com.adrcotfas.wod.common.number_picker.NumberPicker
 import com.adrcotfas.wod.common.preferences.PrefUtil
-import com.adrcotfas.wod.common.sessionsToString
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.CustomWorkoutSkeleton
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.data.model.SessionType
+import com.adrcotfas.wod.data.model.TypeConverter
 import com.adrcotfas.wod.databinding.FragmentAmrapBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 
@@ -48,8 +48,8 @@ class AmrapFragment : WorkoutTypeFragment() {
         setupNumberPickers()
 
         viewModel.timeData.get().observe(
-            viewLifecycleOwner, Observer { duration ->
-                viewModel.session = SessionMinimal(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
+            viewLifecycleOwner, { duration ->
+                viewModel.session = SessionSkeleton(duration = duration, breakDuration = 0, numRounds = 0, type = SessionType.AMRAP)
                 updateMainButtonsState(duration)
             }
         )
@@ -72,16 +72,18 @@ class AmrapFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = AmrapFragmentDirections.toWorkout(
-            sessionsToString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSessions(): ArrayList<SessionMinimal> = arrayListOf(viewModel.session)
+    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
 
-    override fun onFavoriteSelected(session: SessionMinimal) {
+    override fun onFavoriteSelected(session: SessionSkeleton) {
         val duration = secondsToMinutesAndSeconds(session.duration)
         minutePicker.smoothScrollToPosition(duration.first)
         secondsPicker.smoothScrollToPosition(duration.second)
     }
+
+    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
 }

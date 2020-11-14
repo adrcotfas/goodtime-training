@@ -6,8 +6,8 @@ import androidx.room.TypeConverters
 
 //TODO: make it unique based on duration, breakDuration, rounds and type to avoid duplicates
 @Entity
-@TypeConverters(SessionTypeConverter::class)
-data class SessionMinimal (
+@TypeConverters(TypeConverter::class)
+data class SessionSkeleton (
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var duration: Int,
@@ -17,7 +17,7 @@ data class SessionMinimal (
 ) {
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
-        other as SessionMinimal
+        other as SessionSkeleton
         return (this.duration == other.duration &&
                 this.breakDuration == other.breakDuration &&
                 this.numRounds == other.numRounds &&

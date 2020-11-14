@@ -8,7 +8,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -16,7 +15,8 @@ import com.adrcotfas.wod.common.currentNavigationFragment
 import com.adrcotfas.wod.databinding.ActivityMainBinding
 import com.adrcotfas.wod.ui.common.WorkoutTypeFragment
 import com.adrcotfas.wod.ui.common.ui.FullscreenHelper
-import com.adrcotfas.wod.ui.common.ui.SaveFavoriteDialog
+import com.adrcotfas.wod.ui.common.ui.SelectCustomWorkoutDialog
+import com.adrcotfas.wod.ui.common.ui.SelectFavoriteDialog
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,19 +59,7 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_save_favorite -> {
-                    val fragment = getVisibleFragment()
-                    val sessions = fragment.getSelectedSessions()
-                    if (sessions.size == 1) {
-                        if (sessions.size == 1 && sessions[0].duration == 0) {
-                            false
-                        } else {
-                            SaveFavoriteDialog.newInstance(sessions[0], fragment).show(supportFragmentManager, "")
-                            true
-                        }
-                    } else {
-                        false
-                        //TODO: handle Custom
-                    }
+                    onFavoritesButtonClick()
                 }
                 else -> false
             }
@@ -79,6 +67,23 @@ class MainActivity : AppCompatActivity() {
         binding.workoutMenu.setupWithNavController(navController)
         binding.workoutMenu.setOnNavigationItemReselectedListener {
             // Nothing here to disable reselect
+        }
+    }
+
+    private fun onFavoritesButtonClick(): Boolean {
+        val fragment = getVisibleFragment()
+        val sessions = fragment.getSelectedSessions()
+        return if (sessions.size == 1) {
+            if (sessions.size == 1 && sessions[0].duration == 0) {
+                false
+            } else {
+                SelectFavoriteDialog.newInstance(sessions[0], fragment)
+                    .show(supportFragmentManager, "")
+                true
+            }
+        } else {
+            SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "")
+            true
         }
     }
 

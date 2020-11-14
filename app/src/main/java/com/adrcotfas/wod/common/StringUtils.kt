@@ -1,6 +1,6 @@
 package com.adrcotfas.wod.common
 
-import com.adrcotfas.wod.data.model.SessionMinimal
+import com.adrcotfas.wod.data.model.SessionSkeleton
 import com.adrcotfas.wod.data.model.SessionType
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
@@ -23,7 +23,7 @@ class StringUtils {
                     + ":" + insertPrefixZero(seconds))
         }
 
-        fun toFavoriteFormat(session: SessionMinimal): String {
+        fun toFavoriteFormat(session: SessionSkeleton): String {
             return when(session.type) {
                 SessionType.AMRAP -> {
                     secondsToNiceFormat(session.duration)
@@ -38,6 +38,9 @@ class StringUtils {
                     val workString = secondsToNiceFormat(session.duration)
                     val breakString = secondsToNiceFormat(session.breakDuration)
                     "${session.numRounds} × $workString / $breakString"
+                }
+                SessionType.REST -> {
+                    secondsToNiceFormat(session.breakDuration)
                 }
                 else -> {
                     //TODO: do something here
@@ -67,7 +70,7 @@ class StringUtils {
             }
         }
 
-        fun toFavoriteDescription(favoriteCandidate : SessionMinimal): String {
+        fun toFavoriteDescription(favoriteCandidate : SessionSkeleton): String {
             return when (favoriteCandidate.type) {
                 SessionType.AMRAP, SessionType.TABATA -> "${favoriteCandidate.type.name} ${toFavoriteFormat(
                     favoriteCandidate
@@ -82,7 +85,7 @@ class StringUtils {
             }
         }
 
-        fun toFavoriteDescriptionDetailed(session : SessionMinimal): String {
+        fun toFavoriteDescriptionDetailed(session : SessionSkeleton): String {
             return when (session.type) {
                 SessionType.AMRAP -> "As many rounds/reps as possible in ${secondsToNiceFormatExtended(session.duration)}"
                 SessionType.FOR_TIME -> "For time with a time cap of ${secondsToNiceFormatExtended(session.duration)}"
@@ -119,7 +122,7 @@ class StringUtils {
                 SessionType.FOR_TIME -> "FOR TIME"
                 SessionType.EMOM -> "EMOM"
                 SessionType.TABATA -> "HIIT"
-                SessionType.BREAK -> "REST"
+                SessionType.REST -> "REST"
                 else -> ""
             }
         }
