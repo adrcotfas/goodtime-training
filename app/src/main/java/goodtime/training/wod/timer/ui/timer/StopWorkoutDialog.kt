@@ -1,4 +1,4 @@
-package goodtime.training.wod.timer.ui.workout
+package goodtime.training.wod.timer.ui.timer
 
 import android.R
 import androidx.appcompat.app.AlertDialog
@@ -17,11 +17,11 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
-    private val viewModelFactory : WorkoutViewModelFactory by instance()
-    private lateinit var viewModel : WorkoutViewModel
+    private val viewModelFactory : TimerViewModelFactory by instance()
+    private lateinit var viewModel : TimerViewModel
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(WorkoutViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TimerViewModel::class.java)
         isCancelable = false
         if (viewModel.timerState.value == TimerState.ACTIVE) {
             viewModel.toggleTimer()

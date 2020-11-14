@@ -9,7 +9,6 @@ import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.ui.common.ui.SelectCustomWorkoutDialog
 import goodtime.training.wod.timer.ui.common.ui.SelectFavoriteDialog
-import goodtime.training.wod.timer.ui.workout.FADE_ANIMATION_DURATION
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 
@@ -54,7 +53,7 @@ abstract class WorkoutTypeFragment:
             visibility = View.VISIBLE
             animate()
                 .alpha(0f)
-                .setDuration(FADE_ANIMATION_DURATION)
+                .setDuration(Companion.FADE_ANIMATION_DURATION)
                 .setListener(null)
         }
     }
@@ -65,8 +64,12 @@ abstract class WorkoutTypeFragment:
             visibility = View.VISIBLE
             animate()
                 .alpha(1f)
-                .setDuration(FADE_ANIMATION_DURATION)
+                .setDuration(Companion.FADE_ANIMATION_DURATION)
                 .setListener(null)
         }
+    }
+
+    companion object {
+        const val FADE_ANIMATION_DURATION = 150L
     }
 }

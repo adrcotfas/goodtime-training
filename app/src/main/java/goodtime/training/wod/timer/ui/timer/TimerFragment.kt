@@ -1,4 +1,4 @@
-package goodtime.training.wod.timer.ui.workout
+package goodtime.training.wod.timer.ui.timer
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -35,18 +35,18 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class WorkoutFragment : Fragment(), KodeinAware {
+class TimerFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val viewModelFactory : WorkoutViewModelFactory by instance()
-    private lateinit var viewModel : WorkoutViewModel
+    private val viewModelFactory : TimerViewModelFactory by instance()
+    private lateinit var viewModel : TimerViewModel
     private lateinit var binding: FragmentWorkoutBinding
 
-    private val args: WorkoutFragmentArgs by navArgs()
+    private val args: TimerFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(WorkoutViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TimerViewModel::class.java)
 
         if (viewModel.timerState.value == TimerState.INACTIVE) {
             viewModel.init(args.sessions)
@@ -56,11 +56,11 @@ class WorkoutFragment : Fragment(), KodeinAware {
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (viewModel.timerState.value != TimerState.FINISHED) {
-                    NavHostFragment.findNavController(this@WorkoutFragment)
+                    NavHostFragment.findNavController(this@TimerFragment)
                         .navigate(R.id.nav_dialog_stop_workout)
                 } else {
                     viewModel.timerState.value = TimerState.INACTIVE
-                    NavHostFragment.findNavController(this@WorkoutFragment)
+                    NavHostFragment.findNavController(this@TimerFragment)
                         .popBackStack()
                 }
             }

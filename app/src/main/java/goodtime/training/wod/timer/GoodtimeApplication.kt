@@ -18,7 +18,7 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.ui.log.LogViewModelFactory
-import goodtime.training.wod.timer.ui.workout.WorkoutViewModelFactory
+import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import com.google.android.material.resources.TextAppearanceConfig
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -38,7 +38,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<PrefUtil>() with eagerSingleton { PrefUtil(applicationContext) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
         bind() from provider { LogViewModelFactory(instance()) }
-        bind() from provider { WorkoutViewModelFactory(instance(), instance()) }
+        bind() from provider { TimerViewModelFactory(instance(), instance()) }
     }
 
     override fun onCreate() {

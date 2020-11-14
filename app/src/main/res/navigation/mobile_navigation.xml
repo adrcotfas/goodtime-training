@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/nav_workout"
-        android:name="goodtime.training.wod.timer.ui.workout.WorkoutFragment"
+        android:name="goodtime.training.wod.timer.ui.timer.TimerFragment"
         android:label="WorkoutFragment"
         tools:layout="@layout/fragment_workout">
         <argument
@@ -64,7 +64,7 @@
 
     <dialog
         android:id="@+id/nav_dialog_stop_workout"
-        android:name="goodtime.training.wod.timer.ui.workout.StopWorkoutDialog"
+        android:name="goodtime.training.wod.timer.ui.timer.StopWorkoutDialog"
         android:label="StopWorkoutDialog" >
     </dialog>
 

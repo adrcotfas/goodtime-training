@@ -1,4 +1,4 @@
-package goodtime.training.wod.timer.ui.workout
+package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.workout.TimerState
 
-class WorkoutViewModel(private val soundPlayer : SoundPlayer, private val repository: AppRepository) : ViewModel() {
+class TimerViewModel(private val soundPlayer : SoundPlayer, private val repository: AppRepository) : ViewModel() {
 
     val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionSkeleton>()
