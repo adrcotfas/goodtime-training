@@ -7,27 +7,25 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import goodtime.training.wod.timer.common.preferences.PrefUtil
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
-import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.common.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.common.ui.SelectCustomWorkoutDialog
-import java.util.concurrent.TimeUnit
 
 class CustomWorkoutFragment :
     WorkoutTypeFragment(),
     CustomWorkoutAdapter.Listener,
-    CustomWorkoutAddSessionAdapter.Listener,
     SelectCustomWorkoutDialog.Listener {
 
     private lateinit var viewModel: CustomWorkoutViewModel
     private lateinit var binding: FragmentCustomBinding
 
+    private val touchHelper = ItemTouchHelper(ItemTouchCallback())
     private lateinit var listAdapter : CustomWorkoutAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,20 +40,18 @@ class CustomWorkoutFragment :
     ): View? {
         binding = FragmentCustomBinding.inflate(inflater, container, false)
 
-        viewModel.customWorkout = CustomWorkoutSkeleton("Sample workout",
-            arrayListOf(
-                SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(10).toInt(), type = SessionType.AMRAP),
-                SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.AMRAP),
-                SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(20).toInt(), type = SessionType.AMRAP),
-                SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.FOR_TIME)
-            ))
         binding.title.text = viewModel.customWorkout.name
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             listAdapter = CustomWorkoutAdapter(viewModel.customWorkout.sessions, context, this@CustomWorkoutFragment)
-            val footerAdapter = CustomWorkoutAddSessionAdapter(this@CustomWorkoutFragment)
-            adapter = ConcatAdapter(listAdapter, footerAdapter)
+            adapter = listAdapter
+        }
+        touchHelper.attachToRecyclerView(binding.recycler)
+
+        binding.addSessionButton.addSessionButton.setOnClickListener{
+            //TODO: show add session dialog
+            // positive case: data changed -> show save button
         }
 
         return binding.root
@@ -69,16 +65,16 @@ class CustomWorkoutFragment :
 
     override fun getSelectedSessions(): ArrayList<SessionSkeleton> = viewModel.customWorkout.sessions
 
-    override fun onCloseButtonClicked() {
-        Toast.makeText(requireContext(), "Close", Toast.LENGTH_SHORT).show()
+    override fun onDeleteButtonClicked(position: Int) {
+        //TODO: data changed -> show save button
     }
 
-    override fun onScrollHandleTouch() {
-        Toast.makeText(requireContext(), "Scroll", Toast.LENGTH_SHORT).show()
+    override fun onDataReordered() {
+        //TODO: data changed -> show save button
     }
 
-    override fun onAddSessionClicked() {
-        Toast.makeText(requireContext(), "Add", Toast.LENGTH_SHORT).show()
+    override fun onScrollHandleTouch(holder: CustomWorkoutAdapter.ViewHolder) {
+        touchHelper.startDrag(holder)
     }
 
     override fun onFavoriteSelected(session: SessionSkeleton) { /* do nothing*/ }

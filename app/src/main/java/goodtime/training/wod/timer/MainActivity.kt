@@ -17,6 +17,7 @@ import goodtime.training.wod.timer.ui.common.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.common.ui.FullscreenHelper
 import goodtime.training.wod.timer.ui.common.ui.SelectCustomWorkoutDialog
 import goodtime.training.wod.timer.ui.common.ui.SelectFavoriteDialog
+import goodtime.training.wod.timer.ui.custom.CustomWorkoutFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,17 +74,17 @@ class MainActivity : AppCompatActivity() {
     private fun onFavoritesButtonClick(): Boolean {
         val fragment = getVisibleFragment()
         val sessions = fragment.getSelectedSessions()
-        return if (sessions.size == 1) {
-            if (sessions.size == 1 && sessions[0].duration == 0) {
+        return if (fragment is CustomWorkoutFragment) {
+            SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "")
+            true
+        } else {
+            if (sessions[0].duration == 0) {
                 false
             } else {
                 SelectFavoriteDialog.newInstance(sessions[0], fragment)
                     .show(supportFragmentManager, "")
                 true
             }
-        } else {
-            SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "")
-            true
         }
     }
 

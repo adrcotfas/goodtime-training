@@ -1,48 +1,82 @@
 package goodtime.training.wod.timer.ui.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.ViewUtils
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
-import com.google.android.material.chip.Chip
+import java.util.Collections
 
 class CustomWorkoutAdapter(
-    var data : ArrayList<SessionSkeleton>,
+    var data: ArrayList<SessionSkeleton>,
     private val context: Context,
-    private val listener : Listener)
+    private val listener: Listener
+)
     : RecyclerView.Adapter<CustomWorkoutAdapter.ViewHolder>()
 {
-
     interface Listener {
-        fun onCloseButtonClicked()
-        fun onScrollHandleTouch()
+        fun onDeleteButtonClicked(position: Int)
+        fun onScrollHandleTouch(holder: ViewHolder)
+        fun onDataReordered()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(context.resources, data[position])
-        holder.scrollHandle.setOnClickListener{ listener.onScrollHandleTouch() }
-        holder.closeButton.setOnClickListener{ listener.onCloseButtonClicked() }
+
+        holder.scrollHandle.setOnTouchListener { _, event ->
+            if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                listener.onScrollHandleTouch(holder)
+            }
+            return@setOnTouchListener true
+        }
+
+        holder.closeButton.setOnClickListener{
+            val pos = holder.bindingAdapterPosition
+            data.removeAt(pos)
+            notifyItemRemoved(pos)
+            listener.onDeleteButtonClicked(pos)
+        }
     }
 
     override fun getItemCount() = data.size
 
+    fun moveItem(from: Int, to: Int) {
+        Log.e("DDD", "moved")
+        if (from < to) {
+            for (i in from until to) {
+                Collections.swap(data, i, i + 1)
+            }
+        } else {
+            for (i in from downTo to + 1) {
+                Collections.swap(data, i, i - 1)
+            }
+        }
+        listener.onDataReordered()
+    }
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val scrollHandle: ImageView = view.findViewById(R.id.scroll_handle)
         val closeButton: ImageView = view.findViewById(R.id.close_button)
+        val parent: ConstraintLayout = view.findViewById(R.id.parent)
         private val sessionTypeImage: ImageView = view.findViewById(R.id.session_type_image)
         private val sessionTypeText: TextView = view.findViewById(R.id.session_type_text)
         private val sessionChip: Chip = view.findViewById(R.id.session_chip)
@@ -50,10 +84,15 @@ class CustomWorkoutAdapter(
         fun bind(resources: Resources, session: SessionSkeleton) {
             sessionTypeImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
             sessionTypeText.text = StringUtils.toString(session.type)
+
             if (session.type == SessionType.REST) {
                 sessionChip.setTextColor(resources.getColor(R.color.red_goodtime))
                 sessionChip.chipBackgroundColor = ColorStateList.valueOf(resources.getColor(R.color.red_goodtime_dark))
+            } else {
+                sessionChip.setTextColor(resources.getColor(R.color.green_goodtime))
+                sessionChip.chipBackgroundColor = ColorStateList.valueOf(resources.getColor(R.color.green_goodtime_dark))
             }
+
             sessionChip.text = StringUtils.toFavoriteFormat(session)
             sessionTypeImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
         }
