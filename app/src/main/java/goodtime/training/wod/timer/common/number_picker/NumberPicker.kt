@@ -38,7 +38,7 @@ class NumberPicker(
 
     private val viewManager : LoopingLayoutManager = LoopingLayoutManager(context)
     private val viewAdapter : NumberPickerAdapter =
-        NumberPickerAdapter(data, context, this, prefixWithZero, textSize, textColor)
+        NumberPickerAdapter(data, this, prefixWithZero, textSize, textColor)
     private val snapHelper = LoopingSnapHelper()
 
     init {
@@ -103,6 +103,7 @@ class NumberPicker(
             adjustScrollToSnap(position)
             scrollListener.onScroll(getCurrentValue())
         } else {
+            // TODO: do I need this?
             // center of the picker was clicked
         }
     }

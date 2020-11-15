@@ -1,11 +1,10 @@
 package goodtime.training.wod.timer
 
 import android.app.Application
-import android.app.PendingIntent
-import android.content.Context
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.navigation.NavDeepLinkBuilder
 import androidx.room.Room
+import com.google.android.material.resources.TextAppearanceConfig
 import goodtime.training.wod.timer.common.preferences.PrefUtil
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer
 import goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao
@@ -15,17 +14,27 @@ import goodtime.training.wod.timer.data.db.SessionSkeletonDao
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
-import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
 import goodtime.training.wod.timer.data.repository.AppRepository
+import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
 import goodtime.training.wod.timer.ui.log.LogViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
-import com.google.android.material.resources.TextAppearanceConfig
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import org.kodein.di.generic.*
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.eagerSingleton
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.provider
 import java.util.concurrent.TimeUnit
 
 class GoodtimeApplication : Application(), KodeinAware {
+
+    companion object {
+        private lateinit var res: Resources
+        fun getRes(): Resources {
+            return res
+        }
+    }
+
     override val kodein = Kodein.lazy {
         bind<Database>() with eagerSingleton {
             Room.databaseBuilder(this@GoodtimeApplication, Database::class.java,
@@ -43,6 +52,7 @@ class GoodtimeApplication : Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
+        res = resources
         TextAppearanceConfig.setShouldLoadFontSynchronously(true)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         val prefUtil: PrefUtil by instance()
@@ -82,14 +92,5 @@ class GoodtimeApplication : Application(), KodeinAware {
         val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), TimeUnit.MINUTES.toSeconds(1).toInt(), 0, SessionType.REST)
         repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Power Intervals", arrayListOf(
             emom5, rest1Min, emom5, rest1Min, emom5)))
-    }
-
-    companion object {
-        fun getNavigationIntent(context: Context, destId: Int): PendingIntent {
-            return NavDeepLinkBuilder(context)
-                .setGraph(R.navigation.mobile_navigation)
-                .setDestination(destId)
-                .createPendingIntent()
-        }
     }
 }

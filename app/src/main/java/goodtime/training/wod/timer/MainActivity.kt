@@ -1,6 +1,5 @@
 package goodtime.training.wod.timer
 
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import goodtime.training.wod.timer.common.ResourcesHelper
+import goodtime.training.wod.timer.common.ResourcesHelper.Companion.getColorFilter
 import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
 import goodtime.training.wod.timer.ui.common.WorkoutTypeFragment
@@ -109,15 +110,13 @@ class MainActivity : AppCompatActivity() {
     fun setStartButtonState(enabled: Boolean) {
         binding.startButton.isEnabled = enabled
         if (enabled) {
-            binding.startButton.background?.setTint(resources.getColor(R.color.green_goodtime_darker))
-            binding.startButton.drawable?.setTint(resources.getColor(R.color.green_goodtime))
-            favoritesButton?.icon?.setColorFilter(
-                resources.getColor(R.color.red_goodtime), PorterDuff.Mode.SRC_ATOP)
+            binding.startButton.background?.setTint(ResourcesHelper.darkGreen)
+            binding.startButton.drawable?.setTint(ResourcesHelper.green)
+            favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.red)
         } else {
-            binding.startButton.background?.setTint(resources.getColor(R.color.grey1000))
-            binding.startButton.drawable?.setTint(resources.getColor(R.color.grey800))
-            favoritesButton?.icon?.setColorFilter(
-                resources.getColor(R.color.grey800), PorterDuff.Mode.SRC_ATOP)
+            binding.startButton.background?.setTint(ResourcesHelper.grey1000)
+            binding.startButton.drawable?.setTint(ResourcesHelper.grey800)
+            favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.grey800)
         }
     }
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.DimensionsUtils
+import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.ViewUtils
 import goodtime.training.wod.timer.common.notifications.NotificationHelper
@@ -103,10 +105,8 @@ class TimerFragment : Fragment(), KodeinAware {
         })
 
         viewModel.isResting.observe(viewLifecycleOwner, { isResting ->
-            val color =
-                resources.getColor(if (isResting) R.color.red_goodtime else R.color.green_goodtime)
-            val darkColor =
-                resources.getColor(if (isResting) R.color.red_goodtime_dark else R.color.green_goodtime_darker)
+            val color = if (isResting) ResourcesHelper.red else ResourcesHelper.green
+            val darkColor = if (isResting) ResourcesHelper.darkRed else ResourcesHelper.darkerGreen
 
             binding.timer.setTextColor(color)
             binding.round.setTextColor(color)
@@ -134,7 +134,7 @@ class TimerFragment : Fragment(), KodeinAware {
             binding.workoutImage.setImageDrawable(ViewUtils.toDrawable(resources, type))
         })
 
-        viewModel.currentRoundIdx.observe(viewLifecycleOwner, Observer { currentRoundIdx ->
+        viewModel.currentRoundIdx.observe(viewLifecycleOwner, { currentRoundIdx ->
             binding.round.text = "${currentRoundIdx + 1}/${viewModel.getTotalRounds()}"
         })
 
@@ -227,12 +227,13 @@ class TimerFragment : Fragment(), KodeinAware {
     private fun startConfetti() {
         binding.konfetti.build()
             .addColors(
-                resources.getColor(R.color.red_goodtime_dark),
-                resources.getColor(R.color.red_goodtime),
-                resources.getColor(R.color.green_goodtime),
-                resources.getColor(R.color.green_goodtime_dark),
-                resources.getColor(R.color.grey500),
-                resources.getColor(R.color.grey800)
+                ResourcesHelper.red,
+                ResourcesHelper.darkRed,
+                ResourcesHelper.green,
+                ResourcesHelper.darkGreen,
+                ResourcesHelper.darkerGreen,
+                ResourcesHelper.grey500,
+                ResourcesHelper.grey800
             )
             .setDirection(0.0, 359.0)
             .setSpeed(1f, 5f)
@@ -276,7 +277,7 @@ class TimerFragment : Fragment(), KodeinAware {
         roundsText.visibility = if (rounds.isEmpty()) View.GONE else View.VISIBLE
         roundsText.paintFlags = roundsText.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         roundsText.text = "${rounds.size} rounds"
-        durationText.text = "${StringUtils.secondsToNiceFormat(duration)}"
+        durationText.text = StringUtils.secondsToNiceFormat(duration)
 
         roundsText.setOnClickListener{roundsContainer.visibility =
             if (roundsContainer.visibility == View.VISIBLE) View.GONE else View.VISIBLE}
@@ -291,8 +292,7 @@ class TimerFragment : Fragment(), KodeinAware {
             roundTime.text = StringUtils.secondsToNiceFormat(rounds[i])
             if (i > 0) {
                 val deltaSeconds = rounds[i] - rounds[i - 1]
-                val color =
-                    resources.getColor(if (deltaSeconds > 0) R.color.red_goodtime else R.color.green_goodtime)
+                val color = if (deltaSeconds > 0) ResourcesHelper.red else ResourcesHelper.green
                 roundDelta.setTextColor(color)
                 roundDelta.text = "${if (deltaSeconds > 0) "+" else if (deltaSeconds == 0) " " else "-"} ${StringUtils.secondsToNiceFormat(kotlin.math.abs(deltaSeconds))}"
             }
@@ -306,7 +306,7 @@ class TimerFragment : Fragment(), KodeinAware {
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
 
-        image.setImageDrawable(resources.getDrawable(R.drawable.ic_timer))
+        image.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_timer, null))
         text.text = "Total: ${StringUtils.secondsToNiceFormat(totalSeconds)}"
 
         return layout

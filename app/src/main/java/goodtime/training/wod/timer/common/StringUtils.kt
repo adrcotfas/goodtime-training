@@ -42,9 +42,6 @@ class StringUtils {
                 SessionType.REST -> {
                     secondsToNiceFormat(session.breakDuration)
                 }
-                else -> {
-                    //TODO: do something here
-                    "" }
             }
         }
 
@@ -123,7 +120,6 @@ class StringUtils {
                 SessionType.EMOM -> "EMOM"
                 SessionType.TABATA -> "HIIT"
                 SessionType.REST -> "REST"
-                else -> ""
             }
         }
 

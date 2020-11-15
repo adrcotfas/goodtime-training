@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.R
+import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.ViewUtils
 import goodtime.training.wod.timer.data.model.SessionSkeleton
@@ -86,11 +87,11 @@ class CustomWorkoutAdapter(
             sessionTypeText.text = StringUtils.toString(session.type)
 
             if (session.type == SessionType.REST) {
-                sessionChip.setTextColor(resources.getColor(R.color.red_goodtime))
-                sessionChip.chipBackgroundColor = ColorStateList.valueOf(resources.getColor(R.color.red_goodtime_dark))
+                sessionChip.setTextColor(ResourcesHelper.red)
+                sessionChip.chipBackgroundColor = ColorStateList.valueOf(ResourcesHelper.darkRed)
             } else {
-                sessionChip.setTextColor(resources.getColor(R.color.green_goodtime))
-                sessionChip.chipBackgroundColor = ColorStateList.valueOf(resources.getColor(R.color.green_goodtime_dark))
+                sessionChip.setTextColor(ResourcesHelper.green)
+                sessionChip.chipBackgroundColor = ColorStateList.valueOf(ResourcesHelper.darkGreen)
             }
 
             sessionChip.text = StringUtils.toFavoriteFormat(session)
