@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     fun setStartButtonState(enabled: Boolean) {
         binding.startButton.isEnabled = enabled
         if (enabled) {
-            binding.startButton.background?.setTint(ResourcesHelper.darkGreen)
+            binding.startButton.background?.setTint(ResourcesHelper.darkerGreen)
             binding.startButton.drawable?.setTint(ResourcesHelper.green)
             favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.red)
         } else {

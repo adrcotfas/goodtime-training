@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/title"
+    style="?android:attr/spinnerDropDownItemStyle"
+    android:drawableStart="@drawable/ic_flash"
+    android:singleLine="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:paddingVertical="12dp"
+    android:drawablePadding="8dp"
+    tools:text="AMRAP"
+    android:textColor="@color/grey200"
+    android:drawableTint="@color/grey200"
+    android:ellipsize="marquee" />

@@ -78,18 +78,22 @@ class GoodtimeApplication : Application(), KodeinAware {
         repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 20,
             SessionType.EMOM))
 
-        //Custom workouts
         val tabata = SessionSkeleton(
             0, 20, 10, 8,
             SessionType.TABATA
         )
         val rest30Sec = SessionSkeleton(0, 30, 30, 0, SessionType.REST)
+        val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), TimeUnit.MINUTES.toSeconds(1).toInt(), 0, SessionType.REST)
+
+        repo.addSessionSkeleton(rest30Sec)
+        repo.addSessionSkeleton(rest1Min)
+
+        //Custom workouts
         repo.addSessionSkeleton(tabata)
         repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("3 x Tabata", arrayListOf(
             tabata, rest30Sec, tabata, rest30Sec, tabata)))
 
         val emom5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.EMOM)
-        val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), TimeUnit.MINUTES.toSeconds(1).toInt(), 0, SessionType.REST)
         repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Power Intervals", arrayListOf(
             emom5, rest1Min, emom5, rest1Min, emom5)))
     }

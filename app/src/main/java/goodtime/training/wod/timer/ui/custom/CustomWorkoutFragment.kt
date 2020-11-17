@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -20,7 +19,7 @@ import goodtime.training.wod.timer.ui.common.ui.SelectCustomWorkoutDialog
 class CustomWorkoutFragment :
     WorkoutTypeFragment(),
     CustomWorkoutAdapter.Listener,
-    SelectCustomWorkoutDialog.Listener {
+    SelectCustomWorkoutDialog.Listener, AddSessionDialog.Listener {
 
     private lateinit var viewModel: CustomWorkoutViewModel
     private lateinit var binding: FragmentCustomBinding
@@ -52,6 +51,7 @@ class CustomWorkoutFragment :
         binding.addSessionButton.addSessionButton.setOnClickListener{
             //TODO: show add session dialog
             // positive case: data changed -> show save button
+            AddSessionDialog.newInstance(this).show(parentFragmentManager, "")
         }
 
         return binding.root
@@ -83,6 +83,11 @@ class CustomWorkoutFragment :
         viewModel.customWorkout = workout
         binding.title.text = viewModel.customWorkout.name
         listAdapter.data = viewModel.customWorkout.sessions
+        listAdapter.notifyDataSetChanged()
+    }
+
+    override fun onSessionAdded(session: SessionSkeleton) {
+        viewModel.customWorkout.sessions.add(session)
         listAdapter.notifyDataSetChanged()
     }
 }

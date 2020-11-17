@@ -15,7 +15,6 @@
             android:name="goodtime.training.wod.timer.MainActivity"
             android:label="@string/app_name_minimal"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustNothing|stateHidden"
             android:resizeableActivity="false"
             tools:ignore="UnusedAttribute">
             <intent-filter>

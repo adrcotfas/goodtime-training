@@ -35,8 +35,8 @@ class StringUtils {
                     "${session.numRounds} × ${secondsToNiceFormat(session.duration)}"
                 }
                 SessionType.TABATA -> {
-                    val workString = secondsToNiceFormat(session.duration)
-                    val breakString = secondsToNiceFormat(session.breakDuration)
+                    val workString = "${session.duration} s"
+                    val breakString = "${session.breakDuration} s"
                     "${session.numRounds} × $workString / $breakString"
                 }
                 SessionType.REST -> {
@@ -98,7 +98,7 @@ class StringUtils {
                     val breakString = session.breakDuration.toString() + " second" +  if (session.breakDuration > 1) "s" else ""
                     "${session.numRounds} high intensity intervals of $workString of work with $breakString of rest"
                 }
-                else -> ""
+                SessionType.REST -> "Rest for ${secondsToNiceFormatExtended(session.breakDuration)}"
             }
         }
 

@@ -4,13 +4,13 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowManager
+import kotlin.math.roundToInt
 
 class DimensionsUtils {
 
     companion object {
-        fun dpToPx(context: Context, dp: Float): Float {
-
-            return dp * context.resources.displayMetrics.density
+        fun dpToPx(context: Context, dp: Float): Int {
+            return (dp * context.resources.displayMetrics.density).roundToInt()
         }
 
         fun pxToDp(context: Context, px: Float): Float {

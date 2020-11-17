@@ -8,8 +8,17 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_amrap">AMRAP</string>
-    <string name="menu_for_time">FOR TIME</string>
-    <string name="menu_emom">EMOM</string>
-    <string name="menu_hiit">HIIT</string>
+    <string name="session_type_amrap">AMRAP</string>
+    <string name="session_type_for_time">FOR TIME</string>
+    <string name="session_type_emom">EMOM</string>
+    <string name="session_type_hiit">HIIT</string>
+    <string name="session_type_rest">REST</string>
+
+    <string-array name="session_types">
+        <item>@string/session_type_amrap</item>
+        <item>@string/session_type_for_time</item>
+        <item>@string/session_type_emom</item>
+        <item>@string/session_type_hiit</item>
+        <item>@string/session_type_rest</item>
+    </string-array>
 </resources>

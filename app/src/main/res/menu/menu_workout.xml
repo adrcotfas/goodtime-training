@@ -3,19 +3,19 @@
     <item
         android:id="@+id/nav_amrap"
         android:icon="@drawable/ic_infinity"
-        android:title="@string/menu_amrap" />
+        android:title="@string/session_type_amrap" />
     <item
         android:id="@+id/nav_for_time"
         android:icon="@drawable/ic_flash"
-        android:title="@string/menu_for_time" />
+        android:title="@string/session_type_for_time" />
     <item
         android:id="@+id/nav_emom"
         android:icon="@drawable/ic_hourglass"
-        android:title="@string/menu_emom" />
+        android:title="@string/session_type_emom" />
     <item
         android:id="@+id/nav_hiit"
         android:icon="@drawable/ic_fire2"
-        android:title="@string/menu_hiit" />
+        android:title="@string/session_type_hiit" />
     <item
         android:id="@+id/nav_custom"
         android:icon="@drawable/ic_science"

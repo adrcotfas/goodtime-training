@@ -50,13 +50,14 @@ fun View.hideKeyboard(activity: Activity) {
     inputManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun calculateRowHeight(layoutInflater : LayoutInflater, size: PickerSize = PickerSize.LARGE): Float {
+fun calculateRowHeight(layoutInflater: LayoutInflater, size: PickerSize = PickerSize.LARGE): Float {
     val textView = layoutInflater
         .inflate(
             when (size) {
                 PickerSize.LARGE -> R.layout.row_number_picker_large
                 PickerSize.MEDIUM -> R.layout.row_number_picker_medium
-            }, null) as TextView
+            }, null
+        ) as TextView
     val fm = textView.paint.fontMetrics
     return fm.descent - fm.ascent
 }
@@ -71,4 +72,16 @@ fun RecyclerView.smoothSnapToPosition(position: Int) {
     }
     smoothScroller.targetPosition = position
     layoutManager?.startSmoothScroll(smoothScroller)
+}
+
+fun toInt(string: String): Int {
+    if (string.isEmpty()) {
+        return 0
+    }
+    return Integer.parseInt(string)
+}
+
+fun hideKeyboardFrom(context: Context, view: View) {
+    val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
