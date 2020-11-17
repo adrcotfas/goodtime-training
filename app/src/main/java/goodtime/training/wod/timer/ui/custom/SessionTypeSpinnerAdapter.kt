@@ -11,7 +11,7 @@ import goodtime.training.wod.timer.data.model.TypeConverter
 import kotlinx.android.synthetic.main.fragment_custom.view.*
 
 
-class CustomAdapter(context: Context, objects: Array<String>) :
+class SessionTypeSpinnerAdapter(context: Context, objects: Array<String>) :
     ArrayAdapter<String>(context, R.layout.row_spinner_dropdown_item_with_image, objects) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

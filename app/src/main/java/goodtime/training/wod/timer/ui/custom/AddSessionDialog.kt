@@ -90,7 +90,7 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
 
     private fun setupSpinner() {
         binding.sessionTypeSpinner.adapter =
-            CustomAdapter(requireContext(), resources.getStringArray(R.array.session_types))
+            SessionTypeSpinnerAdapter(requireContext(), resources.getStringArray(R.array.session_types))
         binding.sessionTypeSpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
