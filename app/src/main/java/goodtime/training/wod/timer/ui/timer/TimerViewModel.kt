@@ -200,6 +200,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                         currentRoundIdx.value = 0
                         ++index
                         currentSessionIdx.value = index
+                        startWorkout()
                     }
                 } else {
                     currentRoundIdx.value = currentRoundIdx.value!! + 1
@@ -222,6 +223,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                         currentRoundIdx.value = 0
                         ++index
                         currentSessionIdx.value = index
+                        startWorkout()
                     }
                 } else {
                     isResting.value = !isResting.value!!
