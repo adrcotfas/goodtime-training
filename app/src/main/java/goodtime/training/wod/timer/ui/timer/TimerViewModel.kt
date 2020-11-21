@@ -22,6 +22,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
     /**
      * Holds the counted rounds in seconds elapsed
      */
+    //TODO: hold rounds for all sessions
     var countedRounds = ArrayList<Int>(0)
 
     // store the working time for each session

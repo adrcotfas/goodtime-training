@@ -200,8 +200,6 @@ class TimerFragment : Fragment(), KodeinAware {
         setupCounter()
 
         binding.timer.setOnClickListener{ viewModel.toggleTimer()}
-
-        // TODO: observe for session finished and cancel the StopWorkoutDialog
         return binding.root
     }
 
