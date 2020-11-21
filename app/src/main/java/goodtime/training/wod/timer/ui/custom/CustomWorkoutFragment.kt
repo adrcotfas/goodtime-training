@@ -58,7 +58,7 @@ class CustomWorkoutFragment :
             } else {
                 //TODO: check the preferences for the last selected custom workout
                 viewModel.customWorkout = it.first()
-                binding.title.text = viewModel.customWorkout.name
+                updateWorkoutTitle(viewModel.customWorkout.name)
             }
             setupRecycler()
             // observe once, no need to repeat this when new data is added to the custom workouts
@@ -67,7 +67,7 @@ class CustomWorkoutFragment :
     }
 
     private fun setupRecycler() {
-        binding.title.text = viewModel.customWorkout.name
+        updateWorkoutTitle(viewModel.customWorkout.name)
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             listAdapter = CustomWorkoutAdapter(
@@ -111,7 +111,7 @@ class CustomWorkoutFragment :
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
         viewModel.customWorkout = workout
-        binding.title.text = viewModel.customWorkout.name
+        updateWorkoutTitle(viewModel.customWorkout.name)
         listAdapter.data = viewModel.customWorkout.sessions
         listAdapter.notifyDataSetChanged()
         setSaveButtonVisibility(false)
@@ -128,9 +128,13 @@ class CustomWorkoutFragment :
     }
 
     override fun onCustomWorkoutSaved(name: String) {
-        viewModel.customWorkout.name = name
+
         viewModel.saveCurrentSelection()
-        binding.title.text = name
+        updateWorkoutTitle(name)
         setSaveButtonVisibility(false)
+    }
+
+    private fun updateWorkoutTitle(name: String) {
+        binding.title.text = "$name "
     }
 }
