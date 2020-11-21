@@ -8,7 +8,7 @@ import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.DimensionsUtils
 import goodtime.training.wod.timer.common.ViewUtils.Companion.toDrawable
 import goodtime.training.wod.timer.data.model.TypeConverter
-import kotlinx.android.synthetic.main.fragment_custom.view.*
+import kotlinx.android.synthetic.main.row_spinner_dropdown_item_with_image.view.*
 
 
 class SessionTypeSpinnerAdapter(context: Context, objects: Array<String>) :
@@ -21,7 +21,7 @@ class SessionTypeSpinnerAdapter(context: Context, objects: Array<String>) :
         val drawableSize = DimensionsUtils.dpToPx(context, 20F)
         drawable.setBounds(0, 0, drawableSize, drawableSize)
 
-        view.title.setCompoundDrawables(drawable, null, null, null)
+        view.name.setCompoundDrawables(drawable, null, null, null)
         return view
     }
 
@@ -31,7 +31,7 @@ class SessionTypeSpinnerAdapter(context: Context, objects: Array<String>) :
         val drawableSize = DimensionsUtils.dpToPx(context, 20F)
         drawable.setBounds(0, 0, drawableSize, drawableSize)
 
-        view.title.setCompoundDrawables(drawable, null, null, null)
+        view.name.setCompoundDrawables(drawable, null, null, null)
         return view
     }
 }

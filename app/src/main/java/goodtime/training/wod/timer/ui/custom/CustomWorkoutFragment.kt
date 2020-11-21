@@ -15,12 +15,15 @@ import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.common.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.common.ui.SelectCustomWorkoutDialog
+import org.kodein.di.generic.instance
 
 class CustomWorkoutFragment :
     WorkoutTypeFragment(),
     CustomWorkoutAdapter.Listener,
-    SelectCustomWorkoutDialog.Listener, AddSessionDialog.Listener {
+    SelectCustomWorkoutDialog.Listener, AddSessionDialog.Listener,
+    SaveCustomWorkoutDialog.Listener {
 
+    private val viewModelFactory : CustomWorkoutViewModelFactory by instance()
     private lateinit var viewModel: CustomWorkoutViewModel
     private lateinit var binding: FragmentCustomBinding
 
@@ -29,7 +32,7 @@ class CustomWorkoutFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CustomWorkoutViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(CustomWorkoutViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -39,22 +42,45 @@ class CustomWorkoutFragment :
     ): View? {
         binding = FragmentCustomBinding.inflate(inflater, container, false)
 
-        binding.title.text = viewModel.customWorkout.name
+        initCurrentWorkout()
 
-        binding.recycler.apply {
-            layoutManager = LinearLayoutManager(context)
-            listAdapter = CustomWorkoutAdapter(viewModel.customWorkout.sessions, context, this@CustomWorkoutFragment)
-            adapter = listAdapter
-        }
-        touchHelper.attachToRecyclerView(binding.recycler)
-
-        binding.addSessionButton.addSessionButton.setOnClickListener{
-            //TODO: show add session dialog
-            // positive case: data changed -> show save button
-            AddSessionDialog.newInstance(this).show(parentFragmentManager, "")
+        binding.saveButton.setOnClickListener{
+            SaveCustomWorkoutDialog.newInstance(viewModel.customWorkout.name, this).show(parentFragmentManager, "")
         }
 
         return binding.root
+    }
+
+    private fun initCurrentWorkout() {
+        viewModel.customWorkoutList.observe(viewLifecycleOwner, {
+            if (it.isEmpty()) {
+                //TODO: display an empty state
+            } else {
+                //TODO: check the preferences for the last selected custom workout
+                viewModel.customWorkout = it.first()
+                binding.title.text = viewModel.customWorkout.name
+            }
+            setupRecycler()
+            // observe once, no need to repeat this when new data is added to the custom workouts
+            viewModel.customWorkoutList.removeObservers(viewLifecycleOwner)
+        })
+    }
+
+    private fun setupRecycler() {
+        binding.title.text = viewModel.customWorkout.name
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(context)
+            listAdapter = CustomWorkoutAdapter(
+                viewModel.customWorkout.sessions,
+                context,
+                this@CustomWorkoutFragment
+            )
+            adapter = listAdapter
+        }
+        touchHelper.attachToRecyclerView(binding.recycler)
+        binding.addSessionButton.addSessionButton.setOnClickListener {
+            AddSessionDialog.newInstance(this).show(parentFragmentManager, "")
+        }
     }
 
     override fun onStartWorkout() {
@@ -66,11 +92,15 @@ class CustomWorkoutFragment :
     override fun getSelectedSessions(): ArrayList<SessionSkeleton> = viewModel.customWorkout.sessions
 
     override fun onDeleteButtonClicked(position: Int) {
-        //TODO: data changed -> show save button
+        setSaveButtonVisibility(true)
     }
 
     override fun onDataReordered() {
-        //TODO: data changed -> show save button
+        setSaveButtonVisibility(true)
+    }
+
+    override fun onScrollHandleRelease() {
+        setSaveButtonVisibility(true)
     }
 
     override fun onScrollHandleTouch(holder: CustomWorkoutAdapter.ViewHolder) {
@@ -84,10 +114,23 @@ class CustomWorkoutFragment :
         binding.title.text = viewModel.customWorkout.name
         listAdapter.data = viewModel.customWorkout.sessions
         listAdapter.notifyDataSetChanged()
+        setSaveButtonVisibility(false)
     }
 
     override fun onSessionAdded(session: SessionSkeleton) {
         viewModel.customWorkout.sessions.add(session)
         listAdapter.notifyDataSetChanged()
+        setSaveButtonVisibility(true)
+    }
+
+    private fun setSaveButtonVisibility(visible: Boolean) {
+        binding.saveButton.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    override fun onCustomWorkoutSaved(name: String) {
+        viewModel.customWorkout.name = name
+        viewModel.saveCurrentSelection()
+        binding.title.text = name
+        setSaveButtonVisibility(false)
     }
 }

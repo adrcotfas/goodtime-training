@@ -2,14 +2,14 @@ package goodtime.training.wod.timer.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.room.OnConflictStrategy.REPLACE
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.TypeConverter
 
 @Dao
-
 interface CustomWorkoutSkeletonDao {
-    @Insert
+    @Insert(onConflict = REPLACE)
     suspend fun add(skeleton: CustomWorkoutSkeleton)
 
     @Query("select * from CustomWorkoutSkeleton")

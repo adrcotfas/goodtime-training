@@ -16,6 +16,7 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
+import goodtime.training.wod.timer.ui.custom.CustomWorkoutViewModelFactory
 import goodtime.training.wod.timer.ui.log.LogViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import org.kodein.di.Kodein
@@ -46,6 +47,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance()) }
         bind<PrefUtil>() with eagerSingleton { PrefUtil(applicationContext) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
+        bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { LogViewModelFactory(instance()) }
         bind() from provider { TimerViewModelFactory(instance(), instance()) }
     }
@@ -84,6 +86,28 @@ class GoodtimeApplication : Application(), KodeinAware {
         )
         val rest30Sec = SessionSkeleton(0, 30, 30, 0, SessionType.REST)
         val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), TimeUnit.MINUTES.toSeconds(1).toInt(), 0, SessionType.REST)
+
+        //TODO: remove before release
+        val dummyAmrap = SessionSkeleton(0, 5, type = SessionType.AMRAP)
+        val dummyForTime = SessionSkeleton(0, 5, type = SessionType.FOR_TIME)
+        val dummyHiit = SessionSkeleton(
+            0, 3, 3, 3,
+            SessionType.TABATA
+        )
+        val dummyEmom = SessionSkeleton(
+            0, 3, 0, 2,
+            SessionType.EMOM
+        )
+        val dummyRest = SessionSkeleton(0, 30, 5, 0, SessionType.REST)
+        repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Dummy",
+            arrayListOf(
+                dummyAmrap,
+                dummyForTime,
+                dummyHiit,
+                dummyRest,
+                dummyEmom,
+                dummyRest,
+                dummyAmrap)))
 
         repo.addSessionSkeleton(rest30Sec)
         repo.addSessionSkeleton(rest1Min)

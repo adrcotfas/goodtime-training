@@ -9,17 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 class ItemTouchCallback : ItemTouchHelper.SimpleCallback(
     UP or DOWN, 0
 ) {
+    private var recyclerView: RecyclerView? = null
 
     override fun onMove(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
+        this.recyclerView = recyclerView
         val adapter = recyclerView.adapter as CustomWorkoutAdapter
         val from = viewHolder.bindingAdapterPosition
         val to = target.bindingAdapterPosition
         adapter.moveItem(from, to)
-        adapter.notifyItemMoved(from, to)
         return true
     }
 
@@ -44,6 +45,10 @@ class ItemTouchCallback : ItemTouchHelper.SimpleCallback(
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             viewHolder as CustomWorkoutAdapter.ViewHolder
             viewHolder.parent.elevation = 8F
+        } else if (actionState == ItemTouchHelper.ACTION_STATE_IDLE) {
+            if (recyclerView != null) {
+                (recyclerView!!.adapter as CustomWorkoutAdapter).onDragReleased()
+            }
         }
     }
 

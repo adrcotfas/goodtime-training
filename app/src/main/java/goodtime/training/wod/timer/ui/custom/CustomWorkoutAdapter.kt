@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -29,10 +28,16 @@ class CustomWorkoutAdapter(
 )
     : RecyclerView.Adapter<CustomWorkoutAdapter.ViewHolder>()
 {
+    /**
+     * Use this to compare the data before and after releasing the drag handle for rearranging
+     */
+    private lateinit var tmpData: ArrayList<SessionSkeleton>
+
     interface Listener {
         fun onDeleteButtonClicked(position: Int)
         fun onScrollHandleTouch(holder: ViewHolder)
         fun onDataReordered()
+        fun onScrollHandleRelease()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -45,6 +50,7 @@ class CustomWorkoutAdapter(
 
         holder.scrollHandle.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                tmpData = data.clone() as ArrayList<SessionSkeleton>
                 listener.onScrollHandleTouch(holder)
             }
             return@setOnTouchListener true
@@ -61,7 +67,6 @@ class CustomWorkoutAdapter(
     override fun getItemCount() = data.size
 
     fun moveItem(from: Int, to: Int) {
-        Log.e("DDD", "moved")
         if (from < to) {
             for (i in from until to) {
                 Collections.swap(data, i, i + 1)
@@ -71,7 +76,13 @@ class CustomWorkoutAdapter(
                 Collections.swap(data, i, i - 1)
             }
         }
-        listener.onDataReordered()
+        notifyItemMoved(from, to)
+    }
+
+    fun onDragReleased() {
+        if (data != tmpData) {
+            listener.onDataReordered()
+        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
