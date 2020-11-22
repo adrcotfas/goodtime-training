@@ -18,7 +18,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginHorizontal="24dp"/>
 
-    <RadioButton
+    <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/overwrite_radio_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +30,8 @@
         android:layout_marginHorizontal="24dp"
         android:text="Overwrite"
         android:checked="true"
-        android:textColor="@color/grey200"/>
+        android:textColor="@color/grey200"
+        android:buttonTint="@color/grey200"/>
 
     <TextView
         android:id="@+id/workout_name"
@@ -47,7 +48,7 @@
         tools:text="Sample Workout"
         />
 
-    <RadioButton
+    <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/save_as_radio_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +58,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginHorizontal="24dp"
         android:text="Save as"
-        android:textColor="@color/grey200"/>
+        android:textColor="@color/grey200"
+        android:buttonTint="@color/grey200"/>
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/edit_text"

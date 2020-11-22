@@ -37,7 +37,7 @@
         <item name="closeIconTint">@color/transparent_dark</item>
     </style>
 
-    <style name="FavoritesChipStyle.GreenAndSmaller" parent="Widget.MaterialComponents.Chip.Entry">
+    <style name="FavoritesChipStyle.GreenAndSmaller" parent="Widget.MaterialComponents.Chip.Action">
         <item name="android:textAppearance">@style/FavoritesTextStyleSmaller</item>
         <item name="android:textColor">@color/green_goodtime</item>
         <item name="chipBackgroundColor">@color/green_goodtime_dark</item>

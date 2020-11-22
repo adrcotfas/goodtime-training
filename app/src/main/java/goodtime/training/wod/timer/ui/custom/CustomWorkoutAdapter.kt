@@ -35,6 +35,7 @@ class CustomWorkoutAdapter(
 
     interface Listener {
         fun onDeleteButtonClicked(position: Int)
+        fun onChipSelected(position: Int)
         fun onScrollHandleTouch(holder: ViewHolder)
         fun onDataReordered()
     }
@@ -60,6 +61,11 @@ class CustomWorkoutAdapter(
             data.removeAt(pos)
             notifyItemRemoved(pos)
             listener.onDeleteButtonClicked(pos)
+        }
+
+        holder.sessionChip.setOnClickListener{
+            val pos = holder.bindingAdapterPosition
+            listener.onChipSelected(pos)
         }
     }
 
@@ -88,9 +94,9 @@ class CustomWorkoutAdapter(
         val scrollHandle: ImageView = view.findViewById(R.id.scroll_handle)
         val closeButton: ImageView = view.findViewById(R.id.close_button)
         val parent: ConstraintLayout = view.findViewById(R.id.parent)
+        val sessionChip: Chip = view.findViewById(R.id.session_chip)
         private val sessionTypeImage: ImageView = view.findViewById(R.id.session_type_image)
         private val sessionTypeText: TextView = view.findViewById(R.id.session_type_text)
-        private val sessionChip: Chip = view.findViewById(R.id.session_chip)
 
         fun bind(resources: Resources, session: SessionSkeleton) {
             sessionTypeImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))

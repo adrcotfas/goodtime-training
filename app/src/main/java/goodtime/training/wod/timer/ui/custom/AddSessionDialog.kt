@@ -30,6 +30,8 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
     private val repo: AppRepository by instance()
     private lateinit var binding: DialogAddSessionToCustomWorkoutBinding
     private lateinit var listener: Listener
+    private lateinit var candidateToEdit: SessionSkeleton
+    private var candidateIdx = INVALID_CANDIDATE_IDX
 
     private lateinit var favorites : List<SessionSkeleton>
     private var sessionType = SessionType.AMRAP
@@ -45,15 +47,25 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
 
     interface Listener {
         fun onSessionAdded(session: SessionSkeleton)
+        fun onSessionEdit(idx: Int, session: SessionSkeleton)
     }
 
     companion object {
-        fun newInstance(listener: Listener) : AddSessionDialog {
+        const val INVALID_CANDIDATE_IDX = -1
+
+        fun newInstance(listener: Listener, candidateIdx: Int = INVALID_CANDIDATE_IDX,
+                        candidate: SessionSkeleton? = null) : AddSessionDialog {
             val dialog = AddSessionDialog()
             dialog.listener = listener
+            dialog.candidateIdx = candidateIdx
+            if (dialog.isEditMode()) {
+                dialog.candidateToEdit = candidate!!
+            }
             return dialog
         }
     }
+
+    private fun isEditMode() = candidateIdx != INVALID_CANDIDATE_IDX
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
         val b = AlertDialog.Builder(requireContext())
@@ -62,11 +74,17 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
         setupEditTexts()
         setupSpinner()
         setupRadioGroup()
+        setupEditCandidate()
 
         b.apply {
             setView(binding.root)
+            setTitle(if (isEditMode()) "Edit session" else "Add session")
             setPositiveButton(android.R.string.ok) { _, _ ->
-                listener.onSessionAdded(generateFromCurrentSelection(sessionType))
+                if(isEditMode()) {
+                    listener.onSessionEdit(candidateIdx, generateFromCurrentSelection(sessionType))
+                } else {
+                    listener.onSessionAdded(generateFromCurrentSelection(sessionType))
+                }
                 hideKeyboardFrom(requireContext(), binding.root)
             }
         }
@@ -101,7 +119,12 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
             ) {
                 sessionType = TypeConverter().fromInt(position)
                 setupFavorites(sessionType)
-                refreshEditTextSection(sessionType)
+                refreshActiveSection(sessionType)
+                if (isEditMode() && sessionType == candidateToEdit.type) {
+                    setupEditCandidate()
+                } else {
+                    refreshEditTextSection(sessionType)
+                }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
@@ -119,6 +142,31 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
                 binding.customSection.visibility = View.GONE
                 togglePositiveButtonVisibility(false)
                 hideKeyboardFrom(requireContext(), binding.root)
+            }
+        }
+    }
+
+    private fun setupEditCandidate() {
+        if (isEditMode()) {
+            binding.radioGroup.check(R.id.radio_button_select_custom)
+            binding.sessionTypeSpinner.setSelection(candidateToEdit.type.value)
+            when (candidateToEdit.type) {
+                SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
+                    val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(candidateToEdit.duration)
+                    genericMinutesEt.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
+                    genericSecondsEt.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
+                }
+                SessionType.EMOM -> {
+                    emomRoundsEt.setText(addPrefixIfNeeded(candidateToEdit.numRounds.toString()))
+                    val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(candidateToEdit.duration)
+                    emomMinutesEt.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
+                    emomSecondsEt.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
+                }
+                SessionType.TABATA -> {
+                    hiitRoundsEt.setText(addPrefixIfNeeded(candidateToEdit.numRounds.toString()))
+                    hiitSecondsWorkEt.setText(addPrefixIfNeeded(candidateToEdit.duration.toString()))
+                    hiitSecondsRestEt.setText(addPrefixIfNeeded(candidateToEdit.breakDuration.toString()))
+                }
             }
         }
     }
@@ -144,7 +192,11 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
                         }
                     }
                     chip.setOnClickListener {
-                        listener.onSessionAdded(favorite)
+                        if (isEditMode()) {
+                            listener.onSessionEdit(candidateIdx, favorite)
+                        } else {
+                            listener.onSessionAdded(favorite)
+                        }
                         dismiss()
                     }
                     favoritesChipGroup.addView(chip)
@@ -301,7 +353,6 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
     }
 
     private fun refreshEditTextSection(sessionType: SessionType) {
-        refreshActiveSection(sessionType)
         when (sessionType) {
             SessionType.AMRAP -> {
                 //TODO: extract constants
@@ -385,6 +436,14 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
 
     private fun setDescription(value: String) {
         binding.customSessionDescription.text = value
+    }
+
+    private fun addPrefixIfNeeded(value: String): String {
+        return if (value.length == 1) {
+            "0$value"
+        } else {
+            value
+        }
     }
 
     override fun onResume() {

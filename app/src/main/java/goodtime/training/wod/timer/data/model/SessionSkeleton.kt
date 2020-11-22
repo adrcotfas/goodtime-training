@@ -23,4 +23,13 @@ data class SessionSkeleton (
                 this.numRounds == other.numRounds &&
                 this.type == other.type)
     }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + duration
+        result = 31 * result + breakDuration
+        result = 31 * result + numRounds
+        result = 31 * result + type.hashCode()
+        return result
+    }
 }

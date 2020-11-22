@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
                 android:textColor="@color/grey200"
-                android:text="Add session"
+                android:text="Session type"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"/>
             <Spinner
@@ -50,6 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/grey200"
+                android:buttonTint="@color/grey200"
                 android:layout_gravity="center_vertical"
                 android:text="From favorites"
                 android:textSize="16dp"
@@ -60,6 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/grey200"
+                android:buttonTint="@color/grey200"
                 android:layout_gravity="center_vertical"
                 android:text="Custom"
                 android:textSize="16dp"
@@ -133,7 +135,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
                 android:layout_marginTop="16dp"
-                tools:visibility="gone">
+                android:visibility="gone">
                 <include
                     android:id="@+id/generic_minutes_layout"
                     layout="@layout/text_input_layout_section"
@@ -164,7 +166,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
                 android:layout_marginTop="16dp"
-                tools:visibility="gone">
+                android:visibility="gone">
 
                 <include
                     android:id="@+id/emom_rounds_layout"
@@ -207,7 +209,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
-                android:layout_marginTop="16dp">
+                android:visibility="gone">
 
                 <include
                     android:id="@+id/hiit_rounds_layout"

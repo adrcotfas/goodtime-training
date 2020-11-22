@@ -125,6 +125,11 @@ class CustomWorkoutFragment :
         }
     }
 
+    override fun onChipSelected(position: Int) {
+        AddSessionDialog.newInstance(this, position, listAdapter.data[position])
+            .show(parentFragmentManager, "")
+    }
+
     override fun onDataReordered() {
         setSaveButtonVisibility(true)
         viewModel.hasUnsavedSession = true
@@ -156,6 +161,12 @@ class CustomWorkoutFragment :
         updateTotalDuration()
     }
 
+    override fun onSessionEdit(idx: Int, session: SessionSkeleton) {
+        if(viewModel.customWorkout.sessions[idx] != session) setSaveButtonVisibility(true)
+        viewModel.customWorkout.sessions[idx] = session
+        listAdapter.notifyItemChanged(idx)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setSaveButtonVisibility(visible: Boolean) {
         binding.saveButton.visibility = if (visible) View.VISIBLE else View.GONE
@@ -167,7 +178,7 @@ class CustomWorkoutFragment :
         viewModel.saveCurrentSelection()
         binding.title.text = name
         setSaveButtonVisibility(false)
-        viewModel.hasUnsavedSession = true
+        viewModel.hasUnsavedSession = false
     }
 
     private fun updateTotalDuration() {

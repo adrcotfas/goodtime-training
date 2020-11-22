@@ -52,7 +52,8 @@
         app:layout_constraintEnd_toStartOf="@id/close_button"
         style="@style/FavoritesChipStyle.GreenAndSmaller"
         app:closeIconEnabled="false"
-        android:clickable="false"
+        android:clickable="true"
+        android:focusable="true"
         tools:text="8 x 20 s / 10 s"/>
 
     <ImageView
