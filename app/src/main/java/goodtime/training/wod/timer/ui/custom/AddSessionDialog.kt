@@ -200,9 +200,10 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
                         dismiss()
                     }
                     favoritesChipGroup.addView(chip)
+                    binding.emptyState.visibility = View.GONE
                 }
                 if (favorites.isEmpty()) {
-                    // TODO: show empty state
+                    binding.emptyState.visibility = View.VISIBLE
                 }
             })
     }
