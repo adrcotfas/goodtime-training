@@ -61,8 +61,8 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware {
     private fun setupFavorites() {
         binding.selectFavoriteTitle.text = "Select ${toString(favoriteCandidate.type)} favorite"
         repo.getSessionSkeletons(favoriteCandidate.type).observe(
-            this, { favorites = it
-
+            this, {
+                favorites = it
                 binding.selectFavoriteTitle.visibility = if (favorites.isEmpty()) View.GONE else View.VISIBLE
 
                 val favoritesChipGroup = binding.favorites

@@ -15,6 +15,18 @@
         android:layout_marginTop="24dp"
         android:layout_marginHorizontal="24dp"/>
 
+    <TextView
+        android:id="@+id/empty_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey800"
+        android:textSize="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="No items"
+        tools:visibility="visible"/>
+
     <ScrollView
         android:id="@+id/favorites_container"
         android:layout_width="match_parent"

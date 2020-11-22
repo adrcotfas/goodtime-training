@@ -37,7 +37,6 @@ class CustomWorkoutAdapter(
         fun onDeleteButtonClicked(position: Int)
         fun onScrollHandleTouch(holder: ViewHolder)
         fun onDataReordered()
-        fun onScrollHandleRelease()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

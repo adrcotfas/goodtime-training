@@ -38,7 +38,7 @@
         app:fabCustomSize="70dp"
         app:maxImageSize="36dp"
         app:borderWidth="0dp"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="80dp"
         android:layout_gravity="bottom|center" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

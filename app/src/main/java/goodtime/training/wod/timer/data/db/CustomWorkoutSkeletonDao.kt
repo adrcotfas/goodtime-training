@@ -12,7 +12,7 @@ interface CustomWorkoutSkeletonDao {
     @Insert(onConflict = REPLACE)
     suspend fun add(skeleton: CustomWorkoutSkeleton)
 
-    @Query("select * from CustomWorkoutSkeleton")
+    @Query("select * from CustomWorkoutSkeleton order by `name`")
     fun get() : LiveData<List<CustomWorkoutSkeleton>>
 
     @Query("delete from CustomWorkoutSkeleton where name = :name")

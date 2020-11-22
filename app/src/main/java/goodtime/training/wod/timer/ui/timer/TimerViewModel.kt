@@ -22,7 +22,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
     /**
      * Holds the counted rounds in seconds elapsed
      */
-    //TODO: hold rounds for all sessions
+    //TODO: fix bug in counter; should hold rounds for all sessions in a custom workout
     var countedRounds = ArrayList<Int>(0)
 
     // store the working time for each session
@@ -79,6 +79,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
             isResting.value = true
         }
 
+        //TODO: store REST duration in "duration", not "breakDuration" which should be only for HIIT
         val seconds = secondsUntilFinished.value?.toLong()
             ?: if (isResting.value!!)
                 session.breakDuration.toLong()

@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer.ui.custom
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import goodtime.training.wod.timer.common.ResourcesHelper
+import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PrefUtil
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
+import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.common.WorkoutTypeFragment
@@ -47,6 +51,12 @@ class CustomWorkoutFragment :
         binding.saveButton.setOnClickListener{
             SaveCustomWorkoutDialog.newInstance(viewModel.customWorkout.name, this).show(parentFragmentManager, "")
         }
+        if (viewModel.hasUnsavedSession) {
+            setSaveButtonVisibility(true)
+        }
+        binding.addSessionButton.setOnClickListener {
+            AddSessionDialog.newInstance(this).show(parentFragmentManager, "")
+        }
 
         return binding.root
     }
@@ -54,11 +64,14 @@ class CustomWorkoutFragment :
     private fun initCurrentWorkout() {
         viewModel.customWorkoutList.observe(viewLifecycleOwner, {
             if (it.isEmpty()) {
-                //TODO: display an empty state
+                viewModel.customWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
+                toggleEmptyState(true)
             } else {
                 //TODO: check the preferences for the last selected custom workout
                 viewModel.customWorkout = it.first()
-                updateWorkoutTitle(viewModel.customWorkout.name)
+                binding.title.text = viewModel.customWorkout.name
+                updateTotalDuration()
+                toggleEmptyState(false)
             }
             setupRecycler()
             // observe once, no need to repeat this when new data is added to the custom workouts
@@ -66,8 +79,22 @@ class CustomWorkoutFragment :
         })
     }
 
+    private fun toggleEmptyState(visible: Boolean) {
+        if (visible) {
+            binding.emptyState.visibility = View.VISIBLE
+            binding.saveButton.visibility = View.GONE
+            binding.totalTime.visibility = View.GONE
+            binding.title.text = "New workout"
+            viewModel.customWorkout.name = "New workout"
+            viewModel.hasUnsavedSession = false
+        } else {
+            binding.emptyState.visibility = View.GONE
+            binding.totalTime.visibility = View.VISIBLE
+        }
+    }
+
     private fun setupRecycler() {
-        updateWorkoutTitle(viewModel.customWorkout.name)
+        binding.title.text = viewModel.customWorkout.name
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             listAdapter = CustomWorkoutAdapter(
@@ -78,9 +105,6 @@ class CustomWorkoutFragment :
             adapter = listAdapter
         }
         touchHelper.attachToRecyclerView(binding.recycler)
-        binding.addSessionButton.addSessionButton.setOnClickListener {
-            AddSessionDialog.newInstance(this).show(parentFragmentManager, "")
-        }
     }
 
     override fun onStartWorkout() {
@@ -92,15 +116,18 @@ class CustomWorkoutFragment :
     override fun getSelectedSessions(): ArrayList<SessionSkeleton> = viewModel.customWorkout.sessions
 
     override fun onDeleteButtonClicked(position: Int) {
+        //TODO: if the current workout is deleted, change it
         setSaveButtonVisibility(true)
+        updateTotalDuration()
+        viewModel.hasUnsavedSession = true
+        if (listAdapter.data.isEmpty()) {
+            toggleEmptyState(true)
+        }
     }
 
     override fun onDataReordered() {
         setSaveButtonVisibility(true)
-    }
-
-    override fun onScrollHandleRelease() {
-        setSaveButtonVisibility(true)
+        viewModel.hasUnsavedSession = true
     }
 
     override fun onScrollHandleTouch(holder: CustomWorkoutAdapter.ViewHolder) {
@@ -111,30 +138,47 @@ class CustomWorkoutFragment :
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
         viewModel.customWorkout = workout
-        updateWorkoutTitle(viewModel.customWorkout.name)
+        binding.title.text = viewModel.customWorkout.name
         listAdapter.data = viewModel.customWorkout.sessions
         listAdapter.notifyDataSetChanged()
         setSaveButtonVisibility(false)
+        updateTotalDuration()
+        toggleEmptyState(false)
     }
 
     override fun onSessionAdded(session: SessionSkeleton) {
         viewModel.customWorkout.sessions.add(session)
-        listAdapter.notifyDataSetChanged()
+        listAdapter.notifyItemInserted(listAdapter.data.size - 1)
         setSaveButtonVisibility(true)
+        viewModel.hasUnsavedSession = true
+        binding.recycler.scrollToPosition(listAdapter.data.size - 1)
+        toggleEmptyState(false)
+        updateTotalDuration()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setSaveButtonVisibility(visible: Boolean) {
         binding.saveButton.visibility = if (visible) View.VISIBLE else View.GONE
+        binding.title.setTextColor(if (visible) ResourcesHelper.grey800 else ResourcesHelper.grey500)
     }
 
     override fun onCustomWorkoutSaved(name: String) {
-
+        viewModel.customWorkout.name = name
         viewModel.saveCurrentSelection()
-        updateWorkoutTitle(name)
+        binding.title.text = name
         setSaveButtonVisibility(false)
+        viewModel.hasUnsavedSession = true
     }
 
-    private fun updateWorkoutTitle(name: String) {
-        binding.title.text = "$name "
+    private fun updateTotalDuration() {
+        var total = 0
+        for (session in viewModel.customWorkout.sessions) {
+            total += when (session.type) {
+                SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> session.duration
+                SessionType.EMOM -> (session.duration * session.numRounds)
+                SessionType.TABATA -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
+            }
+        }
+        binding.totalTime.text = StringUtils.secondsToNiceFormat(total)
     }
 }

@@ -36,12 +36,15 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
         val b = AlertDialog.Builder(requireContext())
         binding = DialogSaveCustomWorkoutBinding.inflate(layoutInflater)
 
-        binding.workoutName.text = originalName
+        binding.workoutName.text = "$originalName "
         binding.workoutName.setOnClickListener{ binding.overwriteRadioButton.isChecked = true}
 
         binding.overwriteRadioButton.setOnCheckedChangeListener{ _, isChecked ->
             binding.saveAsRadioButton.isChecked = !isChecked
             togglePositiveButtonState(true)
+            if (isChecked) {
+                hideKeyboardFrom(requireContext(), binding.root)
+            }
         }
 
         binding.saveAsRadioButton.setOnCheckedChangeListener{ _, isChecked ->
@@ -52,6 +55,7 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
         binding.editText.setOnClickListener {
             binding.saveAsRadioButton.isChecked = true
         }
+
         binding.editText.addTextChangedListener {
             refreshPositiveButtonVisibility(it)
         }

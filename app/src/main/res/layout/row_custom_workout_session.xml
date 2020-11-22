@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:src="@drawable/ic_drag"
-        app:tint="@color/grey500"
+        app:tint="@color/grey800"
         android:padding="4dp"/>
 
     <ImageView
@@ -63,7 +63,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_close"
-        app:tint="@color/grey500"
+        app:tint="@color/grey800"
         android:padding="4dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -367,7 +367,7 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
             -> SessionSkeleton(0,
                 toInt(hiitSecondsWorkEt.text.toString()), toInt(hiitSecondsRestEt.text.toString()), toInt(hiitRoundsEt.text.toString()), sessionType)
             SessionType.REST -> SessionSkeleton(0,
-                0, getCurrentSelectionDuration(sessionType), 0, sessionType)
+                getCurrentSelectionDuration(sessionType), getCurrentSelectionDuration(sessionType), 0, sessionType)
         }
     }
 
