@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.text.Editable
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
-import com.google.android.material.textfield.TextInputEditText
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.*
 import goodtime.training.wod.timer.data.model.SessionSkeleton
@@ -20,12 +16,12 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogAddSessionToCustomWorkoutBinding
+import goodtime.training.wod.timer.ui.common.ui.SessionEditTextHelper
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
-import java.security.InvalidParameterException
 
-class AddSessionDialog: DialogFragment(), KodeinAware {
+class AddSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
     private lateinit var binding: DialogAddSessionToCustomWorkoutBinding
@@ -34,16 +30,7 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
     private var candidateIdx = INVALID_CANDIDATE_IDX
 
     private lateinit var favorites : List<SessionSkeleton>
-    private var sessionType = SessionType.AMRAP
-
-    private lateinit var genericMinutesEt: TextInputEditText
-    private lateinit var genericSecondsEt: TextInputEditText
-    private lateinit var emomRoundsEt: TextInputEditText
-    private lateinit var emomMinutesEt: TextInputEditText
-    private lateinit var emomSecondsEt: TextInputEditText
-    private lateinit var hiitRoundsEt: TextInputEditText
-    private lateinit var hiitSecondsWorkEt: TextInputEditText
-    private lateinit var hiitSecondsRestEt: TextInputEditText
+    private lateinit var sessionEditTextHelper: SessionEditTextHelper
 
     interface Listener {
         fun onSessionAdded(session: SessionSkeleton)
@@ -54,12 +41,12 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
         const val INVALID_CANDIDATE_IDX = -1
 
         fun newInstance(listener: Listener, candidateIdx: Int = INVALID_CANDIDATE_IDX,
-                        candidate: SessionSkeleton? = null) : AddSessionDialog {
+                        candidate: SessionSkeleton = SessionSkeleton()) : AddSessionDialog {
             val dialog = AddSessionDialog()
             dialog.listener = listener
             dialog.candidateIdx = candidateIdx
             if (dialog.isEditMode()) {
-                dialog.candidateToEdit = candidate!!
+                dialog.candidateToEdit = candidate
             }
             return dialog
         }
@@ -71,7 +58,7 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
         val b = AlertDialog.Builder(requireContext())
         binding = DialogAddSessionToCustomWorkoutBinding.inflate(layoutInflater)
 
-        setupEditTexts()
+        initSessionEditTextHelper()
         setupSpinner()
         setupRadioGroup()
         setupEditCandidate()
@@ -81,9 +68,9 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
             setTitle(if (isEditMode()) "Edit session" else "Add session")
             setPositiveButton(android.R.string.ok) { _, _ ->
                 if(isEditMode()) {
-                    listener.onSessionEdit(candidateIdx, generateFromCurrentSelection(sessionType))
+                    listener.onSessionEdit(candidateIdx, sessionEditTextHelper.generateFromCurrentSelection())
                 } else {
-                    listener.onSessionAdded(generateFromCurrentSelection(sessionType))
+                    listener.onSessionAdded(sessionEditTextHelper.generateFromCurrentSelection())
                 }
                 hideKeyboardFrom(requireContext(), binding.root)
             }
@@ -91,19 +78,17 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
         return b.create()
     }
 
-    private fun setupEditTexts() {
-        genericMinutesEt = binding.genericMinutesLayout.editText
-        genericSecondsEt = binding.genericSecondsLayout.editText
-
-        emomRoundsEt = binding.emomRoundsLayout.editText
-        emomMinutesEt = binding.emomMinutesLayout.editText
-        emomSecondsEt = binding.emomSecondsLayout.editText
-
-        hiitRoundsEt = binding.hiitRoundsLayout.editText
-        hiitSecondsWorkEt = binding.secondsWorkLayout.editText
-        hiitSecondsRestEt = binding.secondsRestLayout.editText
-
-        setupTextEditSections()
+    private fun initSessionEditTextHelper() {
+        sessionEditTextHelper = SessionEditTextHelper(this,
+            binding.genericMinutesLayout.editText,
+            binding.genericSecondsLayout.editText,
+            binding.emomRoundsLayout.editText,
+            binding.emomMinutesLayout.editText,
+            binding.emomSecondsLayout.editText,
+            binding.hiitRoundsLayout.editText,
+            binding.hiitSecondsWorkLayout.editText,
+            binding.hiitSecondsRestLayout.editText,
+            if (isEditMode()) candidateToEdit.type else SessionType.AMRAP)
     }
 
     private fun setupSpinner() {
@@ -117,13 +102,14 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
                 position: Int,
                 id: Long
             ) {
-                sessionType = TypeConverter().fromInt(position)
+                val sessionType = TypeConverter().fromInt(position)
+                sessionEditTextHelper.updateSessionType(sessionType)
                 setupFavorites(sessionType)
                 refreshActiveSection(sessionType)
                 if (isEditMode() && sessionType == candidateToEdit.type) {
                     setupEditCandidate()
                 } else {
-                    refreshEditTextSection(sessionType)
+                    sessionEditTextHelper.resetToDefaults()
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -136,7 +122,7 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
                 binding.favoritesContainer.visibility = View.GONE
                 binding.customSection.visibility = View.VISIBLE
                 togglePositiveButtonVisibility(true)
-                setDescription(StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType)))
+                setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
             } else if (checkedId == R.id.radio_button_from_favorites) {
                 binding.favoritesContainer.visibility = View.VISIBLE
                 binding.customSection.visibility = View.GONE
@@ -150,24 +136,7 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
         if (isEditMode()) {
             binding.radioGroup.check(R.id.radio_button_select_custom)
             binding.sessionTypeSpinner.setSelection(candidateToEdit.type.value)
-            when (candidateToEdit.type) {
-                SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                    val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(candidateToEdit.duration)
-                    genericMinutesEt.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
-                    genericSecondsEt.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
-                }
-                SessionType.EMOM -> {
-                    emomRoundsEt.setText(addPrefixIfNeeded(candidateToEdit.numRounds.toString()))
-                    val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(candidateToEdit.duration)
-                    emomMinutesEt.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
-                    emomSecondsEt.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
-                }
-                SessionType.TABATA -> {
-                    hiitRoundsEt.setText(addPrefixIfNeeded(candidateToEdit.numRounds.toString()))
-                    hiitSecondsWorkEt.setText(addPrefixIfNeeded(candidateToEdit.duration.toString()))
-                    hiitSecondsRestEt.setText(addPrefixIfNeeded(candidateToEdit.breakDuration.toString()))
-                }
-            }
+            sessionEditTextHelper.updateEditTexts(candidateToEdit)
         }
     }
 
@@ -243,195 +212,6 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
         }
     }
 
-    private fun setupTextEditSections() {
-        for (it in listOf(genericMinutesEt, genericSecondsEt, emomRoundsEt,
-            emomMinutesEt, emomSecondsEt, hiitRoundsEt, hiitSecondsWorkEt, hiitSecondsRestEt)) {
-            setupEditTextBehaviorOnFocus(it)
-        }
-        for (it in listOf(genericSecondsEt, emomSecondsEt, hiitSecondsRestEt)) {
-            it.imeOptions = EditorInfo.IME_ACTION_DONE
-        }
-
-        genericMinutesEt.addTextChangedListener {
-            setupEditTextLimit(it, genericMinutesEt, 60)
-            val minutes = toInt(it.toString())
-            val seconds = toInt(genericSecondsEt.text.toString())
-            val enabled = minutes != 0 || seconds != 0
-            togglePositiveButtonState(enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(
-                        generateFromCurrentSelection(
-                            sessionType
-                        )
-                    )
-                else "Please enter valid values.")
-        }
-
-        genericSecondsEt.addTextChangedListener {
-            setupEditTextLimit(it, genericSecondsEt, 59)
-            val minutes = toInt(genericMinutesEt.text.toString())
-            val seconds = toInt(it.toString())
-            val enabled = minutes != 0 || seconds != 0
-            togglePositiveButtonState(enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType))
-                else "Please enter valid values.")
-        }
-        emomRoundsEt.addTextChangedListener {
-            setupEditTextLimit(it, emomRoundsEt, 60)
-            val rounds = toInt(it.toString())
-            val minutes = toInt(emomMinutesEt.text.toString())
-            val seconds = toInt(emomSecondsEt.text.toString())
-            val enabled = rounds != 0 && (minutes != 0 || seconds != 0)
-            togglePositiveButtonState (enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType))
-                else "Please enter valid values.")
-        }
-        emomMinutesEt.addTextChangedListener {
-            setupEditTextLimit(it, emomMinutesEt, 10)
-            val rounds = toInt(emomRoundsEt.text.toString())
-            val minutes = toInt(it.toString())
-            val seconds = toInt(emomSecondsEt.text.toString())
-            val enabled = rounds != 0 && (minutes != 0 || seconds != 0)
-            togglePositiveButtonState (enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType))
-                else "Please enter valid values.")
-        }
-        emomSecondsEt.addTextChangedListener {
-            setupEditTextLimit(it, emomSecondsEt, 59)
-            val rounds = toInt(emomRoundsEt.text.toString())
-            val minutes = toInt(emomMinutesEt.text.toString())
-            val seconds = toInt(it.toString())
-            val enabled = rounds != 0 && (minutes != 0 || seconds != 0)
-            togglePositiveButtonState (enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType))
-                else "Please enter valid values.")
-        }
-        hiitRoundsEt.addTextChangedListener {
-            setupEditTextLimit(it, hiitRoundsEt, 60)
-            val rounds = toInt(it.toString())
-            val secondsWork = toInt(hiitSecondsWorkEt.text.toString())
-            val secondsRest = toInt(hiitSecondsRestEt.text.toString())
-            val enabled = rounds != 0 && (secondsWork != 0 && secondsRest != 0)
-            togglePositiveButtonState(enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType))
-                else "Please enter valid values.")
-        }
-        hiitSecondsWorkEt.addTextChangedListener {
-            setupEditTextLimit(it, hiitSecondsWorkEt, 90)
-            val rounds = toInt(hiitRoundsEt.text.toString())
-            val secondsWork = toInt(it.toString())
-            val secondsRest = toInt(hiitSecondsRestEt.text.toString())
-            val enabled = rounds != 0 && (secondsWork != 0 && secondsRest != 0)
-            togglePositiveButtonState(enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType))
-                else "Please enter valid values.")
-        }
-        hiitSecondsRestEt.addTextChangedListener {
-            setupEditTextLimit(it, hiitSecondsRestEt, 90)
-            val rounds = toInt(hiitRoundsEt.text.toString())
-            val secondsWork = toInt(hiitSecondsWorkEt.text.toString())
-            val secondsRest = toInt(it.toString())
-            val enabled = rounds != 0 && (secondsWork != 0 && secondsRest != 0)
-            togglePositiveButtonState(enabled)
-            setDescription(
-                if (enabled)
-                    StringUtils.toFavoriteDescriptionDetailed(generateFromCurrentSelection(sessionType))
-                else "Please enter valid values.")
-        }
-    }
-
-    private fun refreshEditTextSection(sessionType: SessionType) {
-        when (sessionType) {
-            SessionType.AMRAP -> {
-                //TODO: extract constants
-                setEditTextValue(genericMinutesEt, "15")
-                setEditTextValue(genericSecondsEt, "00")
-            }
-            SessionType.FOR_TIME -> {
-                setEditTextValue(genericMinutesEt, "12")
-                setEditTextValue(genericSecondsEt, "00")
-            }
-            SessionType.EMOM -> {
-                setEditTextValue(emomRoundsEt, "10")
-                setEditTextValue(emomMinutesEt, "01")
-                setEditTextValue(emomSecondsEt, "00")
-            }
-            SessionType.TABATA -> {
-                setEditTextValue(hiitRoundsEt, "08")
-                setEditTextValue(hiitSecondsWorkEt, "20")
-                setEditTextValue(hiitSecondsRestEt, "10")
-            }
-            SessionType.REST -> {
-                setEditTextValue(genericMinutesEt, "01")
-                setEditTextValue(genericSecondsEt, "00")
-            }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setupEditTextLimit(editable: Editable?, textInputEditText: TextInputEditText, limit: Int) {
-        if(toInt(editable.toString()) > limit) {
-            textInputEditText.setText(if (limit < 10) "0$limit" else limit.toString())
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setupEditTextBehaviorOnFocus(textInputEditText: TextInputEditText) {
-        textInputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                if (textInputEditText.editableText.isNullOrEmpty()) {
-                    textInputEditText.setText("00")
-                }
-                // prefix single digits with a zero
-                if (textInputEditText.editableText?.length == 1) {
-                    textInputEditText.text?.insert(0, "0")
-                }
-            }
-        }
-    }
-
-    private fun setEditTextValue(textInputEditText: TextInputEditText, value: String) {
-        textInputEditText.setText(value)
-    }
-
-    private fun generateFromCurrentSelection(sessionType: SessionType) : SessionSkeleton {
-        return when(sessionType) {
-            SessionType.AMRAP, SessionType.FOR_TIME
-            -> SessionSkeleton(0,
-                getCurrentSelectionDuration(sessionType), 0, 0, sessionType)
-            SessionType.EMOM
-            -> SessionSkeleton(0,
-                getCurrentSelectionDuration(sessionType), 0, toInt(emomRoundsEt.text.toString()), sessionType)
-            SessionType.TABATA
-            -> SessionSkeleton(0,
-                toInt(hiitSecondsWorkEt.text.toString()), toInt(hiitSecondsRestEt.text.toString()), toInt(hiitRoundsEt.text.toString()), sessionType)
-            SessionType.REST -> SessionSkeleton(0,
-                getCurrentSelectionDuration(sessionType), getCurrentSelectionDuration(sessionType), 0, sessionType)
-        }
-    }
-
-    private fun getCurrentSelectionDuration(sessionType: SessionType): Int {
-        return when(sessionType) {
-            SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST
-            -> toInt(genericMinutesEt.text.toString()) * 60 + toInt(genericSecondsEt.text.toString())
-            SessionType.EMOM -> toInt(emomMinutesEt.text.toString()) * 60 + toInt(emomSecondsEt.text.toString())
-            else -> throw InvalidParameterException("wrong session type: $sessionType")
-        }
-    }
-
     private fun isInFavoritesSection() =
         binding.radioGroup.checkedRadioButtonId == R.id.radio_button_from_favorites
 
@@ -439,16 +219,16 @@ class AddSessionDialog: DialogFragment(), KodeinAware {
         binding.customSessionDescription.text = value
     }
 
-    private fun addPrefixIfNeeded(value: String): String {
-        return if (value.length == 1) {
-            "0$value"
-        } else {
-            value
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         togglePositiveButtonVisibility(!isInFavoritesSection())
+    }
+
+    override fun onTextChanged(isValid: Boolean, sessionSkeleton: SessionSkeleton) {
+        togglePositiveButtonState(isValid)
+        setDescription(
+            if (isValid)
+                StringUtils.toFavoriteDescriptionDetailed(sessionSkeleton)
+            else "Please enter valid values.")
     }
 }

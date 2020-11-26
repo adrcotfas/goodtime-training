@@ -90,8 +90,7 @@ class StringUtils {
                     (if (session.duration == 60) "Every minute on the minute for ${secondsToNiceFormatExtended(session.numRounds * session.duration)}"
                     else
                         "Every ${secondsToNiceFormatExtended(session.duration)} for " +
-                                secondsToNiceFormatExtended(session.numRounds * session.duration)) +
-                            " (${session.numRounds} × ${secondsToNiceFormatExtended(session.duration)})"
+                                secondsToNiceFormatExtended(session.numRounds * session.duration))
                 }
                 SessionType.TABATA -> {
                     val workString = session.duration.toString() + " second" +  if (session.duration > 1) "s" else ""

@@ -58,6 +58,9 @@ class CustomWorkoutAdapter(
 
         holder.closeButton.setOnClickListener{
             val pos = holder.bindingAdapterPosition
+            if (pos == -1) {
+                return@setOnClickListener
+            }
             data.removeAt(pos)
             notifyItemRemoved(pos)
             listener.onDeleteButtonClicked(pos)

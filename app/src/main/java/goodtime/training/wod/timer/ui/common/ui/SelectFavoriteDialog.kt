@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteDescriptionDetailed
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteFormat
 import goodtime.training.wod.timer.common.StringUtils.Companion.toString
@@ -14,11 +13,12 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectFavoriteBinding
 import com.google.android.material.chip.Chip
+import goodtime.training.wod.timer.data.model.SessionType
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SelectFavoriteDialog: DialogFragment(), KodeinAware {
+class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
     override val kodein by closestKodein()
 
     private val repo: AppRepository by instance()
@@ -26,6 +26,8 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware {
     private lateinit var favorites : List<SessionSkeleton>
     private lateinit var binding: DialogSelectFavoriteBinding
     private lateinit var listener: Listener
+
+    private lateinit var sessionEditTextHelper: SessionEditTextHelper
 
     interface Listener {
         fun onFavoriteSelected(session: SessionSkeleton)
@@ -45,13 +47,12 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware {
 
         binding = DialogSelectFavoriteBinding.inflate(layoutInflater)
         setupFavorites()
-        binding.currentSelectionDescription.text = toFavoriteDescriptionDetailed(favoriteCandidate)
+
+        binding.customSessionDescription.text = toFavoriteDescriptionDetailed(favoriteCandidate)
         b.apply {
             setView(binding.root)
-            binding.favoriteCandidateChip.text = toFavoriteFormat(favoriteCandidate)
-            binding.favoriteCandidateChip.setOnClickListener{
-                repo.addSessionSkeleton(favoriteCandidate)
-                binding.currentSelectionSection.visibility = View.GONE
+            binding.saveButton.setOnClickListener{
+                repo.addSessionSkeleton(sessionEditTextHelper.generateFromCurrentSelection())
             }
         }
         return b.create()
@@ -64,6 +65,9 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware {
             this, {
                 favorites = it
                 binding.selectFavoriteTitle.visibility = if (favorites.isEmpty()) View.GONE else View.VISIBLE
+                refreshActiveSection(favoriteCandidate.type)
+                initSessionEditTextHelper()
+                binding.saveButton.isEnabled = !favorites.contains(favoriteCandidate)
 
                 val favoritesChipGroup = binding.favorites
                 favoritesChipGroup.isSingleSelection = true
@@ -79,9 +83,68 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware {
                     }
                     favoritesChipGroup.addView(chip)
                 }
-                if (!favorites.contains(favoriteCandidate)) {
-                    binding.currentSelectionSection.visibility = View.VISIBLE
-                }
             })
+    }
+
+    private fun initSessionEditTextHelper() {
+        val sessionType = favoriteCandidate.type
+        sessionEditTextHelper =
+            when(sessionType) {
+                SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
+                    SessionEditTextHelper(this,
+                        genericMinutesEt = binding.genericMinutesLayout.editText,
+                        genericSecondsEt = binding.genericSecondsLayout.editText,
+                        sessionType = sessionType
+                    )
+                }
+                SessionType.EMOM -> {
+                    SessionEditTextHelper(this,
+                        emomRoundsEt = binding.emomRoundsLayout.editText,
+                        emomMinutesEt = binding.emomMinutesLayout.editText,
+                        emomSecondsEt = binding.emomSecondsLayout.editText,
+                        sessionType = sessionType
+                    )
+                }
+                SessionType.TABATA -> {
+                    SessionEditTextHelper(this,
+                        hiitRoundsEt = binding.hiitRoundsLayout.editText,
+                        hiitSecondsWorkEt = binding.hiitSecondsWorkLayout.editText,
+                        hiitSecondsRestEt = binding.hiitSecondsRestLayout.editText,
+                        sessionType = sessionType
+                    )
+                }
+            }
+        sessionEditTextHelper.updateEditTexts(favoriteCandidate)
+    }
+
+    override fun onTextChanged(isValid: Boolean, sessionSkeleton: SessionSkeleton) {
+        binding.saveButton.isEnabled = isValid
+        binding.customSessionDescription.text =
+            if (isValid) toFavoriteDescriptionDetailed(sessionSkeleton)
+            else "Please enter valid values."
+        if (isValid) {
+            binding.saveButton.isEnabled = !favorites.contains(sessionEditTextHelper.generateFromCurrentSelection())
+        }
+    }
+
+    private fun refreshActiveSection(sessionType: SessionType) {
+        when (sessionType) {
+            SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
+                binding.genericSection.visibility = View.VISIBLE
+                binding.emomSection.visibility = View.GONE
+                binding.hiitSection.visibility = View.GONE
+            }
+            SessionType.EMOM -> {
+                binding.genericSection.visibility = View.GONE
+                binding.emomSection.visibility = View.VISIBLE
+                binding.hiitSection.visibility = View.GONE
+            }
+            SessionType.TABATA -> {
+                binding.genericSection.visibility = View.GONE
+                binding.emomSection.visibility = View.GONE
+                binding.hiitSection.visibility = View.VISIBLE
+            }
+        }
+        binding.customSection.visibility = View.VISIBLE
     }
 }

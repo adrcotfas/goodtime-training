@@ -74,8 +74,6 @@
                 android:textColor="@color/grey500"
                 android:textStyle="bold"
                 android:visibility="gone"
-                app:icon="@drawable/ic_save"
-                app:iconTint="@color/grey500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintTop_toTopOf="parent"

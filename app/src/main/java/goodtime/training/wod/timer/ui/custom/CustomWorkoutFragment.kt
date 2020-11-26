@@ -190,6 +190,7 @@ class CustomWorkoutFragment :
                 SessionType.TABATA -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
             }
         }
+        binding.totalTime.visibility = if (total == 0) View.GONE else View.VISIBLE
         binding.totalTime.text = StringUtils.secondsToNiceFormat(total)
     }
 }

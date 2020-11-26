@@ -113,10 +113,12 @@ class MainActivity : AppCompatActivity() {
             binding.startButton.background?.setTint(ResourcesHelper.darkerGreen)
             binding.startButton.drawable?.setTint(ResourcesHelper.green)
             favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.red)
+            favoritesButton?.isEnabled = true
         } else {
             binding.startButton.background?.setTint(ResourcesHelper.grey1000)
             binding.startButton.drawable?.setTint(ResourcesHelper.grey800)
             favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.grey800)
+            favoritesButton?.isEnabled = false
         }
     }
 

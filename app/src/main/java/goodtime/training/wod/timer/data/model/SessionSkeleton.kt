@@ -10,10 +10,10 @@ import androidx.room.TypeConverters
 data class SessionSkeleton (
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
-    var duration: Int,
+    var duration: Int = 0,
     var breakDuration: Int = 0,
     var numRounds: Int = 0,
-    var type: SessionType
+    var type: SessionType = SessionType.REST
 ) {
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
