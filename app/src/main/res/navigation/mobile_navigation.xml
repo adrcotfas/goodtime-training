@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_amrap"
-        android:name="goodtime.training.wod.timer.ui.amrap.AmrapFragment">
+        android:name="goodtime.training.wod.timer.ui.main.amrap_for_time.AmrapFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/nav_for_time"
-        android:name="goodtime.training.wod.timer.ui.for_time.ForTimeFragment">
+        android:name="goodtime.training.wod.timer.ui.main.amrap_for_time.ForTimeFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/nav_emom"
-        android:name="goodtime.training.wod.timer.ui.emom.EmomFragment">
+        android:name="goodtime.training.wod.timer.ui.main.emom.EmomFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/nav_hiit"
-        android:name="goodtime.training.wod.timer.ui.tabata.TabataFragment">
+        android:name="goodtime.training.wod.timer.ui.main.hiit.HiitFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/nav_custom"
-        android:name="goodtime.training.wod.timer.ui.custom.CustomWorkoutFragment">
+        android:name="goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />
@@ -58,7 +58,7 @@
 
     <fragment
         android:id="@+id/nav_log"
-        android:name="goodtime.training.wod.timer.ui.log.LogFragment"
+        android:name="goodtime.training.wod.timer.ui.stats.LogFragment"
         android:label="LogFragment"
         tools:layout="@layout/fragment_log"/>
 

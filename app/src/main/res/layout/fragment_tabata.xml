@@ -6,7 +6,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.tabata.TabataFragment">
+    tools:context=".ui.main.hiit.HiitFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pickers"

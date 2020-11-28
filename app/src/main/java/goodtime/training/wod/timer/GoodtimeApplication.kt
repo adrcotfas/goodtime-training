@@ -16,8 +16,8 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
-import goodtime.training.wod.timer.ui.custom.CustomWorkoutViewModelFactory
-import goodtime.training.wod.timer.ui.log.LogViewModelFactory
+import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutViewModelFactory
+import goodtime.training.wod.timer.ui.stats.LogViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware

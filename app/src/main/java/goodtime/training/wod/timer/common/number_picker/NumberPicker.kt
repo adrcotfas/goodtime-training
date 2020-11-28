@@ -5,7 +5,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.smoothSnapToPosition
-import goodtime.training.wod.timer.ui.amrap.NumberPickerAdapter
+import goodtime.training.wod.timer.common.NumberPickerAdapter
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.bekawestberg.loopinglayout.library.LoopingSnapHelper
 

@@ -14,11 +14,11 @@ import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.ResourcesHelper.Companion.getColorFilter
 import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
-import goodtime.training.wod.timer.ui.common.WorkoutTypeFragment
-import goodtime.training.wod.timer.ui.common.ui.FullscreenHelper
-import goodtime.training.wod.timer.ui.common.ui.SelectCustomWorkoutDialog
-import goodtime.training.wod.timer.ui.common.ui.SelectFavoriteDialog
-import goodtime.training.wod.timer.ui.custom.CustomWorkoutFragment
+import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
+import goodtime.training.wod.timer.ui.main.FullscreenHelper
+import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
+import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
+import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -112,13 +112,14 @@ class MainActivity : AppCompatActivity() {
         if (enabled) {
             binding.startButton.background?.setTint(ResourcesHelper.darkerGreen)
             binding.startButton.drawable?.setTint(ResourcesHelper.green)
-            favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.red)
-            favoritesButton?.isEnabled = true
+            //TODO: move to different function if needed
+            //favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.red)
+            //favoritesButton?.isEnabled = true
         } else {
             binding.startButton.background?.setTint(ResourcesHelper.grey1000)
             binding.startButton.drawable?.setTint(ResourcesHelper.grey800)
-            favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.grey800)
-            favoritesButton?.isEnabled = false
+            //favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.grey800)
+            //favoritesButton?.isEnabled = false
         }
     }
 
