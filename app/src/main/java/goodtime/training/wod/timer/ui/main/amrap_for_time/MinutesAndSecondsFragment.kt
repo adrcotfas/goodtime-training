@@ -1,7 +1,6 @@
 package goodtime.training.wod.timer.ui.main.amrap_for_time
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,8 +78,8 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
 
     override fun onFavoriteSelected(session: SessionSkeleton) {
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)
-        minutePicker.smoothScrollToPosition(duration.first)
-        secondsPicker.smoothScrollToPosition(duration.second)
+        minutePicker.smoothScrollToValue(duration.first)
+        secondsPicker.smoothScrollToValue(duration.second)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }

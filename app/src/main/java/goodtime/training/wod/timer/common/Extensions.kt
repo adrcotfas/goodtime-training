@@ -68,7 +68,6 @@ val FragmentManager.currentNavigationFragment: Fragment?
 fun RecyclerView.smoothSnapToPosition(position: Int) {
     val smoothScroller = object : LinearSmoothScroller(this.context) {
         override fun getVerticalSnapPreference(): Int = SNAP_TO_START
-        override fun getHorizontalSnapPreference(): Int = SNAP_TO_START
     }
     smoothScroller.targetPosition = position
     layoutManager?.startSmoothScroll(smoothScroller)

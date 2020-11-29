@@ -101,9 +101,9 @@ class HiitFragment : WorkoutTypeFragment() {
     override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
 
     override fun onFavoriteSelected(session: SessionSkeleton) {
-        secondsWorkPicker.smoothScrollToPosition(session.duration - 1)
-        secondsBreakPicker.smoothScrollToPosition(session.breakDuration - 1)
-        roundsPicker.smoothScrollToPosition(session.numRounds - 1)
+        secondsWorkPicker.smoothScrollToValue(session.duration)
+        secondsBreakPicker.smoothScrollToValue(session.breakDuration)
+        roundsPicker.smoothScrollToValue(session.numRounds)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {

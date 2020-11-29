@@ -103,9 +103,9 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onFavoriteSelected(session: SessionSkeleton) {
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)
-        minutePicker.smoothScrollToPosition(duration.first)
-        secondsPicker.smoothScrollToPosition(duration.second)
-        roundsPicker.smoothScrollToPosition(session.numRounds - 1)
+        minutePicker.smoothScrollToValue(duration.first)
+        secondsPicker.smoothScrollToValue(duration.second)
+        roundsPicker.smoothScrollToValue(session.numRounds)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }

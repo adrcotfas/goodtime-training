@@ -3,22 +3,22 @@ package goodtime.training.wod.timer.common.number_picker
 import android.content.Context
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import goodtime.training.wod.timer.R
-import goodtime.training.wod.timer.common.smoothSnapToPosition
-import goodtime.training.wod.timer.common.NumberPickerAdapter
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
 import com.bekawestberg.loopinglayout.library.LoopingSnapHelper
+import goodtime.training.wod.timer.R
+import goodtime.training.wod.timer.common.NumberPickerAdapter
+import goodtime.training.wod.timer.common.smoothSnapToPosition
 
 class NumberPicker(
     context: Context,
     private val recyclerView: RecyclerView,
     data: ArrayList<Int>,
-    default: Int,
+    defaultValue: Int,
     private val rowHeight: Float,
     prefixWithZero: Boolean = true,
     textSize: PickerSize = PickerSize.LARGE,
     textColor: Color = Color.GREEN,
-    private val scrollListener : ScrollListener
+    private val scrollListener: ScrollListener
 ) : NumberPickerAdapter.Listener {
 
     companion object {
@@ -36,7 +36,7 @@ class NumberPicker(
         fun onScroll(value: Int)
     }
 
-    private val viewManager : LoopingLayoutManager = LoopingLayoutManager(context)
+    private val loopingLayoutManager = LoopingLayoutManager(context)
     private val viewAdapter : NumberPickerAdapter =
         NumberPickerAdapter(data, this, prefixWithZero, textSize, textColor)
     private val snapHelper = LoopingSnapHelper()
@@ -44,13 +44,13 @@ class NumberPicker(
     init {
         snapHelper.attachToRecyclerView(recyclerView)
         recyclerView.apply {
-            layoutManager = viewManager
+            layoutManager = loopingLayoutManager
             adapter = viewAdapter
             layoutParams.height = 3 * rowHeight.toInt()
             layoutParams.width = rowHeight.toInt()
         }
 
-        scrollToPosition(data.indexOf(default))
+        scrollToValueInit(defaultValue)
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -63,26 +63,25 @@ class NumberPicker(
         })
     }
 
-    /**
-     * Used for smooth scrolling when selecting a favorite
-     */
-    fun smoothScrollToPosition(position: Int) {
-        val pos = if (position == 0) viewAdapter.getLastIndex() else (position - 1)
+    fun smoothScrollToValue(value: Int) {
+        val indexOfValue = viewAdapter.data.indexOf(value)
+        val pos = if (indexOfValue == 0) viewAdapter.getLastIndex() else indexOfValue - 1
         recyclerView.smoothSnapToPosition(pos)
     }
 
     /**
      * Used for the initial scroll when opening the app
      */
-    private fun scrollToPosition(position: Int) {
-        val pos = if (position == 0) viewAdapter.getLastIndex() else (position + 1)
+    private fun scrollToValueInit(value: Int) {
+        val indexOfValue = viewAdapter.data.indexOf(value)
+        val pos = if (indexOfValue == 0) viewAdapter.getLastIndex() else (indexOfValue + 1)
         recyclerView.scrollToPosition(pos)
     }
 
     private fun adjustScrollToSnap(position: Int) {
-        val view = viewManager.findViewByPosition(position)
+        val view = loopingLayoutManager.findViewByPosition(position)
         val snapDistance: IntArray? =
-            view?.let { snapHelper.calculateDistanceToFinalSnap(viewManager, it) }
+            view?.let { snapHelper.calculateDistanceToFinalSnap(loopingLayoutManager, it) }
         snapDistance?.let {
             val y = snapDistance[1]
             if (y != 0) {
@@ -97,8 +96,8 @@ class NumberPicker(
     }
 
     override fun onClick(position: Int) {
-        val top = viewManager.topLeftIndex
-        val bottom = viewManager.bottomRightIndex
+        val top = loopingLayoutManager.topLeftIndex
+        val bottom = loopingLayoutManager.bottomRightIndex
         if (position == top || position == bottom) {
             adjustScrollToSnap(position)
             scrollListener.onScroll(getCurrentValue())

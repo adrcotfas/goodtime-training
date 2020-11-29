@@ -11,7 +11,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import goodtime.training.wod.timer.common.ResourcesHelper
-import goodtime.training.wod.timer.common.ResourcesHelper.Companion.getColorFilter
 import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
@@ -79,13 +78,9 @@ class MainActivity : AppCompatActivity() {
             SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "")
             true
         } else {
-            if (sessions[0].duration == 0) {
-                false
-            } else {
-                SelectFavoriteDialog.newInstance(sessions[0], fragment)
-                    .show(supportFragmentManager, "")
-                true
-            }
+            SelectFavoriteDialog.newInstance(sessions[0], fragment)
+                .show(supportFragmentManager, "")
+            true
         }
     }
 
@@ -112,14 +107,9 @@ class MainActivity : AppCompatActivity() {
         if (enabled) {
             binding.startButton.background?.setTint(ResourcesHelper.darkerGreen)
             binding.startButton.drawable?.setTint(ResourcesHelper.green)
-            //TODO: move to different function if needed
-            //favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.red)
-            //favoritesButton?.isEnabled = true
         } else {
             binding.startButton.background?.setTint(ResourcesHelper.grey1000)
             binding.startButton.drawable?.setTint(ResourcesHelper.grey800)
-            //favoritesButton?.icon?.colorFilter = getColorFilter(ResourcesHelper.grey800)
-            //favoritesButton?.isEnabled = false
         }
     }
 

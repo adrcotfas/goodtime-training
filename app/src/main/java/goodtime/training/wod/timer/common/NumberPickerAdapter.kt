@@ -10,7 +10,7 @@ import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.C
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.PickerSize
 
 class NumberPickerAdapter(
-    private val data: List<Int>,
+    val data: List<Int>,
     private val listener: Listener,
     private val prefixWithZero: Boolean,
     private val textSize: PickerSize,

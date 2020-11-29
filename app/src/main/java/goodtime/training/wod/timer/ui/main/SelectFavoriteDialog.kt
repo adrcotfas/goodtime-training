@@ -3,18 +3,18 @@ package goodtime.training.wod.timer.ui.main
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteDescriptionDetailed
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteFormat
 import goodtime.training.wod.timer.common.StringUtils.Companion.toString
+import goodtime.training.wod.timer.common.hideKeyboardFrom
 import goodtime.training.wod.timer.data.model.SessionSkeleton
+import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectFavoriteBinding
-import com.google.android.material.chip.Chip
-import goodtime.training.wod.timer.data.model.SessionType
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -35,7 +35,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     }
 
     companion object {
-        fun newInstance(session: SessionSkeleton, listener : Listener) : SelectFavoriteDialog {
+        fun newInstance(session: SessionSkeleton, listener: Listener) : SelectFavoriteDialog {
             val dialog = SelectFavoriteDialog()
             dialog.favoriteCandidate = session
             dialog.listener = listener
@@ -47,6 +47,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
         val b = AlertDialog.Builder(requireContext())
 
         binding = DialogSelectFavoriteBinding.inflate(layoutInflater)
+
         setupFavorites()
 
         binding.customSessionDescription.text = toFavoriteDescriptionDetailed(favoriteCandidate)
@@ -65,10 +66,11 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
         repo.getSessionSkeletons(favoriteCandidate.type).observe(
             this, {
                 favorites = it
-                binding.selectFavoriteTitle.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+                binding.selectFavoriteTitle.visibility =
+                    if (it.isEmpty()) View.GONE else View.VISIBLE
                 refreshActiveSection(favoriteCandidate.type)
                 initSessionEditTextHelper()
-                binding.saveButton.isEnabled = !it.contains(favoriteCandidate)
+                binding.saveButton.isEnabled = !it.contains(favoriteCandidate) && favoriteCandidate.duration != 0
 
                 val favoritesChipGroup = binding.favorites
                 favoritesChipGroup.isSingleSelection = true
@@ -80,6 +82,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                     chip.setOnCloseIconClickListener { repo.removeSessionSkeleton(favorite.id) }
                     chip.setOnClickListener {
                         listener.onFavoriteSelected(favorite)
+                        hideKeyboardFrom(requireContext(), binding.root)
                         dismiss()
                     }
                     favoritesChipGroup.addView(chip)
@@ -92,14 +95,16 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
         sessionEditTextHelper =
             when(sessionType) {
                 SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                    SessionEditTextHelper(this,
+                    SessionEditTextHelper(
+                        this,
                         genericMinutesEt = binding.genericMinutesLayout.editText,
                         genericSecondsEt = binding.genericSecondsLayout.editText,
                         sessionType = sessionType
                     )
                 }
                 SessionType.EMOM -> {
-                    SessionEditTextHelper(this,
+                    SessionEditTextHelper(
+                        this,
                         emomRoundsEt = binding.emomRoundsLayout.editText,
                         emomMinutesEt = binding.emomMinutesLayout.editText,
                         emomSecondsEt = binding.emomSecondsLayout.editText,
@@ -107,7 +112,8 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                     )
                 }
                 SessionType.TABATA -> {
-                    SessionEditTextHelper(this,
+                    SessionEditTextHelper(
+                        this,
                         hiitRoundsEt = binding.hiitRoundsLayout.editText,
                         hiitSecondsWorkEt = binding.hiitSecondsWorkLayout.editText,
                         hiitSecondsRestEt = binding.hiitSecondsRestLayout.editText,
