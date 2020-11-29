@@ -42,7 +42,7 @@ class CustomWorkoutFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCustomBinding.inflate(inflater, container, false)
 
         initCurrentWorkout()
@@ -115,7 +115,6 @@ class CustomWorkoutFragment :
     override fun getSelectedSessions(): ArrayList<SessionSkeleton> = viewModel.customWorkout.sessions
 
     override fun onDeleteButtonClicked(position: Int) {
-        //TODO: if the current workout is deleted, change it
         setSaveButtonVisibility(true)
         updateTotalDuration()
         viewModel.hasUnsavedSession = true
@@ -191,5 +190,14 @@ class CustomWorkoutFragment :
         }
         binding.totalTime.visibility = if (total == 0) View.GONE else View.VISIBLE
         binding.totalTime.text = StringUtils.secondsToNiceFormat(total)
+    }
+
+    fun onNewCustomWorkoutButtonClick() {
+        viewModel.customWorkout.name = "New workout"
+        binding.title.text = "New workout"
+        setSaveButtonVisibility(false)
+        viewModel.customWorkout.sessions.clear()
+        listAdapter.notifyDataSetChanged()
+        updateTotalDuration()
     }
 }

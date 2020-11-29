@@ -50,8 +50,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/session_type_text"
         app:layout_constraintEnd_toStartOf="@id/close_button"
-        style="@style/FavoritesChipStyle.GreenAndSmaller"
-        app:closeIconEnabled="false"
+        style="@style/FavoritesChipStyleSmaller.Green"
         android:clickable="true"
         android:focusable="true"
         tools:text="8 x 20 s / 10 s"/>

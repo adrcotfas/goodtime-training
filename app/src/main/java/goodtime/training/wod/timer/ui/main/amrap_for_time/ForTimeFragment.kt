@@ -7,6 +7,6 @@ import goodtime.training.wod.timer.data.model.SessionType
 class ForTimeFragment : MinutesAndSecondsFragment<ForTimeViewModel>(SessionType.FOR_TIME) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(ForTimeViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ForTimeViewModel::class.java)
     }
 }

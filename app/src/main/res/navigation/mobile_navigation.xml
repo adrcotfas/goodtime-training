@@ -39,7 +39,8 @@
 
     <fragment
         android:id="@+id/nav_custom"
-        android:name="goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment">
+        android:name="goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment"
+        android:label="CustomWorkout">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />

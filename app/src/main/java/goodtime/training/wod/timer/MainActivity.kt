@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
@@ -25,7 +26,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
     private lateinit var navHostFragment: NavHostFragment
-    private var favoritesButton: MenuItem? = null
+
+    private lateinit var favoritesButton: Chip
+    private var newCustomWorkoutMenuItem: MenuItem? = null
+    private lateinit var newCustomWorkoutButton: Chip
+
     private lateinit var fullscreenHelper : FullscreenHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,33 +59,32 @@ class MainActivity : AppCompatActivity() {
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
+
+            newCustomWorkoutMenuItem?.isVisible = destination.label == "CustomWorkout"
         }
 
         binding.startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }
-        binding.toolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.action_save_favorite -> {
-                    onFavoritesButtonClick()
-                }
-                else -> false
-            }
-        }
         binding.workoutMenu.setupWithNavController(navController)
         binding.workoutMenu.setOnNavigationItemReselectedListener {
             // Nothing here to disable reselect
         }
     }
 
-    private fun onFavoritesButtonClick(): Boolean {
+    private fun onFavoritesButtonClick() {
         val fragment = getVisibleFragment()
         val sessions = fragment.getSelectedSessions()
         return if (fragment is CustomWorkoutFragment) {
             SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "")
-            true
         } else {
             SelectFavoriteDialog.newInstance(sessions[0], fragment)
                 .show(supportFragmentManager, "")
-            true
+        }
+    }
+
+    private fun onNewCustomWorkoutButtonClick() {
+        val fragment = getVisibleFragment()
+        if (fragment is CustomWorkoutFragment) {
+            fragment.onNewCustomWorkoutButtonClick()
         }
     }
 
@@ -88,8 +92,14 @@ class MainActivity : AppCompatActivity() {
         (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        favoritesButton = menu!!.findItem(R.id.action_save_favorite)
+        menuInflater.inflate(R.menu.menu_main, menu)
+        val favoritesMenuItem = menu!!.findItem(R.id.action_favorites)
+        favoritesButton = favoritesMenuItem.actionView.findViewById(R.id.root)
+        favoritesButton.setOnClickListener{ onFavoritesButtonClick() }
+
+        newCustomWorkoutMenuItem = menu.findItem(R.id.action_new_workout)
+        newCustomWorkoutButton = newCustomWorkoutMenuItem!!.actionView.findViewById(R.id.root)
+        newCustomWorkoutButton.setOnClickListener { onNewCustomWorkoutButtonClick() }
         return super.onCreateOptionsMenu(menu)
     }
 

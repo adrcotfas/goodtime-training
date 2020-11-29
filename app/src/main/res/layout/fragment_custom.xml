@@ -63,22 +63,21 @@
                     app:layout_constraintTop_toBottomOf="@id/title" />
             </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.chip.Chip
                 android:id="@+id/save_button"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
-                android:text="SAVE"
-                android:textColor="@color/grey500"
-                android:textStyle="bold"
-                android:visibility="gone"
+                android:layout_width="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="@color/grey200"
-                tools:visibility="visible" />
+                android:text="Save"
+                app:chipIcon="@drawable/ic_save"
+                android:layout_marginHorizontal="8dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                style="@style/FavoritesChipStyleSmaller.Grey">
+            </com.google.android.material.chip.Chip>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler"
@@ -103,23 +102,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:text="No items"/>
 
-
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.chip.Chip
                 android:id="@+id/add_session_button"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:text="Add session"
+                app:chipIcon="@drawable/ic_add"
                 android:layout_marginHorizontal="8dp"
                 android:paddingEnd="12dp"
-                android:text="Add session"
-                android:textColor="@color/grey800"
-                android:textStyle="bold"
-                app:icon="@drawable/ic_add"
-                app:iconTint="@color/grey800"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintVertical_bias="1.0"
-                app:rippleColor="@color/grey200" />
+                style="@style/FavoritesChipStyleSmaller.Grey">
+            </com.google.android.material.chip.Chip>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

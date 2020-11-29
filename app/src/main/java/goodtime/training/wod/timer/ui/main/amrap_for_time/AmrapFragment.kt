@@ -8,6 +8,6 @@ class AmrapFragment : MinutesAndSecondsFragment<AmrapViewModel>(SessionType.AMRA
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(AmrapViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(AmrapViewModel::class.java)
     }
 }

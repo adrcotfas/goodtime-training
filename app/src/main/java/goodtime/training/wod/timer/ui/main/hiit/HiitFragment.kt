@@ -41,7 +41,7 @@ class HiitFragment : WorkoutTypeFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(HiitViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(HiitViewModel::class.java)
     }
 
     override fun onCreateView(

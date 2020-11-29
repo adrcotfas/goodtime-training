@@ -42,7 +42,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(EmomViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(EmomViewModel::class.java)
     }
 
     override fun onCreateView(
