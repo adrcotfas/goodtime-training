@@ -23,7 +23,7 @@ import org.kodein.di.generic.instance
 class CustomWorkoutFragment :
     WorkoutTypeFragment(),
     CustomWorkoutAdapter.Listener,
-    SelectCustomWorkoutDialog.Listener, AddSessionDialog.Listener,
+    SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
     SaveCustomWorkoutDialog.Listener {
 
     private val viewModelFactory : CustomWorkoutViewModelFactory by instance()
@@ -35,7 +35,7 @@ class CustomWorkoutFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(CustomWorkoutViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CustomWorkoutViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -48,13 +48,14 @@ class CustomWorkoutFragment :
         initCurrentWorkout()
 
         binding.saveButton.setOnClickListener{
-            SaveCustomWorkoutDialog.newInstance(viewModel.customWorkout.name, this).show(parentFragmentManager, "")
+            SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this)
+                .show(parentFragmentManager, "")
         }
         if (viewModel.hasUnsavedSession) {
             setSaveButtonVisibility(true)
         }
         binding.addSessionButton.setOnClickListener {
-            AddSessionDialog.newInstance(this).show(parentFragmentManager, "")
+            AddEditSessionDialog.newInstance(this).show(parentFragmentManager, "")
         }
 
         return binding.root
@@ -63,12 +64,12 @@ class CustomWorkoutFragment :
     private fun initCurrentWorkout() {
         viewModel.customWorkoutList.observe(viewLifecycleOwner, {
             if (it.isEmpty()) {
-                viewModel.customWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
+                viewModel.currentWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
                 toggleEmptyState(true)
             } else {
                 //TODO: check the preferences for the last selected custom workout
-                viewModel.customWorkout = it.first()
-                binding.title.text = viewModel.customWorkout.name
+                viewModel.currentWorkout = it.first()
+                binding.title.text = viewModel.currentWorkout.name
                 updateTotalDuration()
                 toggleEmptyState(false)
             }
@@ -78,13 +79,22 @@ class CustomWorkoutFragment :
         })
     }
 
+    override fun onStartWorkout() {
+        val action = CustomWorkoutFragmentDirections.toWorkout(
+            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray() ))
+        findNavController().navigate(action)
+    }
+
+    //TODO: extract duplicate code
+    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = viewModel.currentWorkout.sessions
+
     private fun toggleEmptyState(visible: Boolean) {
         if (visible) {
             binding.emptyState.visibility = View.VISIBLE
             binding.saveButton.visibility = View.GONE
             binding.totalTime.visibility = View.GONE
             binding.title.text = "New workout"
-            viewModel.customWorkout.name = "New workout"
+            viewModel.currentWorkout.name = "New workout"
             viewModel.hasUnsavedSession = false
         } else {
             binding.emptyState.visibility = View.GONE
@@ -93,11 +103,11 @@ class CustomWorkoutFragment :
     }
 
     private fun setupRecycler() {
-        binding.title.text = viewModel.customWorkout.name
+        binding.title.text = viewModel.currentWorkout.name
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             listAdapter = CustomWorkoutAdapter(
-                viewModel.customWorkout.sessions,
+                viewModel.currentWorkout.sessions,
                 context,
                 this@CustomWorkoutFragment
             )
@@ -106,31 +116,47 @@ class CustomWorkoutFragment :
         touchHelper.attachToRecyclerView(binding.recycler)
     }
 
-    override fun onStartWorkout() {
-        val action = CustomWorkoutFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray() ))
-        findNavController().navigate(action)
-    }
+    override fun onSessionAdded(session: SessionSkeleton) {
+        viewModel.currentWorkout.sessions.add(session)
+        viewModel.hasUnsavedSession = true
 
-    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = viewModel.customWorkout.sessions
-
-    override fun onDeleteButtonClicked(position: Int) {
+        toggleEmptyState(false)
         setSaveButtonVisibility(true)
         updateTotalDuration()
-        viewModel.hasUnsavedSession = true
-        if (listAdapter.data.isEmpty()) {
-            toggleEmptyState(true)
-        }
+
+        listAdapter.notifyItemInserted(listAdapter.data.size - 1)
+        binding.recycler.scrollToPosition(listAdapter.data.size - 1)
     }
 
-    override fun onChipSelected(position: Int) {
-        AddSessionDialog.newInstance(this, position, listAdapter.data[position])
-            .show(parentFragmentManager, "")
+    override fun onSessionEdit(idx: Int, session: SessionSkeleton) {
+        if(viewModel.currentWorkout.sessions[idx] != session) {
+            viewModel.currentWorkout.sessions[idx] = session
+            viewModel.hasUnsavedSession = true
+
+            setSaveButtonVisibility(true)
+            updateTotalDuration()
+            listAdapter.notifyItemChanged(idx)
+        }
     }
 
     override fun onDataReordered() {
         setSaveButtonVisibility(true)
         viewModel.hasUnsavedSession = true
+    }
+
+    override fun onDeleteButtonClicked(position: Int) {
+        updateTotalDuration()
+        viewModel.hasUnsavedSession = true
+        if (listAdapter.data.isEmpty()) {
+            toggleEmptyState(true)
+        } else {
+            setSaveButtonVisibility(true)
+        }
+    }
+
+    override fun onChipSelected(position: Int) {
+        AddEditSessionDialog.newInstance(this, position, listAdapter.data[position])
+            .show(parentFragmentManager, "")
     }
 
     override fun onScrollHandleTouch(holder: CustomWorkoutAdapter.ViewHolder) {
@@ -140,29 +166,13 @@ class CustomWorkoutFragment :
     override fun onFavoriteSelected(session: SessionSkeleton) { /* do nothing*/ }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
-        viewModel.customWorkout = workout
-        binding.title.text = viewModel.customWorkout.name
-        listAdapter.data = viewModel.customWorkout.sessions
+        viewModel.currentWorkout = workout
+        binding.title.text = viewModel.currentWorkout.name
+        listAdapter.data = viewModel.currentWorkout.sessions
         listAdapter.notifyDataSetChanged()
         setSaveButtonVisibility(false)
         updateTotalDuration()
         toggleEmptyState(false)
-    }
-
-    override fun onSessionAdded(session: SessionSkeleton) {
-        viewModel.customWorkout.sessions.add(session)
-        listAdapter.notifyItemInserted(listAdapter.data.size - 1)
-        setSaveButtonVisibility(true)
-        viewModel.hasUnsavedSession = true
-        binding.recycler.scrollToPosition(listAdapter.data.size - 1)
-        toggleEmptyState(false)
-        updateTotalDuration()
-    }
-
-    override fun onSessionEdit(idx: Int, session: SessionSkeleton) {
-        if(viewModel.customWorkout.sessions[idx] != session) setSaveButtonVisibility(true)
-        viewModel.customWorkout.sessions[idx] = session
-        listAdapter.notifyItemChanged(idx)
     }
 
     @SuppressLint("SetTextI18n")
@@ -172,7 +182,7 @@ class CustomWorkoutFragment :
     }
 
     override fun onCustomWorkoutSaved(name: String) {
-        viewModel.customWorkout.name = name
+        viewModel.currentWorkout.name = name
         viewModel.saveCurrentSelection()
         binding.title.text = name
         setSaveButtonVisibility(false)
@@ -181,7 +191,7 @@ class CustomWorkoutFragment :
 
     private fun updateTotalDuration() {
         var total = 0
-        for (session in viewModel.customWorkout.sessions) {
+        for (session in viewModel.currentWorkout.sessions) {
             total += when (session.type) {
                 SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> session.duration
                 SessionType.EMOM -> (session.duration * session.numRounds)
@@ -193,11 +203,14 @@ class CustomWorkoutFragment :
     }
 
     fun onNewCustomWorkoutButtonClick() {
-        viewModel.customWorkout.name = "New workout"
-        binding.title.text = "New workout"
-        setSaveButtonVisibility(false)
-        viewModel.customWorkout.sessions.clear()
+        val name = "New workout"
+        viewModel.currentWorkout.name = name
+        viewModel.currentWorkout.sessions.clear()
+
+        binding.title.text = name
         listAdapter.notifyDataSetChanged()
+        setSaveButtonVisibility(false)
+        toggleEmptyState(true)
         updateTotalDuration()
     }
 }

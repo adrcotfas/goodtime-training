@@ -8,10 +8,10 @@ class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewMod
 
     val customWorkoutList = appRepository.getCustomWorkoutSkeletons()
 
-    lateinit var customWorkout: CustomWorkoutSkeleton
+    lateinit var currentWorkout: CustomWorkoutSkeleton
     var hasUnsavedSession = false
 
     fun saveCurrentSelection() {
-        appRepository.addCustomWorkoutSkeleton(customWorkout)
+        appRepository.addCustomWorkoutSkeleton(currentWorkout)
     }
 }

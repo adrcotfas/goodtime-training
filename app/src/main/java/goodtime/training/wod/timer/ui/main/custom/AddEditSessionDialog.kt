@@ -21,7 +21,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class AddSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
+class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
     private lateinit var binding: DialogAddSessionToCustomWorkoutBinding
@@ -41,8 +41,8 @@ class AddSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Lis
         const val INVALID_CANDIDATE_IDX = -1
 
         fun newInstance(listener: Listener, candidateIdx: Int = INVALID_CANDIDATE_IDX,
-                        candidate: SessionSkeleton = SessionSkeleton()) : AddSessionDialog {
-            val dialog = AddSessionDialog()
+                        candidate: SessionSkeleton = SessionSkeleton()) : AddEditSessionDialog {
+            val dialog = AddEditSessionDialog()
             dialog.listener = listener
             dialog.candidateIdx = candidateIdx
             if (dialog.isEditMode()) {
