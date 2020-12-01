@@ -92,7 +92,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         val dummyForTime = SessionSkeleton(0, 5, type = SessionType.FOR_TIME)
         val dummyHiit = SessionSkeleton(
             0, 3, 3, 3,
-            SessionType.TABATA
+            SessionType.HIIT
         )
         val dummyEmom = SessionSkeleton(
             0, 3, 0, 2,

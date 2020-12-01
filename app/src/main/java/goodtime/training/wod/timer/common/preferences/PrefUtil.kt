@@ -18,8 +18,49 @@ class PrefUtil(private val context: Context) {
         editor.apply()
     }
 
+    fun setCurrentFavoriteId(sessionType: SessionType, id: Int) {
+        val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+        editor.putInt(toPrefId(sessionType), id)
+        editor.apply()
+    }
+
+    fun getCurrentFavoriteId(sessionType: SessionType): Int {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return preferences.getInt(toPrefId(sessionType), INVALID_FAVORITE_ID)
+    }
+
+    fun setCurrentCustomWorkoutFavoriteName(name: String) {
+        val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+        editor.putString(CUSTOM_WORKOUT_FAVORITE_NAME, name)
+        editor.apply()
+    }
+
+    fun getCurrentCustomWorkoutFavoriteName(): String? {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return preferences.getString(CUSTOM_WORKOUT_FAVORITE_NAME, null)
+    }
+
+    private fun toPrefId(sessionType: SessionType): String {
+        return when (sessionType) {
+            SessionType.AMRAP -> AMRAP_FAVORITE_ID
+            SessionType.FOR_TIME -> FOR_TIME_FAVORITE_ID
+            SessionType.EMOM -> EMOM_FAVORITE_ID
+            SessionType.HIIT -> HIIT_FAVORITE_ID
+            else -> ""
+        }
+    }
+
     companion object {
         private const val IS_FIRST_RUN = "pref_is_first_run"
+
+        const val INVALID_FAVORITE_ID = -1
+        private const val AMRAP_FAVORITE_ID = "amrap_favorite_id"
+        private const val FOR_TIME_FAVORITE_ID = "for_time_favorite_id"
+        private const val EMOM_FAVORITE_ID = "emom_favorite_id"
+        private const val HIIT_FAVORITE_ID = "hiit_favorite_id"
+
+        private const val CUSTOM_WORKOUT_FAVORITE_NAME = "custom_workout_favorite_id"
+
 
         fun generatePreWorkoutSession() : SessionSkeleton {
             //TODO: duration according to preferences
