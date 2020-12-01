@@ -16,7 +16,11 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
+import goodtime.training.wod.timer.ui.main.amrap_for_time.AmrapViewModelFactory
+import goodtime.training.wod.timer.ui.main.amrap_for_time.ForTimeViewModelFactory
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutViewModelFactory
+import goodtime.training.wod.timer.ui.main.emom.EmomViewModelFactory
+import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
 import goodtime.training.wod.timer.ui.stats.LogViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import org.kodein.di.Kodein
@@ -47,6 +51,10 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance()) }
         bind<PrefUtil>() with eagerSingleton { PrefUtil(applicationContext) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
+        bind() from provider { AmrapViewModelFactory(instance()) }
+        bind() from provider { ForTimeViewModelFactory(instance()) }
+        bind() from provider { EmomViewModelFactory(instance()) }
+        bind() from provider { HiitViewModelFactory(instance()) }
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { LogViewModelFactory(instance()) }
         bind() from provider { TimerViewModelFactory(instance(), instance()) }

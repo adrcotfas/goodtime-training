@@ -50,32 +50,23 @@ class NumberPicker(
             layoutParams.width = rowHeight.toInt()
         }
 
-        scrollToValueInit(defaultValue)
-
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
-                        scrollListener.onScroll(getCurrentValue())
+                        val value = getCurrentValue()
+                        scrollListener.onScroll(value)
                     }
                 }
             }
         })
+        smoothScrollToValue(defaultValue)
     }
 
     fun smoothScrollToValue(value: Int) {
         val indexOfValue = viewAdapter.data.indexOf(value)
         val pos = if (indexOfValue == 0) viewAdapter.getLastIndex() else indexOfValue - 1
         recyclerView.smoothSnapToPosition(pos)
-    }
-
-    /**
-     * Used for the initial scroll when opening the app
-     */
-    private fun scrollToValueInit(value: Int) {
-        val indexOfValue = viewAdapter.data.indexOf(value)
-        val pos = if (indexOfValue == 0) viewAdapter.getLastIndex() else (indexOfValue + 1)
-        recyclerView.scrollToPosition(pos)
     }
 
     private fun adjustScrollToSnap(position: Int) {

@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import goodtime.training.wod.timer.common.CombinedLiveData
 
-class TimeSpinnerData(minutes: Int, seconds: Int = 0) {
-
-    private var minutesInt : Int = minutes
-    private var secondsInt : Int = seconds
+class TimeSpinnerData(private var minutes: Int, private var seconds: Int = 0) {
 
     private val _minutes = MutableLiveData(minutes)
     private val _seconds = MutableLiveData(seconds)
@@ -20,17 +17,17 @@ class TimeSpinnerData(minutes: Int, seconds: Int = 0) {
     }
 
     fun setMinutes(value: Int) {
-        _minutes.value = value
-        minutesInt = value
+        _minutes.postValue(value)
+        minutes = value
     }
 
     fun setSeconds(value: Int) {
-        _seconds.value = value
-        secondsInt = value
+        _seconds.postValue(value)
+        seconds = value
     }
 
-    fun getMinutes() = minutesInt
-    fun getSeconds() = secondsInt
+    fun getMinutes() = minutes
+    fun getSeconds() = seconds
 
     /**
      * Returns the duration in seconds

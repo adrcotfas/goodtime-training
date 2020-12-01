@@ -1,3 +1,7 @@
 package goodtime.training.wod.timer.ui.main.amrap_for_time
 
-class AmrapViewModel : MinutesAndSecondsViewModel(15, 0)
+import goodtime.training.wod.timer.data.model.SessionType
+import goodtime.training.wod.timer.data.repository.AppRepository
+
+class AmrapViewModel(repo: AppRepository)
+    : MinutesAndSecondsViewModel(repo, SessionType.AMRAP)

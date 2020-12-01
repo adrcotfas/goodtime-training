@@ -17,9 +17,12 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentTabataBinding
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
+import org.kodein.di.generic.instance
 
 class HiitFragment : WorkoutTypeFragment() {
 
+    private val prefUtil: PrefUtil by instance()
+    private val viewModelFactory: HiitViewModelFactory by instance()
     private lateinit var viewModel: HiitViewModel
 
     private lateinit var binding: FragmentTabataBinding
@@ -28,20 +31,20 @@ class HiitFragment : WorkoutTypeFragment() {
     private lateinit var roundsPicker: NumberPicker
 
     private val secondsWorkListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) { viewModel.tabataData.setSecondsWork(value) }
+        override fun onScroll(value: Int) { viewModel.hiitData.setSecondsWork(value) }
     }
 
     private val secondsBreakListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) { viewModel.tabataData.setSecondsBreak(value) }
+        override fun onScroll(value: Int) { viewModel.hiitData.setSecondsBreak(value) }
     }
 
     private val roundsListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) { viewModel.tabataData.setRounds(value) }
+        override fun onScroll(value: Int) { viewModel.hiitData.setRounds(value) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(HiitViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(HiitViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -51,15 +54,28 @@ class HiitFragment : WorkoutTypeFragment() {
     ): View {
 
         binding = FragmentTabataBinding.inflate(inflater, container, false)
-        setupNumberPickers()
 
-        viewModel.tabataData.get().observe(
-            viewLifecycleOwner, { tabataData ->
-                viewModel.session =
-                    SessionSkeleton(duration = tabataData.first, breakDuration = tabataData.second,
-                        numRounds = tabataData.third, type = SessionType.HIIT)
-            }
-        )
+        val favoritesLd = viewModel.getFavorites()
+        favoritesLd.observe(viewLifecycleOwner, { favorites ->
+            val id = prefUtil.getCurrentFavoriteId(SessionType.HIIT)
+            val idx = favorites.indexOfFirst{it.id == id}
+
+            viewModel.hiitData = HiitSpinnerData(
+                if (idx != -1) favorites[idx].duration else 20,
+                if (idx != -1) favorites[idx].breakDuration else 10,
+                if (idx != -1) favorites[idx].numRounds else 8)
+            favoritesLd.removeObservers(viewLifecycleOwner)
+
+            setupNumberPickers()
+
+            viewModel.hiitData.get().observe(
+                viewLifecycleOwner, { hiitData ->
+                    viewModel.session =
+                        SessionSkeleton(duration = hiitData.first, breakDuration = hiitData.second,
+                            numRounds = hiitData.third, type = SessionType.HIIT)
+                }
+            )
+        })
         return binding.root
     }
 
@@ -69,20 +85,20 @@ class HiitFragment : WorkoutTypeFragment() {
         secondsWorkPicker = NumberPicker(
             requireContext(), binding.pickerSecondsWork,
             viewModel.secondsPickerData,
-            20, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsWorkListener
+            viewModel.hiitData.getSecondsWork(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsWorkListener
         )
 
         secondsBreakPicker = NumberPicker(
             requireContext(), binding.pickerSecondsBreak,
             viewModel.secondsPickerData,
-            10, rowHeight, textSize = PickerSize.MEDIUM, textColor = Color.RED, scrollListener = secondsBreakListener
+            viewModel.hiitData.getSecondsBreak(), rowHeight, textSize = PickerSize.MEDIUM, textColor = Color.RED, scrollListener = secondsBreakListener
         )
 
         roundsPicker = NumberPicker(
             requireContext(),
             binding.pickerRounds,
             viewModel.roundsPickerData,
-            8,
+            viewModel.hiitData.getRounds(),
             rowHeight,
             prefixWithZero = true,
             textSize = PickerSize.MEDIUM,
@@ -104,6 +120,7 @@ class HiitFragment : WorkoutTypeFragment() {
         secondsWorkPicker.smoothScrollToValue(session.duration)
         secondsBreakPicker.smoothScrollToValue(session.breakDuration)
         roundsPicker.smoothScrollToValue(session.numRounds)
+        prefUtil.setCurrentFavoriteId(SessionType.HIIT, session.id)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {

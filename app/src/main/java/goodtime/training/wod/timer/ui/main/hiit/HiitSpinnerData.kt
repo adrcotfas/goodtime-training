@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import goodtime.training.wod.timer.common.CombinedLiveData
 
-class HiitSpinnerData(secondsWork: Int = 20, secondsBreak: Int = 10, rounds: Int = 8) {
+class HiitSpinnerData(private val secondsWork: Int, private val secondsBreak: Int, private val rounds: Int) {
+
     private val _secondsWork = MutableLiveData(secondsWork)
     private val _secondsBreak = MutableLiveData(secondsBreak)
     private val _rounds = MutableLiveData(rounds)
@@ -34,4 +35,8 @@ class HiitSpinnerData(secondsWork: Int = 20, secondsBreak: Int = 10, rounds: Int
      * Returns a triple of work duration, break duration and rounds
      */
     fun get() : LiveData<Triple<Int, Int, Int>> { return _data }
+
+    fun getSecondsWork() = secondsWork
+    fun getSecondsBreak() = secondsBreak
+    fun getRounds() = rounds
 }

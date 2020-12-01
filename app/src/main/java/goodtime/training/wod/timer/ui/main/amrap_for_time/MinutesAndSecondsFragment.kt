@@ -1,6 +1,7 @@
 package goodtime.training.wod.timer.ui.main.amrap_for_time
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +16,14 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentAmrapForTimeBinding
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
+import org.kodein.di.generic.instance
 
-open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>(private val sessionType: SessionType): WorkoutTypeFragment() {
+open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
+    private val sessionType: SessionType)
+    : WorkoutTypeFragment() {
 
+    private var pickersAreSetup = false
+    private val prefUtil: PrefUtil by instance()
     protected lateinit var viewModel: ViewModelType
 
     private lateinit var binding: FragmentAmrapForTimeBinding
@@ -42,14 +48,30 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAmrapForTimeBinding.inflate(inflater, container, false)
-        setupNumberPickers()
 
-        viewModel.timeData.get().observe(
-            viewLifecycleOwner, { duration ->
-                viewModel.session = SessionSkeleton(duration = duration, breakDuration = 0, numRounds = 0, type = sessionType)
-                updateMainButtonsState(duration)
-            }
-        )
+        val favoritesLd = viewModel.getFavorites()
+        favoritesLd.observe(viewLifecycleOwner, { favorites ->
+            val id = prefUtil.getCurrentFavoriteId(sessionType)
+            val idx = favorites.indexOfFirst { it.id == id }
+
+            val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 900)
+            viewModel.timeData = TimeSpinnerData(minutesAndSeconds.first, minutesAndSeconds.second)
+            favoritesLd.removeObservers(viewLifecycleOwner)
+
+            setupNumberPickers()
+
+            viewModel.timeData.get().observe(
+                viewLifecycleOwner, { duration ->
+                    viewModel.session = SessionSkeleton(
+                        duration = duration,
+                        breakDuration = 0,
+                        numRounds = 0,
+                        type = sessionType
+                    )
+                    updateMainButtonsState(duration)
+                }
+            )
+        })
         return binding.root
     }
 
@@ -76,11 +98,16 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
 
     override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
 
+    //TODO: extract the two functions to a common interface;
+    //use the viewModel to access the repo and get the corresponding workout or session
     override fun onFavoriteSelected(session: SessionSkeleton) {
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)
         minutePicker.smoothScrollToValue(duration.first)
         secondsPicker.smoothScrollToValue(duration.second)
+        prefUtil.setCurrentFavoriteId(sessionType, session.id)
     }
 
+    //TODO: extract the two functions to a common interface;
+    //use the viewModel to access the repo and get the corresponding workout or session
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
 }

@@ -18,9 +18,12 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentEmomBinding
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
+import org.kodein.di.generic.instance
 
 class EmomFragment : WorkoutTypeFragment() {
 
+    private val prefUtil: PrefUtil by instance()
+    private val viewModelFactory: EmomViewModelFactory by instance()
     private lateinit var viewModel: EmomViewModel
 
     private lateinit var binding: FragmentEmomBinding
@@ -42,7 +45,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EmomViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(EmomViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -53,16 +56,29 @@ class EmomFragment : WorkoutTypeFragment() {
 
         binding = FragmentEmomBinding.inflate(inflater, container, false)
 
-        setupNumberPickers()
+        val favoritesLd = viewModel.getFavorites()
+        favoritesLd.observe(viewLifecycleOwner, { favorites ->
+            val id = prefUtil.getCurrentFavoriteId(SessionType.EMOM)
+            val idx = favorites.indexOfFirst{it.id == id}
 
-        viewModel.emomData.get().observe(
-            viewLifecycleOwner, { data ->
-                val duration = data.first
-                viewModel.session = SessionSkeleton(duration = duration, breakDuration = 0,
-                    numRounds = data.second, type = SessionType.EMOM)
-                updateMainButtonsState(duration)
-            }
-        )
+            //TODO: extract defaults to constants
+            val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 60)
+            val rounds = if (idx != -1) favorites[idx].numRounds else 20
+            viewModel.emomData = EmomSpinnerData(minutesAndSeconds.first, minutesAndSeconds.second, rounds)
+            favoritesLd.removeObservers(viewLifecycleOwner)
+
+            setupNumberPickers()
+
+            viewModel.emomData.get().observe(
+                viewLifecycleOwner, { data ->
+                    val duration = data.first
+                    viewModel.session = SessionSkeleton(duration = duration, breakDuration = 0,
+                        numRounds = data.second, type = SessionType.EMOM)
+                    updateMainButtonsState(duration)
+                }
+            )
+        })
+
         return binding.root
     }
 
@@ -72,19 +88,19 @@ class EmomFragment : WorkoutTypeFragment() {
         minutePicker = NumberPicker(
             requireContext(), binding.pickerMinutes,
             viewModel.minutesPickerData,
-            1, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener
+            viewModel.emomData.getMinutes(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener
         )
 
         secondsPicker = NumberPicker(
             requireContext(), binding.pickerSeconds,
             viewModel.secondsPickerData,
-            0, rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener
+            viewModel.emomData.getSeconds(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener
         )
 
         roundsPicker = NumberPicker(
             requireContext(), binding.pickerRounds,
             viewModel.roundsPickerData,
-            20, rowHeight,
+            viewModel.emomData.getRounds(), rowHeight,
             textSize = PickerSize.MEDIUM,
             textColor = Color.NEUTRAL,
             prefixWithZero = true,
@@ -106,6 +122,7 @@ class EmomFragment : WorkoutTypeFragment() {
         minutePicker.smoothScrollToValue(duration.first)
         secondsPicker.smoothScrollToValue(duration.second)
         roundsPicker.smoothScrollToValue(session.numRounds)
+        prefUtil.setCurrentFavoriteId(SessionType.EMOM, session.id)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }

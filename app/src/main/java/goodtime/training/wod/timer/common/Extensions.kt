@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -70,7 +71,7 @@ fun RecyclerView.smoothSnapToPosition(position: Int) {
         override fun getVerticalSnapPreference(): Int = SNAP_TO_START
     }
     smoothScroller.targetPosition = position
-    layoutManager?.startSmoothScroll(smoothScroller)
+    this.post{ layoutManager?.startSmoothScroll(smoothScroller) }
 }
 
 fun toInt(string: String): Int {
