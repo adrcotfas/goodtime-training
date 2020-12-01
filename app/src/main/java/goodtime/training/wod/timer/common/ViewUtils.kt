@@ -21,7 +21,7 @@ class ViewUtils {
                     SessionType.EMOM -> {
                         R.drawable.ic_status_goodtime
                     }
-                    SessionType.TABATA -> {
+                    SessionType.HIIT -> {
                         R.drawable.ic_fire2
                     }
                     SessionType.REST -> {

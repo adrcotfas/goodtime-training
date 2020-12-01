@@ -111,7 +111,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                         sessionType = sessionType
                     )
                 }
-                SessionType.TABATA -> {
+                SessionType.HIIT -> {
                     SessionEditTextHelper(
                         this,
                         hiitRoundsEt = binding.hiitRoundsLayout.editText,
@@ -146,7 +146,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                 binding.emomSection.visibility = View.VISIBLE
                 binding.hiitSection.visibility = View.GONE
             }
-            SessionType.TABATA -> {
+            SessionType.HIIT -> {
                 binding.genericSection.visibility = View.GONE
                 binding.emomSection.visibility = View.GONE
                 binding.hiitSection.visibility = View.VISIBLE

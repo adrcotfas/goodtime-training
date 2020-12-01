@@ -210,7 +210,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                     startWorkout()
                 }
             }
-            SessionType.TABATA -> {
+            SessionType.HIIT -> {
                 if (isLastRound()) {
                     //TODO: for custom workouts, take the last break anyway if this is not the last session
                     if (isLastSession()) {

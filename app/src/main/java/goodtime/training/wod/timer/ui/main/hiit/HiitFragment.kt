@@ -57,7 +57,7 @@ class HiitFragment : WorkoutTypeFragment() {
             viewLifecycleOwner, { tabataData ->
                 viewModel.session =
                     SessionSkeleton(duration = tabataData.first, breakDuration = tabataData.second,
-                        numRounds = tabataData.third, type = SessionType.TABATA)
+                        numRounds = tabataData.third, type = SessionType.HIIT)
             }
         )
         return binding.root

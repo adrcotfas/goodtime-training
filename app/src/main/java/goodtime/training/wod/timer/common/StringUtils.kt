@@ -34,7 +34,7 @@ class StringUtils {
                 SessionType.EMOM -> {
                     "${session.numRounds} × ${secondsToNiceFormat(session.duration)}"
                 }
-                SessionType.TABATA -> {
+                SessionType.HIIT -> {
                     val workString = "${session.duration} s"
                     val breakString = "${session.breakDuration} s"
                     "${session.numRounds} × $workString / $breakString"
@@ -69,7 +69,7 @@ class StringUtils {
 
         fun toFavoriteDescription(favoriteCandidate : SessionSkeleton): String {
             return when (favoriteCandidate.type) {
-                SessionType.AMRAP, SessionType.TABATA -> "${favoriteCandidate.type.name} ${toFavoriteFormat(
+                SessionType.AMRAP, SessionType.HIIT -> "${favoriteCandidate.type.name} ${toFavoriteFormat(
                     favoriteCandidate
                 )}"
                 SessionType.EMOM -> {
@@ -92,7 +92,7 @@ class StringUtils {
                         "Every ${secondsToNiceFormatExtended(session.duration)} for " +
                                 secondsToNiceFormatExtended(session.numRounds * session.duration))
                 }
-                SessionType.TABATA -> {
+                SessionType.HIIT -> {
                     val workString = session.duration.toString() + " second" +  if (session.duration > 1) "s" else ""
                     val breakString = session.breakDuration.toString() + " second" +  if (session.breakDuration > 1) "s" else ""
                     "${session.numRounds} high intensity intervals of $workString of work with $breakString of rest"
@@ -117,7 +117,7 @@ class StringUtils {
                 SessionType.AMRAP -> "AMRAP"
                 SessionType.FOR_TIME -> "FOR TIME"
                 SessionType.EMOM -> "EMOM"
-                SessionType.TABATA -> "HIIT"
+                SessionType.HIIT -> "HIIT"
                 SessionType.REST -> "REST"
             }
         }

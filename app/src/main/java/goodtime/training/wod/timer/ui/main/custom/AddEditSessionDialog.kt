@@ -204,7 +204,7 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                 binding.emomSection.visibility = View.VISIBLE
                 binding.hiitSection.visibility = View.GONE
             }
-            SessionType.TABATA -> {
+            SessionType.HIIT -> {
                 binding.genericSection.visibility = View.GONE
                 binding.emomSection.visibility = View.GONE
                 binding.hiitSection.visibility = View.VISIBLE

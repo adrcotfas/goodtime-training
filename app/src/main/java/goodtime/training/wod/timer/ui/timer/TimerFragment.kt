@@ -126,7 +126,7 @@ class TimerFragment : Fragment(), KodeinAware {
                 if (type != SessionType.FOR_TIME && type != SessionType.AMRAP) View.GONE
                 else View.VISIBLE
             binding.round.visibility =
-                if (type != SessionType.TABATA && type != SessionType.EMOM) View.GONE
+                if (type != SessionType.HIIT && type != SessionType.EMOM) View.GONE
                 else View.VISIBLE
 
             binding.round.text =

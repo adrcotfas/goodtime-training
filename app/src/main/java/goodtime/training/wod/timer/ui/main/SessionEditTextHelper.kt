@@ -67,7 +67,7 @@ data class SessionEditTextHelper(
                     lastEmomEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
                     initEmomSection()
                 }
-                SessionType.TABATA -> {
+                SessionType.HIIT -> {
                     for (it in hiitEts) setupEditTextBehaviorOnFocus(it!!)
                     lastHiitEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
                     initHiitSection()
@@ -178,7 +178,7 @@ data class SessionEditTextHelper(
             SessionType.EMOM
             -> SessionSkeleton(0,
                 getCurrentSelectionDuration(sessionType), 0, toInt(emomRoundsEt!!.text.toString()), sessionType)
-            SessionType.TABATA
+            SessionType.HIIT
             -> SessionSkeleton(0,
                 toInt(hiitSecondsWorkEt!!.text.toString()), toInt(hiitSecondsRestEt!!.text.toString()), toInt(hiitRoundsEt!!.text.toString()), sessionType)
             SessionType.REST -> SessionSkeleton(0,
@@ -211,7 +211,7 @@ data class SessionEditTextHelper(
                 setEditTextValue(emomMinutesEt!!, "01")
                 setEditTextValue(emomSecondsEt!!, "00")
             }
-            SessionType.TABATA -> {
+            SessionType.HIIT -> {
                 setEditTextValue(hiitRoundsEt!!, "08")
                 setEditTextValue(hiitSecondsWorkEt!!, "20")
                 setEditTextValue(hiitSecondsRestEt!!, "10")
@@ -240,7 +240,7 @@ data class SessionEditTextHelper(
                 emomMinutesEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
                 emomSecondsEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
             }
-            SessionType.TABATA -> {
+            SessionType.HIIT -> {
                 hiitRoundsEt!!.setText(addPrefixIfNeeded(session.numRounds.toString()))
                 hiitSecondsWorkEt!!.setText(addPrefixIfNeeded(session.duration.toString()))
                 hiitSecondsRestEt!!.setText(addPrefixIfNeeded(session.breakDuration.toString()))

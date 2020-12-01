@@ -82,7 +82,7 @@ class GoodtimeApplication : Application(), KodeinAware {
 
         val tabata = SessionSkeleton(
             0, 20, 10, 8,
-            SessionType.TABATA
+            SessionType.HIIT
         )
         val rest30Sec = SessionSkeleton(0, 30, 30, 0, SessionType.REST)
         val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), TimeUnit.MINUTES.toSeconds(1).toInt(), 0, SessionType.REST)
