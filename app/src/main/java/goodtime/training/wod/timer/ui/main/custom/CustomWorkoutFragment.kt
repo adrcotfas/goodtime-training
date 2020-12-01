@@ -26,7 +26,9 @@ class CustomWorkoutFragment :
     SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
     SaveCustomWorkoutDialog.Listener {
 
-    private val viewModelFactory : CustomWorkoutViewModelFactory by instance()
+    private val viewModelFactory: CustomWorkoutViewModelFactory by instance()
+    private val prefUtil: PrefUtil by instance()
+
     private lateinit var viewModel: CustomWorkoutViewModel
     private lateinit var binding: FragmentCustomBinding
 
@@ -67,9 +69,19 @@ class CustomWorkoutFragment :
                 viewModel.currentWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
                 toggleEmptyState(true)
             } else {
-                //TODO: check the preferences for the last selected custom workout
-                viewModel.currentWorkout = it.first()
-                binding.title.text = viewModel.currentWorkout.name
+                val name = prefUtil.getCurrentCustomWorkoutFavoriteName()
+                if (name != null) {
+                    for (fav in it) {
+                        if (fav.name == name) {
+                            viewModel.currentWorkout = fav
+                            binding.title.text = fav.name
+                            break
+                        }
+                    }
+                } else {
+                    viewModel.currentWorkout = it.first()
+                    binding.title.text = viewModel.currentWorkout.name
+                }
                 updateTotalDuration()
                 toggleEmptyState(false)
             }
@@ -173,6 +185,8 @@ class CustomWorkoutFragment :
         setSaveButtonVisibility(false)
         updateTotalDuration()
         toggleEmptyState(false)
+
+        prefUtil.setCurrentCustomWorkoutFavoriteName(workout.name)
     }
 
     @SuppressLint("SetTextI18n")
@@ -192,7 +206,7 @@ class CustomWorkoutFragment :
     private fun updateTotalDuration() {
         var total = 0
         for (session in viewModel.currentWorkout.sessions) {
-            total += when (session.type) {
+            total += when (session.type) { //TODO: this ended up being null but how?
                 SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> session.duration
                 SessionType.EMOM -> (session.duration * session.numRounds)
                 SessionType.HIIT -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
