@@ -140,7 +140,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
         soundPlayer.stop()
         timerState.value = TimerState.INACTIVE
         // when the timer is finished, save the last round but only if the user used the round counter
-        if (countedRounds.isNotEmpty()) {
+        if (countedRounds[currentSessionIdx.value!!].isNotEmpty()) {
             addRound()
         }
         handleFinishTimer()
