@@ -88,7 +88,7 @@ class TimerFragment : Fragment(), KodeinAware {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentWorkoutBinding.inflate(layoutInflater, container, false)
         viewModel.secondsUntilFinished.observe(viewLifecycleOwner, { seconds ->
             val type = viewModel.getCurrentSessionType()
@@ -168,9 +168,9 @@ class TimerFragment : Fragment(), KodeinAware {
                         }
                         val session = viewModel.sessions[idx]
                         val duration = viewModel.durations[idx]
-                        if (session.type == SessionType.FOR_TIME) {
+                        if (session.type == SessionType.FOR_TIME || session.type == SessionType.AMRAP) {
                             binding.summaryContainer.addView(
-                                createSummarySectionForTime(
+                                createSummarySectionWithRounds(
                                     session,
                                     duration,
                                     viewModel.getRounds()
@@ -179,7 +179,7 @@ class TimerFragment : Fragment(), KodeinAware {
                         } else {
                             binding.summaryContainer.addView(createSummaryRow(session))
                         }
-                        totalDuration += viewModel.durations[idx]
+                        totalDuration += duration
                     }
                     binding.summaryContainer.addView(createSummaryTotalRow(totalDuration))
                     startConfetti()
@@ -258,7 +258,7 @@ class TimerFragment : Fragment(), KodeinAware {
         return layout
     }
 
-    private fun createSummarySectionForTime(session: SessionSkeleton, duration: Int, rounds : ArrayList<Int>) : ConstraintLayout {
+    private fun createSummarySectionWithRounds(session: SessionSkeleton, duration: Int, rounds : ArrayList<Int>) : ConstraintLayout {
         val layout = layoutInflater.inflate(R.layout.row_summary_view_for_time, null, false) as ConstraintLayout
         val headerImage = layout.findViewById<ImageView>(R.id.summary_drawable)
         val headerText = layout.findViewById<TextView>(R.id.summary_text)

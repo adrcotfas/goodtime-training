@@ -2,6 +2,7 @@ package goodtime.training.wod.timer.ui.main.custom
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,12 +60,12 @@ class CustomWorkoutFragment :
         binding.addSessionButton.setOnClickListener {
             AddEditSessionDialog.newInstance(this).show(parentFragmentManager, "")
         }
-
         return binding.root
     }
 
     private fun initCurrentWorkout() {
-        viewModel.customWorkoutList.observe(viewLifecycleOwner, {
+        val workoutList = viewModel.getWorkoutList()
+        workoutList.observe(viewLifecycleOwner, {
             if (it.isEmpty()) {
                 viewModel.currentWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
                 toggleEmptyState(true)
@@ -87,7 +88,7 @@ class CustomWorkoutFragment :
             }
             setupRecycler()
             // observe once, no need to repeat this when new data is added to the custom workouts
-            viewModel.customWorkoutList.removeObservers(viewLifecycleOwner)
+            workoutList.removeObservers(viewLifecycleOwner)
         })
     }
 
@@ -201,6 +202,7 @@ class CustomWorkoutFragment :
         binding.title.text = name
         setSaveButtonVisibility(false)
         viewModel.hasUnsavedSession = false
+        prefUtil.setCurrentCustomWorkoutFavoriteName(name)
     }
 
     private fun updateTotalDuration() {

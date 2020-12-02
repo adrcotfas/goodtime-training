@@ -53,9 +53,13 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
     }
 
     fun getCurrentSessionType() : SessionType = sessions[currentSessionIdx.value!!].type
-    fun getCurrentSessionDuration() : Int =
-        if (isResting.value!!) sessions[currentSessionIdx.value!!].breakDuration
-        else sessions[currentSessionIdx.value!!].duration
+    fun getCurrentSessionDuration() : Int {
+        val session = sessions[currentSessionIdx.value!!]
+        return if (isResting.value!! && session.type != SessionType.REST)
+            session.breakDuration
+        else
+            session.duration
+    }
 
     fun init(sessionsRaw: String) {
         sessions = TypeConverter.toSessionSkeletons(sessionsRaw)
@@ -79,9 +83,8 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
             isResting.value = true
         }
 
-        //TODO: store REST duration in "duration", not "breakDuration" which should be only for HIIT
         val seconds = secondsUntilFinished.value?.toLong()
-            ?: if (isResting.value!!)
+            ?: if (isResting.value!! && session.type != SessionType.REST)
                 session.breakDuration.toLong()
             else
                 session.duration.toLong()
@@ -151,12 +154,30 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
         }
     }
 
+    private fun updateDurations(sessionType: SessionType, index: Int) {
+        when(sessionType) {
+            SessionType.AMRAP, SessionType.REST -> {
+                durations[index] = sessions[index].duration
+            }
+            SessionType.FOR_TIME -> {
+                durations[index] = sessions[index].duration - secondsUntilFinished.value!!
+            }
+            SessionType.EMOM -> {
+                durations[index] = sessions[index].duration * sessions[index].numRounds
+            }
+            SessionType.HIIT -> {
+                durations[index] = sessions[index].duration * sessions[index].numRounds +
+                        sessions[index].breakDuration * (sessions[index].numRounds)
+            }
+        }
+    }
+
     private fun handleFinishTimer() {
         val type = getCurrentSessionType()
         var index = currentSessionIdx.value!!
+        updateDurations(type, index)
         when (type) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-
                 if (type == SessionType.REST) {
                     // reset resting value here
                     isResting.value = false
@@ -166,11 +187,6 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                     if (type != SessionType.REST) {
                         if (countedRounds.isNotEmpty()) {
                             addRound()
-                        }
-                        if (type == SessionType.FOR_TIME) {
-                            durations[index] = sessions[index].duration - secondsUntilFinished.value!!
-                        } else {
-                            durations[index] = sessions[index].duration
                         }
                         repository.addSession(
                             constructSession(
@@ -192,10 +208,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
             SessionType.EMOM -> {
                 if (isLastRound()) {
                     if (isLastSession()) {
-                        durations[index] = sessions[index].duration * sessions[index].numRounds
-
                         repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
-
                         timerState.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
@@ -214,9 +227,6 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                 if (isLastRound()) {
                     //TODO: for custom workouts, take the last break anyway if this is not the last session
                     if (isLastSession()) {
-                        durations[index] = sessions[index].duration * sessions[index].numRounds +
-                                sessions[index].breakDuration * (sessions[index].numRounds)
-
                         repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
 
                         timerState.value = TimerState.FINISHED

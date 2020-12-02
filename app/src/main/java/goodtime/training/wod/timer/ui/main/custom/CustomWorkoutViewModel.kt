@@ -6,7 +6,7 @@ import goodtime.training.wod.timer.data.repository.AppRepository
 
 class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewModel() {
 
-    val customWorkoutList = appRepository.getCustomWorkoutSkeletons()
+    fun getWorkoutList() = appRepository.getCustomWorkoutSkeletons()
 
     lateinit var currentWorkout: CustomWorkoutSkeleton
     var hasUnsavedSession = false

@@ -182,7 +182,7 @@ data class SessionEditTextHelper(
             -> SessionSkeleton(0,
                 toInt(hiitSecondsWorkEt!!.text.toString()), toInt(hiitSecondsRestEt!!.text.toString()), toInt(hiitRoundsEt!!.text.toString()), sessionType)
             SessionType.REST -> SessionSkeleton(0,
-                getCurrentSelectionDuration(sessionType), getCurrentSelectionDuration(sessionType), 0, sessionType)
+                getCurrentSelectionDuration(sessionType), 0, 0, sessionType)
         }
     }
 

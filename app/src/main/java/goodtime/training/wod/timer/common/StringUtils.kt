@@ -25,7 +25,7 @@ class StringUtils {
 
         fun toFavoriteFormat(session: SessionSkeleton): String {
             return when(session.type) {
-                SessionType.AMRAP -> {
+                SessionType.AMRAP, SessionType.REST -> {
                     secondsToNiceFormat(session.duration)
                 }
                 SessionType.FOR_TIME -> {
@@ -38,9 +38,6 @@ class StringUtils {
                     val workString = "${session.duration} s"
                     val breakString = "${session.breakDuration} s"
                     "${session.numRounds} × $workString / $breakString"
-                }
-                SessionType.REST -> {
-                    secondsToNiceFormat(session.breakDuration)
                 }
             }
         }

@@ -92,8 +92,8 @@ class GoodtimeApplication : Application(), KodeinAware {
             0, 20, 10, 8,
             SessionType.HIIT
         )
-        val rest30Sec = SessionSkeleton(0, 30, 30, 0, SessionType.REST)
-        val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), TimeUnit.MINUTES.toSeconds(1).toInt(), 0, SessionType.REST)
+        val rest30Sec = SessionSkeleton(0, 30, 0, 0, SessionType.REST)
+        val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 0, SessionType.REST)
 
         //TODO: remove before release
         val dummyAmrap = SessionSkeleton(0, 5, type = SessionType.AMRAP)
