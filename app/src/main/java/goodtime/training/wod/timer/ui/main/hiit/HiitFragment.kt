@@ -15,7 +15,7 @@ import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
-import goodtime.training.wod.timer.databinding.FragmentTabataBinding
+import goodtime.training.wod.timer.databinding.FragmentHiitBinding
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.kodein.di.generic.instance
 
@@ -25,7 +25,7 @@ class HiitFragment : WorkoutTypeFragment() {
     private val viewModelFactory: HiitViewModelFactory by instance()
     private lateinit var viewModel: HiitViewModel
 
-    private lateinit var binding: FragmentTabataBinding
+    private lateinit var binding: FragmentHiitBinding
     private lateinit var secondsWorkPicker:  NumberPicker
     private lateinit var secondsBreakPicker: NumberPicker
     private lateinit var roundsPicker: NumberPicker
@@ -53,7 +53,7 @@ class HiitFragment : WorkoutTypeFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentTabataBinding.inflate(inflater, container, false)
+        binding = FragmentHiitBinding.inflate(inflater, container, false)
 
         val favoritesLd = viewModel.getFavorites()
         favoritesLd.observe(viewLifecycleOwner, { favorites ->
