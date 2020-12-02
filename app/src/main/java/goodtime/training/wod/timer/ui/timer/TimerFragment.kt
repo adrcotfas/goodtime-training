@@ -132,6 +132,8 @@ class TimerFragment : Fragment(), KodeinAware {
             binding.round.text =
                 "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
             binding.workoutImage.setImageDrawable(ViewUtils.toDrawable(resources, type))
+
+            refreshCounterButton()
         })
 
         viewModel.currentRoundIdx.observe(viewLifecycleOwner, { currentRoundIdx ->
@@ -173,7 +175,7 @@ class TimerFragment : Fragment(), KodeinAware {
                                 createSummarySectionWithRounds(
                                     session,
                                     duration,
-                                    viewModel.getRounds()
+                                    viewModel.getRounds(idx)
                                 )
                             )
                         } else {
@@ -212,13 +214,13 @@ class TimerFragment : Fragment(), KodeinAware {
     }
 
     private fun refreshCounterButton() {
-        val numCountedRounds = viewModel.countedRounds
+        val numCountedRounds = viewModel.getNumCurrentSessionRounds()
         binding.roundCounterText.visibility =
-            if (numCountedRounds.isEmpty()) View.GONE else View.VISIBLE
-        binding.roundCounterButton.drawable.alpha = if (numCountedRounds.isEmpty()) 255 else 0
+            if (numCountedRounds == 0) View.GONE else View.VISIBLE
+        binding.roundCounterButton.drawable.alpha = if (numCountedRounds == 0) 255 else 0
 
-        if (numCountedRounds.isNotEmpty()) {
-            binding.roundCounterText.text = numCountedRounds.size.toString()
+        if (numCountedRounds != 0) {
+            binding.roundCounterText.text = numCountedRounds.toString()
         }
     }
 
@@ -275,7 +277,12 @@ class TimerFragment : Fragment(), KodeinAware {
         roundsText.visibility = if (rounds.isEmpty()) View.GONE else View.VISIBLE
         roundsText.paintFlags = roundsText.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         roundsText.text = "${rounds.size} rounds"
-        durationText.text = StringUtils.secondsToNiceFormat(duration)
+        if (session.type == SessionType.AMRAP) {
+            // no need to show the time it took like for FOR_TIME sessions
+            durationText.visibility = View.GONE
+        } else {
+            durationText.text = "(${StringUtils.secondsToNiceFormat(duration)})"
+        }
 
         roundsText.setOnClickListener{roundsContainer.visibility =
             if (roundsContainer.visibility == View.VISIBLE) View.GONE else View.VISIBLE}

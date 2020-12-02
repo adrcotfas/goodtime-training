@@ -22,8 +22,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
     /**
      * Holds the counted rounds in seconds elapsed
      */
-    //TODO: fix bug in counter; should hold rounds for all sessions in a custom workout
-    var countedRounds = ArrayList<Int>(0)
+    var countedRounds = ArrayList<ArrayList<Int>>(0)
 
     // store the working time for each session
     var durations = ArrayList<Int>()
@@ -67,11 +66,15 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
         for (index in 0 until sessions.size) {
             durations.add(0)
         }
+        countedRounds = ArrayList()
+        for(i in 0 until  sessions.size) {
+            countedRounds.add(ArrayList(0))
+        }
+
         currentRoundIdx.value = 0
         currentSessionIdx.value = 0
         secondsUntilFinished.value = sessions[0].duration
         isResting.value = false
-        countedRounds = ArrayList(0)
     }
 
     fun startWorkout() {
@@ -135,6 +138,10 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
         timer.cancel()
         soundPlayer.stop()
         timerState.value = TimerState.INACTIVE
+        // when the timer is finished, save the last round but only if the user used the round counter
+        if (countedRounds.isNotEmpty()) {
+            addRound()
+        }
         handleFinishTimer()
     }
 
@@ -182,17 +189,13 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                     // reset resting value here
                     isResting.value = false
                 }
-
                 if (isLastSession()) {
                     if (type != SessionType.REST) {
-                        if (countedRounds.isNotEmpty()) {
-                            addRound()
-                        }
                         repository.addSession(
                             constructSession(
                                 sessions[index],
                                 System.currentTimeMillis(),
-                                countedRounds,
+                                countedRounds[index],
                                 durations[index]))
                     }
                     timerState.value = TimerState.FINISHED
@@ -256,22 +259,26 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
     fun addRound() {
         val totalSeconds = getCurrentSessionDuration()
         if (countedRounds.isEmpty()) {
-            countedRounds.add(totalSeconds - secondsUntilFinished.value!!)
+            countedRounds[currentSessionIdx.value!!].add(totalSeconds - secondsUntilFinished.value!!)
         } else {
             val elapsed = totalSeconds - secondsUntilFinished.value!!
-            countedRounds.add(elapsed)
+            countedRounds[currentSessionIdx.value!!].add(elapsed)
         }
     }
 
-    fun getRounds() : ArrayList<Int> {
+    fun getRounds(idx: Int) : ArrayList<Int> {
         val result = ArrayList<Int>(0)
-        for (i in 0 until countedRounds.size) {
+        for (i in 0 until countedRounds[idx].size) {
             if (i == 0) {
-                result.add(countedRounds[i])
+                result.add(countedRounds[idx][i])
             } else {
-                result.add(countedRounds[i] - countedRounds[i - 1])
+                result.add(countedRounds[idx][i] - countedRounds[idx][i - 1])
             }
         }
         return result
+    }
+
+    fun getNumCurrentSessionRounds(): Int {
+        return countedRounds[currentSessionIdx.value!!].size
     }
 }

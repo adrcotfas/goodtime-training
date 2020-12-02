@@ -46,8 +46,10 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/summary_text"
-        tools:text="(10 min 47 s)" />
+        app:layout_constraintTop_toTopOf="@id/rounds_text"
+        app:layout_constraintBottom_toBottomOf="@id/rounds_text"
+        tools:text="(10 min 47 s)"
+        />
 
     <TextView
         android:id="@+id/rounds_text"
@@ -56,12 +58,8 @@
         android:fontFamily="@font/app_font"
         android:textColor="@color/green_goodtime"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/duration_text"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/duration_text"
-        app:layout_constraintTop_toTopOf="@id/duration_text"
-        app:layout_constraintBottom_toBottomOf="@id/duration_text"
+        app:layout_constraintTop_toBottomOf="@id/summary_text"
         android:padding="8dp"
         android:clickable="true"
         android:focusable="true"
@@ -81,10 +79,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/duration_text"
+        app:layout_constraintTop_toBottomOf="@id/rounds_text"
         android:orientation="vertical"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
