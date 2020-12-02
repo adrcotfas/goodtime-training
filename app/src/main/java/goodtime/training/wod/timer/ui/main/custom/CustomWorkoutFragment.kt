@@ -85,6 +85,7 @@ class CustomWorkoutFragment :
                 }
                 updateTotalDuration()
                 toggleEmptyState(false)
+                setSaveButtonVisibility(false)
             }
             setupRecycler()
             // observe once, no need to repeat this when new data is added to the custom workouts

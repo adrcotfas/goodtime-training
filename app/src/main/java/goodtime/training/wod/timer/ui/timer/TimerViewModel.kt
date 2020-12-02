@@ -86,11 +86,12 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
             isResting.value = true
         }
 
-        val seconds = secondsUntilFinished.value?.toLong()
-            ?: if (isResting.value!! && session.type != SessionType.REST)
-                session.breakDuration.toLong()
-            else
-                session.duration.toLong()
+        val prev = secondsUntilFinished.value?.toLong()
+        val seconds = if (prev != null && prev != 0L ) prev
+        else if (isResting.value!! && session.type != SessionType.REST)
+            session.breakDuration.toLong()
+        else
+            session.duration.toLong()
 
         timer = CountDownTimer(seconds, object : CountDownTimer.Listener {
             override fun onTick(seconds: Int) { handleTimerTick(seconds) }
@@ -189,15 +190,15 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                     // reset resting value here
                     isResting.value = false
                 }
+                if (type != SessionType.REST) {
+                    repository.addSession(
+                        constructSession(
+                            sessions[index],
+                            System.currentTimeMillis(),
+                            countedRounds[index],
+                            durations[index]))
+                }
                 if (isLastSession()) {
-                    if (type != SessionType.REST) {
-                        repository.addSession(
-                            constructSession(
-                                sessions[index],
-                                System.currentTimeMillis(),
-                                countedRounds[index],
-                                durations[index]))
-                    }
                     timerState.value = TimerState.FINISHED
                     soundPlayer.play(WORKOUT_COMPLETE)
                 } else {
@@ -210,14 +211,15 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
             }
             SessionType.EMOM -> {
                 if (isLastRound()) {
+                    repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                     if (isLastSession()) {
-                        repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                         timerState.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
                         currentRoundIdx.value = 0
                         ++index
                         currentSessionIdx.value = index
+                        secondsUntilFinished.value = sessions[index].duration
                         startWorkout()
                     }
                 } else {
@@ -227,17 +229,19 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                 }
             }
             SessionType.HIIT -> {
-                if (isLastRound()) {
-                    //TODO: for custom workouts, take the last break anyway if this is not the last session
+                // if this is the last round but not in the final session, take the break
+                if ((isLastRound() && !isLastSession() && isResting.value!!)
+                    // if this is the final session and final work round, skip the break
+                    || (isLastRound() && isLastSession() && !isResting.value!!)) {
+                    repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                     if (isLastSession()) {
-                        repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
-
                         timerState.value = TimerState.FINISHED
                         soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
                         currentRoundIdx.value = 0
                         ++index
                         currentSessionIdx.value = index
+                        secondsUntilFinished.value = sessions[index].duration
                         startWorkout()
                     }
                 } else {
