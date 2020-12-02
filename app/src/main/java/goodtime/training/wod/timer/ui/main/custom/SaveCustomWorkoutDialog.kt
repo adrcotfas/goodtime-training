@@ -73,18 +73,19 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
     }
 
     private fun refreshPositiveButtonVisibility(it: Editable?) {
-        if (it.isNullOrEmpty()) {
+        if (it.isNullOrEmpty() || it.toString().trim() == "") {
             togglePositiveButtonState(false)
         } else {
             togglePositiveButtonState(true)
-            customName = it.toString()
+            val trim = it.toString().trim()
+            customName = trim
         }
     }
 
-    private fun togglePositiveButtonState(visible: Boolean) {
+    private fun togglePositiveButtonState(enabled: Boolean) {
         val dialog = dialog as AlertDialog?
         if (dialog != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = visible
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = enabled
         }
     }
 
