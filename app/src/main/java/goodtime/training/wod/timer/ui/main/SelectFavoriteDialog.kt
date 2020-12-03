@@ -11,6 +11,7 @@ import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteDescri
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteFormat
 import goodtime.training.wod.timer.common.StringUtils.Companion.toString
 import goodtime.training.wod.timer.common.hideKeyboardFrom
+import goodtime.training.wod.timer.common.preferences.PrefUtil
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
@@ -19,12 +20,14 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
+class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener,
+    DeleteConfirmationDialog.Listener {
     override val kodein by closestKodein()
+    private val prefUtil: PrefUtil by instance()
 
     private val repo: AppRepository by instance()
-    private lateinit var favoriteCandidate : SessionSkeleton
-    private lateinit var favorites : List<SessionSkeleton>
+    private lateinit var favoriteCandidate: SessionSkeleton
+    private lateinit var favorites: List<SessionSkeleton>
     private lateinit var binding: DialogSelectFavoriteBinding
     private lateinit var listener: Listener
 
@@ -79,7 +82,14 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                     val chip = Chip(requireContext()).apply {
                         text = toFavoriteFormat(favorite)
                     }
-                    chip.setOnCloseIconClickListener { repo.removeSessionSkeleton(favorite.id) }
+                    chip.setOnCloseIconClickListener {
+                        if (prefUtil.showDeleteConfirmationDialog()) {
+                            DeleteConfirmationDialog.newInstance(this, favorite.id, chip.text.toString())
+                                .show(parentFragmentManager, "")
+                        } else {
+                            onDeleteConfirmation(favorite.id, "")
+                        }
+                    }
                     chip.setOnClickListener {
                         listener.onFavoriteSelected(favorite)
                         hideKeyboardFrom(requireContext(), binding.root)
@@ -153,5 +163,9 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
             }
         }
         binding.customSection.visibility = View.VISIBLE
+    }
+
+    override fun onDeleteConfirmation(id: Int, name: String) {
+        repo.removeSessionSkeleton(id)
     }
 }

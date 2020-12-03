@@ -9,12 +9,15 @@ import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectCustomWorkoutBinding
 import com.google.android.material.chip.Chip
+import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.ui.main.DeleteConfirmationDialog
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware {
+class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmationDialog.Listener {
     override val kodein by closestKodein()
+    private val prefUtil: PrefUtil by instance()
 
     private val repo: AppRepository by instance()
 
@@ -57,7 +60,14 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware {
                     val chip = Chip(requireContext()).apply {
                         text = favorite.name
                     }
-                    chip.setOnCloseIconClickListener { repo.removeCustomWorkoutSkeleton(favorite.name) }
+                    chip.setOnCloseIconClickListener {
+                        if (prefUtil.showDeleteConfirmationDialog()) {
+                            DeleteConfirmationDialog.newInstance(this, 0, favorite.name)
+                                .show(parentFragmentManager, "")
+                        } else {
+                            onDeleteConfirmation(0, favorite.name)
+                        }
+                    }
                     chip.setOnClickListener {
                         listener.onFavoriteSelected(favorite)
                         dismiss()
@@ -65,5 +75,9 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware {
                     favoritesChipGroup.addView(chip)
                 }
             })
+    }
+
+    override fun onDeleteConfirmation(id: Int, name: String) {
+        repo.removeCustomWorkoutSkeleton(name)
     }
 }

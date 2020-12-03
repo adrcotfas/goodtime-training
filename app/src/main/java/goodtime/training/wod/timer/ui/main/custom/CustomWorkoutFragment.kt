@@ -2,7 +2,6 @@ package goodtime.training.wod.timer.ui.main.custom
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,16 +69,19 @@ class CustomWorkoutFragment :
                 viewModel.currentWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
                 toggleEmptyState(true)
             } else {
+                var found = false
                 val name = prefUtil.getCurrentCustomWorkoutFavoriteName()
                 if (name != null) {
                     for (fav in it) {
                         if (fav.name == name) {
                             viewModel.currentWorkout = fav
                             binding.title.text = fav.name
+                            found = true
                             break
                         }
                     }
-                } else {
+                }
+                if (!found) {
                     viewModel.currentWorkout = it.first()
                     binding.title.text = viewModel.currentWorkout.name
                 }

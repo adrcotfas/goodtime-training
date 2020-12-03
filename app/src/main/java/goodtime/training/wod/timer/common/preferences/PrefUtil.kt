@@ -18,6 +18,17 @@ class PrefUtil(private val context: Context) {
         editor.apply()
     }
 
+    fun showDeleteConfirmationDialog(): Boolean {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        return preferences.getBoolean(SHOW_DELETE_CONFIRMATION_DIALOG, true)
+    }
+
+    fun setShowDeleteConfirmationDialog(state: Boolean) {
+        val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+        editor.putBoolean(SHOW_DELETE_CONFIRMATION_DIALOG, state)
+        editor.apply()
+    }
+
     fun setCurrentFavoriteId(sessionType: SessionType, id: Int) {
         val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
         editor.putInt(toPrefId(sessionType), id)
@@ -52,6 +63,7 @@ class PrefUtil(private val context: Context) {
 
     companion object {
         private const val IS_FIRST_RUN = "pref_is_first_run"
+        private const val SHOW_DELETE_CONFIRMATION_DIALOG = "pref_show_delete_confirmation_dialog"
 
         const val INVALID_FAVORITE_ID = -1
         private const val AMRAP_FAVORITE_ID = "amrap_favorite_id"
