@@ -20,7 +20,7 @@ import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.kodein.di.generic.instance
 
-class CustomWorkoutFragment :
+class CustomWorkoutFragment:
     WorkoutTypeFragment(),
     CustomWorkoutAdapter.Listener,
     SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
@@ -191,6 +191,13 @@ class CustomWorkoutFragment :
         toggleEmptyState(false)
 
         prefUtil.setCurrentCustomWorkoutFavoriteName(workout.name)
+    }
+
+    override fun onFavoriteDeleted(name: String) {
+        if (viewModel.currentWorkout.name == name) {
+            setSaveButtonVisibility(true)
+            prefUtil.setCurrentCustomWorkoutFavoriteName("")
+        }
     }
 
     @SuppressLint("SetTextI18n")

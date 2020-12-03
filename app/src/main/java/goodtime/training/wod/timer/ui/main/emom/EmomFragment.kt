@@ -126,4 +126,5 @@ class EmomFragment : WorkoutTypeFragment() {
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
+    override fun onFavoriteDeleted(name: String) {/* Do nothing */ }
 }

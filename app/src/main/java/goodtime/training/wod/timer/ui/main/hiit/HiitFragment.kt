@@ -123,7 +123,6 @@ class HiitFragment : WorkoutTypeFragment() {
         prefUtil.setCurrentFavoriteId(SessionType.HIIT, session.id)
     }
 
-    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
-        // Do nothing
-    }
+    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
+    override fun onFavoriteDeleted(name: String) {/* Do nothing */ }
 }

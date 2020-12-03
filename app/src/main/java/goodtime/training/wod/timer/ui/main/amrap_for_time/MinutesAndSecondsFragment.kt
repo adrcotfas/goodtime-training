@@ -110,4 +110,5 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
     //TODO: extract the two functions to a common interface;
     //use the viewModel to access the repo and get the corresponding workout or session
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
+    override fun onFavoriteDeleted(name: String) {/* Do nothing */ }
 }

@@ -18,7 +18,6 @@ abstract class WorkoutTypeFragment:
     override val kodein by closestKodein()
     private var isDurationValid = true
 
-    @SuppressLint("SourceLockedOrientationActivity")
     override fun onResume() {
         super.onResume()
         showContent()

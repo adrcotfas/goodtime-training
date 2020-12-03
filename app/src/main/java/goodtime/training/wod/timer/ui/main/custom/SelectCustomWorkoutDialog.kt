@@ -27,6 +27,7 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
 
     interface Listener {
         fun onFavoriteSelected(workout: CustomWorkoutSkeleton)
+        fun onFavoriteDeleted(name: String)
     }
 
     companion object {
@@ -79,5 +80,6 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
 
     override fun onDeleteConfirmation(id: Int, name: String) {
         repo.removeCustomWorkoutSkeleton(name)
+        listener.onFavoriteDeleted(name)
     }
 }
