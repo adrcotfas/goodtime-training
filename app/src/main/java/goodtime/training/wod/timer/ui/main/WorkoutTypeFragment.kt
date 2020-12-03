@@ -1,7 +1,6 @@
 package goodtime.training.wod.timer.ui.main
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
 import android.view.View
 import androidx.fragment.app.Fragment
 import goodtime.training.wod.timer.MainActivity
@@ -22,13 +21,11 @@ abstract class WorkoutTypeFragment:
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onResume() {
         super.onResume()
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         showContent()
     }
 
     override fun onPause() {
         super.onPause()
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         hideContent()
     }
 

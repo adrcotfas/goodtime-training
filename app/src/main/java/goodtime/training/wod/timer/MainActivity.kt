@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -54,10 +55,12 @@ class MainActivity : AppCompatActivity() {
             //TODO: maybe activate later with a setting
             //toggleFullscreenMode(hideButtons)
 
-            if (destination.label == "WorkoutFragment") {
+            if (destination.label == "WorkoutFragment" || destination.label == "StopWorkoutDialog") {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             }
 
             newCustomWorkoutMenuItem?.isVisible = destination.label == "CustomWorkout"
