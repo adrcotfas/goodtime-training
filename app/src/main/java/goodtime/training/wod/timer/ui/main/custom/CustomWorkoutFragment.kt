@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PrefUtil
@@ -62,12 +63,18 @@ class CustomWorkoutFragment:
         return binding.root
     }
 
+    override fun onPause() {
+        super.onPause()
+        refreshStartButtonState(true)
+    }
+
     private fun initCurrentWorkout() {
         val workoutList = viewModel.getWorkoutList()
         workoutList.observe(viewLifecycleOwner, {
             if (it.isEmpty()) {
                 viewModel.currentWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
                 toggleEmptyState(true)
+                refreshStartButtonState()
             } else {
                 var found = false
                 val name = prefUtil.getCurrentCustomWorkoutFavoriteName()
@@ -139,6 +146,7 @@ class CustomWorkoutFragment:
         toggleEmptyState(false)
         setSaveButtonVisibility(true)
         updateTotalDuration()
+        refreshStartButtonState()
 
         listAdapter.notifyItemInserted(listAdapter.data.size - 1)
         binding.recycler.scrollToPosition(listAdapter.data.size - 1)
@@ -168,6 +176,7 @@ class CustomWorkoutFragment:
         } else {
             setSaveButtonVisibility(true)
         }
+        refreshStartButtonState()
     }
 
     override fun onChipSelected(position: Int) {
@@ -189,12 +198,13 @@ class CustomWorkoutFragment:
         setSaveButtonVisibility(false)
         updateTotalDuration()
         toggleEmptyState(false)
+        refreshStartButtonState()
 
         prefUtil.setCurrentCustomWorkoutFavoriteName(workout.name)
     }
 
     override fun onFavoriteDeleted(name: String) {
-        if (viewModel.currentWorkout.name == name) {
+        if (viewModel.currentWorkout.name == name && viewModel.currentWorkout.sessions.isNotEmpty()) {
             setSaveButtonVisibility(true)
             prefUtil.setCurrentCustomWorkoutFavoriteName("")
         }
@@ -238,5 +248,10 @@ class CustomWorkoutFragment:
         setSaveButtonVisibility(false)
         toggleEmptyState(true)
         updateTotalDuration()
+        refreshStartButtonState()
+    }
+
+    private fun refreshStartButtonState(state: Boolean = viewModel.currentWorkout.sessions.isNotEmpty()) {
+        (requireActivity() as MainActivity).setStartButtonState(state)
     }
 }
