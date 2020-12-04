@@ -62,11 +62,13 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
                         text = favorite.name
                     }
                     chip.setOnCloseIconClickListener {
-                        if (prefUtil.showDeleteConfirmationDialog()) {
-                            DeleteConfirmationDialog.newInstance(this, 0, favorite.name)
-                                .show(parentFragmentManager, "")
-                        } else {
-                            onDeleteConfirmation(0, favorite.name)
+                        if (parentFragmentManager.findFragmentByTag("DeleteConfirmation") == null) {
+                            if (prefUtil.showDeleteConfirmationDialog()) {
+                                DeleteConfirmationDialog.newInstance(this, 0, favorite.name)
+                                    .show(parentFragmentManager, "DeleteConfirmation")
+                            } else {
+                                onDeleteConfirmation(0, favorite.name)
+                            }
                         }
                     }
                     chip.setOnClickListener {

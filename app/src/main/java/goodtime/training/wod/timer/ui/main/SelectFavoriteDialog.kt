@@ -83,11 +83,13 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                         text = toFavoriteFormat(favorite)
                     }
                     chip.setOnCloseIconClickListener {
-                        if (prefUtil.showDeleteConfirmationDialog()) {
-                            DeleteConfirmationDialog.newInstance(this, favorite.id, chip.text.toString())
-                                .show(parentFragmentManager, "")
-                        } else {
-                            onDeleteConfirmation(favorite.id, "")
+                        if (parentFragmentManager.findFragmentByTag("DeleteConfirmation") == null) {
+                            if (prefUtil.showDeleteConfirmationDialog()) {
+                                DeleteConfirmationDialog.newInstance(this, favorite.id, chip.text.toString())
+                                    .show(parentFragmentManager, "DeleteConfirmation")
+                            } else {
+                                onDeleteConfirmation(favorite.id, "")
+                            }
                         }
                     }
                     chip.setOnClickListener {

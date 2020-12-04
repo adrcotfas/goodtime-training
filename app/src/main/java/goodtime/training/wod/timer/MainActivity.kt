@@ -74,13 +74,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onFavoritesButtonClick() {
-        val fragment = getVisibleFragment()
-        val sessions = fragment.getSelectedSessions()
-        return if (fragment is CustomWorkoutFragment) {
-            SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "")
-        } else {
-            SelectFavoriteDialog.newInstance(sessions[0], fragment)
-                .show(supportFragmentManager, "")
+        if (supportFragmentManager.findFragmentByTag("SelectFavorite") == null) {
+            val fragment = getVisibleFragment()
+            val sessions = fragment.getSelectedSessions()
+            if (fragment is CustomWorkoutFragment) {
+                SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "SelectFavorite")
+            } else {
+                SelectFavoriteDialog.newInstance(sessions[0], fragment)
+                    .show(supportFragmentManager, "SelectFavorite")
+            }
         }
     }
 
