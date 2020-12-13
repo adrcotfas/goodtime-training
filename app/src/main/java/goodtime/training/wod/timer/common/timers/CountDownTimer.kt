@@ -3,10 +3,10 @@ package goodtime.training.wod.timer.common.timers
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
-class CountDownTimer(secondsInTheFuture: Long, private val listener: Listener)
+class CountDownTimer(secondsInTheFuture: Long, originalSeconds: Long, private val listener: Listener)
     : android.os.CountDownTimer(TimeUnit.SECONDS.toMillis(secondsInTheFuture), 1000) {
 
-    private val halfway = ceil(secondsInTheFuture / 2.0).toInt()
+    private val halfway = ceil(originalSeconds / 2.0).toInt() - 1
 
     var seconds = 0
         private set

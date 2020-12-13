@@ -3,6 +3,10 @@ package goodtime.training.wod.timer.ui.timer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer
+import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.GO
+import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.HALFWAY_THERE_BEEP
+import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.LAST_ROUND
+import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.REST
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.START_COUNTDOWN
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLETE
 
@@ -86,20 +90,31 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
             isResting.value = true
         }
 
+        // will be used if the timer was paused
         val prev = secondsUntilFinished.value?.toLong()
-        val seconds = if (prev != null && prev != 0L ) prev
-        else if (isResting.value!! && session.type != SessionType.REST)
-            session.breakDuration.toLong()
-        else
-            session.duration.toLong()
 
-        timer = CountDownTimer(seconds, object : CountDownTimer.Listener {
+        // will be used when starting fresh
+        val originalSeconds =
+            if (isResting.value!! && session.type != SessionType.REST)
+                session.breakDuration.toLong()
+            else
+                session.duration.toLong()
+
+        val secondsToUse =
+            if (prev != null && prev != 0L ) prev
+            else originalSeconds
+
+        timer = CountDownTimer(secondsToUse, originalSeconds, object : CountDownTimer.Listener {
             override fun onTick(seconds: Int) { handleTimerTick(seconds) }
             override fun onFinishSet() { handleFinishTimer()}
-            override fun onHalfwayThere() { //TODO: don't play for BREAK and REST
+            override fun onHalfwayThere() {
+                if (isResting.value == false) {
+                    soundPlayer.play(HALFWAY_THERE_BEEP)
+                }
             }
         })
         timer.start()
+
     }
 
     fun toggleTimer() {
@@ -180,6 +195,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
         }
     }
 
+    //TODO: clean-up this mess
     private fun handleFinishTimer() {
         val type = getCurrentSessionType()
         var index = currentSessionIdx.value!!
@@ -204,9 +220,15 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                 } else {
                     ++index
                     currentSessionIdx.value = index
-
                     secondsUntilFinished.value = sessions[index].duration
+
                     startWorkout()
+
+                    if (sessions[index].type == SessionType.REST) {
+                        soundPlayer.play(REST)
+                    } else {
+                        soundPlayer.play(GO)
+                    }
                 }
             }
             SessionType.EMOM -> {
@@ -220,12 +242,25 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                         ++index
                         currentSessionIdx.value = index
                         secondsUntilFinished.value = sessions[index].duration
+
                         startWorkout()
+
+                        if (sessions[index].type == SessionType.REST) {
+                            soundPlayer.play(REST)
+                        } else {
+                            soundPlayer.play(GO)
+                        }
                     }
                 } else {
                     currentRoundIdx.value = currentRoundIdx.value!! + 1
                     secondsUntilFinished.value = sessions[currentSessionIdx.value!!].duration
                     startWorkout()
+
+                    if (isLastRound()) {
+                        soundPlayer.play(LAST_ROUND)
+                    } else {
+                        soundPlayer.play(GO)
+                    }
                 }
             }
             SessionType.HIIT -> {
@@ -236,6 +271,7 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                     repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
+
                         soundPlayer.play(WORKOUT_COMPLETE)
                     } else {
                         currentRoundIdx.value = 0
@@ -243,18 +279,31 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
                         currentSessionIdx.value = index
                         secondsUntilFinished.value = sessions[index].duration
                         startWorkout()
+
+                        if (sessions[index].type == SessionType.REST) {
+                            soundPlayer.play(REST)
+                        } else {
+                            soundPlayer.play(GO)
+                        }
                     }
                 } else {
                     isResting.value = !isResting.value!!
-                    if (!isResting.value!!) {
+                    val isRestingVal: Boolean = isResting.value!!
+                    if (!isRestingVal) {
                         currentRoundIdx.value = currentRoundIdx.value!! + 1
                     }
                     secondsUntilFinished.value =
-                        if (isResting.value!!)
+                        if (isRestingVal)
                             sessions[index].breakDuration
                         else
                             sessions[index].duration
                     startWorkout()
+
+                    if (isLastRound()) {
+                        soundPlayer.play(LAST_ROUND)
+                    } else {
+                        soundPlayer.play(if (isRestingVal) REST else GO)
+                    }
                 }
             }
         }
