@@ -10,10 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Select custom workout"
-        android:textSize="20dp"
-        android:textColor="@color/grey200"
         android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="24dp"/>
+        android:layout_marginHorizontal="24dp"
+        style="@style/MaterialAlertDialog.Title.Text"/>
 
     <TextView
         android:id="@+id/empty_state"

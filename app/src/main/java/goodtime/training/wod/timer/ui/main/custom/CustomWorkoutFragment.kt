@@ -36,6 +36,8 @@ class CustomWorkoutFragment:
     private val touchHelper = ItemTouchHelper(ItemTouchCallback())
     private lateinit var listAdapter : CustomWorkoutAdapter
 
+    private var isFresh = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory).get(CustomWorkoutViewModel::class.java)
@@ -51,7 +53,7 @@ class CustomWorkoutFragment:
         initCurrentWorkout()
 
         binding.saveButton.setOnClickListener{
-            SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this)
+            SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
                 .show(parentFragmentManager, "")
         }
         if (viewModel.hasUnsavedSession) {
@@ -173,6 +175,7 @@ class CustomWorkoutFragment:
         viewModel.hasUnsavedSession = true
         if (listAdapter.data.isEmpty()) {
             toggleEmptyState(true)
+            isFresh = true
         } else {
             setSaveButtonVisibility(true)
         }
@@ -201,6 +204,7 @@ class CustomWorkoutFragment:
         refreshStartButtonState()
 
         prefUtil.setCurrentCustomWorkoutFavoriteName(workout.name)
+        isFresh = false
     }
 
     override fun onFavoriteDeleted(name: String) {
@@ -249,6 +253,7 @@ class CustomWorkoutFragment:
         toggleEmptyState(true)
         updateTotalDuration()
         refreshStartButtonState()
+        isFresh = true
     }
 
     private fun refreshStartButtonState(state: Boolean = viewModel.currentWorkout.sessions.isNotEmpty()) {

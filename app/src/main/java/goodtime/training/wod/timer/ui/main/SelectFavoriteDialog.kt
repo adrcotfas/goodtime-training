@@ -7,6 +7,7 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteDescriptionDetailed
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteFormat
 import goodtime.training.wod.timer.common.StringUtils.Companion.toString
@@ -47,7 +48,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     }
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = AlertDialog.Builder(requireContext())
+        val b = MaterialAlertDialogBuilder(requireContext())
 
         binding = DialogSelectFavoriteBinding.inflate(layoutInflater)
 

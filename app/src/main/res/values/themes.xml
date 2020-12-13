@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/green_goodtime</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="colorAccent">@color/green_goodtime</item>
+        <item name="colorSecondary">@color/green_goodtime</item>
+        <item name="colorSurface">@android:color/black</item>
+        <item name="colorOnSurface">@color/grey200</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+
+        <item name="fontFamily">@font/app_font</item>
+        <item name="elevationOverlayEnabled">false</item>
+        <item name="chipStyle">@style/FavoritesChipStyle.Green</item>
+        <item name="bottomAppBarStyle">@style/BottomAppBar</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialAlertDialog</item>
+        <item name="materialButtonStyle">@style/Widget.App.Button</item>
+        <item name="radioButtonStyle">@style/Widget.App.RadioButton</item>
+    </style>
+
+    <style name="Theme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialAlertDialog"
+        parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/green_goodtime</item>
+        <item name="colorSecondary">@color/green_goodtime</item>
+        <item name="colorSurface">@color/grey1000</item>
+        <item name="colorOnSurface">@color/grey200</item>
+        <item name="alertDialogStyle">@style/MaterialAlertDialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialog.Body.Text</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.App.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
+    </style>
+
+    <style name="Widget.App.RadioButton" parent="Widget.MaterialComponents.CompoundButton.RadioButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.RadioButton</item>
+        <item name="android:textColor">@color/grey200</item>
+        <item name="android:textAppearance">@style/DialogBodyTextStyle</item>
+    </style>
+
+    <style name="ThemeOverlay.App.RadioButton" parent="">
+        <item name="colorOnSurface">@color/grey200</item>
+        <item name="colorSecondary">@color/green_goodtime</item>
+    </style>
+
+</resources>

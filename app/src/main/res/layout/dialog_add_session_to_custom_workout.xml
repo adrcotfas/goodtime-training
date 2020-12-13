@@ -52,8 +52,6 @@
                 android:id="@+id/radio_button_from_favorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey200"
-                android:buttonTint="@color/grey200"
                 android:layout_gravity="center_vertical"
                 android:text="From favorites"
                 android:textSize="16dp"
@@ -63,14 +61,12 @@
                 android:id="@+id/radio_button_select_custom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey200"
-                android:buttonTint="@color/grey200"
                 android:layout_gravity="center_vertical"
+                android:singleLine="true"
                 android:text="Custom"
                 android:textSize="16dp"
                 android:paddingStart="8dp"
-                android:layout_marginStart="32dp"
-                />
+                android:layout_marginStart="16dp" />
         </RadioGroup>
 
         <LinearLayout
@@ -135,12 +131,11 @@
                 android:layout_gravity="start"
                 android:textStyle="italic"
                 android:lines="2"
-                android:textSize="@dimen/smallerTextSize"
                 android:ellipsize="end"
                 android:scrollHorizontally="false"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:textColor="@color/grey200" />
+                style="@style/MaterialAlertDialog.Body.Text"/>
 
             <!-- Dummy item to prevent EditTexts from receiving focus -->
             <LinearLayout

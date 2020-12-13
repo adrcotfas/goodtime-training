@@ -94,7 +94,7 @@ class StringUtils {
                     val breakString = session.breakDuration.toString() + " second" +  if (session.breakDuration > 1) "s" else ""
                     "${session.numRounds} high intensity intervals of $workString of work with $breakString of rest"
                 }
-                SessionType.REST -> "Rest for ${secondsToNiceFormatExtended(session.breakDuration)}"
+                SessionType.REST -> "Rest for ${secondsToNiceFormatExtended(session.duration)}"
             }
         }
 

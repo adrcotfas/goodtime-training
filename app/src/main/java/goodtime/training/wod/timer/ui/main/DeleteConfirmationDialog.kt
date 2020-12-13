@@ -3,9 +3,9 @@ package goodtime.training.wod.timer.ui.main
 import android.app.Dialog
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import androidx.appcompat.app.AlertDialog
 import androidx.core.text.italic
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.preferences.PrefUtil
 import goodtime.training.wod.timer.databinding.DialogDeleteConfirmationBinding
 import org.kodein.di.KodeinAware
@@ -36,7 +36,7 @@ class DeleteConfirmationDialog: DialogFragment(), KodeinAware {
     }
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = AlertDialog.Builder(requireContext())
+        val b = MaterialAlertDialogBuilder(requireContext())
         binding = DialogDeleteConfirmationBinding.inflate(layoutInflater)
 
         b.apply {
@@ -44,7 +44,7 @@ class DeleteConfirmationDialog: DialogFragment(), KodeinAware {
             setTitle("Delete favorite?")
 
             val message = SpannableStringBuilder().append("This will delete ")
-                .italic { append(name) }.append("  from the favorites.")
+                .italic { append(name) }.append(" from the favorites.")
 
             setMessage(message)
             setPositiveButton(android.R.string.ok) { _, _ ->

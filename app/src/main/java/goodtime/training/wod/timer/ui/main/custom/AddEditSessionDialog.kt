@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.*
 import goodtime.training.wod.timer.data.model.SessionSkeleton
@@ -40,8 +41,10 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     companion object {
         const val INVALID_CANDIDATE_IDX = -1
 
-        fun newInstance(listener: Listener, candidateIdx: Int = INVALID_CANDIDATE_IDX,
-                        candidate: SessionSkeleton = SessionSkeleton()) : AddEditSessionDialog {
+        fun newInstance(
+            listener: Listener, candidateIdx: Int = INVALID_CANDIDATE_IDX,
+            candidate: SessionSkeleton = SessionSkeleton()
+        ) : AddEditSessionDialog {
             val dialog = AddEditSessionDialog()
             dialog.listener = listener
             dialog.candidateIdx = candidateIdx
@@ -55,7 +58,7 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     private fun isEditMode() = candidateIdx != INVALID_CANDIDATE_IDX
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = AlertDialog.Builder(requireContext())
+        val b = MaterialAlertDialogBuilder(requireContext())
         binding = DialogAddSessionToCustomWorkoutBinding.inflate(layoutInflater)
 
         initSessionEditTextHelper()
@@ -68,7 +71,10 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
             setTitle(if (isEditMode()) "Edit session" else "Add session")
             setPositiveButton(android.R.string.ok) { _, _ ->
                 if(isEditMode()) {
-                    listener.onSessionEdit(candidateIdx, sessionEditTextHelper.generateFromCurrentSelection())
+                    listener.onSessionEdit(
+                        candidateIdx,
+                        sessionEditTextHelper.generateFromCurrentSelection()
+                    )
                 } else {
                     listener.onSessionAdded(sessionEditTextHelper.generateFromCurrentSelection())
                 }
@@ -79,7 +85,8 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     }
 
     private fun initSessionEditTextHelper() {
-        sessionEditTextHelper = SessionEditTextHelper(this,
+        sessionEditTextHelper = SessionEditTextHelper(
+            this,
             binding.genericMinutesLayout.editText,
             binding.genericSecondsLayout.editText,
             binding.emomRoundsLayout.editText,
@@ -88,12 +95,16 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
             binding.hiitRoundsLayout.editText,
             binding.hiitSecondsWorkLayout.editText,
             binding.hiitSecondsRestLayout.editText,
-            if (isEditMode()) candidateToEdit.type else SessionType.AMRAP)
+            if (isEditMode()) candidateToEdit.type else SessionType.AMRAP
+        )
     }
 
     private fun setupSpinner() {
         binding.sessionTypeSpinner.adapter =
-            SessionTypeSpinnerAdapter(requireContext(), resources.getStringArray(R.array.session_types))
+            SessionTypeSpinnerAdapter(
+                requireContext(),
+                resources.getStringArray(R.array.session_types)
+            )
         binding.sessionTypeSpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -229,6 +240,7 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
         setDescription(
             if (isValid)
                 StringUtils.toFavoriteDescriptionDetailed(sessionSkeleton)
-            else "Please enter valid values.")
+            else "Please enter valid values."
+        )
     }
 }

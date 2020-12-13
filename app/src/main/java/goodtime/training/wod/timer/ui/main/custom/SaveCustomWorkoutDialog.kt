@@ -1,11 +1,14 @@
 package goodtime.training.wod.timer.ui.main.custom
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.hideKeyboardFrom
 import goodtime.training.wod.timer.databinding.DialogSaveCustomWorkoutBinding
 import org.kodein.di.KodeinAware
@@ -19,31 +22,46 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
     private lateinit var originalName : String
     private lateinit var customName : String
 
+    // the workout to be saved does not already exist
+    private var isFresh = false
+
     interface Listener {
         fun onCustomWorkoutSaved(name: String)
     }
 
     companion object {
-        fun newInstance(name: String, listener: Listener): SaveCustomWorkoutDialog {
+        fun newInstance(name: String, listener: Listener, isFresh: Boolean): SaveCustomWorkoutDialog {
             val dialog = SaveCustomWorkoutDialog()
             dialog.listener = listener
             dialog.originalName = name
+            dialog.isFresh = isFresh
+            if (isFresh) {
+                dialog.customName = name
+            }
             return dialog
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = AlertDialog.Builder(requireContext())
+        val b = MaterialAlertDialogBuilder(requireContext())
         binding = DialogSaveCustomWorkoutBinding.inflate(layoutInflater)
 
-        binding.workoutName.text = "$originalName "
-        binding.workoutName.setOnClickListener{ binding.overwriteRadioButton.isChecked = true}
-
-        binding.overwriteRadioButton.setOnCheckedChangeListener{ _, isChecked ->
-            binding.saveAsRadioButton.isChecked = !isChecked
-            togglePositiveButtonState(true)
-            if (isChecked) {
-                hideKeyboardFrom(requireContext(), binding.root)
+        if (isFresh) {
+            binding.overwriteRadioButton.visibility = View.GONE
+            binding.saveAsRadioButton.isChecked = true
+            binding.saveAsRadioButton.buttonDrawable = null
+            binding.workoutName.visibility = View.GONE
+            binding.editText.setText(originalName)
+        } else {
+            binding.workoutName.text = "$originalName "
+            binding.workoutName.setOnClickListener{ binding.overwriteRadioButton.isChecked = true}
+            binding.overwriteRadioButton.setOnCheckedChangeListener{ _, isChecked ->
+                binding.saveAsRadioButton.isChecked = !isChecked
+                togglePositiveButtonState(true)
+                if (isChecked) {
+                    hideKeyboardFrom(requireContext(), binding.root)
+                }
             }
         }
 
@@ -64,8 +82,12 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
             setView(binding.root)
             setPositiveButton(android.R.string.ok) { _, _ ->
                 listener.onCustomWorkoutSaved(
-                    if (binding.overwriteRadioButton.isChecked) originalName
-                    else customName)
+                    if (isFresh) {
+                        customName
+                    } else {
+                        if (binding.overwriteRadioButton.isChecked) originalName
+                        else customName
+                    })
                 hideKeyboardFrom(requireContext(), binding.root)
             }
         }

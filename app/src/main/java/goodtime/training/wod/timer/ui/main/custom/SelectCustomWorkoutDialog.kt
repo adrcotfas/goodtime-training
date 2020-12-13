@@ -9,6 +9,7 @@ import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectCustomWorkoutBinding
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.preferences.PrefUtil
 import goodtime.training.wod.timer.ui.main.DeleteConfirmationDialog
 import org.kodein.di.KodeinAware
@@ -39,7 +40,7 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
     }
 
     override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = AlertDialog.Builder(requireContext())
+        val b = MaterialAlertDialogBuilder(requireContext())
 
         binding = DialogSelectCustomWorkoutBinding.inflate(layoutInflater)
         setupFavorites()

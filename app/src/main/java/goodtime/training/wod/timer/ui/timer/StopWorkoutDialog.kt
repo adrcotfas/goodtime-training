@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.data.workout.TimerState
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -26,7 +27,7 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
         if (viewModel.timerState.value == TimerState.ACTIVE) {
             viewModel.toggleTimer()
         }
-        val b = AlertDialog.Builder(requireContext())
+        val b = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Stop workout?")
             .setMessage("Are you sure you want to stop this workout?")
             .setPositiveButton(

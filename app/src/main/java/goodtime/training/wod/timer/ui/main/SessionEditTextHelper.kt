@@ -172,7 +172,7 @@ data class SessionEditTextHelper(
 
     fun generateFromCurrentSelection() : SessionSkeleton {
         return when(sessionType) {
-            SessionType.AMRAP, SessionType.FOR_TIME
+            SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST
             -> SessionSkeleton(0,
                 getCurrentSelectionDuration(sessionType), 0, 0, sessionType)
             SessionType.EMOM
@@ -181,8 +181,6 @@ data class SessionEditTextHelper(
             SessionType.HIIT
             -> SessionSkeleton(0,
                 toInt(hiitSecondsWorkEt!!.text.toString()), toInt(hiitSecondsRestEt!!.text.toString()), toInt(hiitRoundsEt!!.text.toString()), sessionType)
-            SessionType.REST -> SessionSkeleton(0,
-                getCurrentSelectionDuration(sessionType), 0, 0, sessionType)
         }
     }
 
