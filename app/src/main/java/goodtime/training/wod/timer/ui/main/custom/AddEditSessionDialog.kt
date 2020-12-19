@@ -22,6 +22,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
+//TODO: make the view setup and updates more efficient, especially the Custom section
 class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
@@ -221,6 +222,7 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                 binding.hiitSection.visibility = View.VISIBLE
             }
         }
+        binding.customSessionDescription.visibility = View.VISIBLE
     }
 
     private fun isInFavoritesSection() =

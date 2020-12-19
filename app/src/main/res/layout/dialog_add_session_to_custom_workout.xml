@@ -135,7 +135,8 @@
                 android:scrollHorizontally="false"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                style="@style/MaterialAlertDialog.Body.Text"/>
+                style="@style/MaterialAlertDialog.Body.Text"
+                android:visibility="gone"/>
 
             <!-- Dummy item to prevent EditTexts from receiving focus -->
             <LinearLayout
@@ -238,7 +239,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/hiit_seconds_work_layout"
                     app:unit="@{`rounds`}"
-                    app:value="@{`10`}" />
+                    app:value="@{`8`}" />
 
                 <include
                     android:id="@+id/hiit_seconds_work_layout"
