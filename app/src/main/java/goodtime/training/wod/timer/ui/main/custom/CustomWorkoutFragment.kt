@@ -53,14 +53,19 @@ class CustomWorkoutFragment:
         initCurrentWorkout()
 
         binding.saveButton.setOnClickListener{
-            SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
-                .show(parentFragmentManager, "")
+            if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
+                SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
+                        .show(parentFragmentManager, "SaveCustomWorkoutDialog")
+            }
         }
+
         if (viewModel.hasUnsavedSession) {
             setSaveButtonVisibility(true)
         }
         binding.addSessionButton.setOnClickListener {
-            AddEditSessionDialog.newInstance(this).show(parentFragmentManager, "")
+            if (parentFragmentManager.findFragmentByTag("AddEditSessionDialog") == null) {
+                AddEditSessionDialog.newInstance(this).show(parentFragmentManager, "AddEditSessionDialog")
+            }
         }
         return binding.root
     }
