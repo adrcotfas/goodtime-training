@@ -16,8 +16,19 @@
         <item name="android:textAppearance">@style/DialogBodyTextStyle</item>
     </style>
 
+    <style name="MaterialAlertDialog.Body.Actions" parent="">
+        <item name="android:textColor">@color/grey200</item>
+        <item name="android:textAppearance">@style/DialogActionsTextStyle</item>
+    </style>
+
     <style name="DialogTitleTextStyle">
         <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/app_font</item>
+        <item name="android:fontFamily">@font/app_font</item>
+    </style>
+
+    <style name="DialogActionsTextStyle">
+        <item name="android:textSize">18sp</item>
         <item name="fontFamily">@font/app_font</item>
         <item name="android:fontFamily">@font/app_font</item>
     </style>
