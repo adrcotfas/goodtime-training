@@ -25,11 +25,8 @@ class StringUtils {
 
         fun toFavoriteFormat(session: SessionSkeleton): String {
             return when(session.type) {
-                SessionType.AMRAP, SessionType.REST -> {
+                SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
                     secondsToNiceFormat(session.duration)
-                }
-                SessionType.FOR_TIME -> {
-                    "TC ${secondsToNiceFormat(session.duration)}"
                 }
                 SessionType.EMOM -> {
                     "${session.numRounds} × ${secondsToNiceFormat(session.duration)}"
