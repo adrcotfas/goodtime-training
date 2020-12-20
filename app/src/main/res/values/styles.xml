@@ -153,11 +153,6 @@
         <item name="android:textSize">45sp</item>
     </style>
 
-    <style name="TimerStyleLite.Large">
-        <item name="android:textSize">70sp</item>
-    </style>
-
-
     <style name="ShapeAppearanceOverlay.MaterialComponents.Chip" parent="" tools:override="true">
         <item name="cornerSize">50%</item>
     </style>

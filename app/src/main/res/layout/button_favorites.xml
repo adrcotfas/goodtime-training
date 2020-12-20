@@ -13,3 +13,6 @@
         style="@style/FavoritesChipStyleSmaller.Grey">
     </com.google.android.material.chip.Chip>
 </FrameLayout>
+
+<!--    app:chipEndPadding="0dp"-->
+<!--    app:chipStartPadding="8dp"-->
