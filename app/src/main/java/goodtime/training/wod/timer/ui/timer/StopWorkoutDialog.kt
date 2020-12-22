@@ -1,7 +1,6 @@
 package goodtime.training.wod.timer.ui.timer
 
 import android.R
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -33,10 +32,12 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
             .setPositiveButton(
                 R.string.ok
             ) { _: DialogInterface?, _: Int ->
-                viewModel.stopTimer()
+                viewModel.abandonWorkout()
                 //TODO: seems to work fine but is it a good idea?
-                NavHostFragment.findNavController(this).popBackStack()
-                NavHostFragment.findNavController(this).popBackStack()
+                NavHostFragment.findNavController(this).apply {
+                    popBackStack()
+                    popBackStack()
+                }
             }
             .setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int ->
                 if (viewModel.timerState.value == TimerState.PAUSED) {

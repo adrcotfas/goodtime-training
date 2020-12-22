@@ -14,6 +14,6 @@ class TimerViewModelFactory(
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return TimerViewModel(TimerNotificationHelper(context, preferenceHelper), appRepository) as T
+        return TimerViewModel(TimerNotificationHelper(context, preferenceHelper), preferenceHelper, appRepository) as T
     }
 }

@@ -12,6 +12,7 @@ data class Session(
     var duration: Int = 0,
     var breakDuration: Int = 0,
     var numRounds: Int = 0,
+    var actualDuration: Int = 0,
     var type: SessionType = SessionType.REST,
 
     var rounds: Int,
@@ -19,21 +20,9 @@ data class Session(
     var finished: Boolean) {
 
     companion object {
-        fun constructSession(skeleton: SessionSkeleton, timestamp: Long, rounds: ArrayList<Int> = arrayListOf(0), duration : Int = 0) : Session {
-            //TODO: use [duration] for FOR_TIME (or maybe for all)
-            return Session(0, skeleton.duration, skeleton.breakDuration, skeleton.numRounds, skeleton.type,
-                //TODO: but is "finished" important?
-                0, timestamp, true)
-        }
-
-        fun constructIncompleteSession(
-            type : SessionType,
-            activeSeconds: Int,
-            timestamp: Long,
-            rounds: Int = 0) : Session {
-
-            return Session(0, activeSeconds, 0, 0, type, rounds,
-                timestamp, false)
+        fun constructSession(skeleton: SessionSkeleton, timestamp: Long, rounds: ArrayList<Int> = arrayListOf(0), actualDuration: Int = 0) : Session {
+            return Session(0, skeleton.duration, skeleton.breakDuration, skeleton.numRounds, actualDuration, skeleton.type,
+                 0, timestamp, true)
         }
     }
 

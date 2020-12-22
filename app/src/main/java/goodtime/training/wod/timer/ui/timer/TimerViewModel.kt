@@ -2,6 +2,7 @@ package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 
 import goodtime.training.wod.timer.common.timers.CountDownTimer
 import goodtime.training.wod.timer.data.model.Session.Companion.constructSession
@@ -13,6 +14,7 @@ import goodtime.training.wod.timer.data.workout.TimerState
 
 class TimerViewModel(
         private val notifier: TimerNotificationHelper,
+        private val preferenceHelper: PreferenceHelper,
         private val repository: AppRepository) : ViewModel() {
 
     val timerState = MutableLiveData(TimerState.INACTIVE)
@@ -90,14 +92,14 @@ class TimerViewModel(
 
         // will be used when starting fresh
         val originalSeconds =
-            if (isResting.value!! && session.type != SessionType.REST)
-                session.breakDuration.toLong()
-            else
-                session.duration.toLong()
+                if (isResting.value!! && session.type != SessionType.REST)
+                    session.breakDuration.toLong()
+                else
+                    session.duration.toLong()
 
         val secondsToUse =
-            if (prev != null && prev != 0L ) prev
-            else originalSeconds
+                if (prev != null && prev != 0L ) prev
+                else originalSeconds
 
         timer = CountDownTimer(secondsToUse, originalSeconds, object : CountDownTimer.Listener {
             override fun onTick(seconds: Int) { handleTimerTick(seconds) }
@@ -122,24 +124,28 @@ class TimerViewModel(
         }
     }
 
-    fun stopTimer() {
+    private fun stopTimer() {
         timer.cancel()
         notifier.stop()
         timerState.value = TimerState.INACTIVE
-        //TODO: do we want to save unfinished sessions?
-        //val index = currentSessionIdx.value!!
-//        val currentSession = sessions[index]
-//        val activeSeconds =
-//            (index + 1) * currentSession.duration +
-//                    (secondsUntilFinished.value?.toInt() ?: 0)
+    }
 
-//if (currentSession.type != SessionType.BREAK) {
-//            repository.addSession(constructIncompleteSession(
-//                currentSession.type,
-//                activeSeconds,
-//                System.currentTimeMillis(),
-//                countedRounds.value!!))
-//        }
+    fun abandonWorkout() {
+        stopTimer()
+        if (preferenceHelper.logIncompleteSessions()) {
+            val type = getCurrentSessionType()
+            val index = currentSessionIdx.value!!
+            updateDurations(type, index, true)
+
+            if (sessions[index].type != SessionType.REST) {
+                repository.addSession(
+                        constructSession(
+                                sessions[index],
+                                System.currentTimeMillis(),
+                                countedRounds[index],
+                                durations[index]))
+            }
+        }
     }
 
     /**
@@ -172,20 +178,47 @@ class TimerViewModel(
         }
     }
 
-    private fun updateDurations(sessionType: SessionType, index: Int) {
+    private fun updateDurations(sessionType: SessionType, index: Int, abandoned: Boolean = false) {
+        val currentRoundIdx = currentRoundIdx.value!!
+        val secondsUntilFinished = secondsUntilFinished.value!!
+        val sessionSkeleton = sessions[index]
         when(sessionType) {
             SessionType.AMRAP, SessionType.REST -> {
-                durations[index] = sessions[index].duration
+                if (abandoned) {
+                    durations[index] = sessionSkeleton.duration - secondsUntilFinished
+                } else {
+                    durations[index] = sessionSkeleton.duration
+                }
             }
             SessionType.FOR_TIME -> {
-                durations[index] = sessions[index].duration - secondsUntilFinished.value!!
+                durations[index] = sessionSkeleton.duration - secondsUntilFinished
             }
             SessionType.EMOM -> {
-                durations[index] = sessions[index].duration * sessions[index].numRounds
+                if (abandoned) {
+                    // rounds already finished
+                    val fullRoundsDuration = sessionSkeleton.duration * currentRoundIdx
+                    // the incomplete one
+                    val lastRoundDuration = sessionSkeleton.duration - secondsUntilFinished
+                    durations[index] = fullRoundsDuration + lastRoundDuration
+                } else {
+                    durations[index] = sessionSkeleton.duration * sessionSkeleton.numRounds
+                }
             }
             SessionType.HIIT -> {
-                durations[index] = sessions[index].duration * sessions[index].numRounds +
-                        sessions[index].breakDuration * (sessions[index].numRounds)
+                if (abandoned) {
+                    // rounds already finished
+                    val fullRoundsDuration = sessionSkeleton.duration * currentRoundIdx +
+                            sessionSkeleton.breakDuration * currentRoundIdx
+                    if (isResting.value!!) {
+                        durations[index] = fullRoundsDuration + sessionSkeleton.duration +
+                                sessionSkeleton.breakDuration - secondsUntilFinished
+                    } else {
+                        durations[index] = fullRoundsDuration + sessionSkeleton.duration - secondsUntilFinished
+                    }
+                } else {
+                    durations[index] = sessionSkeleton.duration * sessionSkeleton.numRounds +
+                            sessionSkeleton.breakDuration * (sessionSkeleton.numRounds)
+                }
             }
         }
     }
@@ -203,11 +236,11 @@ class TimerViewModel(
                 }
                 if (type != SessionType.REST) {
                     repository.addSession(
-                        constructSession(
-                            sessions[index],
-                            System.currentTimeMillis(),
-                            countedRounds[index],
-                            durations[index]))
+                            constructSession(
+                                    sessions[index],
+                                    System.currentTimeMillis(),
+                                    countedRounds[index],
+                                    durations[index]))
                 }
                 if (isLastSession()) {
                     timerState.value = TimerState.FINISHED
@@ -261,8 +294,8 @@ class TimerViewModel(
             SessionType.HIIT -> {
                 // if this is the last round but not in the final session, take the break
                 if ((isLastRound() && !isLastSession() && isResting.value!!)
-                    // if this is the final session and final work round, skip the break
-                    || (isLastRound() && isLastSession() && !isResting.value!!)) {
+                        // if this is the final session and final work round, skip the break
+                        || (isLastRound() && isLastSession() && !isResting.value!!)) {
                     repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
@@ -288,10 +321,10 @@ class TimerViewModel(
                         currentRoundIdx.value = currentRoundIdx.value!! + 1
                     }
                     secondsUntilFinished.value =
-                        if (isRestingVal)
-                            sessions[index].breakDuration
-                        else
-                            sessions[index].duration
+                            if (isRestingVal)
+                                sessions[index].breakDuration
+                            else
+                                sessions[index].duration
                     startWorkout()
 
                     if (isLastRound()) {

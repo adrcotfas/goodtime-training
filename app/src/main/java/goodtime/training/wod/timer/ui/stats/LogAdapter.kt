@@ -39,7 +39,7 @@ class LogAdapter(private val listener: Listener) : RecyclerView.Adapter<LogAdapt
         private val date: TextView = itemView.findViewById(R.id.date)
 
         fun bind(item: Session) {
-            exercise.text = "${item.type} ${item.duration}"
+            exercise.text = "${item.type} ${item.actualDuration}"
             date.text = formatDateAndTime(item.timestamp)
         }
 
