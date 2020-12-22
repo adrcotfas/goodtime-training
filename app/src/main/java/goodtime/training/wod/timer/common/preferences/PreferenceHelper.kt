@@ -30,7 +30,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val REMINDER_ENABLED = "pref_reminder"
         private const val LOG_INCOMPLETE = "pref_log_incomplete"
         private const val FULLSCREEN_MODE = "pref_fullscreen"
-        private const val DND_MODE_ENABLED = "pref_dnd_mode"
+        const val DND_MODE_ENABLED = "pref_dnd_mode"
 
         fun generatePreWorkoutSession(seconds: Int) : SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)

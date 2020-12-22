@@ -197,6 +197,7 @@ class TimerFragment : Fragment(), KodeinAware {
         binding.closeButton.setOnClickListener{
             binding.closeButton.hide()
             requireActivity().onBackPressed()
+            viewModel.handleCompletion()
         }
 
         setupCounter()

@@ -76,6 +76,10 @@ class TimerViewModel(
         currentSessionIdx.value = 0
         secondsUntilFinished.value = sessions[0].duration
         isResting.value = false
+
+        if (preferenceHelper.isDndModeEnabled()) {
+            notifier.toggleDndMode(true)
+        }
     }
 
     fun startWorkout() {
@@ -146,6 +150,7 @@ class TimerViewModel(
                                 durations[index]))
             }
         }
+        handleCompletion()
     }
 
     /**
@@ -365,5 +370,12 @@ class TimerViewModel(
 
     fun getNumCurrentSessionRounds(): Int {
         return countedRounds[currentSessionIdx.value!!].size
+    }
+
+    //TODO: find a better name for this and other functions
+    fun handleCompletion() {
+        if (preferenceHelper.isDndModeEnabled()) {
+            notifier.toggleDndMode(false)
+        }
     }
 }

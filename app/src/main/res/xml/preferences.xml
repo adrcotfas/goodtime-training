@@ -78,7 +78,6 @@
         <CheckBoxPreference
             app:key="pref_dnd_mode"
             app:title="Do not disturb mode"
-            app:defaultValue="false"
-            android:enabled="false"/>
+            app:defaultValue="false"/>
     </PreferenceCategory>
 </PreferenceScreen>
