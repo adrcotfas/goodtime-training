@@ -7,9 +7,9 @@ import goodtime.training.wod.timer.common.sound_and_vibration.Vibrator
 
 class TimerNotificationHelper(
         context: Context,
-        private val preferenceHelper: PreferenceHelper) {
+        private val preferenceHelper: PreferenceHelper,
+        private val soundPlayer: SoundPlayer) {
 
-    private val soundPlayer = SoundPlayer(context)
     private val vibrator = Vibrator(context)
 
     fun notifyCountDown() {
