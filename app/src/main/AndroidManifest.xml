@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="goodtime.training.wod.timer">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:name="goodtime.training.wod.timer.GoodtimeApplication"
         android:allowBackup="true"

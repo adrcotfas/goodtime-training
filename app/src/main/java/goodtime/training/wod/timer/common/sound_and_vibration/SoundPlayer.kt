@@ -1,4 +1,4 @@
-package goodtime.training.wod.timer.common.soundplayer
+package goodtime.training.wod.timer.common.sound_and_vibration
 
 import android.content.Context
 import android.content.ContextWrapper

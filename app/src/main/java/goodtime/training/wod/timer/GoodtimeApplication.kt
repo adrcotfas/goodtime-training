@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import com.google.android.material.resources.TextAppearanceConfig
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer
+import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
 import goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao
 import goodtime.training.wod.timer.data.db.Database
 import goodtime.training.wod.timer.data.db.SessionDao
@@ -58,7 +58,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind() from provider { HiitViewModelFactory(instance()) }
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { LogViewModelFactory(instance()) }
-        bind() from provider { TimerViewModelFactory(instance(), instance(), instance()) }
+        bind() from provider { TimerViewModelFactory(applicationContext, instance(), instance()) }
     }
 
     override fun onCreate() {

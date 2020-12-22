@@ -2,15 +2,6 @@ package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import goodtime.training.wod.timer.common.preferences.PreferenceHelper
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.GO
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.HALFWAY_THERE_BEEP
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.LAST_ROUND
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.REST
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.START_COUNTDOWN
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.START_COUNTDOWN_GYM
-import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLETE
 
 import goodtime.training.wod.timer.common.timers.CountDownTimer
 import goodtime.training.wod.timer.data.model.Session.Companion.constructSession
@@ -21,8 +12,7 @@ import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.workout.TimerState
 
 class TimerViewModel(
-        private val soundPlayer: SoundPlayer,
-        private val preferenceHelper: PreferenceHelper,
+        private val notifier: TimerNotificationHelper,
         private val repository: AppRepository) : ViewModel() {
 
     val timerState = MutableLiveData(TimerState.INACTIVE)
@@ -114,7 +104,7 @@ class TimerViewModel(
             override fun onFinishSet() { handleFinishTimer()}
             override fun onHalfwayThere() {
                 if (isResting.value == false) {
-                    soundPlayer.play(HALFWAY_THERE_BEEP)
+                    notifier.notifyMiddleOfTraining()
                 }
             }
         })
@@ -126,7 +116,7 @@ class TimerViewModel(
         if (timerState.value == TimerState.ACTIVE) {
             timer.cancel()
             timerState.value = TimerState.PAUSED
-            soundPlayer.stop()
+            notifier.stop()
         } else if (timerState.value == TimerState.PAUSED) {
             startWorkout()
         }
@@ -134,7 +124,7 @@ class TimerViewModel(
 
     fun stopTimer() {
         timer.cancel()
-        soundPlayer.stop()
+        notifier.stop()
         timerState.value = TimerState.INACTIVE
         //TODO: do we want to save unfinished sessions?
         //val index = currentSessionIdx.value!!
@@ -157,7 +147,7 @@ class TimerViewModel(
      */
     fun finishCurrentSession() {
         timer.cancel()
-        soundPlayer.stop()
+        notifier.stop()
         timerState.value = TimerState.INACTIVE
         // when the timer is finished, save the last round but only if the user used the round counter
         if (countedRounds[currentSessionIdx.value!!].isNotEmpty()) {
@@ -178,11 +168,7 @@ class TimerViewModel(
         secondsUntilFinished.value = seconds
         if (seconds == 2) {
             //TODO: handle bug when pausing exactly here -> sound should not restart
-
-            val profile = preferenceHelper.getSoundProfile()
-            soundPlayer.play(
-                    if(profile == "Default") START_COUNTDOWN
-                    else START_COUNTDOWN_GYM)
+            notifier.notifyCountDown()
         }
     }
 
@@ -225,7 +211,7 @@ class TimerViewModel(
                 }
                 if (isLastSession()) {
                     timerState.value = TimerState.FINISHED
-                    soundPlayer.play(WORKOUT_COMPLETE)
+                    notifier.notifyTrainingComplete()
                 } else {
                     ++index
                     currentSessionIdx.value = index
@@ -234,9 +220,9 @@ class TimerViewModel(
                     startWorkout()
 
                     if (sessions[index].type == SessionType.REST) {
-                        soundPlayer.play(REST)
+                        notifier.notifyRest()
                     } else {
-                        soundPlayer.play(GO)
+                        notifier.notifyStart()
                     }
                 }
             }
@@ -245,7 +231,7 @@ class TimerViewModel(
                     repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
-                        soundPlayer.play(WORKOUT_COMPLETE)
+                        notifier.notifyTrainingComplete()
                     } else {
                         currentRoundIdx.value = 0
                         ++index
@@ -255,9 +241,9 @@ class TimerViewModel(
                         startWorkout()
 
                         if (sessions[index].type == SessionType.REST) {
-                            soundPlayer.play(REST)
+                            notifier.notifyRest()
                         } else {
-                            soundPlayer.play(GO)
+                            notifier.notifyStart()
                         }
                     }
                 } else {
@@ -266,9 +252,9 @@ class TimerViewModel(
                     startWorkout()
 
                     if (isLastRound()) {
-                        soundPlayer.play(LAST_ROUND)
+                        notifier.notifyLastRound()
                     } else {
-                        soundPlayer.play(GO)
+                        notifier.notifyStart()
                     }
                 }
             }
@@ -281,7 +267,7 @@ class TimerViewModel(
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
 
-                        soundPlayer.play(WORKOUT_COMPLETE)
+                        notifier.notifyTrainingComplete()
                     } else {
                         currentRoundIdx.value = 0
                         ++index
@@ -290,9 +276,9 @@ class TimerViewModel(
                         startWorkout()
 
                         if (sessions[index].type == SessionType.REST) {
-                            soundPlayer.play(REST)
+                            notifier.notifyRest()
                         } else {
-                            soundPlayer.play(GO)
+                            notifier.notifyStart()
                         }
                     }
                 } else {
@@ -309,9 +295,13 @@ class TimerViewModel(
                     startWorkout()
 
                     if (isLastRound()) {
-                        soundPlayer.play(LAST_ROUND)
+                        notifier.notifyLastRound()
                     } else {
-                        soundPlayer.play(if (isRestingVal) REST else GO)
+                        if (isRestingVal) {
+                            notifier.notifyRest()
+                        } else {
+                            notifier.notifyStart()
+                        }
                     }
                 }
             }
