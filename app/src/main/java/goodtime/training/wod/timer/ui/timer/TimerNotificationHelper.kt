@@ -25,28 +25,33 @@ class TimerNotificationHelper(
     }
 
     fun notifyMiddleOfTraining() {
-        if (preferenceHelper.isSoundEnabled()) {
-            soundPlayer.play(SoundPlayer.HALFWAY_THERE_BEEP)
-        }
-        if (preferenceHelper.isVibrationEnabled()) {
-            vibrator.notifyFastTwice()
+        if (preferenceHelper.isMidNotificationEnabled()) {
+            if (preferenceHelper.isSoundEnabled()) {
+                soundPlayer.play(SoundPlayer.HALFWAY_THERE_BEEP)
+                if (preferenceHelper.isVoiceEnabled()) {
+                    soundPlayer.play(SoundPlayer.HALFWAY_THERE_VOICE)
+                }
+            }
+            if (preferenceHelper.isVibrationEnabled()) {
+                vibrator.notifyFastTwice()
+            }
         }
     }
 
     fun notifyStart() {
-        if (preferenceHelper.isSoundEnabled()) {
+        if (preferenceHelper.isSoundEnabled() && preferenceHelper.isVoiceEnabled()) {
             soundPlayer.play(SoundPlayer.GO)
         }
     }
 
     fun notifyRest() {
-        if (preferenceHelper.isSoundEnabled()) {
+        if (preferenceHelper.isSoundEnabled() && preferenceHelper.isVoiceEnabled()) {
             soundPlayer.play(SoundPlayer.REST)
         }
     }
 
     fun notifyTrainingComplete() {
-        if (preferenceHelper.isSoundEnabled()) {
+        if (preferenceHelper.isSoundEnabled() && preferenceHelper.isVoiceEnabled()) {
             soundPlayer.play(SoundPlayer.WORKOUT_COMPLETE)
         }
     }
@@ -56,7 +61,7 @@ class TimerNotificationHelper(
     }
 
     fun notifyLastRound() {
-        if (preferenceHelper.isSoundEnabled()) {
+        if (preferenceHelper.isSoundEnabled() && preferenceHelper.isVoiceEnabled()) {
             soundPlayer.play(SoundPlayer.LAST_ROUND)
         }
     }

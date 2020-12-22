@@ -111,7 +111,8 @@ class CustomWorkoutFragment:
 
     override fun onStartWorkout() {
         val action = CustomWorkoutFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray() ))
+            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                    + getSelectedSessions().toTypedArray() ))
         findNavController().navigate(action)
     }
 

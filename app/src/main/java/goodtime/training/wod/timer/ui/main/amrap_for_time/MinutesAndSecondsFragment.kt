@@ -90,7 +90,10 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
 
     override fun onStartWorkout() {
         val action = AmrapFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(
+                    sessions = arrayOf(
+                            PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                            + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }

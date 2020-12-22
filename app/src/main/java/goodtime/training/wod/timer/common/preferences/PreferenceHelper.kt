@@ -21,10 +21,9 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val THEME = "pref_theme"
         private const val SOUND_PROFILE = "pref_sound_profile"
 
-        private const val SOUND_ENABLED = "pref_sound"
-        private const val VOICE_ENABLED = "pref_voice"
+        const val SOUND_ENABLED = "pref_sound"
+        const val VOICE_ENABLED = "pref_voice"
         private const val VIBRATION_ENABLED = "pref_vibration"
-        private const val FLASH_ENABLED = "pref_flash"
         private const val MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED = "pref_mid_training_notification"
 
         private const val PRE_WORKOUT_COUNTDOWN_SECONDS = "pref_countdown"
@@ -33,9 +32,8 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val FULLSCREEN_MODE = "pref_fullscreen"
         private const val DND_MODE_ENABLED = "pref_dnd_mode"
 
-        fun generatePreWorkoutSession() : SessionSkeleton {
-            //TODO: duration according to preferences
-            return SessionSkeleton(duration = 5, breakDuration = 5, numRounds = 0, type = SessionType.REST)
+        fun generatePreWorkoutSession(seconds: Int) : SessionSkeleton {
+            return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
         }
     }
 
@@ -64,7 +62,6 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
     fun isSoundEnabled() = dataStore.getBoolean(SOUND_ENABLED, true)
     fun isVoiceEnabled() = dataStore.getBoolean(VOICE_ENABLED, true)
     fun isVibrationEnabled() = dataStore.getBoolean(VIBRATION_ENABLED, false)
-    fun isFlashEnabled() = dataStore.getBoolean(FLASH_ENABLED, false)
     fun isMidNotificationEnabled() = dataStore.getBoolean(MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED, true)
     fun getPreWorkoutCountdown() = dataStore.getInt(PRE_WORKOUT_COUNTDOWN_SECONDS, 10)
     fun isReminderEnabled() = dataStore.getBoolean(REMINDER_ENABLED, false)

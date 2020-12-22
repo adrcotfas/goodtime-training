@@ -151,6 +151,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         newCustomWorkoutMenuItem = menu.findItem(R.id.action_new_workout)
         newCustomWorkoutButton = newCustomWorkoutMenuItem!!.actionView.findViewById(R.id.root)
         newCustomWorkoutButton.setOnClickListener { onNewCustomWorkoutButtonClick() }
+        toggleMinimalistMode(preferenceHelper.isMinimalistEnabled())
         return true
     }
 

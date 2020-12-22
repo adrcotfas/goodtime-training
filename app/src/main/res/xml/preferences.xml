@@ -31,17 +31,14 @@
         <SwitchPreferenceCompat
             app:key="pref_voice"
             app:title="Voice"
-            app:defaultValue="true"/>
+            app:defaultValue="true"
+            android:dependency="pref_sound"
+            />
 
         <SwitchPreferenceCompat
             app:key="pref_vibration"
             app:title="Vibration"
             app:defaultValue="false"/>
-
-        <SwitchPreferenceCompat
-            app:key="pref_flash"
-            app:title="Flash"
-            app:defaultValue="false"/>a
 
         <SwitchPreferenceCompat
             app:key="pref_mid_training_notification"

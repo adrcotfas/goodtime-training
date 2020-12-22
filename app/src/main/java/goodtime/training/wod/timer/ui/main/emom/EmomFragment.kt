@@ -110,7 +110,8 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = EmomFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                    + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
