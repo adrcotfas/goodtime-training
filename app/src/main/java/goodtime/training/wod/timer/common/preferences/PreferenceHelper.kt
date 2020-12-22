@@ -17,7 +17,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val HIIT_FAVORITE_ID = "hiit_favorite_id"
         private const val CUSTOM_WORKOUT_FAVORITE_NAME = "custom_workout_favorite_id"
 
-        private const val EXTRA_MINIMALIST_ENABLED = "pref_extra_minimalist"
+        const val MINIMALIST_MODE_ENABLED = "pref_extra_minimalist"
         private const val THEME = "pref_theme"
         private const val SOUND_PROFILE = "pref_sound_profile"
 
@@ -58,7 +58,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         }
     }
 
-    fun isMinimalistEnabled() = dataStore.getBoolean(EXTRA_MINIMALIST_ENABLED, false)
+    fun isMinimalistEnabled() = dataStore.getBoolean(MINIMALIST_MODE_ENABLED, false)
     fun getTheme() = dataStore.getInt(THEME, 0)
     fun getSoundProfile() = dataStore.getInt(SOUND_PROFILE, 0)
     fun isSoundEnabled() = dataStore.getBoolean(SOUND_ENABLED, true)

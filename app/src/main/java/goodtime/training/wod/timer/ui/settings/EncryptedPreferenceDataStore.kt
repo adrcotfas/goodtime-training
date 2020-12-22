@@ -9,7 +9,7 @@ import androidx.security.crypto.MasterKeys
 
 
 class EncryptedPreferenceDataStore(context: Context) : PreferenceDataStore() {
-    private val preferences: SharedPreferences
+    val preferences: SharedPreferences
 
     companion object {
         private const val CONFIG_FILE_NAME = "SharedPreferences"
