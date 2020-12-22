@@ -2,12 +2,14 @@ package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.GO
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.HALFWAY_THERE_BEEP
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.LAST_ROUND
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.REST
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.START_COUNTDOWN
+import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.START_COUNTDOWN_GYM
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer.Companion.WORKOUT_COMPLETE
 
 import goodtime.training.wod.timer.common.timers.CountDownTimer
@@ -18,7 +20,10 @@ import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.workout.TimerState
 
-class TimerViewModel(private val soundPlayer : SoundPlayer, private val repository: AppRepository) : ViewModel() {
+class TimerViewModel(
+        private val soundPlayer: SoundPlayer,
+        private val preferenceHelper: PreferenceHelper,
+        private val repository: AppRepository) : ViewModel() {
 
     val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionSkeleton>()
@@ -173,7 +178,11 @@ class TimerViewModel(private val soundPlayer : SoundPlayer, private val reposito
         secondsUntilFinished.value = seconds
         if (seconds == 2) {
             //TODO: handle bug when pausing exactly here -> sound should not restart
-            soundPlayer.play(START_COUNTDOWN)
+
+            val profile = preferenceHelper.getSoundProfile()
+            soundPlayer.play(
+                    if(profile == "Default") START_COUNTDOWN
+                    else START_COUNTDOWN_GYM)
         }
     }
 

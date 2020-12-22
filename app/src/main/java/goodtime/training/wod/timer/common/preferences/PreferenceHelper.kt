@@ -60,7 +60,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
 
     fun isMinimalistEnabled() = dataStore.getBoolean(MINIMALIST_MODE_ENABLED, false)
     fun getTheme() = dataStore.getInt(THEME, 0)
-    fun getSoundProfile() = dataStore.getInt(SOUND_PROFILE, 0)
+    fun getSoundProfile() = dataStore.getString(SOUND_PROFILE, "Default")
     fun isSoundEnabled() = dataStore.getBoolean(SOUND_ENABLED, true)
     fun isVoiceEnabled() = dataStore.getBoolean(VOICE_ENABLED, true)
     fun isVibrationEnabled() = dataStore.getBoolean(VIBRATION_ENABLED, false)

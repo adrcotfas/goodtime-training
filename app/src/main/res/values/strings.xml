@@ -21,4 +21,13 @@
         <item>@string/session_type_hiit</item>
         <item>@string/session_type_rest</item>
     </string-array>
+
+    <string name="pref_sound_profile_default">Default</string>
+    <string name="pref_sound_profile_gym">Gym</string>
+
+    <string-array name="pref_sound_profile_entries">
+        <item>@string/pref_sound_profile_default</item>
+        <item>@string/pref_sound_profile_gym</item>
+    </string-array>
+
 </resources>

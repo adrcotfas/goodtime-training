@@ -58,7 +58,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind() from provider { HiitViewModelFactory(instance()) }
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { LogViewModelFactory(instance()) }
-        bind() from provider { TimerViewModelFactory(instance(), instance()) }
+        bind() from provider { TimerViewModelFactory(instance(), instance(), instance()) }
     }
 
     override fun onCreate() {

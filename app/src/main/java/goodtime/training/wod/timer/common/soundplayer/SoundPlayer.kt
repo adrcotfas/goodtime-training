@@ -19,6 +19,7 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
 
     init {
         sounds[START_COUNTDOWN] = soundPool.load(applicationContext, START_COUNTDOWN, 1)
+        sounds[START_COUNTDOWN_GYM] = soundPool.load(applicationContext, START_COUNTDOWN_GYM, 1)
         sounds[REST] = (soundPool.load(applicationContext, REST, 1))
         sounds[WORKOUT_COMPLETE] = (soundPool.load(applicationContext, WORKOUT_COMPLETE, 1))
         sounds[LAST_ROUND] = (soundPool.load(applicationContext, LAST_ROUND, 1))
@@ -28,12 +29,12 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
 
     companion object {
         const val START_COUNTDOWN: Int = R.raw.start_full
+        const val START_COUNTDOWN_GYM: Int = R.raw.start_full_gym
         const val REST: Int = R.raw.rest
         const val WORKOUT_COMPLETE: Int = R.raw.done_well_done
         const val LAST_ROUND: Int = R.raw.last_round
         const val HALFWAY_THERE_BEEP: Int = R.raw.time_halfway_there_beep
         const val GO: Int = R.raw.go
-        //TODO: X_SECONDS_REMAINING
     }
 
     fun play(soundId: Int) {
