@@ -65,6 +65,7 @@
         app:menu="@menu/menu_main_bottom"
         app:itemRippleColor="@color/green_goodtime_darker"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
         style="@style/WorkoutBottomAppBarStyle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

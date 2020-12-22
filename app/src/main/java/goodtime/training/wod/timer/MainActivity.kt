@@ -11,8 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomnavigation.LabelVisibilityMode.LABEL_VISIBILITY_LABELED
-import com.google.android.material.bottomnavigation.LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
+import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
@@ -82,9 +81,9 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             if (isTopLevel) toolbar.setNavigationIcon(R.drawable.ic_menu_open)
             else toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
             supportActionBar?.title = if (isTopLevel) null else destination.label
-
+            toggleMinimalistModeBottomAppBar(preferenceHelper.isMinimalistEnabled())
             bottomNavigationView.visibility = if (isTopLevel) View.VISIBLE else View.GONE
-            startButton.visibility = if (isTopLevel) View.VISIBLE else View.GONE
+            startButton.apply { if (isTopLevel) show() else hide() }
 
             val hideToolbar = destination.label == "WorkoutFragment" ||
                     destination.label == "StopWorkoutDialog"
@@ -151,7 +150,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         newCustomWorkoutMenuItem = menu.findItem(R.id.action_new_workout)
         newCustomWorkoutButton = newCustomWorkoutMenuItem!!.actionView.findViewById(R.id.root)
         newCustomWorkoutButton.setOnClickListener { onNewCustomWorkoutButtonClick() }
-        toggleMinimalistMode(preferenceHelper.isMinimalistEnabled())
+        toggleMinimalistModeToolbar(preferenceHelper.isMinimalistEnabled())
         return true
     }
 
@@ -176,11 +175,13 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     override fun onSharedPreferenceChanged(preference: SharedPreferences, key: String) {
         if (key == PreferenceHelper.MINIMALIST_MODE_ENABLED) {
-            toggleMinimalistMode(preferenceHelper.isMinimalistEnabled())
+            val enabled = preferenceHelper.isMinimalistEnabled()
+            toggleMinimalistModeToolbar(enabled)
+            toggleMinimalistModeBottomAppBar(enabled)
         }
     }
 
-    private fun toggleMinimalistMode(enabled: Boolean) {
+    private fun toggleMinimalistModeToolbar(enabled: Boolean) {
         if (enabled) {
             val startPadding = dpToPx(this, 8f).toFloat()
             favoritesButton.text = ""
@@ -190,7 +191,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             newCustomWorkoutButton.text = ""
             newCustomWorkoutButton.chipEndPadding = 0f
             newCustomWorkoutButton.chipStartPadding = startPadding
-            bottomNavigationView.labelVisibilityMode = LABEL_VISIBILITY_UNLABELED
         } else {
             val padding = dpToPx(this, 4f).toFloat()
             favoritesButton.text = "Favorites"
@@ -200,8 +200,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             newCustomWorkoutButton.text = "New"
             newCustomWorkoutButton.chipEndPadding = padding
             newCustomWorkoutButton.chipStartPadding = padding
-
-            bottomNavigationView.labelVisibilityMode = LABEL_VISIBILITY_LABELED
         }
+    }
+
+    private fun toggleMinimalistModeBottomAppBar(enabled: Boolean) {
+        bottomNavigationView.labelVisibilityMode =
+                if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
+                else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
     }
 }
