@@ -10,7 +10,8 @@
 
         <Preference
             app:key="pref_theme"
-            app:title="Theme"/>
+            app:title="Theme"
+            android:enabled="false"/>
 
         <ListPreference
             app:key="pref_sound_profile"
@@ -62,7 +63,7 @@
             app:key="pref_reminder"
             app:title="Daily reminder"
             android:summary="Enable a daily training reminder"
-            />
+            android:enabled="false"/>
 
         <CheckBoxPreference
             app:key="pref_log_incomplete"
@@ -77,6 +78,7 @@
         <CheckBoxPreference
             app:key="pref_dnd_mode"
             app:title="Do not disturb mode"
-            app:defaultValue="false"/>
+            app:defaultValue="false"
+            android:enabled="false"/>
     </PreferenceCategory>
 </PreferenceScreen>
