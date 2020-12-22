@@ -1,7 +1,6 @@
 package goodtime.training.wod.timer.ui.main.amrap_for_time
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import androidx.navigation.fragment.findNavController
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.calculateRowHeight
 import goodtime.training.wod.timer.common.number_picker.NumberPicker
-import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -23,7 +22,7 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
     : WorkoutTypeFragment() {
 
     private var pickersAreSetup = false
-    private val prefUtil: PrefUtil by instance()
+    private val preferenceHelper: PreferenceHelper by instance()
     protected lateinit var viewModel: ViewModelType
 
     private lateinit var binding: FragmentAmrapForTimeBinding
@@ -51,7 +50,7 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
 
         val favoritesLd = viewModel.getFavorites()
         favoritesLd.observe(viewLifecycleOwner, { favorites ->
-            val id = prefUtil.getCurrentFavoriteId(sessionType)
+            val id = preferenceHelper.getCurrentFavoriteId(sessionType)
             val idx = favorites.indexOfFirst { it.id == id }
 
             val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 900)
@@ -91,7 +90,7 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
 
     override fun onStartWorkout() {
         val action = AmrapFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
@@ -104,7 +103,7 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)
         minutePicker.smoothScrollToValue(duration.first)
         secondsPicker.smoothScrollToValue(duration.second)
-        prefUtil.setCurrentFavoriteId(sessionType, session.id)
+        preferenceHelper.setCurrentFavoriteId(sessionType, session.id)
     }
 
     //TODO: extract the two functions to a common interface;

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
-import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -28,7 +28,7 @@ class CustomWorkoutFragment:
     SaveCustomWorkoutDialog.Listener {
 
     private val viewModelFactory: CustomWorkoutViewModelFactory by instance()
-    private val prefUtil: PrefUtil by instance()
+    private val preferenceHelper: PreferenceHelper by instance()
 
     private lateinit var viewModel: CustomWorkoutViewModel
     private lateinit var binding: FragmentCustomBinding
@@ -84,7 +84,7 @@ class CustomWorkoutFragment:
                 refreshStartButtonState()
             } else {
                 var found = false
-                val name = prefUtil.getCurrentCustomWorkoutFavoriteName()
+                val name = preferenceHelper.getCurrentCustomWorkoutFavoriteName()
                 if (name != null) {
                     for (fav in it) {
                         if (fav.name == name) {
@@ -111,7 +111,7 @@ class CustomWorkoutFragment:
 
     override fun onStartWorkout() {
         val action = CustomWorkoutFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray() ))
+            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray() ))
         findNavController().navigate(action)
     }
 
@@ -208,14 +208,14 @@ class CustomWorkoutFragment:
         toggleEmptyState(false)
         refreshStartButtonState()
 
-        prefUtil.setCurrentCustomWorkoutFavoriteName(workout.name)
+        preferenceHelper.setCurrentCustomWorkoutFavoriteName(workout.name)
         isFresh = false
     }
 
     override fun onFavoriteDeleted(name: String) {
         if (viewModel.currentWorkout.name == name && viewModel.currentWorkout.sessions.isNotEmpty()) {
             setSaveButtonVisibility(true)
-            prefUtil.setCurrentCustomWorkoutFavoriteName("")
+            preferenceHelper.setCurrentCustomWorkoutFavoriteName("")
         }
     }
 
@@ -231,7 +231,7 @@ class CustomWorkoutFragment:
         binding.title.text = name
         setSaveButtonVisibility(false)
         viewModel.hasUnsavedSession = false
-        prefUtil.setCurrentCustomWorkoutFavoriteName(name)
+        preferenceHelper.setCurrentCustomWorkoutFavoriteName(name)
     }
 
     private fun updateTotalDuration() {

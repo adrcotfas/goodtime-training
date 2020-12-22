@@ -6,7 +6,7 @@ import android.text.SpannableStringBuilder
 import androidx.core.text.italic
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.databinding.DialogDeleteConfirmationBinding
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -49,7 +49,7 @@ class DeleteConfirmationDialog: DialogFragment(), KodeinAware {
             setMessage(message)
             setPositiveButton(android.R.string.ok) { _, _ ->
                 if (binding.checkbox.isChecked) {
-                    val prefUtils: PrefUtil by instance()
+                    val prefUtils: PreferenceHelper by instance()
                     prefUtils.setShowDeleteConfirmationDialog(false)
                 }
                 listener.onDeleteConfirmation(favoriteId, name)

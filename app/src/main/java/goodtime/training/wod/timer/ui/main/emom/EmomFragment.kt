@@ -11,7 +11,7 @@ import goodtime.training.wod.timer.common.calculateRowHeight
 import goodtime.training.wod.timer.common.number_picker.NumberPicker
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.Color
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.PickerSize
-import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -22,7 +22,7 @@ import org.kodein.di.generic.instance
 
 class EmomFragment : WorkoutTypeFragment() {
 
-    private val prefUtil: PrefUtil by instance()
+    private val preferenceHelper: PreferenceHelper by instance()
     private val viewModelFactory: EmomViewModelFactory by instance()
     private lateinit var viewModel: EmomViewModel
 
@@ -58,7 +58,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
         val favoritesLd = viewModel.getFavorites()
         favoritesLd.observe(viewLifecycleOwner, { favorites ->
-            val id = prefUtil.getCurrentFavoriteId(SessionType.EMOM)
+            val id = preferenceHelper.getCurrentFavoriteId(SessionType.EMOM)
             val idx = favorites.indexOfFirst{it.id == id}
 
             //TODO: extract defaults to constants
@@ -110,7 +110,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = EmomFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
@@ -122,7 +122,7 @@ class EmomFragment : WorkoutTypeFragment() {
         minutePicker.smoothScrollToValue(duration.first)
         secondsPicker.smoothScrollToValue(duration.second)
         roundsPicker.smoothScrollToValue(session.numRounds)
-        prefUtil.setCurrentFavoriteId(SessionType.EMOM, session.id)
+        preferenceHelper.setCurrentFavoriteId(SessionType.EMOM, session.id)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }

@@ -2,58 +2,88 @@ package goodtime.training.wod.timer
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.chip.Chip
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
-import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.main.FullscreenHelper
-import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
 import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
+import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment
+import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), KodeinAware {
+
+    override val kodein by closestKodein()
+
+    private val preferenceHelper by instance<PreferenceHelper>()
 
     private lateinit var navController: NavController
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var navHostFragment: NavHostFragment
+
+    private lateinit var startButton: FloatingActionButton
 
     private lateinit var favoritesButton: Chip
     private var newCustomWorkoutMenuItem: MenuItem? = null
+    private var favoritesMenuItem: MenuItem? = null
+
     private lateinit var newCustomWorkoutButton: Chip
 
-    private lateinit var fullscreenHelper : FullscreenHelper
+    private lateinit var fullscreenHelper: FullscreenHelper
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        startButton = binding.contentMain.startButton
+        val toolbar = binding.contentMain.toolbar
+
         setContentView(binding.root)
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        setupAppBar()
-        fullscreenHelper = FullscreenHelper(binding.mainLayout)
+
+        setSupportActionBar(toolbar)
+
+        fullscreenHelper = FullscreenHelper(binding.contentMain.mainLayout)
+
+        appBarConfiguration = AppBarConfiguration(
+                setOf(R.id.nav_amrap, R.id.nav_for_time, R.id.nav_emom, R.id.nav_hiit, R.id.nav_custom),
+                binding.drawerLayout)
+
+        val bottomNavigationView = binding.contentMain.bottomNavigationView
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val hideButtons =
-                destination.label == "LogFragment" ||
-                        destination.label == "WorkoutFragment" ||
+            val isTopLevel = appBarConfiguration.topLevelDestinations.contains(destination.id)
+            if (isTopLevel) toolbar.setNavigationIcon(R.drawable.ic_menu_open)
+            else toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+            supportActionBar?.title = if (isTopLevel) null else destination.label
+
+            bottomNavigationView.visibility = if (isTopLevel) View.VISIBLE else View.GONE
+            startButton.visibility = if (isTopLevel) View.VISIBLE else View.GONE
+
+            val hideToolbar = destination.label == "WorkoutFragment" ||
                         destination.label == "StopWorkoutDialog"
-            binding.toolbar.visibility = if (hideButtons) View.GONE else View.VISIBLE
-            binding.workoutMenu.visibility = if (hideButtons) View.GONE else View.VISIBLE
-            if (hideButtons) binding.startButton.hide() else binding.startButton.show()
-            //TODO: maybe activate later with a setting
-            //toggleFullscreenMode(hideButtons)
+            toolbar.visibility = if (hideToolbar) View.GONE else View.VISIBLE
+
+            if (preferenceHelper.isFullscreenModeEnabled()) {
+                toggleFullscreenMode(hideToolbar)
+            }
 
             if (destination.label == "WorkoutFragment" || destination.label == "StopWorkoutDialog") {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -64,13 +94,20 @@ class MainActivity : AppCompatActivity() {
             }
 
             newCustomWorkoutMenuItem?.isVisible = destination.label == "CustomWorkout"
+            favoritesMenuItem?.isVisible = isTopLevel
         }
 
-        binding.startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }
-        binding.workoutMenu.setupWithNavController(navController)
-        binding.workoutMenu.setOnNavigationItemReselectedListener {
+        startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }
+        bottomNavigationView.setupWithNavController(navController)
+        bottomNavigationView.setOnNavigationItemReselectedListener {
             // Nothing here to disable reselect
         }
+
+        binding.navView.setupWithNavController(navController)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     private fun onFavoritesButtonClick() {
@@ -97,34 +134,25 @@ class MainActivity : AppCompatActivity() {
         (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        val favoritesMenuItem = menu!!.findItem(R.id.action_favorites)
-        favoritesButton = favoritesMenuItem.actionView.findViewById(R.id.root)
+        menuInflater.inflate(R.menu.menu_main_top, menu)
+        favoritesMenuItem = menu!!.findItem(R.id.action_favorites)
+        favoritesButton = favoritesMenuItem!!.actionView.findViewById(R.id.root)
         favoritesButton.setOnClickListener{ onFavoritesButtonClick() }
 
         newCustomWorkoutMenuItem = menu.findItem(R.id.action_new_workout)
         newCustomWorkoutButton = newCustomWorkoutMenuItem!!.actionView.findViewById(R.id.root)
         newCustomWorkoutButton.setOnClickListener { onNewCustomWorkoutButtonClick() }
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    private fun setupAppBar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = null
-
-        binding.toolbar.setNavigationOnClickListener {
-            Toast.makeText(this, "Clicked navigation item", Toast.LENGTH_SHORT).show()
-        }
+        return true
     }
 
     fun setStartButtonState(enabled: Boolean) {
-        binding.startButton.isEnabled = enabled
+        startButton.isEnabled = enabled
         if (enabled) {
-            binding.startButton.background?.setTint(ResourcesHelper.darkerGreen)
-            binding.startButton.drawable?.setTint(ResourcesHelper.green)
+            startButton.background?.setTint(ResourcesHelper.darkerGreen)
+            startButton.drawable?.setTint(ResourcesHelper.green)
         } else {
-            binding.startButton.background?.setTint(ResourcesHelper.grey1000)
-            binding.startButton.drawable?.setTint(ResourcesHelper.grey800)
+            startButton.background?.setTint(ResourcesHelper.grey1000)
+            startButton.drawable?.setTint(ResourcesHelper.grey800)
         }
     }
 

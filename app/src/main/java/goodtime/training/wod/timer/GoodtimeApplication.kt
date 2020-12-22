@@ -5,7 +5,7 @@ import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import com.google.android.material.resources.TextAppearanceConfig
-import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.soundplayer.SoundPlayer
 import goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao
 import goodtime.training.wod.timer.data.db.Database
@@ -21,6 +21,7 @@ import goodtime.training.wod.timer.ui.main.amrap_for_time.ForTimeViewModelFactor
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutViewModelFactory
 import goodtime.training.wod.timer.ui.main.emom.EmomViewModelFactory
 import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
+import goodtime.training.wod.timer.ui.settings.EncryptedPreferenceDataStore
 import goodtime.training.wod.timer.ui.stats.LogViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import org.kodein.di.Kodein
@@ -49,7 +50,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<SessionSkeletonDao>() with eagerSingleton { instance<Database>().sessionSkeletonDao() }
         bind<CustomWorkoutSkeletonDao>() with eagerSingleton { instance<Database>().customWorkoutSkeletonDao() }
         bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance()) }
-        bind<PrefUtil>() with eagerSingleton { PrefUtil(applicationContext) }
+        bind<PreferenceHelper>() with eagerSingleton { PreferenceHelper(EncryptedPreferenceDataStore(applicationContext)) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
         bind() from provider { AmrapViewModelFactory(instance()) }
         bind() from provider { ForTimeViewModelFactory(instance()) }
@@ -65,10 +66,10 @@ class GoodtimeApplication : Application(), KodeinAware {
         res = resources
         TextAppearanceConfig.setShouldLoadFontSynchronously(true)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        val prefUtil: PrefUtil by instance()
-        if (prefUtil.isFirstRun()) {
+        val preferenceHelper: PreferenceHelper by instance()
+        if (preferenceHelper.isFirstRun()) {
             generateDefaultSessions()
-            prefUtil.setIsFirstRun(false)
+            preferenceHelper.setIsFirstRun(false)
         }
     }
 

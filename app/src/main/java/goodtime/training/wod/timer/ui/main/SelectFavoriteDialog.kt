@@ -11,7 +11,7 @@ import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteDescri
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteFormat
 import goodtime.training.wod.timer.common.StringUtils.Companion.toString
 import goodtime.training.wod.timer.common.hideKeyboardFrom
-import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
@@ -23,7 +23,7 @@ import org.kodein.di.generic.instance
 class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener,
     DeleteConfirmationDialog.Listener {
     override val kodein by closestKodein()
-    private val prefUtil: PrefUtil by instance()
+    private val preferenceHelper: PreferenceHelper by instance()
 
     private val repo: AppRepository by instance()
     private lateinit var favoriteCandidate: SessionSkeleton
@@ -84,7 +84,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                     }
                     chip.setOnCloseIconClickListener {
                         if (parentFragmentManager.findFragmentByTag("DeleteConfirmation") == null) {
-                            if (prefUtil.showDeleteConfirmationDialog()) {
+                            if (preferenceHelper.showDeleteConfirmationDialog()) {
                                 DeleteConfirmationDialog.newInstance(this, favorite.id, chip.text.toString())
                                     .show(parentFragmentManager, "DeleteConfirmation")
                             } else {

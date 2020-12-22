@@ -49,4 +49,7 @@
         <item name="colorSecondary">@color/green_goodtime</item>
     </style>
 
+    <style name="Theme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

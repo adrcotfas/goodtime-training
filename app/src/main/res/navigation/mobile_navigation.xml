@@ -58,9 +58,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_settings"
+        android:name="goodtime.training.wod.timer.ui.settings.SettingsFragment"
+        android:label="Settings"/>
+
+    <fragment
         android:id="@+id/nav_log"
         android:name="goodtime.training.wod.timer.ui.stats.LogFragment"
-        android:label="LogFragment"
+        android:label="Statistics"
         tools:layout="@layout/fragment_log"/>
 
     <dialog
@@ -68,5 +73,4 @@
         android:name="goodtime.training.wod.timer.ui.timer.StopWorkoutDialog"
         android:label="StopWorkoutDialog" >
     </dialog>
-
 </navigation>

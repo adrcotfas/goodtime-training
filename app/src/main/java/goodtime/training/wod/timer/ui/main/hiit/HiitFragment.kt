@@ -10,7 +10,7 @@ import goodtime.training.wod.timer.common.calculateRowHeight
 import goodtime.training.wod.timer.common.number_picker.NumberPicker
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.Color
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.PickerSize
-import goodtime.training.wod.timer.common.preferences.PrefUtil
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -21,7 +21,7 @@ import org.kodein.di.generic.instance
 
 class HiitFragment : WorkoutTypeFragment() {
 
-    private val prefUtil: PrefUtil by instance()
+    private val preferenceHelper: PreferenceHelper by instance()
     private val viewModelFactory: HiitViewModelFactory by instance()
     private lateinit var viewModel: HiitViewModel
 
@@ -57,7 +57,7 @@ class HiitFragment : WorkoutTypeFragment() {
 
         val favoritesLd = viewModel.getFavorites()
         favoritesLd.observe(viewLifecycleOwner, { favorites ->
-            val id = prefUtil.getCurrentFavoriteId(SessionType.HIIT)
+            val id = preferenceHelper.getCurrentFavoriteId(SessionType.HIIT)
             val idx = favorites.indexOfFirst{it.id == id}
 
             viewModel.hiitData = HiitSpinnerData(
@@ -109,7 +109,7 @@ class HiitFragment : WorkoutTypeFragment() {
 
     override fun onStartWorkout() {
         val action = HiitFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PrefUtil.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
+            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession()) + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
@@ -120,7 +120,7 @@ class HiitFragment : WorkoutTypeFragment() {
         secondsWorkPicker.smoothScrollToValue(session.duration)
         secondsBreakPicker.smoothScrollToValue(session.breakDuration)
         roundsPicker.smoothScrollToValue(session.numRounds)
-        prefUtil.setCurrentFavoriteId(SessionType.HIIT, session.id)
+        preferenceHelper.setCurrentFavoriteId(SessionType.HIIT, session.id)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
