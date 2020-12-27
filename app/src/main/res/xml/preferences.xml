@@ -42,6 +42,11 @@
             app:defaultValue="false"/>
 
         <SwitchPreferenceCompat
+            app:key="pref_flash"
+            app:title="Flash"
+            app:defaultValue="false"/>
+
+        <SwitchPreferenceCompat
             app:key="pref_mid_training_notification"
             app:title="Mid-training notification"
             app:defaultValue="true"/>

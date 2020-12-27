@@ -2,10 +2,10 @@ package goodtime.training.wod.timer.ui.timer
 
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
-import goodtime.training.wod.timer.common.sound_and_vibration.Vibrator
+import goodtime.training.wod.timer.common.sound_and_vibration.TorchHelper
+import goodtime.training.wod.timer.common.sound_and_vibration.VibrationHelper
 
 //TODO: find a better name
 class TimerNotificationHelper(
@@ -13,8 +13,9 @@ class TimerNotificationHelper(
         private val preferenceHelper: PreferenceHelper,
         private val soundPlayer: SoundPlayer) {
 
-    private val vibrator = Vibrator(context)
+    private val vibrator = VibrationHelper(context)
     private val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val torchHandler = TorchHelper(context)
 
     fun notifyCountDown() {
         if (preferenceHelper.isSoundEnabled()) {
@@ -25,6 +26,9 @@ class TimerNotificationHelper(
         }
         if (preferenceHelper.isVibrationEnabled()) {
             vibrator.notifyCountdown()
+        }
+        if (preferenceHelper.isFlashEnabled()) {
+            torchHandler.notifyCountdown()
         }
     }
 
@@ -38,6 +42,9 @@ class TimerNotificationHelper(
             }
             if (preferenceHelper.isVibrationEnabled()) {
                 vibrator.notifyFastTwice()
+            }
+            if (preferenceHelper.isFlashEnabled()) {
+                torchHandler.notifyFastTwice()
             }
         }
     }
@@ -62,6 +69,8 @@ class TimerNotificationHelper(
 
     fun stop() {
         soundPlayer.stop()
+        vibrator.stop()
+        torchHandler.stop()
     }
 
     fun notifyLastRound() {
@@ -71,12 +80,10 @@ class TimerNotificationHelper(
     }
 
     fun toggleDndMode(enabled: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (notificationManager.isNotificationPolicyAccessGranted) {
-                notificationManager.setInterruptionFilter(
-                        if (enabled) NotificationManager.INTERRUPTION_FILTER_PRIORITY
-                        else NotificationManager.INTERRUPTION_FILTER_ALL)
-            }
+        if (notificationManager.isNotificationPolicyAccessGranted) {
+            notificationManager.setInterruptionFilter(
+                    if (enabled) NotificationManager.INTERRUPTION_FILTER_PRIORITY
+                    else NotificationManager.INTERRUPTION_FILTER_ALL)
         }
     }
 }

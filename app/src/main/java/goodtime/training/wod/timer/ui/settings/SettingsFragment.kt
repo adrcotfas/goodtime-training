@@ -4,9 +4,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
+import android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
 import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -45,23 +44,19 @@ class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, SharedPreferen
 
     private fun setupDndPreference() {
         val dndPref = findPreference<CheckBoxPreference>(PreferenceHelper.DND_MODE_ENABLED)!!
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isNotificationPolicyAccessDenied()) {
-            updateDndSummary(dndPref, false)
+        if (isNotificationPolicyAccessDenied()) {
+            updatePermissionPreferenceSummary(dndPref, false)
             dndPref.isChecked = false
             dndPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 requestNotificationPolicyAccess()
                 false
             }
         } else {
-            updateDndSummary(dndPref, true)
+            updatePermissionPreferenceSummary(dndPref, true)
         }
     }
 
-    private fun isNotificationPolicyAccessDenied(): Boolean {
-        val notificationManager = requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return !notificationManager.isNotificationPolicyAccessGranted
-    }
-    private fun updateDndSummary(pref: CheckBoxPreference, notificationPolicyAccessGranted: Boolean) {
+    private fun updatePermissionPreferenceSummary(pref: Preference, notificationPolicyAccessGranted: Boolean) {
         if (notificationPolicyAccessGranted) {
             pref.summary = ""
         } else {
@@ -69,9 +64,14 @@ class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, SharedPreferen
         }
     }
 
+    private fun isNotificationPolicyAccessDenied(): Boolean {
+        val notificationManager = requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return !notificationManager.isNotificationPolicyAccessGranted
+    }
+
     private fun requestNotificationPolicyAccess() {
         if (isNotificationPolicyAccessDenied()) {
-            val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+            val intent = Intent(ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
             startActivity(intent)
         }
     }

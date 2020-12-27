@@ -24,6 +24,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         const val SOUND_ENABLED = "pref_sound"
         const val VOICE_ENABLED = "pref_voice"
         private const val VIBRATION_ENABLED = "pref_vibration"
+        const val FLASH_ENABLED = "pref_flash"
         private const val MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED = "pref_mid_training_notification"
 
         private const val PRE_WORKOUT_COUNTDOWN_SECONDS = "pref_countdown"
@@ -62,6 +63,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
     fun isSoundEnabled() = dataStore.getBoolean(SOUND_ENABLED, true)
     fun isVoiceEnabled() = dataStore.getBoolean(VOICE_ENABLED, true)
     fun isVibrationEnabled() = dataStore.getBoolean(VIBRATION_ENABLED, false)
+    fun isFlashEnabled() = dataStore.getBoolean(FLASH_ENABLED, false)
     fun isMidNotificationEnabled() = dataStore.getBoolean(MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED, true)
     fun getPreWorkoutCountdown() = dataStore.getInt(PRE_WORKOUT_COUNTDOWN_SECONDS, 10)
     fun isReminderEnabled() = dataStore.getBoolean(REMINDER_ENABLED, false)
