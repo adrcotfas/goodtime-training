@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<com.google.android.material.chip.Chip
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content">
-    <com.google.android.material.chip.Chip
-        android:id="@+id/root"
-        android:layout_width="wrap_content"
-        android:text="Favorites"
-        android:layout_marginStart="8dp"
-        app:chipStartPadding="4dp"
-        app:chipEndPadding="4dp"
-        app:chipIcon="@drawable/ic_heart_outline"
-        style="@style/FavoritesChipStyleSmaller.Grey">
-    </com.google.android.material.chip.Chip>
-</FrameLayout>
-
-<!--    app:chipEndPadding="0dp"-->
-<!--    app:chipStartPadding="8dp"-->
+    android:id="@+id/root"
+    android:layout_width="wrap_content"
+    android:text="Favorites"
+    app:chipStartPadding="4dp"
+    app:chipEndPadding="4dp"
+    app:chipMinTouchTargetSize="24dp"
+    app:chipIcon="@drawable/ic_heart_outline"
+    style="@style/FavoritesChipStyleSmaller.Grey">
+</com.google.android.material.chip.Chip>

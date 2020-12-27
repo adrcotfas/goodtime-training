@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.chip.Chip
-    android:id="@+id/root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="wrap_content"
     android:text="New"
     app:chipStartPadding="4dp"
     app:chipEndPadding="4dp"
     app:chipIcon="@drawable/ic_add"
-    android:layout_marginHorizontal="8dp"
+    app:chipMinTouchTargetSize="24dp"
     style="@style/FavoritesChipStyleSmaller.Grey">
 </com.google.android.material.chip.Chip>

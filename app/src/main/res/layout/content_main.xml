@@ -9,38 +9,43 @@
     app:rippleColor="@android:color/transparent">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/nav_host_fragment_2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:translationZ="12dp"/>
-
-    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
         app:navGraph="@navigation/mobile_navigation"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_layout"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"/>
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/toolbar_layout"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.AppBarOverlay"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@android:color/black"
+        app:navigationIcon="@drawable/ic_menu_open"
+        app:popupTheme="@style/Theme.PopupOverlay" />
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/black"
-            app:navigationIcon="@drawable/ic_menu_open"
-            android:paddingEnd="16dp"
-            app:menu="@menu/menu_main_top"
-            app:popupTheme="@style/Theme.PopupOverlay" />
-    </com.google.android.material.appbar.AppBarLayout>
+    <include
+        android:id="@+id/button_favorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        android:layout_marginEnd="16dp"
+        layout="@layout/button_favorites"/>
+
+    <include
+        android:id="@+id/button_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/button_favorites"
+        app:layout_constraintTop_toTopOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        android:layout_marginEnd="8dp"
+        layout="@layout/button_new"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/start_button"
