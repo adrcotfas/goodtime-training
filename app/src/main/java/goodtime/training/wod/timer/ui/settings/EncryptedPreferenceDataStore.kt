@@ -79,4 +79,12 @@ class EncryptedPreferenceDataStore(context: Context) : PreferenceDataStore() {
     override fun getBoolean(key: String?, defValue: Boolean): Boolean {
         return preferences.getBoolean(key, defValue)
     }
+
+    fun getBooleanArray(key: String, size: Int): BooleanArray {
+        val result = BooleanArray(size)
+        for (i in 0 until size) {
+            result[i] = preferences.getBoolean(key + "_" + i, false)
+        }
+        return result
+    }
 }

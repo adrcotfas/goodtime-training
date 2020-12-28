@@ -19,6 +19,7 @@ import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
+import goodtime.training.wod.timer.common.preferences.reminders.ReminderHelper
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
 import goodtime.training.wod.timer.ui.main.FullscreenHelper
 import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
@@ -49,6 +50,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    override fun onResume() {
+        super.onResume()
+        ReminderHelper.removeNotification(applicationContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -71,8 +77,15 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         fullscreenHelper = FullscreenHelper(binding.contentMain.mainLayout)
 
         appBarConfiguration = AppBarConfiguration(
-                setOf(R.id.nav_amrap, R.id.nav_for_time, R.id.nav_emom, R.id.nav_hiit, R.id.nav_custom),
-                binding.drawerLayout)
+            setOf(
+                R.id.nav_amrap,
+                R.id.nav_for_time,
+                R.id.nav_emom,
+                R.id.nav_hiit,
+                R.id.nav_custom
+            ),
+            binding.drawerLayout
+        )
 
         bottomNavigationView = binding.contentMain.bottomNavigationView
 
@@ -126,7 +139,10 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             val fragment = getVisibleFragment()
             val sessions = fragment.getSelectedSessions()
             if (fragment is CustomWorkoutFragment) {
-                SelectCustomWorkoutDialog.newInstance(fragment).show(supportFragmentManager, "SelectFavorite")
+                SelectCustomWorkoutDialog.newInstance(fragment).show(
+                    supportFragmentManager,
+                    "SelectFavorite"
+                )
             } else {
                 SelectFavoriteDialog.newInstance(sessions[0], fragment)
                         .show(supportFragmentManager, "SelectFavorite")
@@ -186,11 +202,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             newCustomWorkoutButton.chipStartPadding = startPadding
         } else {
             val padding = dpToPx(this, 4f).toFloat()
-            favoritesButton.text = "Favorites"
+            favoritesButton.text = getString(R.string.favorites)
             favoritesButton.chipEndPadding = padding
             favoritesButton.chipStartPadding = padding
 
-            newCustomWorkoutButton.text = "New"
+            newCustomWorkoutButton.text = getString(R.string.new_title)
             newCustomWorkoutButton.chipEndPadding = padding
             newCustomWorkoutButton.chipStartPadding = padding
         }

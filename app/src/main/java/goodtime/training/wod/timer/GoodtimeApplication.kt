@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import com.google.android.material.resources.TextAppearanceConfig
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
+import goodtime.training.wod.timer.common.preferences.reminders.ReminderHelper
 import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
 import goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao
 import goodtime.training.wod.timer.data.db.Database
@@ -39,6 +40,10 @@ class GoodtimeApplication : Application(), KodeinAware {
         fun getRes(): Resources {
             return res
         }
+        private lateinit var reminderHelper: ReminderHelper
+        fun getReminderHelper(): ReminderHelper {
+            return reminderHelper
+        }
     }
 
     override val kodein = Kodein.lazy {
@@ -63,7 +68,10 @@ class GoodtimeApplication : Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
+
         res = resources
+        reminderHelper = ReminderHelper(this)
+
         TextAppearanceConfig.setShouldLoadFontSynchronously(true)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         val preferenceHelper: PreferenceHelper by instance()

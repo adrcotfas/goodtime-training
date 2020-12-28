@@ -3,6 +3,8 @@ package goodtime.training.wod.timer.common.preferences
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.ui.settings.EncryptedPreferenceDataStore
+import java.time.DayOfWeek
+import java.time.LocalTime
 
 class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
 
@@ -26,9 +28,11 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val VIBRATION_ENABLED = "pref_vibration"
         const val FLASH_ENABLED = "pref_flash"
         private const val MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED = "pref_mid_training_notification"
+        const val PRE_WORKOUT_COUNTDOWN_SECONDS = "pref_countdown"
 
-        private const val PRE_WORKOUT_COUNTDOWN_SECONDS = "pref_countdown"
-        private const val REMINDER_ENABLED = "pref_reminder"
+        const val REMINDER_TIME = "pref_reminder_time"
+        const val REMINDER_DAYS = "pref_reminder_days"
+
         private const val LOG_INCOMPLETE = "pref_log_incomplete"
         private const val FULLSCREEN_MODE = "pref_fullscreen"
         const val DND_MODE_ENABLED = "pref_dnd_mode"
@@ -66,8 +70,13 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
     fun isFlashEnabled() = dataStore.getBoolean(FLASH_ENABLED, false)
     fun isMidNotificationEnabled() = dataStore.getBoolean(MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED, true)
     fun getPreWorkoutCountdown() = dataStore.getInt(PRE_WORKOUT_COUNTDOWN_SECONDS, 10)
-    fun isReminderEnabled() = dataStore.getBoolean(REMINDER_ENABLED, false)
     fun logIncompleteSessions() = dataStore.getBoolean(LOG_INCOMPLETE, false)
     fun isFullscreenModeEnabled() = dataStore.getBoolean(FULLSCREEN_MODE, false)
     fun isDndModeEnabled() = dataStore.getBoolean(DND_MODE_ENABLED, false)
+
+    fun isReminderEnabled() = getReminderDays().contains(true)
+    fun isReminderEnabledFor(dayOfWeek: DayOfWeek) = getReminderDays()[dayOfWeek.ordinal]
+    fun getReminderDays() = dataStore.getBooleanArray(REMINDER_DAYS, 7)
+    fun getReminderTime() = dataStore.getInt(REMINDER_TIME, LocalTime.of(9, 0).toSecondOfDay())
+    fun setReminderTime(secondOfDay: Int) = dataStore.putInt(REMINDER_TIME, secondOfDay)
 }

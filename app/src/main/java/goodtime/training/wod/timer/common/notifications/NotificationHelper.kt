@@ -21,13 +21,13 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
         fun showNotification(context: Context) {
             val builder = getBasicNotificationBuilder(context)
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel()
+            manager.initIfNeeded()
             manager.notify(TRAINING_NOTIFICATION_ID, builder.build())
         }
 
         fun hideNotification(context: Context) {
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.createNotificationChannel()
+            manager.initIfNeeded()
             manager.cancel(TRAINING_NOTIFICATION_ID)
         }
 
@@ -53,19 +53,21 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        @TargetApi(26)
-        private fun NotificationManager.createNotificationChannel() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(
-                    TRAINING_CHANNEL_ID, "Goodtime Training",
-                    NotificationManager.IMPORTANCE_HIGH
-                )
-                channel.apply {
-                    setBypassDnd(true)
-                    setShowBadge(true)
-                    setSound(null, null)
+        @TargetApi(Build.VERSION_CODES.O)
+        private fun NotificationManager.initIfNeeded() {
+            if (this.getNotificationChannel(TRAINING_CHANNEL_ID) == null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channel = NotificationChannel(
+                            TRAINING_CHANNEL_ID, "Goodtime Training",
+                            NotificationManager.IMPORTANCE_HIGH
+                    )
+                    channel.apply {
+                        setBypassDnd(true)
+                        setShowBadge(true)
+                        setSound(null, null)
+                    }
+                    this.createNotificationChannel(channel)
                 }
-                this.createNotificationChannel(channel)
             }
         }
     }

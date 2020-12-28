@@ -17,6 +17,8 @@
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialAlertDialog</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="radioButtonStyle">@style/Widget.App.RadioButton</item>
+
+        <item name="materialTimePickerTheme">@style/ThemeOverlay.MaterialAlertDialog</item>
     </style>
 
     <style name="Theme.NoActionBar">

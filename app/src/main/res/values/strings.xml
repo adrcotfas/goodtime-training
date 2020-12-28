@@ -30,4 +30,12 @@
         <item>@string/pref_sound_profile_gym</item>
     </string-array>
 
+    <string name="reminder_title">"Workout reminder"</string>
+    <string name="reminder_text">"It's time to move!"</string>
+    <string name="workout_reminder">Workout reminder</string>
+    <string name="favorites">Favorites</string>
+    <string name="new_title">New</string>
+
+    <string name="reminder_action" translatable="false">"goodtime.training.reminder_action"</string>
+
 </resources>

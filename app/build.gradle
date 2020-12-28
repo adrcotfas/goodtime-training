@@ -17,7 +17,15 @@ android {
         versionName "1.0"
     }
 
-    kotlinOptions { jvmTarget = "1.8" }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
 
     buildTypes {
         release {
@@ -34,6 +42,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // to use the latest java features (needed java.time)
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
+
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.3.2'
@@ -59,15 +71,10 @@ dependencies {
     implementation 'androidx.security:security-crypto:1.0.0-rc01'
     kapt "androidx.room:room-compiler:2.2.5"
 
-    // Worker
-    implementation "androidx.work:work-runtime-ktx:2.4.0"
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // Preferences
     implementation "androidx.preference:preference-ktx:1.1.1"
-
-    // Time
-    implementation 'joda-time:joda-time:2.10.5'
 
     implementation 'nl.dionsegijn:konfetti:1.2.5'
 }
