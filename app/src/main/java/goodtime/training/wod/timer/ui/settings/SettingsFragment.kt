@@ -87,15 +87,19 @@ class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, SharedPreferen
 
     private fun setupDndPreference() {
         val dndPref = findPreference<CheckBoxPreference>(PreferenceHelper.DND_MODE_ENABLED)!!
-        if (isNotificationPolicyAccessDenied()) {
-            updatePermissionPreferenceSummary(dndPref, false)
-            dndPref.isChecked = false
-            dndPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                requestNotificationPolicyAccess()
-                false
+        if (dndPref.isEnabled) {
+            if (isNotificationPolicyAccessDenied()) {
+                updatePermissionPreferenceSummary(dndPref, false)
+                dndPref.isChecked = false
+                dndPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                    requestNotificationPolicyAccess()
+                    false
+                }
+            } else {
+                updatePermissionPreferenceSummary(dndPref, true)
             }
         } else {
-            updatePermissionPreferenceSummary(dndPref, true)
+            dndPref.summary = ""
         }
     }
 
