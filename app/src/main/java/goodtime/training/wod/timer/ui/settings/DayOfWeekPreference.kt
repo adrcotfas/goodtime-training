@@ -12,7 +12,6 @@ import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import java.time.DayOfWeek
 
-
 class DayOfWeekPreference @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet,

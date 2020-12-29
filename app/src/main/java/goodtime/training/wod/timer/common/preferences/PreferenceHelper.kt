@@ -7,7 +7,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 
 class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
-
+    
     companion object {
         private const val IS_FIRST_RUN = "pref_is_first_run"
         private const val SHOW_DELETE_CONFIRMATION_DIALOG = "pref_show_delete_confirmation_dialog"

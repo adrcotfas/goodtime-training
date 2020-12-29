@@ -7,7 +7,6 @@ import androidx.preference.PreferenceDataStore
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
-
 class EncryptedPreferenceDataStore(context: Context) : PreferenceDataStore() {
     val preferences: SharedPreferences
 

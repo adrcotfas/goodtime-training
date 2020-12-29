@@ -62,7 +62,7 @@
             app:updatesContinuously="true"
             app:iconSpaceReserved="false"/>
 
-        <SwitchPreferenceCompat
+        <CheckBoxPreference
             app:key="pref_extra_minimalist"
             app:title="Minimalist mode"
             app:summary="Hide the text labels from the main screen buttons"
@@ -88,13 +88,6 @@
             android:enabled="true"/>
 
         <CheckBoxPreference
-            app:key="pref_log_incomplete"
-            app:title="Log incomplete workouts"
-            app:defaultValue="false"
-            app:iconSpaceReserved="false"
-            android:enabled="true"/>
-
-        <CheckBoxPreference
             app:key="pref_fullscreen"
             app:title="Fullscreen mode"
             app:defaultValue="false"
@@ -104,6 +97,13 @@
         <CheckBoxPreference
             app:key="pref_dnd_mode"
             app:title="Do not disturb mode"
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            android:enabled="true"/>
+
+        <CheckBoxPreference
+            app:key="pref_log_incomplete"
+            app:title="Log incomplete workouts"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             android:enabled="true"/>
