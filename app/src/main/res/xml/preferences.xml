@@ -76,13 +76,9 @@
             app:iconSpaceReserved="false"
             android:enabled="true"/>
 
-        <ListPreference
+        <Preference
             app:key="pref_sound_profile"
             app:title="Sound profile"
-            app:summary="%s"
-            android:entries="@array/pref_sound_profile_entries"
-            android:entryValues="@array/pref_sound_profile_entries"
-            android:defaultValue="@string/pref_sound_profile_default"
             android:layout="@layout/preference_compact"
             app:iconSpaceReserved="false"
             android:enabled="true"/>

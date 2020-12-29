@@ -21,7 +21,7 @@ class TimerNotificationHelper(
         if (preferenceHelper.isSoundEnabled()) {
             val profile = preferenceHelper.getSoundProfile()
             soundPlayer.play(
-                    if (profile == "Default") SoundPlayer.START_COUNTDOWN
+                    if (profile == 0) SoundPlayer.START_COUNTDOWN
                     else SoundPlayer.START_COUNTDOWN_GYM)
         }
         if (preferenceHelper.isVibrationEnabled()) {

@@ -14,7 +14,11 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, ReminderTimePreferenceDialogBuilder.Listener {
+class SettingsFragment:
+        PreferenceFragmentCompat(),
+        KodeinAware,
+        ReminderTimePreferenceDialogBuilder.Listener,
+        SoundProfileDialog.Listener {
 
     override val kodein by closestKodein()
     private val preferenceHelper by instance<PreferenceHelper>()
@@ -23,6 +27,7 @@ class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, ReminderTimePr
     private lateinit var timePickerPreference: Preference
     private lateinit var enableSoundPreference: SwitchPreferenceCompat
     private lateinit var enableVoicePreference: SwitchPreferenceCompat
+    private lateinit var soundProfilePreference: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.preferenceDataStore = preferenceHelper.dataStore
@@ -30,22 +35,12 @@ class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, ReminderTimePr
         setupSoundPreference()
         setupCountdownPreference()
         setupReminderPreference()
+        setupSoundProfilePreference()
     }
 
     override fun onResume() {
         super.onResume()
         setupDndPreference()
-    }
-
-    private fun setupReminderPreference() {
-        timePickerPreference = findPreference(PreferenceHelper.REMINDER_TIME)!!
-        timePickerPreference.setOnPreferenceClickListener {
-            val dialog = ReminderTimePreferenceDialogBuilder(requireContext(), this)
-                    .buildDialog(preferenceHelper.getReminderTime())
-            dialog.show(parentFragmentManager, "MaterialTimePicker")
-            true
-        }
-        updateReminderTimeSummary()
     }
 
     private fun setupSoundPreference() {
@@ -110,6 +105,17 @@ class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, ReminderTimePr
         }
     }
 
+    private fun setupReminderPreference() {
+        timePickerPreference = findPreference(PreferenceHelper.REMINDER_TIME)!!
+        timePickerPreference.setOnPreferenceClickListener {
+            val dialog = ReminderTimePreferenceDialogBuilder(requireContext(), this)
+                    .buildDialog(preferenceHelper.getReminderTime())
+            dialog.show(parentFragmentManager, "MaterialTimePicker")
+            true
+        }
+        updateReminderTimeSummary()
+    }
+
     private fun updateReminderTimeSummary() {
         timePickerPreference.summary = StringUtils.secondsOfDayToTimerFormat(
                 preferenceHelper.getReminderTime(), DateFormat.is24HourFormat(context))
@@ -118,5 +124,25 @@ class SettingsFragment : PreferenceFragmentCompat(), KodeinAware, ReminderTimePr
     override fun onReminderTimeSet(secondOfDay: Int) {
         preferenceHelper.setReminderTime(secondOfDay)
         updateReminderTimeSummary()
+    }
+
+    private fun setupSoundProfilePreference() {
+        soundProfilePreference = findPreference(PreferenceHelper.SOUND_PROFILE)!!
+        soundProfilePreference.setOnPreferenceClickListener {
+            val dialog = SoundProfileDialog.newInstance(preferenceHelper.getSoundProfile(), this)
+            dialog.show(childFragmentManager, "SoundProfileDialog")
+            true
+        }
+        updateSoundProfileSummary()
+    }
+
+    private fun updateSoundProfileSummary() {
+        soundProfilePreference.summary =
+                resources.getStringArray(R.array.pref_sound_profile_entries)[preferenceHelper.getSoundProfile()]
+    }
+
+    override fun onSoundProfileSelected(idx: Int) {
+        preferenceHelper.setSoundProfile(idx)
+        updateSoundProfileSummary()
     }
 }

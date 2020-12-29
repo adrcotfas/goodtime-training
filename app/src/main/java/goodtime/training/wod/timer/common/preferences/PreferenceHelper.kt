@@ -7,7 +7,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 
 class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
-    
+
     companion object {
         private const val IS_FIRST_RUN = "pref_is_first_run"
         private const val SHOW_DELETE_CONFIRMATION_DIALOG = "pref_show_delete_confirmation_dialog"
@@ -21,7 +21,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
 
         const val MINIMALIST_MODE_ENABLED = "pref_extra_minimalist"
         private const val THEME = "pref_theme"
-        private const val SOUND_PROFILE = "pref_sound_profile"
+        const val SOUND_PROFILE = "pref_sound_profile"
 
         const val SOUND_ENABLED = "pref_sound"
         const val VOICE_ENABLED = "pref_voice"
@@ -63,7 +63,10 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
 
     fun isMinimalistEnabled() = dataStore.getBoolean(MINIMALIST_MODE_ENABLED, false)
     fun getTheme() = dataStore.getInt(THEME, 0)
-    fun getSoundProfile() = dataStore.getString(SOUND_PROFILE, "Default")
+
+    fun setSoundProfile(idx: Int) = dataStore.putInt(SOUND_PROFILE, idx)
+    fun getSoundProfile() = dataStore.getInt(SOUND_PROFILE, 0)
+
     fun isSoundEnabled() = dataStore.getBoolean(SOUND_ENABLED, true)
     fun isVoiceEnabled() = dataStore.getBoolean(VOICE_ENABLED, true)
     fun isVibrationEnabled() = dataStore.getBoolean(VIBRATION_ENABLED, false)
