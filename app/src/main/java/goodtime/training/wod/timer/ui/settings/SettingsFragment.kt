@@ -56,15 +56,15 @@ class SettingsFragment:
 
     private fun setupCountdownPreference() {
         countdownPreference = findPreference(PreferenceHelper.PRE_WORKOUT_COUNTDOWN_SECONDS)!!
-        countdownPreference.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
-            updateCountdownPreferenceSummary()
+        countdownPreference.setOnPreferenceChangeListener { _, newValue ->
+            updateCountdownPreferenceSummary(newValue as Int)
             true
         }
-        updateCountdownPreferenceSummary()
+        updateCountdownPreferenceSummary(countdownPreference.value)
     }
 
-    private fun updateCountdownPreferenceSummary() {
-        countdownPreference.summary = "${countdownPreference.value} seconds before starting a workout"
+    private fun updateCountdownPreferenceSummary(value: Int) {
+        countdownPreference.summary = "$value seconds before starting a workout"
     }
 
     private fun setupDndPreference() {
