@@ -159,9 +159,14 @@
 
     <style name="WorkoutBottomAppBarStyle" parent="Widget.MaterialComponents.BottomNavigationView.PrimarySurface">
         <item name="labelVisibilityMode">labeled</item>
-        <item name="itemTextAppearanceActive">?attr/textAppearanceOverline</item>
-        <item name="itemTextAppearanceInactive">?attr/textAppearanceOverline</item>
+        <item name="itemTextAppearanceActive">@style/BottomNavigationView.TextAppearance</item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigationView.TextAppearance</item>
         <item name="elevation">0dp</item>
+    </style>
+
+    <style name="BottomNavigationView.TextAppearance" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="fontFamily">@font/app_font</item>
     </style>
 
 </resources>
