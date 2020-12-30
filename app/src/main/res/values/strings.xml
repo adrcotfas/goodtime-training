@@ -10,7 +10,7 @@
 
     <string name="session_type_amrap">AMRAP</string>
     <string name="session_type_for_time">FOR TIME</string>
-    <string name="session_type_emom">EMOM</string>
+    <string name="session_type_emom">INTERVALS</string>
     <string name="session_type_hiit">HIIT</string>
     <string name="session_type_rest">REST</string>
 

@@ -118,7 +118,7 @@ class StringUtils {
             return when (sessionType) {
                 SessionType.AMRAP -> "AMRAP"
                 SessionType.FOR_TIME -> "FOR TIME"
-                SessionType.EMOM -> "EMOM"
+                SessionType.EMOM -> "INTERVALS"
                 SessionType.HIIT -> "HIIT"
                 SessionType.REST -> "REST"
             }

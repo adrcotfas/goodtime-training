@@ -71,6 +71,7 @@
         app:itemRippleColor="@color/green_goodtime_darker"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
+        app:labelVisibilityMode="labeled"
         style="@style/WorkoutBottomAppBarStyle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
