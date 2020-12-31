@@ -85,9 +85,9 @@ class CustomWorkoutFragment:
                     "Create new presets and add them to the favorites."
             )
 
-            binding.root.post {
-                balloon.relayShowAlignTop(anotherBalloon, binding.root)
-                balloon.showAlignTop(binding.root)
+            binding.cardContainer.post {
+                balloon.relayShowAlignTop(anotherBalloon, binding.cardContainer)
+                balloon.showAlignTop(binding.cardContainer)
             }
         }
     }
