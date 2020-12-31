@@ -87,13 +87,12 @@ class EmomFragment : WorkoutTypeFragment() {
 
     private fun showBalloonsIfNeeded() {
         if (preferenceHelper.showIntervalsBalloons()) {
+            preferenceHelper.setIntervalsBalloons(false)
             binding.separator1.post {
                 val balloon = CustomBalloonFactory.create(
                         requireContext(), this,
                         "With INTERVALS you can select the number of rounds and their duration."
                 )
-                balloon.setOnBalloonClickListener { preferenceHelper.setIntervalsBalloons(false) }
-                balloon.setOnBalloonOverlayClickListener { preferenceHelper.setIntervalsBalloons(false) }
                 balloon.showAlignTop(binding.separator1)
             }
         }

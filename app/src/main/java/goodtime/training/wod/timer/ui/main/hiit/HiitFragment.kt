@@ -85,6 +85,7 @@ class HiitFragment : WorkoutTypeFragment() {
 
     private fun showBalloonsIfNeeded() {
         if (preferenceHelper.showHiitBalloons()) {
+            preferenceHelper.setHiitBalloons(false)
             binding.separator1.post {
                 val balloon = CustomBalloonFactory.create(
                         requireContext(), this,
@@ -95,10 +96,6 @@ class HiitFragment : WorkoutTypeFragment() {
                         "The work and rest duration are specified in seconds.",
                         false, 0.7f
                 )
-
-                anotherBalloon.setOnBalloonClickListener { preferenceHelper.setHiitBalloons(false) }
-                anotherBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setHiitBalloons(false) }
-
                 balloon.relayShowAlignTop(anotherBalloon, binding.separator1, 0, 12)
                 balloon.showAlignTop(binding.separator1, 0, 12)
             }

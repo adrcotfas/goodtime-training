@@ -222,6 +222,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun showBalloonsIfNeeded() {
         if (preferenceHelper.showMainBalloons()) {
+            preferenceHelper.setMainBalloons(false)
             binding.root.post {
                 val bottomMenuBalloon = CustomBalloonFactory.create(
                         this, this,
@@ -246,8 +247,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                         "Press the action button to start the workout using the current selection.",
                         false, 0.5f
                 )
-                startButtonBalloon.setOnBalloonClickListener { preferenceHelper.setMainBalloons(false) }
-                startButtonBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setMainBalloons(false) }
                 bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, toolbar, 0, 12)
                         .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
                         .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)

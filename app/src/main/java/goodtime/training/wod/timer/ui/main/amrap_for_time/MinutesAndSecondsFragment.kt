@@ -80,6 +80,7 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
 
     private fun showBalloonsIfNeeded() {
         if (sessionType == SessionType.FOR_TIME && preferenceHelper.showForTimeBalloons()) {
+            preferenceHelper.setForTimeBalloons(false)
             binding.pickerSeparator.post {
                 val balloon = CustomBalloonFactory.create(
                         requireContext(), this,
@@ -90,10 +91,6 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
                         "Use the time pickers to change the time cap.",
                         false, 0.5f
                 )
-
-                anotherBalloon.setOnBalloonClickListener { preferenceHelper.setForTimeBalloons(false) }
-                anotherBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setForTimeBalloons(false) }
-
                 balloon.relayShowAlignTop(anotherBalloon, binding.pickerSeparator, 0, 12)
                 balloon.showAlignTop(binding.pickerSeparator, 0, 12)
             }

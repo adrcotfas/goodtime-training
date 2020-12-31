@@ -75,6 +75,7 @@ class CustomWorkoutFragment:
 
     private fun showBalloonsIfNeeded() {
         if (preferenceHelper.showCustomBalloons()) {
+            preferenceHelper.setCustomBalloons(false)
             val balloon = CustomBalloonFactory.create(
                     requireContext(), this,
                     "Add, remove, edit and rearrange sessions in any combination for a custom workout."
@@ -83,9 +84,6 @@ class CustomWorkoutFragment:
                     requireContext(), this,
                     "Create new presets and add them to the favorites."
             )
-
-            anotherBalloon.setOnBalloonClickListener { preferenceHelper.setCustomBalloons(false) }
-            anotherBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setCustomBalloons(false) }
 
             binding.root.post {
                 balloon.relayShowAlignTop(anotherBalloon, binding.root)
