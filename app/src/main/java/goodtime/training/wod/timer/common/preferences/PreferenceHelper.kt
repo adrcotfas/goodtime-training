@@ -37,6 +37,12 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val FULLSCREEN_MODE = "pref_fullscreen"
         const val DND_MODE_ENABLED = "pref_dnd_mode"
 
+        private const val SHOW_MAIN_BALLOONS = "show_main_balloons"
+        private const val SHOW_FOR_TIME_BALLOONS = "show_for_time_balloons"
+        private const val SHOW_INTERVALS_BALLOONS = "show_intervals_balloons"
+        private const val SHOW_HIIT_BALLOONS = "show_hiit_balloons"
+        private const val SHOW_CUSTOM_BALLOONS = "show_custom_balloons"
+
         fun generatePreWorkoutSession(seconds: Int) : SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
         }
@@ -82,4 +88,24 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
     fun getReminderDays() = dataStore.getBooleanArray(REMINDER_DAYS, 7)
     fun getReminderTime() = dataStore.getInt(REMINDER_TIME, LocalTime.of(9, 0).toSecondOfDay())
     fun setReminderTime(secondOfDay: Int) = dataStore.putInt(REMINDER_TIME, secondOfDay)
+
+    fun showMainBalloons() = dataStore.getBoolean(SHOW_MAIN_BALLOONS, true)
+    fun showForTimeBalloons() = dataStore.getBoolean(SHOW_FOR_TIME_BALLOONS, true)
+    fun showIntervalsBalloons() = dataStore.getBoolean(SHOW_INTERVALS_BALLOONS, true)
+    fun showHiitBalloons() = dataStore.getBoolean(SHOW_HIIT_BALLOONS, true)
+    fun showCustomBalloons() = dataStore.getBoolean(SHOW_CUSTOM_BALLOONS, true)
+
+    fun setMainBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_MAIN_BALLOONS, enabled)
+    fun setForTimeBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_FOR_TIME_BALLOONS, enabled)
+    fun setIntervalsBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_INTERVALS_BALLOONS, enabled)
+    fun setHiitBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_HIIT_BALLOONS, enabled)
+    fun setCustomBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_CUSTOM_BALLOONS, enabled)
+
+    fun setBalloons(enabled: Boolean) = run {
+        setMainBalloons(enabled)
+        setForTimeBalloons(enabled)
+        setIntervalsBalloons(enabled)
+        setHiitBalloons(enabled)
+        setCustomBalloons(enabled)
+    }
 }

@@ -17,6 +17,7 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentEmomBinding
+import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.kodein.di.generic.instance
 
@@ -79,7 +80,23 @@ class EmomFragment : WorkoutTypeFragment() {
             )
         })
 
+        showBalloonsIfNeeded()
+
         return binding.root
+    }
+
+    private fun showBalloonsIfNeeded() {
+        if (preferenceHelper.showIntervalsBalloons()) {
+            binding.separator1.post {
+                val balloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "With INTERVALS you can select the number of rounds and their duration."
+                )
+                balloon.setOnBalloonClickListener { preferenceHelper.setIntervalsBalloons(false) }
+                balloon.setOnBalloonOverlayClickListener { preferenceHelper.setIntervalsBalloons(false) }
+                balloon.showAlignTop(binding.separator1)
+            }
+        }
     }
 
     private fun setupNumberPickers() {

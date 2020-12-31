@@ -3,10 +3,12 @@ package goodtime.training.wod.timer
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.*
+import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -21,11 +23,13 @@ import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.preferences.reminders.ReminderHelper
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
+import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.FullscreenHelper
 import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment
 import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
+import kotlinx.android.synthetic.main.content_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -50,9 +54,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    private lateinit var currentDestination: NavDestination
+
     override fun onResume() {
         super.onResume()
         ReminderHelper.removeNotification(applicationContext)
+        showBalloonsIfNeeded()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +97,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         bottomNavigationView = binding.contentMain.bottomNavigationView
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            currentDestination = destination
             val isTopLevel = appBarConfiguration.topLevelDestinations.contains(destination.id)
             if (isTopLevel) toolbar.setNavigationIcon(R.drawable.ic_menu_open)
             else toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
@@ -209,6 +217,43 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             newCustomWorkoutButton.text = getString(R.string.new_title)
             newCustomWorkoutButton.chipEndPadding = padding
             newCustomWorkoutButton.chipStartPadding = padding
+        }
+    }
+
+    private fun showBalloonsIfNeeded() {
+        if (preferenceHelper.showMainBalloons()) {
+            binding.root.post {
+                val bottomMenuBalloon = CustomBalloonFactory.create(
+                        this, this,
+                        "Use the bottom menu to change the workout type."
+                )
+                val amrapBalloon = CustomBalloonFactory.create(
+                        this, this,
+                        "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time."
+                )
+                val timePickersBalloon = CustomBalloonFactory.create(
+                        this, this,
+                        "Use the time pickers to change the duration.",
+                        false, 0.5f
+                )
+                val favoriteButtonBalloon = CustomBalloonFactory.create(
+                        this, this,
+                        "Use the favorites section to save, remove and load timer presets.",
+                        true, 0.83f
+                )
+                val startButtonBalloon = CustomBalloonFactory.create(
+                        this, this,
+                        "Press the action button to start the workout using the current selection.",
+                        false, 0.5f
+                )
+                startButtonBalloon.setOnBalloonClickListener { preferenceHelper.setMainBalloons(false) }
+                startButtonBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setMainBalloons(false) }
+                bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, toolbar, 0, 12)
+                        .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
+                        .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)
+                        .relayShowAlignTop(startButtonBalloon, startButton, 0, -12)
+                bottomMenuBalloon.showAlignTop(bottomNavigationView, 0, -12)
+            }
         }
     }
 }

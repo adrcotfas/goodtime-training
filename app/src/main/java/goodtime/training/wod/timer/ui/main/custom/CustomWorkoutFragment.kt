@@ -18,14 +18,15 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
+import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.kodein.di.generic.instance
 
 class CustomWorkoutFragment:
-    WorkoutTypeFragment(),
-    CustomWorkoutAdapter.Listener,
-    SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
-    SaveCustomWorkoutDialog.Listener {
+        WorkoutTypeFragment(),
+        CustomWorkoutAdapter.Listener,
+        SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
+        SaveCustomWorkoutDialog.Listener {
 
     private val viewModelFactory: CustomWorkoutViewModelFactory by instance()
     private val preferenceHelper: PreferenceHelper by instance()
@@ -44,9 +45,9 @@ class CustomWorkoutFragment:
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = FragmentCustomBinding.inflate(inflater, container, false)
 
@@ -67,7 +68,30 @@ class CustomWorkoutFragment:
                 AddEditSessionDialog.newInstance(this).show(parentFragmentManager, "AddEditSessionDialog")
             }
         }
+
+        showBalloonsIfNeeded()
         return binding.root
+    }
+
+    private fun showBalloonsIfNeeded() {
+        if (preferenceHelper.showCustomBalloons()) {
+            val balloon = CustomBalloonFactory.create(
+                    requireContext(), this,
+                    "Add, remove, edit and rearrange sessions in any combination for a custom workout."
+            )
+            val anotherBalloon = CustomBalloonFactory.create(
+                    requireContext(), this,
+                    "Create new presets and add them to the favorites."
+            )
+
+            anotherBalloon.setOnBalloonClickListener { preferenceHelper.setCustomBalloons(false) }
+            anotherBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setCustomBalloons(false) }
+
+            binding.root.post {
+                balloon.relayShowAlignTop(anotherBalloon, binding.root)
+                balloon.showAlignTop(binding.root)
+            }
+        }
     }
 
     override fun onPause() {
@@ -111,8 +135,8 @@ class CustomWorkoutFragment:
 
     override fun onStartWorkout() {
         val action = CustomWorkoutFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
-                    + getSelectedSessions().toTypedArray() ))
+                TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                        + getSelectedSessions().toTypedArray() ))
         findNavController().navigate(action)
     }
 
@@ -138,9 +162,9 @@ class CustomWorkoutFragment:
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             listAdapter = CustomWorkoutAdapter(
-                viewModel.currentWorkout.sessions,
-                context,
-                this@CustomWorkoutFragment
+                    viewModel.currentWorkout.sessions,
+                    context,
+                    this@CustomWorkoutFragment
             )
             adapter = listAdapter
         }
@@ -190,7 +214,7 @@ class CustomWorkoutFragment:
 
     override fun onChipSelected(position: Int) {
         AddEditSessionDialog.newInstance(this, position, listAdapter.data[position])
-            .show(parentFragmentManager, "")
+                .show(parentFragmentManager, "")
     }
 
     override fun onScrollHandleTouch(holder: CustomWorkoutAdapter.ViewHolder) {

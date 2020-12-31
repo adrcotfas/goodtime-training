@@ -16,6 +16,7 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentHiitBinding
+import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.kodein.di.generic.instance
 
@@ -48,9 +49,9 @@ class HiitFragment : WorkoutTypeFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
 
         binding = FragmentHiitBinding.inflate(inflater, container, false)
@@ -61,56 +62,81 @@ class HiitFragment : WorkoutTypeFragment() {
             val idx = favorites.indexOfFirst{it.id == id}
 
             viewModel.hiitData = HiitSpinnerData(
-                if (idx != -1) favorites[idx].duration else 20,
-                if (idx != -1) favorites[idx].breakDuration else 10,
-                if (idx != -1) favorites[idx].numRounds else 8)
+                    if (idx != -1) favorites[idx].duration else 20,
+                    if (idx != -1) favorites[idx].breakDuration else 10,
+                    if (idx != -1) favorites[idx].numRounds else 8)
             favoritesLd.removeObservers(viewLifecycleOwner)
 
             setupNumberPickers()
 
             viewModel.hiitData.get().observe(
-                viewLifecycleOwner, { hiitData ->
-                    viewModel.session =
+                    viewLifecycleOwner, { hiitData ->
+                viewModel.session =
                         SessionSkeleton(duration = hiitData.first, breakDuration = hiitData.second,
-                            numRounds = hiitData.third, type = SessionType.HIIT)
-                }
+                                numRounds = hiitData.third, type = SessionType.HIIT)
+            }
             )
         })
+
+        showBalloonsIfNeeded()
+
         return binding.root
+    }
+
+    private fun showBalloonsIfNeeded() {
+        if (preferenceHelper.showHiitBalloons()) {
+            binding.separator1.post {
+                val balloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "HIIT stands for high intensity interval training and the default setting is the Tabata workout."
+                )
+                val anotherBalloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "The work and rest duration are specified in seconds.",
+                        false, 0.7f
+                )
+
+                anotherBalloon.setOnBalloonClickListener { preferenceHelper.setHiitBalloons(false) }
+                anotherBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setHiitBalloons(false) }
+
+                balloon.relayShowAlignTop(anotherBalloon, binding.separator1, 0, 12)
+                balloon.showAlignTop(binding.separator1, 0, 12)
+            }
+        }
     }
 
     private fun setupNumberPickers() {
         val rowHeight = calculateRowHeight(layoutInflater, PickerSize.MEDIUM)
 
         secondsWorkPicker = NumberPicker(
-            requireContext(), binding.pickerSecondsWork,
-            viewModel.secondsPickerData,
-            viewModel.hiitData.getSecondsWork(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsWorkListener
+                requireContext(), binding.pickerSecondsWork,
+                viewModel.secondsPickerData,
+                viewModel.hiitData.getSecondsWork(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsWorkListener
         )
 
         secondsBreakPicker = NumberPicker(
-            requireContext(), binding.pickerSecondsBreak,
-            viewModel.secondsPickerData,
-            viewModel.hiitData.getSecondsBreak(), rowHeight, textSize = PickerSize.MEDIUM, textColor = Color.RED, scrollListener = secondsBreakListener
+                requireContext(), binding.pickerSecondsBreak,
+                viewModel.secondsPickerData,
+                viewModel.hiitData.getSecondsBreak(), rowHeight, textSize = PickerSize.MEDIUM, textColor = Color.RED, scrollListener = secondsBreakListener
         )
 
         roundsPicker = NumberPicker(
-            requireContext(),
-            binding.pickerRounds,
-            viewModel.roundsPickerData,
-            viewModel.hiitData.getRounds(),
-            rowHeight,
-            prefixWithZero = true,
-            textSize = PickerSize.MEDIUM,
-            textColor = Color.NEUTRAL,
-            scrollListener = roundsListener
+                requireContext(),
+                binding.pickerRounds,
+                viewModel.roundsPickerData,
+                viewModel.hiitData.getRounds(),
+                rowHeight,
+                prefixWithZero = true,
+                textSize = PickerSize.MEDIUM,
+                textColor = Color.NEUTRAL,
+                scrollListener = roundsListener
         )
     }
 
     override fun onStartWorkout() {
         val action = HiitFragmentDirections.toWorkout(
-            TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
-                    + getSelectedSessions().toTypedArray())
+                TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                        + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }

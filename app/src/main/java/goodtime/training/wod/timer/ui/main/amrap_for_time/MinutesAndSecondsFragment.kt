@@ -14,6 +14,7 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentAmrapForTimeBinding
+import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.kodein.di.generic.instance
 
@@ -71,29 +72,54 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
                 }
             )
         })
+
+        showBalloonsIfNeeded()
+
         return binding.root
+    }
+
+    private fun showBalloonsIfNeeded() {
+        if (sessionType == SessionType.FOR_TIME && preferenceHelper.showForTimeBalloons()) {
+            binding.pickerSeparator.post {
+                val balloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "FOR TIME enforces a time cap and the goal is to complete the workout as fast as possible."
+                )
+                val anotherBalloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "Use the time pickers to change the time cap.",
+                        false, 0.5f
+                )
+
+                anotherBalloon.setOnBalloonClickListener { preferenceHelper.setForTimeBalloons(false) }
+                anotherBalloon.setOnBalloonOverlayClickListener { preferenceHelper.setForTimeBalloons(false) }
+
+                balloon.relayShowAlignTop(anotherBalloon, binding.pickerSeparator, 0, 12)
+                balloon.showAlignTop(binding.pickerSeparator, 0, 12)
+            }
+        }
     }
 
     private fun setupNumberPickers() {
         val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
-            requireContext(), binding.pickerMinutes,
-            viewModel.minutesPickerData,
-            viewModel.timeData.getMinutes(), rowHeight, scrollListener = minuteListener
+                requireContext(), binding.pickerMinutes,
+                viewModel.minutesPickerData,
+                viewModel.timeData.getMinutes(), rowHeight, scrollListener = minuteListener
         )
         secondsPicker = NumberPicker(
-            requireContext(), binding.pickerSeconds,
-            viewModel.secondsPickerData,
-            viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener
+                requireContext(), binding.pickerSeconds,
+                viewModel.secondsPickerData,
+                viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener
         )
     }
 
     override fun onStartWorkout() {
         val action = AmrapFragmentDirections.toWorkout(
-            TypeConverter.toString(
-                    sessions = arrayOf(
-                            PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
-                            + getSelectedSessions().toTypedArray())
+                TypeConverter.toString(
+                        sessions = arrayOf(
+                                PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                                + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
