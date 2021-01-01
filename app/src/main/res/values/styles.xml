@@ -166,7 +166,7 @@
 
     <style name="BottomNavigationView.TextAppearance" parent="TextAppearance.MaterialComponents.Caption">
         <item name="android:textSize">11sp</item>
-        <item name="fontFamily">@font/app_font</item>
+        <item name="fontFamily">@font/roboto_condensed</item>
     </style>
 
 </resources>
