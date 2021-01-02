@@ -29,7 +29,7 @@ class ResourcesHelper {
         private fun getColor(color: Int) =
             ResourcesCompat.getColor(GoodtimeApplication.getRes(), color, null)
 
-        fun toDrawable(type: SessionType) : Drawable {
+        fun getDrawableFor(type: SessionType) : Drawable {
             return ResourcesCompat.getDrawable(
                     GoodtimeApplication.getRes(),
                     when (type) {

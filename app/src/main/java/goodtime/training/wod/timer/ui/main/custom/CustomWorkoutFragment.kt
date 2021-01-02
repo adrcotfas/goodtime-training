@@ -161,7 +161,6 @@ class CustomWorkoutFragment:
             layoutManager = LinearLayoutManager(context)
             listAdapter = CustomWorkoutAdapter(
                     viewModel.currentWorkout.sessions,
-                    context,
                     this@CustomWorkoutFragment
             )
             adapter = listAdapter

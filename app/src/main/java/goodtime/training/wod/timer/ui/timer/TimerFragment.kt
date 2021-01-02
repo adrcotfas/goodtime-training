@@ -24,7 +24,6 @@ import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.DimensionsUtils
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
-import goodtime.training.wod.timer.common.ViewUtils
 import goodtime.training.wod.timer.common.notifications.NotificationHelper
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -131,7 +130,7 @@ class TimerFragment : Fragment(), KodeinAware {
 
             binding.round.text =
                 "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
-            binding.workoutImage.setImageDrawable(ViewUtils.toDrawable(resources, type))
+            binding.workoutImage.setImageDrawable(ResourcesHelper.getDrawableFor(type))
 
             refreshCounterButton()
         })
@@ -255,7 +254,7 @@ class TimerFragment : Fragment(), KodeinAware {
         val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
-        image.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
+        image.setImageDrawable(ResourcesHelper.getDrawableFor(session.type))
 
         text.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(session)}"
         return layout
@@ -266,7 +265,7 @@ class TimerFragment : Fragment(), KodeinAware {
         val headerImage = layout.findViewById<ImageView>(R.id.summary_drawable)
         val headerText = layout.findViewById<TextView>(R.id.summary_text)
 
-        headerImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
+        headerImage.setImageDrawable(ResourcesHelper.getDrawableFor(session.type))
         headerText.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(
             session
         )}"

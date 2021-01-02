@@ -46,7 +46,7 @@ class LogAdapter(private val listener: Listener) : RecyclerView.Adapter<LogAdapt
         private val notes: TextView = itemView.findViewById(R.id.notes) //TODO: toggle visibility according to content; add notes to Entity
 
         fun bind(session: Session) {
-            icon.setImageDrawable(ResourcesHelper.toDrawable(session.skeleton.type))
+            icon.setImageDrawable(ResourcesHelper.getDrawableFor(session.skeleton.type))
             exercise.text = StringUtils.toFavoriteFormatExtended(session.skeleton)
             timestamp.text = formatDateAndTime(session.timestamp)
             if (session.actualRounds.size == 0) {

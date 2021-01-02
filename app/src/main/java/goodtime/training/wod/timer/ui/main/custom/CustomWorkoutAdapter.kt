@@ -1,9 +1,7 @@
 package goodtime.training.wod.timer.ui.main.custom
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,14 +13,12 @@ import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
-import goodtime.training.wod.timer.common.ViewUtils
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import java.util.Collections
 
 class CustomWorkoutAdapter(
     var data: ArrayList<SessionSkeleton>,
-    private val context: Context,
     private val listener: Listener
 )
     : RecyclerView.Adapter<CustomWorkoutAdapter.ViewHolder>()
@@ -45,7 +41,7 @@ class CustomWorkoutAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(context.resources, data[position])
+        holder.bind(data[position])
 
         holder.scrollHandle.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
@@ -98,7 +94,7 @@ class CustomWorkoutAdapter(
         val parent: ConstraintLayout = view.findViewById(R.id.parent)
         val sessionChip: Chip = view.findViewById(R.id.session_chip)
 
-        fun bind(resources: Resources, session: SessionSkeleton) {
+        fun bind(session: SessionSkeleton) {
             if (session.type == SessionType.REST) {
                 sessionChip.setTextColor(ResourcesHelper.red)
                 sessionChip.chipBackgroundColor = ColorStateList.valueOf(ResourcesHelper.darkRed)
@@ -108,7 +104,7 @@ class CustomWorkoutAdapter(
                 sessionChip.chipBackgroundColor = ColorStateList.valueOf(ResourcesHelper.darkGreen)
                 sessionChip.chipIconTint = ColorStateList.valueOf(ResourcesHelper.green)
             }
-            sessionChip.chipIcon = ViewUtils.toDrawable(resources, session.type)
+            sessionChip.chipIcon = ResourcesHelper.getDrawableFor(session.type)
 
             sessionChip.text = StringUtils.toFavoriteFormatExtended(session)
         }
