@@ -4,15 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.databinding.FragmentLogBinding
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+
 
 class LogFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
@@ -31,10 +34,10 @@ class LogFragment : Fragment(), KodeinAware {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View {
 
         binding = FragmentLogBinding.inflate(layoutInflater, container, false)
         recyclerView = binding.recyclerView
@@ -43,8 +46,12 @@ class LogFragment : Fragment(), KodeinAware {
         val logAdapter = LogAdapter(itemClickListener)
         recyclerView.adapter = logAdapter
 
+        val dividerItemDecoration = DividerItemDecoration(recyclerView.context, LinearLayout.VERTICAL)
+        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.recycler_separator))
+        recyclerView.addItemDecoration(dividerItemDecoration)
+
         viewModel = ViewModelProvider(this, viewModelFactory).get(LogViewModel::class.java)
-        viewModel.getSessions().observe(viewLifecycleOwner, Observer { sessions ->
+        viewModel.getSessions().observe(viewLifecycleOwner, { sessions ->
             setupEmptyState(sessions.isEmpty())
             logAdapter.data = sessions
         })
@@ -52,7 +59,7 @@ class LogFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
-    private fun setupEmptyState(isEmpty : Boolean) {
+    private fun setupEmptyState(isEmpty: Boolean) {
         binding.emptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
         binding.recyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
     }

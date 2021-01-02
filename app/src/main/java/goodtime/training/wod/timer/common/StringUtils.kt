@@ -4,6 +4,7 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import java.time.*
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.*
@@ -50,7 +51,8 @@ class StringUtils {
         }
 
         fun toFavoriteFormatExtended(session: SessionSkeleton): String {
-            return "${toString(session.type)} ${toFavoriteFormat(session)}"
+            val prefix = if (session.type != SessionType.EMOM) toString(session.type) else "INT."
+            return "$prefix ${toFavoriteFormat(session)}"
         }
 
         fun secondsToNiceFormat(elapsed: Int): String {
@@ -115,7 +117,9 @@ class StringUtils {
 
         fun formatDateAndTime(millis: Long): String {
             val date = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault())
-            return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            val dateString = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+            val timeString = date.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+            return "$timeString   $dateString"
         }
 
         fun toString(sessionType: SessionType) : String {

@@ -3,7 +3,7 @@ package goodtime.training.wod.timer.data.model
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-
+import kotlin.collections.ArrayList
 
 class TypeConverter {
 
@@ -14,7 +14,6 @@ class TypeConverter {
                 return type
             }
         }
-        //TODO: log error for invalid input
         return SessionType.REST
     }
 
@@ -23,6 +22,49 @@ class TypeConverter {
         return type.value
     }
 
+    @TypeConverter
+    fun toString(sessions: ArrayList<SessionSkeleton>): String {
+        return Gson().toJson(sessions)
+    }
+
+    @TypeConverter
+    fun toSessionSkeletons(string: String): ArrayList<SessionSkeleton> {
+        val gson = Gson()
+        val typeToken = object : TypeToken<ArrayList<SessionSkeleton>>() {}
+        return gson.fromJson(string, typeToken.type)
+    }
+
+    @TypeConverter
+    fun toString(session: SessionSkeleton): String {
+        val gson = Gson()
+        return gson.toJson(session)
+    }
+
+    fun toString(vararg session: SessionSkeleton): String {
+        val gson = Gson()
+        return gson.toJson(session)
+    }
+
+    @TypeConverter
+    fun toSessionSkeleton(data: String): SessionSkeleton {
+        val gson = Gson()
+        val typeToken = object : TypeToken<SessionSkeleton>() {}
+        return gson.fromJson(data, typeToken.type)
+    }
+
+    @TypeConverter
+    fun intToString(ints: ArrayList<Int>): String {
+        return Gson().toJson(ints)
+    }
+
+    @TypeConverter
+    fun stringToInts(string: String): ArrayList<Int> {
+        val gson = Gson()
+        val typeToken = object : TypeToken<ArrayList<Int>>() {}
+        return gson.fromJson(string, typeToken.type)
+    }
+
+    //TODO: remove this duplication
     companion object {
         fun toString(vararg sessions: SessionSkeleton) : String {
             val gson = Gson()
@@ -34,17 +76,5 @@ class TypeConverter {
             val typeToken = object : TypeToken<ArrayList<SessionSkeleton>>() {}
             return gson.fromJson(string, typeToken.type)
         }
-    }
-
-    @TypeConverter
-    fun toString(sessions: ArrayList<SessionSkeleton>) : String {
-        return Gson().toJson(sessions)
-    }
-
-    @TypeConverter
-    fun toSessionSkeletons(string : String) : ArrayList<SessionSkeleton> {
-        val gson = Gson()
-        val typeToken = object : TypeToken<ArrayList<SessionSkeleton>>() {}
-        return gson.fromJson(string, typeToken.type)
     }
 }

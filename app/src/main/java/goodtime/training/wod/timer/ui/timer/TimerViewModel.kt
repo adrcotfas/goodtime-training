@@ -145,9 +145,8 @@ class TimerViewModel(
                 repository.addSession(
                         constructSession(
                                 sessions[index],
-                                System.currentTimeMillis(),
-                                countedRounds[index],
-                                durations[index]))
+                                durations[index],
+                                countedRounds[index]))
             }
         }
         handleCompletion()
@@ -243,9 +242,8 @@ class TimerViewModel(
                     repository.addSession(
                             constructSession(
                                     sessions[index],
-                                    System.currentTimeMillis(),
-                                    countedRounds[index],
-                                    durations[index]))
+                                    durations[index],
+                                    countedRounds[index]))
                 }
                 if (isLastSession()) {
                     timerState.value = TimerState.FINISHED
@@ -266,7 +264,7 @@ class TimerViewModel(
             }
             SessionType.EMOM -> {
                 if (isLastRound()) {
-                    repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
+                    repository.addSession(constructSession(sessions[index], durations[index]))
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
                         notifier.notifyTrainingComplete()
@@ -301,7 +299,7 @@ class TimerViewModel(
                 if ((isLastRound() && !isLastSession() && isResting.value!!)
                         // if this is the final session and final work round, skip the break
                         || (isLastRound() && isLastSession() && !isResting.value!!)) {
-                    repository.addSession(constructSession(sessions[index], System.currentTimeMillis()))
+                    repository.addSession(constructSession(sessions[index], durations[index]))
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
 

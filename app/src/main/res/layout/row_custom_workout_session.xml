@@ -31,7 +31,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/scroll_handle"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="12dp"
         tools:text="8 x 20 s / 10 s" />
 
     <ImageView

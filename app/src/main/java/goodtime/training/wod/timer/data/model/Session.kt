@@ -1,29 +1,32 @@
 package goodtime.training.wod.timer.data.model
 
+import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import kotlin.collections.ArrayList
 
 @Entity
 @TypeConverters(TypeConverter::class)
 data class Session(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
-    var duration: Int = 0,
-    var breakDuration: Int = 0,
-    var numRounds: Int = 0,
-    var actualDuration: Int = 0,
-    var type: SessionType = SessionType.REST,
+        @PrimaryKey(autoGenerate = true)
+        var id: Int = 0,
+        var skeleton: SessionSkeleton,
+        var actualDuration: Int = 0,
+        var actualRounds: ArrayList<Int>,
+        @Nullable
+        var notes: String?,
+        var timestamp: Long = System.currentTimeMillis()) {
 
-    var rounds: Int,
-    var timestamp: Long = System.currentTimeMillis(),
-    var finished: Boolean) {
+    //TODO: use a boolean to signal a custom session
 
     companion object {
-        fun constructSession(skeleton: SessionSkeleton, timestamp: Long, rounds: ArrayList<Int> = arrayListOf(0), actualDuration: Int = 0) : Session {
-            return Session(0, skeleton.duration, skeleton.breakDuration, skeleton.numRounds, actualDuration, skeleton.type,
-                 0, timestamp, true)
+        fun constructSession(
+                skeleton: SessionSkeleton,
+                actualDuration: Int = 0,
+                actualRounds: ArrayList<Int> = arrayListOf(),
+                notes: String = "") : Session {
+            return Session(0, skeleton, actualDuration, actualRounds, notes)
         }
     }
-
 }

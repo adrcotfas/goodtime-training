@@ -1,11 +1,13 @@
 package goodtime.training.wod.timer.common
 
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import goodtime.training.wod.timer.GoodtimeApplication
 import goodtime.training.wod.timer.R
+import goodtime.training.wod.timer.data.model.SessionType
 
 
 class ResourcesHelper {
@@ -26,5 +28,28 @@ class ResourcesHelper {
 
         private fun getColor(color: Int) =
             ResourcesCompat.getColor(GoodtimeApplication.getRes(), color, null)
+
+        fun toDrawable(type: SessionType) : Drawable {
+            return ResourcesCompat.getDrawable(
+                    GoodtimeApplication.getRes(),
+                    when (type) {
+                        SessionType.AMRAP -> {
+                            R.drawable.ic_infinity
+                        }
+                        SessionType.FOR_TIME -> {
+                            R.drawable.ic_flash
+                        }
+                        SessionType.EMOM -> {
+                            R.drawable.ic_status_goodtime
+                        }
+                        SessionType.HIIT -> {
+                            R.drawable.ic_fire2
+                        }
+                        SessionType.REST -> {
+                            R.drawable.ic_break
+                        }
+                    }, null
+            )!!
+        }
     }
 }
