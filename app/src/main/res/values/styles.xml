@@ -96,14 +96,14 @@
 
     <style name="FavoritesTextStyle">
         <item name="android:textSize">20sp</item>
-        <item name="fontFamily">@font/app_font</item>
-        <item name="android:fontFamily">@font/app_font</item>
+        <item name="fontFamily">@font/roboto_condensed</item>
+        <item name="android:fontFamily">@font/roboto_condensed</item>
     </style>
 
     <style name="FavoritesTextStyleSmaller">
         <item name="android:textSize">16sp</item>
-        <item name="fontFamily">@font/app_font</item>
-        <item name="android:fontFamily">@font/app_font</item>
+        <item name="fontFamily">@font/roboto_condensed</item>
+        <item name="android:fontFamily">@font/roboto_condensed</item>
     </style>
 
     <style name="WorkoutTimerTextStyle">

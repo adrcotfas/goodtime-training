@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
@@ -98,23 +97,20 @@ class CustomWorkoutAdapter(
         val closeButton: ImageView = view.findViewById(R.id.close_button)
         val parent: ConstraintLayout = view.findViewById(R.id.parent)
         val sessionChip: Chip = view.findViewById(R.id.session_chip)
-        private val sessionTypeImage: ImageView = view.findViewById(R.id.session_type_image)
-        private val sessionTypeText: TextView = view.findViewById(R.id.session_type_text)
 
         fun bind(resources: Resources, session: SessionSkeleton) {
-            sessionTypeImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
-            sessionTypeText.text = StringUtils.toString(session.type)
-
             if (session.type == SessionType.REST) {
                 sessionChip.setTextColor(ResourcesHelper.red)
                 sessionChip.chipBackgroundColor = ColorStateList.valueOf(ResourcesHelper.darkRed)
+                sessionChip.chipIconTint = ColorStateList.valueOf(ResourcesHelper.red)
             } else {
                 sessionChip.setTextColor(ResourcesHelper.green)
                 sessionChip.chipBackgroundColor = ColorStateList.valueOf(ResourcesHelper.darkGreen)
+                sessionChip.chipIconTint = ColorStateList.valueOf(ResourcesHelper.green)
             }
+            sessionChip.chipIcon = ViewUtils.toDrawable(resources, session.type)
 
-            sessionChip.text = StringUtils.toFavoriteFormat(session)
-            sessionTypeImage.setImageDrawable(ViewUtils.toDrawable(resources, session.type))
+            sessionChip.text = StringUtils.toFavoriteFormatExtended(session)
         }
 
         companion object {

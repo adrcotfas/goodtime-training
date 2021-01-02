@@ -49,6 +49,10 @@ class StringUtils {
             }
         }
 
+        fun toFavoriteFormatExtended(session: SessionSkeleton): String {
+            return "${toString(session.type)} ${toFavoriteFormat(session)}"
+        }
+
         fun secondsToNiceFormat(elapsed: Int): String {
             val duration = secondsToMinutesAndSeconds(elapsed)
             return when {
