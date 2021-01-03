@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.databinding.FragmentStatisticsBinding
 import org.kodein.di.KodeinAware
@@ -40,6 +42,9 @@ class StatisticsFragment : Fragment(), KodeinAware {
     ): View {
 
         binding = FragmentStatisticsBinding.inflate(layoutInflater, container, false)
+
+        setupToolbar()
+
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -62,5 +67,25 @@ class StatisticsFragment : Fragment(), KodeinAware {
     private fun setupEmptyState(isEmpty: Boolean) {
         binding.emptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
         binding.recyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
+    }
+
+    private fun setupToolbar() {
+        val appBarLayout = binding.appBar
+        val arrowImageView = binding.arrowImageView
+        arrowImageView.setOnClickListener {
+            val fullyExpanded = appBarLayout.height - appBarLayout.bottom == 0
+            appBarLayout.setExpanded(!fullyExpanded, true)
+        }
+        binding.toolbar.setNavigationOnClickListener {
+            NavHostFragment.findNavController(this).apply {
+                popBackStack()
+            }
+        }
+
+        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { layout, verticalOffset ->
+            val totalScrollRange: Int = layout.totalScrollRange
+            val progress = (-verticalOffset).toFloat() / totalScrollRange.toFloat()
+            arrowImageView.rotation = progress * 180
+        })
     }
 }
