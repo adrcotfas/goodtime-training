@@ -64,9 +64,9 @@
 
     <fragment
         android:id="@+id/nav_log"
-        android:name="goodtime.training.wod.timer.ui.stats.LogFragment"
+        android:name="goodtime.training.wod.timer.ui.stats.StatisticsFragment"
         android:label="Statistics"
-        tools:layout="@layout/fragment_log"/>
+        tools:layout="@layout/fragment_statistics"/>
 
     <dialog
         android:id="@+id/nav_dialog_stop_workout"

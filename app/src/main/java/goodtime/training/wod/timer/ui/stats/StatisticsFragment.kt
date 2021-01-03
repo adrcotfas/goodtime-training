@@ -11,18 +11,18 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import goodtime.training.wod.timer.R
-import goodtime.training.wod.timer.databinding.FragmentLogBinding
+import goodtime.training.wod.timer.databinding.FragmentStatisticsBinding
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class LogFragment : Fragment(), KodeinAware {
+class StatisticsFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
     private val viewModelFactory : LogViewModelFactory by instance()
 
-    private lateinit var binding: FragmentLogBinding
+    private lateinit var binding: FragmentStatisticsBinding
     private lateinit var viewModel : LogViewModel
 
     private lateinit var recyclerView : RecyclerView
@@ -39,7 +39,7 @@ class LogFragment : Fragment(), KodeinAware {
             savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentLogBinding.inflate(layoutInflater, container, false)
+        binding = FragmentStatisticsBinding.inflate(layoutInflater, container, false)
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
