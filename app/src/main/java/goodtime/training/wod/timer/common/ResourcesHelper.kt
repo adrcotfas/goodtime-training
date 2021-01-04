@@ -23,6 +23,8 @@ class ResourcesHelper {
         val grey1000 = getColor(R.color.grey1000)
         val grey1200 = getColor(R.color.grey1200)
 
+        fun getResources() = GoodtimeApplication.getRes()
+
         fun getColorFilter(@ColorInt color: Int) =
             BlendModeColorFilterCompat.createBlendModeColorFilterCompat(color, BlendModeCompat.SRC_ATOP)
 

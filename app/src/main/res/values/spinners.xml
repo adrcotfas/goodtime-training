@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner_range_type">
+    <item>@string/spinner_range_days</item>
+    <item>@string/spinner_range_weeks</item>
+    <item>@string/spinner_range_months</item>
+</string-array>
+</resources>

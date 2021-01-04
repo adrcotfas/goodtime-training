@@ -9,6 +9,6 @@ class LogViewModelFactory(private val appRepository: AppRepository)
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return LogViewModel(appRepository) as T
+        return StatisticsViewModel(appRepository) as T
     }
 }

@@ -12,7 +12,7 @@ import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.StringUtils.Companion.formatDateAndTime
 import goodtime.training.wod.timer.data.model.Session
 
-class LogAdapter(private val listener: Listener) : RecyclerView.Adapter<LogAdapter.ViewHolder>() {
+class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<StatisticsAdapter.ViewHolder>() {
 
     interface Listener {
         fun onClick(position: Int)

@@ -11,6 +11,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
+
 class StringUtils {
 
     companion object {
@@ -29,9 +30,12 @@ class StringUtils {
 
         fun secondsOfDayToTimerFormat(seconds: Int, is24HourFormat: Boolean = true): String {
             val time = LocalTime.ofSecondOfDay(seconds.toLong())
-            return time.format(DateTimeFormatter.ofPattern(
+            return time.format(
+                DateTimeFormatter.ofPattern(
                     if (is24HourFormat) "HH:mm"
-                    else "hh:mm a"))
+                    else "hh:mm a"
+                )
+            )
         }
 
         fun toFavoriteFormat(session: SessionSkeleton): String {
@@ -64,6 +68,22 @@ class StringUtils {
             }
         }
 
+        fun formatSecondsToMinutes(seconds: Long): String {
+            val days = TimeUnit.SECONDS.toDays(seconds)
+            val hours = TimeUnit.SECONDS.toHours(seconds) % 24
+            val remMin = TimeUnit.SECONDS.toMinutes(seconds + 59) % 60
+            var result = "0 min"
+            if (seconds != 0L) {
+                result = ""
+                if (days != 0L) result += "${days}d\n"
+                if (hours != 0L) result += "${hours}h"
+                if (remMin != 0L) result += " $remMin min"
+            }
+            return result
+        }
+
+        fun secondsToMinutes(seconds: Long) = "${TimeUnit.SECONDS.toMinutes(seconds)} min"
+
         private fun secondsToNiceFormatExtended(elapsed: Int): String {
             val duration = secondsToMinutesAndSeconds(elapsed)
             return when {
@@ -81,18 +101,18 @@ class StringUtils {
             return when (session.type) {
                 SessionType.AMRAP -> "As many rounds/reps as possible in ${
                     secondsToNiceFormatExtended(
-                            session.duration
+                        session.duration
                     )
                 }"
                 SessionType.FOR_TIME -> "For time with a time cap of ${
                     secondsToNiceFormatExtended(
-                            session.duration
+                        session.duration
                     )
                 }"
                 SessionType.EMOM -> {
                     (if (session.duration == 60) "Every minute on the minute for ${
                         secondsToNiceFormatExtended(
-                                session.numRounds * session.duration
+                            session.numRounds * session.duration
                         )
                     }"
                     else
@@ -101,9 +121,9 @@ class StringUtils {
                 }
                 SessionType.HIIT -> {
                     val workString =
-                            session.duration.toString() + " second" + if (session.duration > 1) "s" else ""
+                        session.duration.toString() + " second" + if (session.duration > 1) "s" else ""
                     val breakString =
-                            session.breakDuration.toString() + " second" + if (session.breakDuration > 1) "s" else ""
+                        session.breakDuration.toString() + " second" + if (session.breakDuration > 1) "s" else ""
                     "${session.numRounds} high intensity intervals of $workString of work with $breakString of rest"
                 }
                 SessionType.REST -> "Rest for ${secondsToNiceFormatExtended(session.duration)}"
@@ -133,11 +153,11 @@ class StringUtils {
         }
 
         private val congratsStrings = arrayListOf(
-                "Good job! \uD83D\uDCAA",
-                "Not bad! \uD83E\uDD1C\uD83E\uDD1B",
-                "Well done! \uD83D\uDD25",
-                "Congrats! \uD83C\uDFC5",
-                "Congrats! \uD83C\uDFC6"
+            "Good job! \uD83D\uDCAA",
+            "Not bad! \uD83E\uDD1C\uD83E\uDD1B",
+            "Well done! \uD83D\uDD25",
+            "Congrats! \uD83C\uDFC5",
+            "Congrats! \uD83C\uDFC6"
         )
 
         fun generateCongrats() : String {
@@ -147,13 +167,13 @@ class StringUtils {
 
         fun getDaysOfWeekShort() : ArrayList<String> {
             val daysOfWeekRaw = mutableListOf(
-                    DayOfWeek.MONDAY,
-                    DayOfWeek.TUESDAY,
-                    DayOfWeek.WEDNESDAY,
-                    DayOfWeek.THURSDAY,
-                    DayOfWeek.FRIDAY,
-                    DayOfWeek.SATURDAY,
-                    DayOfWeek.SUNDAY
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY,
+                DayOfWeek.SATURDAY,
+                DayOfWeek.SUNDAY
             )
 
             val result = ArrayList<String>(7)
@@ -164,6 +184,9 @@ class StringUtils {
         }
 
         fun firstDayOfWeek(): DayOfWeek =
-            WeekFields.of(Locale.getDefault()).firstDayOfWeek
+                WeekFields.of(Locale.getDefault()).firstDayOfWeek
+
+        fun lastDayOfWeek(): DayOfWeek =
+                DayOfWeek.of((firstDayOfWeek().value + 5) % DayOfWeek.values().size + 1)
     }
 }
