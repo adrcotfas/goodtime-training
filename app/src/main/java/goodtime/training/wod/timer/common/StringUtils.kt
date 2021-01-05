@@ -68,16 +68,17 @@ class StringUtils {
             }
         }
 
-        fun formatSecondsToMinutes(seconds: Long): String {
+        fun formatSecondsToOverviewTime(seconds: Long): String {
             val days = TimeUnit.SECONDS.toDays(seconds)
             val hours = TimeUnit.SECONDS.toHours(seconds) % 24
-            val remMin = TimeUnit.SECONDS.toMinutes(seconds + 30) % 60
-            var result = "0 min"
+            val remMin = TimeUnit.SECONDS.toMinutes(seconds + 59) % 60
+            var result = ""
             if (seconds != 0L) {
-                result = ""
                 if (days != 0L) result += "${days}d\n"
                 if (hours != 0L) result += "${hours}h"
                 if (remMin != 0L) result += " $remMin min"
+            } else {
+                result = "0 min"
             }
             return result
         }

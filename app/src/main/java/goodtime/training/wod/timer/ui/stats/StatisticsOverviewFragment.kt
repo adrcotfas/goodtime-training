@@ -10,7 +10,7 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import goodtime.training.wod.timer.R
-import goodtime.training.wod.timer.common.StringUtils.Companion.formatSecondsToMinutes
+import goodtime.training.wod.timer.common.StringUtils.Companion.formatSecondsToOverviewTime
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.databinding.FragmentStatisticsOverviewBinding
 import org.kodein.di.KodeinAware
@@ -60,10 +60,10 @@ class StatisticsOverviewFragment : Fragment(), KodeinAware {
     private fun refreshStats(sessions: List<Session>) {
         val stats = viewModel.calculateOverviewStats(sessions)
 
-        binding.todayValue.text = formatSecondsToMinutes(stats.today)
-        binding.weekValue.text = formatSecondsToMinutes(stats.week)
-        binding.monthValue.text = formatSecondsToMinutes(stats.month)
-        binding.totalValue.text = formatSecondsToMinutes(stats.total)
+        binding.todayValue.text = formatSecondsToOverviewTime(stats.today)
+        binding.weekValue.text = formatSecondsToOverviewTime(stats.week)
+        binding.monthValue.text = formatSecondsToOverviewTime(stats.month)
+        binding.totalValue.text = formatSecondsToOverviewTime(stats.total)
 
         binding.weekDescription.text =
             "${resources.getString(R.string.statistics_week)} ${viewModel.getThisWeekNumber()}"
