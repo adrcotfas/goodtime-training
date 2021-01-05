@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             startButton.apply { if (isTopLevel) show() else hide() }
 
             val hideToolbar = destination.label == "WorkoutFragment" ||
-                    destination.label == "StopWorkoutDialog" || destination.label == "Statistics"
+                    destination.label == "StopWorkoutDialog"
             toolbar.visibility = if (hideToolbar) View.GONE else View.VISIBLE
 
             if (preferenceHelper.isFullscreenModeEnabled()) {

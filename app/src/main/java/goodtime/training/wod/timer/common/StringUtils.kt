@@ -71,7 +71,7 @@ class StringUtils {
         fun formatSecondsToMinutes(seconds: Long): String {
             val days = TimeUnit.SECONDS.toDays(seconds)
             val hours = TimeUnit.SECONDS.toHours(seconds) % 24
-            val remMin = TimeUnit.SECONDS.toMinutes(seconds + 59) % 60
+            val remMin = TimeUnit.SECONDS.toMinutes(seconds + 30) % 60
             var result = "0 min"
             if (seconds != 0L) {
                 result = ""
