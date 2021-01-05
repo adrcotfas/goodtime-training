@@ -56,6 +56,8 @@ class StatisticsListFragment : Fragment(), KodeinAware {
         viewModel = ViewModelProvider(this, viewModelFactory).get(StatisticsViewModel::class.java)
         viewModel.getSessions().observe(viewLifecycleOwner, { sessions ->
             logAdapter.data = sessions
+            binding.recyclerView.visibility = if (sessions.isNotEmpty()) View.VISIBLE else View.GONE
+            binding.emptyState.visibility = if (sessions.isEmpty()) View.VISIBLE else View.GONE
         })
 
         return binding.root

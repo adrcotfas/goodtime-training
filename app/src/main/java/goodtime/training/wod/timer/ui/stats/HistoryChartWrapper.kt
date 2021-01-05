@@ -191,16 +191,16 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
         chart.data = data
         chart.data.isHighlightEnabled = false
 
-        val sixMinutes = TimeUnit.MINUTES.toSeconds(6).toFloat()
+        val sixMinutes = TimeUnit.MINUTES.toSeconds(5).toFloat()
         chart.axisLeft.axisMinimum = 0f
         chart.axisLeft.axisMaximum = sixMinutes
 
-        val visibleXCount = 11
+        val visibleXCount = 8
 
         chart.setVisibleXRangeMaximum(visibleXCount.toFloat())
         chart.setVisibleXRangeMinimum(visibleXCount.toFloat())
         chart.xAxis.labelCount = visibleXCount
-        chart.axisLeft.setLabelCount(5, true)
+        chart.axisLeft.setLabelCount(6, true)
         val yMax = data.yMax
         if (sessions.isNotEmpty() && yMax > sixMinutes) {
             chart.axisLeft.axisMaximum = (ceil((yMax / 20).toDouble()) * 20).toFloat()
