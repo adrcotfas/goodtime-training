@@ -80,7 +80,7 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
             })
     }
 
-    override fun onDeleteConfirmation(id: Int, name: String) {
+    override fun onDeleteConfirmation(id: Long, name: String) {
         repo.removeCustomWorkoutSkeleton(name)
         listener.onFavoriteDeleted(name)
     }

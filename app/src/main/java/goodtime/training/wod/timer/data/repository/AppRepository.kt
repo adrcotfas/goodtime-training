@@ -14,7 +14,7 @@ interface AppRepository {
 
     fun addSessionSkeleton(session: SessionSkeleton)
     fun getSessionSkeletons(type: SessionType): LiveData<List<SessionSkeleton>>
-    fun removeSessionSkeleton(id: Int)
+    fun removeSessionSkeleton(id: Long)
 
     fun addCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton)
     fun getCustomWorkoutSkeletons() : LiveData<List<CustomWorkoutSkeleton>>

@@ -33,7 +33,7 @@ class AppRepositoryImpl(
     override fun getSessionSkeletons(type: SessionType): LiveData<List<SessionSkeleton>>
         = sessionSkeletonDao.get(type)
 
-    override fun removeSessionSkeleton(id: Int) {
+    override fun removeSessionSkeleton(id: Long) {
       GlobalScope.launch {
           sessionSkeletonDao.remove(id)
       }

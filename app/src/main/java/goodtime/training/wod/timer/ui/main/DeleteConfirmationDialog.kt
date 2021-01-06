@@ -18,15 +18,15 @@ class DeleteConfirmationDialog: DialogFragment(), KodeinAware {
 
     private lateinit var binding: DialogDeleteConfirmationBinding
     private lateinit var listener: Listener
-    private var favoriteId = 0
+    private var favoriteId = 0L
     private lateinit var name: String
 
     interface Listener {
-        fun onDeleteConfirmation(id: Int, name: String)
+        fun onDeleteConfirmation(id: Long, name: String)
     }
 
     companion object {
-        fun newInstance(listener: Listener, id: Int, name: String): DeleteConfirmationDialog {
+        fun newInstance(listener: Listener, id: Long, name: String): DeleteConfirmationDialog {
             val dialog = DeleteConfirmationDialog()
             dialog.listener = listener
             dialog.name = name

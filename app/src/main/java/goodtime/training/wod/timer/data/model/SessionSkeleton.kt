@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 @TypeConverters(TypeConverter::class)
 data class SessionSkeleton (
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    var id: Long = 0,
     var duration: Int = 0,
     var breakDuration: Int = 0,
     var numRounds: Int = 0,

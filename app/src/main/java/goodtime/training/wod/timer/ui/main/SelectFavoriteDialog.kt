@@ -167,7 +167,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
         binding.customSection.visibility = View.VISIBLE
     }
 
-    override fun onDeleteConfirmation(id: Int, name: String) {
+    override fun onDeleteConfirmation(id: Long, name: String) {
         repo.removeSessionSkeleton(id)
     }
 }

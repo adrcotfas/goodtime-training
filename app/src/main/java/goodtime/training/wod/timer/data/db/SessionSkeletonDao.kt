@@ -18,5 +18,5 @@ interface SessionSkeletonDao {
     fun get(type: SessionType) : LiveData<List<SessionSkeleton>>
 
     @Query("delete from SessionSkeleton where id = :id")
-    suspend fun remove(id: Int)
+    suspend fun remove(id: Long)
 }

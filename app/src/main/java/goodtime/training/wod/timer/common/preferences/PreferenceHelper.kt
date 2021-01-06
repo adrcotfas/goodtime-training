@@ -12,7 +12,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val IS_FIRST_RUN = "pref_is_first_run"
         private const val SHOW_DELETE_CONFIRMATION_DIALOG = "pref_show_delete_confirmation_dialog"
 
-        const val INVALID_FAVORITE_ID = -1
+        const val INVALID_FAVORITE_ID = -1L
         private const val AMRAP_FAVORITE_ID = "amrap_favorite_id"
         private const val FOR_TIME_FAVORITE_ID = "for_time_favorite_id"
         private const val EMOM_FAVORITE_ID = "emom_favorite_id"
@@ -52,8 +52,8 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
     fun setIsFirstRun(state: Boolean) = dataStore.putBoolean(IS_FIRST_RUN, state)
     fun showDeleteConfirmationDialog() = dataStore.getBoolean(SHOW_DELETE_CONFIRMATION_DIALOG, true)
     fun setShowDeleteConfirmationDialog(state: Boolean) = dataStore.putBoolean(SHOW_DELETE_CONFIRMATION_DIALOG, state)
-    fun setCurrentFavoriteId(sessionType: SessionType, id: Int) = dataStore.putInt(toPrefId(sessionType), id)
-    fun getCurrentFavoriteId(sessionType: SessionType) = dataStore.getInt(toPrefId(sessionType), INVALID_FAVORITE_ID)
+    fun setCurrentFavoriteId(sessionType: SessionType, id: Long) = dataStore.putLong(toPrefId(sessionType), id)
+    fun getCurrentFavoriteId(sessionType: SessionType) = dataStore.getLong(toPrefId(sessionType), INVALID_FAVORITE_ID)
     fun setCurrentCustomWorkoutFavoriteName(name: String) = dataStore.putString(CUSTOM_WORKOUT_FAVORITE_NAME, name)
     fun getCurrentCustomWorkoutFavoriteName() = dataStore.getString(CUSTOM_WORKOUT_FAVORITE_NAME, null)
 
