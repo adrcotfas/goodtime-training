@@ -113,6 +113,7 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
 
     override fun onStartWorkout() {
         val action = AmrapFragmentDirections.toWorkout(
+                sessions =
                 TypeConverter.toString(
                         sessions = arrayOf(
                                 PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))

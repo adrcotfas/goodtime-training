@@ -2,7 +2,6 @@ package goodtime.training.wod.timer.ui.timer
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.graphics.Paint
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -10,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +24,7 @@ import goodtime.training.wod.timer.common.DimensionsUtils
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.notifications.NotificationHelper
+import goodtime.training.wod.timer.common.toInt
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.workout.TimerState
@@ -52,17 +52,18 @@ class TimerFragment : Fragment(), KodeinAware {
         if (viewModel.timerState.value == TimerState.INACTIVE) {
             viewModel.init(args.sessions)
             viewModel.startWorkout()
+            viewModel.sessionToSaveInRepo.name = args.name
         }
 
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (viewModel.timerState.value != TimerState.FINISHED) {
                     NavHostFragment.findNavController(this@TimerFragment)
-                        .navigate(R.id.nav_dialog_stop_workout)
+                            .navigate(R.id.nav_dialog_stop_workout)
                 } else {
                     viewModel.timerState.value = TimerState.INACTIVE
                     NavHostFragment.findNavController(this@TimerFragment)
-                        .popBackStack()
+                            .popBackStack()
                 }
             }
         }
@@ -84,9 +85,9 @@ class TimerFragment : Fragment(), KodeinAware {
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = FragmentWorkoutBinding.inflate(layoutInflater, container, false)
         viewModel.secondsUntilFinished.observe(viewLifecycleOwner, { seconds ->
@@ -94,8 +95,8 @@ class TimerFragment : Fragment(), KodeinAware {
             val total = viewModel.getCurrentSessionDuration()
 
             val secondsToShow =
-                if (type != SessionType.FOR_TIME) seconds + 1
-                else total - seconds
+                    if (type != SessionType.FOR_TIME) seconds + 1
+                    else total - seconds
             binding.timer.text = StringUtils.secondsToTimerFormat(secondsToShow)
             val newProgress = (total - seconds).toFloat() / total.toFloat()
             if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -119,17 +120,17 @@ class TimerFragment : Fragment(), KodeinAware {
         viewModel.currentSessionIdx.observe(viewLifecycleOwner, {
             val type = viewModel.getCurrentSessionType()
             binding.finishButton.visibility =
-                if (type != SessionType.FOR_TIME) View.GONE
-                else View.VISIBLE
+                    if (type != SessionType.FOR_TIME) View.GONE
+                    else View.VISIBLE
             binding.roundCounterButtonContainer.visibility =
-                if (type != SessionType.FOR_TIME && type != SessionType.AMRAP) View.GONE
-                else View.VISIBLE
+                    if (type != SessionType.FOR_TIME && type != SessionType.AMRAP) View.GONE
+                    else View.VISIBLE
             binding.round.visibility =
-                if (type != SessionType.HIIT && type != SessionType.EMOM) View.GONE
-                else View.VISIBLE
+                    if (type != SessionType.HIIT && type != SessionType.EMOM) View.GONE
+                    else View.VISIBLE
 
             binding.round.text =
-                "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
+                    "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
             binding.workoutImage.setImageDrawable(ResourcesHelper.getDrawableFor(type))
 
             refreshCounterButton()
@@ -145,10 +146,10 @@ class TimerFragment : Fragment(), KodeinAware {
                 TimerState.PAUSED -> {
                     handler.postDelayed({
                         binding.timer.startAnimation(
-                            AnimationUtils.loadAnimation(
-                                requireContext(),
-                                R.anim.blink
-                            )
+                                AnimationUtils.loadAnimation(
+                                        requireContext(),
+                                        R.anim.blink
+                                )
                         )
                     }, 100)
                 }
@@ -156,34 +157,7 @@ class TimerFragment : Fragment(), KodeinAware {
                     handler.post { binding.timer.clearAnimation() }
                 }
                 TimerState.FINISHED -> {
-                    binding.circleProgress?.visibility = View.GONE
-                    binding.inProgressContainer.visibility = View.GONE
-                    binding.finishedWorkoutContainer.visibility = View.VISIBLE
-
-                    binding.congrats.text = StringUtils.generateCongrats()
-
-                    var totalDuration = 0
-                    for (idx in 0 until viewModel.sessions.size) {
-                        if (idx == 0) { // skip the pre-workout countdown
-                            continue
-                        }
-                        val session = viewModel.sessions[idx]
-                        val duration = viewModel.durations[idx]
-                        if (session.type == SessionType.FOR_TIME || session.type == SessionType.AMRAP) {
-                            binding.summaryContainer.addView(
-                                createSummarySectionWithRounds(
-                                    session,
-                                    duration,
-                                    viewModel.getRounds(idx)
-                                )
-                            )
-                        } else {
-                            binding.summaryContainer.addView(createSummaryRow(session))
-                        }
-                        totalDuration += duration
-                    }
-                    binding.summaryContainer.addView(createSummaryTotalRow(totalDuration))
-                    startConfetti()
+                    drawFinishedScreen()
                 }
                 else -> return@Observer // do nothing
             }
@@ -205,6 +179,76 @@ class TimerFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
+    // TODO: clean-up the multiple responsibilities
+    private fun drawFinishedScreen() {
+        binding.circleProgress?.visibility = View.GONE
+        binding.inProgressContainer.visibility = View.GONE
+        binding.finishedWorkoutContainer.visibility = View.VISIBLE
+
+        binding.congrats.text = StringUtils.generateCongrats()
+
+        var totalDuration = 0
+        var rounds = 0
+        var notes = ""
+        for (idx in 0 until viewModel.sessions.size) {
+            if (idx == 0) { // skip the pre-workout countdown
+                // add the custom workout header if it's the case
+                if (viewModel.sessionToSaveInRepo.name != null) {
+                    binding.summaryLayout.summaryContainer.addView(createSummaryRowCustomHeader(viewModel.sessionToSaveInRepo.name!!))
+                }
+                continue
+            }
+            val session = viewModel.sessions[idx]
+            val duration = viewModel.durations[idx]
+            rounds += viewModel.getRounds(idx)
+            binding.summaryLayout.summaryContainer.addView(createSummaryRow(session, duration))
+            totalDuration += duration
+        }
+        binding.summaryLayout.summaryContainer.addView(createSummaryTotalRow(totalDuration))
+
+        if (viewModel.sessionToSaveInRepo.name == null) {
+            // if this is not a custom workout, fill up the notes
+            binding.summaryLayout.notesEdit.setText(notes)
+            // and fill up with the singular session
+            viewModel.sessionToSaveInRepo.skeleton = viewModel.sessions[1]
+            // we don't need no skeleton for custom workouts
+        }
+
+        if (rounds != 0) {
+            binding.summaryLayout.roundsEdit.setText(rounds.toString())
+            binding.summaryLayout.repsEdit.setText("0")
+        } else {
+            //TODO: and show button to add these
+//            binding.summaryLayout.roundsEdit.visibility = View.GONE
+//            binding.summaryLayout.repsEdit.visibility = View.GONE
+        }
+        viewModel.sessionToSaveInRepo.actualRounds = rounds
+        viewModel.sessionToSaveInRepo.actualDuration = totalDuration
+        if (!binding.summaryLayout.repsEdit.editableText.isNullOrEmpty()) {
+            viewModel.sessionToSaveInRepo.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
+        }
+        viewModel.sessionToSaveInRepo.notes = notes
+
+        // listen to edit text changes and update the session to be saved
+        binding.summaryLayout.repsEdit.addTextChangedListener {
+            if (!binding.summaryLayout.repsEdit.editableText.isNullOrEmpty()) {
+                viewModel.sessionToSaveInRepo.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
+            }
+        }
+        binding.summaryLayout.roundsEdit.addTextChangedListener {
+            if (!binding.summaryLayout.roundsEdit.editableText.isNullOrEmpty()) {
+                viewModel.sessionToSaveInRepo.actualRounds = toInt(binding.summaryLayout.roundsEdit.editableText.toString())
+            }
+        }
+        binding.summaryLayout.notesEdit.addTextChangedListener {
+            if (!binding.summaryLayout.notesEdit.editableText.isNullOrEmpty()) {
+                viewModel.sessionToSaveInRepo.notes = binding.summaryLayout.notesEdit.editableText.toString()
+            }
+        }
+
+        startConfetti()
+    }
+
     private fun setupCounter() {
         binding.roundCounterButton.setOnClickListener{
             viewModel.addRound()
@@ -216,7 +260,7 @@ class TimerFragment : Fragment(), KodeinAware {
     private fun refreshCounterButton() {
         val numCountedRounds = viewModel.getNumCurrentSessionRounds()
         binding.roundCounterText.visibility =
-            if (numCountedRounds == 0) View.GONE else View.VISIBLE
+                if (numCountedRounds == 0) View.GONE else View.VISIBLE
         binding.roundCounterButton.drawable.alpha = if (numCountedRounds == 0) 255 else 0
 
         if (numCountedRounds != 0) {
@@ -226,83 +270,50 @@ class TimerFragment : Fragment(), KodeinAware {
 
     private fun startConfetti() {
         binding.konfetti.build()
-            .addColors(
-                ResourcesHelper.red,
-                ResourcesHelper.darkRed,
-                ResourcesHelper.green,
-                ResourcesHelper.darkGreen,
-                ResourcesHelper.darkerGreen,
-                ResourcesHelper.grey500,
-                ResourcesHelper.grey800
-            )
-            .setDirection(0.0, 359.0)
-            .setSpeed(1f, 5f)
-            .setFadeOutEnabled(true)
-            .setTimeToLive(3500)
-            .addShapes(Shape.Square, Shape.Circle)
-            .addSizes(Size(6))
-            .setPosition(
-                -50f,
-                DimensionsUtils.getScreenResolution(requireContext()).first + 50f,
-                -50f,
-                -50f
-            )
-            .streamFor(50, StreamEmitter.INDEFINITE)
+                .addColors(
+                        ResourcesHelper.red,
+                        ResourcesHelper.darkRed,
+                        ResourcesHelper.green,
+                        ResourcesHelper.darkGreen,
+                        ResourcesHelper.darkerGreen,
+                        ResourcesHelper.grey500,
+                        ResourcesHelper.grey800
+                )
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(3500)
+                .addShapes(Shape.Square, Shape.Circle)
+                .addSizes(Size(6))
+                .setPosition(
+                        -50f,
+                        DimensionsUtils.getScreenResolution(requireContext()).first + 50f,
+                        -50f,
+                        -50f
+                )
+                .streamFor(50, StreamEmitter.INDEFINITE)
     }
 
-    private fun createSummaryRow(session: SessionSkeleton) : ConstraintLayout {
+    private fun createSummaryRow(session: SessionSkeleton, duration: Int = 0) : ConstraintLayout {
         val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
         image.setImageDrawable(ResourcesHelper.getDrawableFor(session.type))
 
         text.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(session)}"
+        if (session.type == SessionType.FOR_TIME) {
+            text.text = "${text.text} (${StringUtils.secondsToNiceFormat(duration)})"
+        }
         return layout
     }
 
-    private fun createSummarySectionWithRounds(session: SessionSkeleton, duration: Int, rounds : ArrayList<Int>) : ConstraintLayout {
-        val layout = layoutInflater.inflate(R.layout.row_summary_view_for_time, null, false) as ConstraintLayout
-        val headerImage = layout.findViewById<ImageView>(R.id.summary_drawable)
-        val headerText = layout.findViewById<TextView>(R.id.summary_text)
+    private fun createSummaryRowCustomHeader(name: String) : ConstraintLayout {
+        val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
+        val image = layout.findViewById<ImageView>(R.id.summary_drawable)
+        val text = layout.findViewById<TextView>(R.id.summary_text)
+        image.setImageDrawable(ResourcesHelper.getCustomWorkoutDrawable())
 
-        headerImage.setImageDrawable(ResourcesHelper.getDrawableFor(session.type))
-        headerText.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(
-            session
-        )}"
-
-        val roundsText = layout.findViewById<TextView>(R.id.rounds_text)
-        val roundsContainer = layout.findViewById<LinearLayout>(R.id.rounds_container)
-        val durationText = layout.findViewById<TextView>(R.id.duration_text)
-
-        roundsText.visibility = if (rounds.isEmpty()) View.GONE else View.VISIBLE
-        roundsText.paintFlags = roundsText.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-        roundsText.text = "${rounds.size} rounds"
-        if (session.type == SessionType.AMRAP) {
-            // no need to show the time it took like for FOR_TIME sessions
-            durationText.visibility = View.GONE
-        } else {
-            durationText.text = "(${StringUtils.secondsToNiceFormat(duration)})"
-        }
-
-        roundsText.setOnClickListener{roundsContainer.visibility =
-            if (roundsContainer.visibility == View.VISIBLE) View.GONE else View.VISIBLE}
-
-        for (i in 0 until rounds.size) {
-            val roundRow = layoutInflater.inflate(R.layout.row_summary_view_round_detail, null, false) as ConstraintLayout
-            val roundNumber = roundRow.findViewById<TextView>(R.id.round_number)
-            val roundTime = roundRow.findViewById<TextView>(R.id.round_time)
-            val roundDelta = roundRow.findViewById<TextView>(R.id.round_delta)
-
-            roundNumber.text = "#${i+1}"
-            roundTime.text = StringUtils.secondsToNiceFormat(rounds[i])
-            if (i > 0) {
-                val deltaSeconds = rounds[i] - rounds[i - 1]
-                val color = if (deltaSeconds > 0) ResourcesHelper.red else ResourcesHelper.green
-                roundDelta.setTextColor(color)
-                roundDelta.text = "${if (deltaSeconds > 0) "+" else if (deltaSeconds == 0) " " else "-"} ${StringUtils.secondsToNiceFormat(kotlin.math.abs(deltaSeconds))}"
-            }
-            roundsContainer.addView(roundRow)
-        }
+        text.text = name
         return layout
     }
 

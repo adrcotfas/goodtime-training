@@ -177,19 +177,8 @@
             app:layout_constraintTop_toBottomOf="@id/congrats_section"
             app:layout_constraintVertical_bias="0.0">
 
-            <ScrollView
-                android:id="@+id/summary_scroll_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="90dp"
-                android:padding="16dp">
-                <LinearLayout
-                    android:id="@+id/summary_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                </LinearLayout>
-            </ScrollView>
+            <include android:id="@+id/summary_layout"
+                layout="@layout/section_finished_workout"/>
 
         </androidx.cardview.widget.CardView>
 

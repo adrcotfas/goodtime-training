@@ -39,21 +39,33 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
         : RecyclerView.ViewHolder(itemView) {
 
         private val icon: ImageView = itemView.findViewById(R.id.icon)
-        private val exercise: TextView = itemView.findViewById(R.id.title)
+        private val title: TextView = itemView.findViewById(R.id.title)
         private val timestamp: TextView = itemView.findViewById(R.id.timestamp)
         private val rounds: TextView = itemView.findViewById(R.id.rounds)
         private val duration: TextView = itemView.findViewById(R.id.duration)
         private val notes: TextView = itemView.findViewById(R.id.notes) //TODO: toggle visibility according to content; add notes to Entity
 
         fun bind(session: Session) {
-            icon.setImageDrawable(ResourcesHelper.getDrawableFor(session.skeleton.type))
-            exercise.text = StringUtils.toFavoriteFormatExtended(session.skeleton)
+            if (session.name.isNullOrEmpty()) {
+                icon.setImageDrawable(ResourcesHelper.getDrawableFor(session.skeleton.type))
+                title.text = StringUtils.toFavoriteFormatExtended(session.skeleton)
+            } else {
+                title.text = session.name
+                icon.setImageDrawable(ResourcesHelper.getCustomWorkoutDrawable())
+            }
+
             timestamp.text = formatDateAndTime(session.timestamp)
-            if (session.actualRounds.size == 0) {
+            if (session.actualRounds == 0) {
                 rounds.visibility = View.INVISIBLE
             } else {
                 rounds.visibility = View.VISIBLE
-                rounds.text = "${session.actualRounds.size} rounds"
+                rounds.text = "${session.actualRounds} rounds"
+            }
+            if (!session.notes.isNullOrEmpty()) {
+                notes.visibility = View.VISIBLE
+                notes.text = session.notes
+            } else {
+                notes.visibility = View.GONE
             }
             duration.text = StringUtils.secondsToNiceFormat(session.actualDuration)
         }

@@ -131,7 +131,7 @@ class HiitFragment : WorkoutTypeFragment() {
     }
 
     override fun onStartWorkout() {
-        val action = HiitFragmentDirections.toWorkout(
+        val action = HiitFragmentDirections.toWorkout( sessions =
                 TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
                         + getSelectedSessions().toTypedArray())
         )

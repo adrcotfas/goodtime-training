@@ -53,5 +53,8 @@ class ResourcesHelper {
                     }, null
             )!!
         }
+
+        fun getCustomWorkoutDrawable() = ResourcesCompat.getDrawable(
+                    GoodtimeApplication.getRes(), R.drawable.ic_science, null)!!
     }
 }

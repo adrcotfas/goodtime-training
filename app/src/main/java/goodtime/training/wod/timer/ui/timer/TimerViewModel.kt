@@ -2,9 +2,11 @@ package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import goodtime.training.wod.timer.BuildConfig
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 
 import goodtime.training.wod.timer.common.timers.CountDownTimer
+import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.Session.Companion.constructSession
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -20,10 +22,12 @@ class TimerViewModel(
     val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionSkeleton>()
 
+    var sessionToSaveInRepo = Session()
+
     /**
      * Holds the counted rounds in seconds elapsed
      */
-    var countedRounds = ArrayList<ArrayList<Int>>(0)
+    var countedRounds = ArrayList<Int>(0)
 
     // store the working time for each session
     var durations = ArrayList<Int>()
@@ -63,13 +67,14 @@ class TimerViewModel(
 
     fun init(sessionsRaw: String) {
         sessions = TypeConverter.toSessionSkeletons(sessionsRaw)
+        sessionToSaveInRepo = Session()
         durations.clear()
         for (index in 0 until sessions.size) {
             durations.add(0)
         }
         countedRounds = ArrayList()
         for(i in 0 until  sessions.size) {
-            countedRounds.add(ArrayList(0))
+            countedRounds.add(0)
         }
 
         currentRoundIdx.value = 0
@@ -134,6 +139,8 @@ class TimerViewModel(
         timerState.value = TimerState.INACTIVE
     }
 
+    //TODO: update sessionToAdd here too to save custom interrupted workouts
+    // TODO: update Session with an "incomplete" flag so we don't compare complete with incomplete ones (exclude incomplete from charts)
     fun abandonWorkout() {
         stopTimer()
         if (preferenceHelper.logIncompleteSessions()) {
@@ -149,7 +156,9 @@ class TimerViewModel(
                                 countedRounds[index]))
             }
         }
-        handleCompletion()
+        if (preferenceHelper.isDndModeEnabled()) {
+            notifier.toggleDndMode(false)
+        }
     }
 
     /**
@@ -160,7 +169,7 @@ class TimerViewModel(
         notifier.stop()
         timerState.value = TimerState.INACTIVE
         // when the timer is finished, save the last round but only if the user used the round counter
-        if (countedRounds[currentSessionIdx.value!!].isNotEmpty()) {
+        if (countedRounds[currentSessionIdx.value!!] != 0) {
             addRound()
         }
         handleFinishTimer()
@@ -238,13 +247,6 @@ class TimerViewModel(
                     // reset resting value here
                     isResting.value = false
                 }
-                if (type != SessionType.REST) {
-                    repository.addSession(
-                            constructSession(
-                                    sessions[index],
-                                    durations[index],
-                                    countedRounds[index]))
-                }
                 if (isLastSession()) {
                     timerState.value = TimerState.FINISHED
                     notifier.notifyTrainingComplete()
@@ -264,7 +266,6 @@ class TimerViewModel(
             }
             SessionType.EMOM -> {
                 if (isLastRound()) {
-                    repository.addSession(constructSession(sessions[index], durations[index]))
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
                         notifier.notifyTrainingComplete()
@@ -299,7 +300,6 @@ class TimerViewModel(
                 if ((isLastRound() && !isLastSession() && isResting.value!!)
                         // if this is the final session and final work round, skip the break
                         || (isLastRound() && isLastSession() && !isResting.value!!)) {
-                    repository.addSession(constructSession(sessions[index], durations[index]))
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
 
@@ -345,35 +345,25 @@ class TimerViewModel(
     }
 
     fun addRound() {
-        val totalSeconds = getCurrentSessionDuration()
-        if (countedRounds.isEmpty()) {
-            countedRounds[currentSessionIdx.value!!].add(totalSeconds - secondsUntilFinished.value!!)
-        } else {
-            val elapsed = totalSeconds - secondsUntilFinished.value!!
-            countedRounds[currentSessionIdx.value!!].add(elapsed)
-        }
+        countedRounds[currentSessionIdx.value!!] += 1
     }
 
-    fun getRounds(idx: Int) : ArrayList<Int> {
-        val result = ArrayList<Int>(0)
-        for (i in 0 until countedRounds[idx].size) {
-            if (i == 0) {
-                result.add(countedRounds[idx][i])
-            } else {
-                result.add(countedRounds[idx][i] - countedRounds[idx][i - 1])
-            }
-        }
-        return result
-    }
+    fun getRounds(idx: Int) = countedRounds[idx]
 
     fun getNumCurrentSessionRounds(): Int {
-        return countedRounds[currentSessionIdx.value!!].size
+        return countedRounds[currentSessionIdx.value!!]
     }
 
-    //TODO: find a better name for this and other functions
+    /**
+     * This is called when the DONE button is pressed
+     */
     fun handleCompletion() {
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(false)
         }
+        if (BuildConfig.DEBUG && sessionToSaveInRepo.skeleton.type == SessionType.REST && sessionToSaveInRepo.name.isNullOrEmpty()) {
+            error("Assertion failed")
+        }
+        repository.addSession(sessionToSaveInRepo)
     }
 }

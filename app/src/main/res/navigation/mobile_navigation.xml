@@ -52,9 +52,13 @@
         android:label="WorkoutFragment"
         tools:layout="@layout/fragment_workout">
         <argument
-            android:name="sessions"
+            android:name="name"
             app:argType="string"
-            android:defaultValue="null"/>
+            android:defaultValue="@null"
+            app:nullable="true"/>
+        <argument
+            android:name="sessions"
+            app:argType="string" />
     </fragment>
 
     <fragment

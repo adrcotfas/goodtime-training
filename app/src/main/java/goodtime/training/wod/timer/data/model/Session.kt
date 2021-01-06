@@ -17,12 +17,12 @@ import androidx.room.ForeignKey.SET_DEFAULT
 data class Session(
         @PrimaryKey(autoGenerate = true)
         var id: Long = 0,
-        var skeleton: SessionSkeleton,
+        var skeleton: SessionSkeleton = SessionSkeleton(),
         var actualDuration: Int = 0,
-        var actualRounds: ArrayList<Int> = arrayListOf(),
+        var actualRounds: Int = 0,
         var actualReps: Int = 0,
         @Nullable
-        var notes: String?,
+        var notes: String? = null,
         var name: String? = null, // non-null for custom workouts
         var timestamp: Long = System.currentTimeMillis()) {
 
@@ -30,7 +30,7 @@ data class Session(
         fun constructSession(
                 skeleton: SessionSkeleton,
                 actualDuration: Int = 0,
-                actualRounds: ArrayList<Int> = arrayListOf(),
+                actualRounds: Int = 0,
                 notes: String? = null) : Session {
             return Session(0, skeleton, actualDuration, actualRounds, notes = notes)
         }
