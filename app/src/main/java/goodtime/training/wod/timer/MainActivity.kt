@@ -17,6 +17,7 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
+import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
@@ -28,11 +29,14 @@ import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment
 import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
-import goodtime.training.wod.timer.ui.stats.StatisticsFragment
 import kotlinx.android.synthetic.main.content_main.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+
 
 class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -47,6 +51,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private lateinit var startButton: FloatingActionButton
     private lateinit var favoritesButton: Chip
+    private lateinit var filterButton: Chip
+
     private lateinit var newCustomWorkoutButton: Chip
     private lateinit var bottomNavigationView: BottomNavigationView
 
@@ -55,6 +61,16 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var currentDestination: NavDestination
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -71,14 +87,16 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         startButton = binding.contentMain.startButton
         favoritesButton = binding.contentMain.buttonFavorites.root
         newCustomWorkoutButton = binding.contentMain.buttonNew.root
-        val filterButton = binding.contentMain.buttonFilter.root // used on the statistics page
+        filterButton = binding.contentMain.buttonFilter.root // used on the statistics page
 
         filterButton.setOnClickListener{
-            try {
-                (supportFragmentManager.currentNavigationFragment as StatisticsFragment).onFilterButtonClicked()
-            } catch (e: Exception) {
-
-            }
+            EventBus.getDefault().post(Events.Companion.FilterButtonClickEvent())
+        }
+        filterButton.setOnCloseIconClickListener {
+            EventBus.getDefault().post(Events.Companion.FilterClearButtonClickEvent())
+            filterButton.text = getString(R.string.filter)
+            filterButton.isCloseIconVisible = false
+            filterButton.isChipIconVisible = true
         }
 
         val toolbar = binding.contentMain.toolbar
@@ -163,7 +181,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                 )
             } else {
                 SelectFavoriteDialog.newInstance(sessions[0], fragment)
-                        .show(supportFragmentManager, "SelectFavorite")
+                    .show(supportFragmentManager, "SelectFavorite")
             }
         }
     }
@@ -176,7 +194,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     }
 
     private fun getVisibleFragment() =
-            (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
+        (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
     fun setStartButtonState(enabled: Boolean) {
         startButton.isEnabled = enabled
@@ -206,8 +224,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun toggleMinimalistMode(enabled: Boolean) {
         bottomNavigationView.labelVisibilityMode =
-                if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
-                else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+            if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
+            else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
 
         if (enabled) {
             val startPadding = dpToPx(this, 10f).toFloat()
@@ -235,34 +253,41 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             preferenceHelper.setMainBalloons(false)
             binding.root.post {
                 val bottomMenuBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Use the bottom menu to change the workout type."
+                    this, this,
+                    "Use the bottom menu to change the workout type."
                 )
                 val amrapBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time."
+                    this, this,
+                    "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time."
                 )
                 val timePickersBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Use the time pickers to change the duration.",
-                        false, 0.5f
+                    this, this,
+                    "Use the time pickers to change the duration.",
+                    false, 0.5f
                 )
                 val favoriteButtonBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Use the favorites section to save, remove and load timer presets.",
-                        true, 0.83f
+                    this, this,
+                    "Use the favorites section to save, remove and load timer presets.",
+                    true, 0.83f
                 )
                 val startButtonBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Press the action button to start the workout using the current selection.",
-                        false, 0.5f
+                    this, this,
+                    "Press the action button to start the workout using the current selection.",
+                    false, 0.5f
                 )
                 bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, toolbar, 0, 12)
-                        .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
-                        .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)
-                        .relayShowAlignTop(startButtonBalloon, startButton, 0, -12)
+                    .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
+                    .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)
+                    .relayShowAlignTop(startButtonBalloon, startButton, 0, -12)
                 bottomMenuBalloon.showAlignTop(bottomNavigationView, 0, -12)
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: Events.Companion.FilterSelectedEvent) {
+        filterButton.text = event.name
+        filterButton.isCloseIconVisible = true
+        filterButton.isChipIconVisible = false
     }
 }

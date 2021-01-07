@@ -56,7 +56,6 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
                 binding.emptyState.isVisible = it.isEmpty()
                 favorites = it
                 val favoritesChipGroup = binding.favorites
-                favoritesChipGroup.isSingleSelection = true
                 favoritesChipGroup.removeAllViews()
                 for (favorite in favorites) {
                     val chip = Chip(requireContext()).apply {
