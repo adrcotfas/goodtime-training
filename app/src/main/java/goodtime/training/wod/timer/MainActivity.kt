@@ -94,9 +94,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         }
         filterButton.setOnCloseIconClickListener {
             EventBus.getDefault().post(Events.Companion.FilterClearButtonClickEvent())
-            filterButton.text = getString(R.string.filter)
-            filterButton.isCloseIconVisible = false
-            filterButton.isChipIconVisible = true
         }
 
         val toolbar = binding.contentMain.toolbar
@@ -289,5 +286,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         filterButton.text = event.name
         filterButton.isCloseIconVisible = true
         filterButton.isChipIconVisible = false
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: Events.Companion.FilterClearButtonClickEvent) {
+        filterButton.text = getString(R.string.filter)
+        filterButton.isCloseIconVisible = false
+        filterButton.isChipIconVisible = true
     }
 }

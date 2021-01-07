@@ -31,36 +31,64 @@ class StatisticsListFragment : Fragment(), KodeinAware {
         }
     }
 
+    private val logAdapter = StatisticsAdapter(itemClickListener)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(StatisticsViewModel::class.java)
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatisticsListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        val logAdapter = StatisticsAdapter(itemClickListener)
         recyclerView.adapter = logAdapter
 
         val dividerItemDecoration = DividerItemDecoration(recyclerView.context, LinearLayout.VERTICAL)
         dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.recycler_separator))
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(StatisticsViewModel::class.java)
+        removeObserverFromAllSessions() // TODO: check if this crashes
+
+        viewModel.filteredWorkoutName.observe(viewLifecycleOwner, {
+            if (it == null) {
+                removeObserverFromFilteredSessions()
+                observeAllSessions()
+            } else { // a filtered session was selected
+                removeObserverFromAllSessions()
+                observeFilteredSessions()
+            }
+        })
+    }
+
+    private fun observeAllSessions() {
         viewModel.getSessions().observe(viewLifecycleOwner, { sessions ->
             logAdapter.data = sessions
             binding.recyclerView.isVisible = sessions.isNotEmpty()
-            binding.emptyState.isVisible= sessions.isEmpty()
+            binding.emptyState.isVisible = sessions.isEmpty()
         })
-
-        return binding.root
     }
+
+    private fun removeObserverFromAllSessions() = viewModel.getSessions().removeObservers(viewLifecycleOwner)
+
+    private fun observeFilteredSessions() {
+        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value, true).observe(viewLifecycleOwner, { sessions ->
+            logAdapter.data = sessions
+            binding.recyclerView.isVisible = sessions.isNotEmpty()
+            binding.emptyState.isVisible = sessions.isEmpty()
+        })
+    }
+
+    private fun removeObserverFromFilteredSessions() =
+        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value, true).removeObservers(viewLifecycleOwner)
 }

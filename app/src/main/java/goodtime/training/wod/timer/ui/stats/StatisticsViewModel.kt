@@ -1,5 +1,7 @@
 package goodtime.training.wod.timer.ui.stats
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.data.model.Session
@@ -14,8 +16,11 @@ import java.time.temporal.TemporalAdjusters
 
 class StatisticsViewModel(private val appRepository: AppRepository) : ViewModel() {
 
+    val filteredWorkoutName = MutableLiveData<String?>(null)
     fun addSession(session: Session) = appRepository.addSession(session)
-    fun getSessions() = appRepository.getSessions()
+
+    fun getSessions(): LiveData<List<Session>> = appRepository.getSessions()
+    fun getCustomSessions(name: String?, completed: Boolean = true) = appRepository.getCustomSessions(name, completed)
 
     fun calculateOverviewStats(sessions: List<Session>): Stats {
         val today = LocalDate.now()

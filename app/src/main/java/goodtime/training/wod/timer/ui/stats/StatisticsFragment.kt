@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.databinding.FragmentStatisticsBinding
@@ -13,12 +14,17 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
 
 class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
     override val kodein by closestKodein()
 
     private lateinit var binding: FragmentStatisticsBinding
+
+    private val viewModelFactory : LogViewModelFactory by instance()
+    private lateinit var viewModel: StatisticsViewModel
+
     private lateinit var pagerAdapter: StatisticsViewPagerAdapter
 
     override fun onStart() {
@@ -27,12 +33,14 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
     }
 
     override fun onStop() {
+        EventBus.getDefault().post(Events.Companion.FilterClearButtonClickEvent())
         super.onStop()
         EventBus.getDefault().unregister(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(StatisticsViewModel::class.java)
         pagerAdapter = StatisticsViewPagerAdapter(childFragmentManager)
     }
 
@@ -58,11 +66,11 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
 
     override fun onFavoriteSelected(name: String) {
         EventBus.getDefault().post(Events.Companion.FilterSelectedEvent(name))
-        //TODO update the charts
+        viewModel.filteredWorkoutName.value = name
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: Events.Companion.FilterClearButtonClickEvent) {
-        //TODO update the charts with the default values
+        viewModel.filteredWorkoutName.value = null
     }
 }
