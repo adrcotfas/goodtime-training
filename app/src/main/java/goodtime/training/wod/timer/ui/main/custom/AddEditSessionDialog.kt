@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -131,13 +132,13 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     private fun setupRadioGroup() {
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.radio_button_select_custom) {
-                binding.favoritesContainer.visibility = View.GONE
-                binding.customSection.visibility = View.VISIBLE
+                binding.favoritesContainer.isVisible = false
+                binding.customSection.isVisible = true
                 togglePositiveButtonVisibility(true)
                 setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
             } else if (checkedId == R.id.radio_button_from_favorites) {
-                binding.favoritesContainer.visibility = View.VISIBLE
-                binding.customSection.visibility = View.GONE
+                binding.favoritesContainer.isVisible = true
+                binding.customSection.isVisible = false
                 togglePositiveButtonVisibility(false)
                 hideKeyboardFrom(requireContext(), binding.root)
             }
@@ -181,10 +182,10 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
                         dismiss()
                     }
                     favoritesChipGroup.addView(chip)
-                    binding.emptyState.visibility = View.GONE
+                    binding.emptyState.isVisible = false
                 }
                 if (favorites.isEmpty()) {
-                    binding.emptyState.visibility = View.VISIBLE
+                    binding.emptyState.isVisible = true
                 }
             })
     }
@@ -192,8 +193,7 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     private fun togglePositiveButtonVisibility(visible: Boolean) {
         val dialog = dialog as AlertDialog?
         if (dialog != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).visibility =
-                if (visible) View.VISIBLE else View.GONE
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isVisible = visible
         }
     }
 
@@ -207,22 +207,22 @@ class AddEditSessionDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     private fun refreshActiveSection(sessionType: SessionType) {
         when (sessionType) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                binding.genericSection.visibility = View.VISIBLE
-                binding.emomSection.visibility = View.GONE
-                binding.hiitSection.visibility = View.GONE
+                binding.genericSection.isVisible = true
+                binding.emomSection.isVisible = false
+                binding.hiitSection.isVisible = false
             }
             SessionType.EMOM -> {
-                binding.genericSection.visibility = View.GONE
-                binding.emomSection.visibility = View.VISIBLE
-                binding.hiitSection.visibility = View.GONE
+                binding.genericSection.isVisible = false
+                binding.emomSection.isVisible = true
+                binding.hiitSection.isVisible = false
             }
             SessionType.HIIT -> {
-                binding.genericSection.visibility = View.GONE
-                binding.emomSection.visibility = View.GONE
-                binding.hiitSection.visibility = View.VISIBLE
+                binding.genericSection.isVisible = false
+                binding.emomSection.isVisible = false
+                binding.hiitSection.isVisible = true
             }
         }
-        binding.customSessionDescription.visibility = View.VISIBLE
+        binding.customSessionDescription.isVisible = true
     }
 
     private fun isInFavoritesSection() =

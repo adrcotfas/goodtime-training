@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -127,7 +128,7 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
         if (dialog != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = enabled
         }
-        binding.errorMessage.visibility = if (enabled) View.INVISIBLE else View.VISIBLE
+        binding.errorMessage.isVisible = enabled
     }
 
     override fun onResume() {

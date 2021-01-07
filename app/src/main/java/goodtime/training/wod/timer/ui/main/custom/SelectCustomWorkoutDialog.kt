@@ -3,6 +3,7 @@ package goodtime.training.wod.timer.ui.main.custom
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
@@ -52,7 +53,7 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
     private fun setupFavorites() {
         repo.getCustomWorkoutSkeletons().observe(
             this, {
-                binding.emptyState.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+                binding.emptyState.isVisible = it.isEmpty()
                 favorites = it
                 val favoritesChipGroup = binding.favorites
                 favoritesChipGroup.isSingleSelection = true

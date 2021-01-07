@@ -11,4 +11,8 @@
     <dimen name="tinyTextSize">10sp</dimen>
 
     <dimen name="largeTextSize">20sp</dimen>
+
+    <dimen name="zeroDp">0dp</dimen>
+    <dimen name="fourDp">4dp</dimen>
+
 </resources>

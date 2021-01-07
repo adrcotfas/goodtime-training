@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -119,16 +120,9 @@ class TimerFragment : Fragment(), KodeinAware {
 
         viewModel.currentSessionIdx.observe(viewLifecycleOwner, {
             val type = viewModel.getCurrentSessionType()
-            binding.finishButton.visibility =
-                    if (type != SessionType.FOR_TIME) View.GONE
-                    else View.VISIBLE
-            binding.roundCounterButtonContainer.visibility =
-                    if (type != SessionType.FOR_TIME && type != SessionType.AMRAP) View.GONE
-                    else View.VISIBLE
-            binding.round.visibility =
-                    if (type != SessionType.HIIT && type != SessionType.EMOM) View.GONE
-                    else View.VISIBLE
-
+            binding.finishButton.isVisible = type == SessionType.FOR_TIME
+            binding.roundCounterButtonContainer.isVisible = type == SessionType.FOR_TIME || type == SessionType.AMRAP
+            binding.round.isVisible = type == SessionType.HIIT || type == SessionType.EMOM
             binding.round.text =
                     "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
             binding.workoutImage.setImageDrawable(ResourcesHelper.getDrawableFor(type))
@@ -181,9 +175,9 @@ class TimerFragment : Fragment(), KodeinAware {
 
     // TODO: clean-up the multiple responsibilities
     private fun drawFinishedScreen() {
-        binding.circleProgress?.visibility = View.GONE
-        binding.inProgressContainer.visibility = View.GONE
-        binding.finishedWorkoutContainer.visibility = View.VISIBLE
+        binding.circleProgress?.isVisible = false
+        binding.inProgressContainer.isVisible = false
+        binding.finishedWorkoutContainer.isVisible = true
 
         binding.congrats.text = StringUtils.generateCongrats()
 
@@ -259,8 +253,7 @@ class TimerFragment : Fragment(), KodeinAware {
 
     private fun refreshCounterButton() {
         val numCountedRounds = viewModel.getNumCurrentSessionRounds()
-        binding.roundCounterText.visibility =
-                if (numCountedRounds == 0) View.GONE else View.VISIBLE
+        binding.roundCounterText.isVisible = numCountedRounds != 0
         binding.roundCounterButton.drawable.alpha = if (numCountedRounds == 0) 255 else 0
 
         if (numCountedRounds != 0) {

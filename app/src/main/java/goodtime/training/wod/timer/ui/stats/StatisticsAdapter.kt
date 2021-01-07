@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.ResourcesHelper
@@ -55,18 +56,18 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
             }
 
             timestamp.text = formatDateAndTime(session.timestamp)
-            if (session.actualRounds == 0) {
-                rounds.visibility = View.INVISIBLE
-            } else {
-                rounds.visibility = View.VISIBLE
+            val hasRounds = session.actualRounds > 0
+            rounds.isVisible = hasRounds
+            if (hasRounds) {
                 rounds.text = "${session.actualRounds} rounds"
             }
-            if (!session.notes.isNullOrEmpty()) {
-                notes.visibility = View.VISIBLE
+
+            val hasNotes = !session.notes.isNullOrEmpty()
+            notes.isVisible = hasNotes
+            if (hasNotes) {
                 notes.text = session.notes
-            } else {
-                notes.visibility = View.GONE
             }
+
             duration.text = StringUtils.secondsToNiceFormat(session.actualDuration)
         }
 

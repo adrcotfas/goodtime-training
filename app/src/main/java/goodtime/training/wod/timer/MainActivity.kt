@@ -3,7 +3,6 @@ package goodtime.training.wod.timer
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -29,6 +28,7 @@ import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment
 import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
+import goodtime.training.wod.timer.ui.stats.StatisticsFragment
 import kotlinx.android.synthetic.main.content_main.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -71,6 +71,15 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         startButton = binding.contentMain.startButton
         favoritesButton = binding.contentMain.buttonFavorites.root
         newCustomWorkoutButton = binding.contentMain.buttonNew.root
+        val filterButton = binding.contentMain.buttonFilter.root // used on the statistics page
+
+        filterButton.setOnClickListener{
+            try {
+                (supportFragmentManager.currentNavigationFragment as StatisticsFragment).onFilterButtonClicked()
+            } catch (e: Exception) {
+
+            }
+        }
 
         val toolbar = binding.contentMain.toolbar
 
@@ -103,12 +112,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             else toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
             supportActionBar?.title = if (isTopLevel) null else destination.label
             toggleMinimalistMode(preferenceHelper.isMinimalistEnabled())
-            bottomNavigationView.visibility = if (isTopLevel) View.VISIBLE else View.GONE
+            bottomNavigationView.isVisible = isTopLevel
             startButton.apply { if (isTopLevel) show() else hide() }
 
             val hideToolbar = destination.label == "WorkoutFragment" ||
                     destination.label == "StopWorkoutDialog"
-            toolbar.visibility = if (hideToolbar) View.GONE else View.VISIBLE
+            toolbar.isVisible = !hideToolbar
 
             if (preferenceHelper.isFullscreenModeEnabled()) {
                 toggleFullscreenMode(hideToolbar)
@@ -124,6 +133,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
             favoritesButton.isVisible = isTopLevel
             newCustomWorkoutButton.isVisible = destination.label == "CustomWorkout"
+            filterButton.isVisible = currentDestination.label == "Statistics"
         }
 
         startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }

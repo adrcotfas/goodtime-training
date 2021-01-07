@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -69,8 +70,7 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
         repo.getSessionSkeletons(favoriteCandidate.type).observe(
             this, {
                 favorites = it
-                binding.selectFavoriteTitle.visibility =
-                    if (it.isEmpty()) View.GONE else View.VISIBLE
+                binding.selectFavoriteTitle.isVisible = it.isNotEmpty()
                 refreshActiveSection(favoriteCandidate.type)
                 initSessionEditTextHelper()
                 binding.saveButton.isEnabled = !it.contains(favoriteCandidate) && favoriteCandidate.duration != 0
@@ -149,22 +149,22 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     private fun refreshActiveSection(sessionType: SessionType) {
         when (sessionType) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                binding.genericSection.visibility = View.VISIBLE
-                binding.emomSection.visibility = View.GONE
-                binding.hiitSection.visibility = View.GONE
+                binding.genericSection.isVisible = true
+                binding.emomSection.isVisible = false
+                binding.hiitSection.isVisible = false
             }
             SessionType.EMOM -> {
-                binding.genericSection.visibility = View.GONE
-                binding.emomSection.visibility = View.VISIBLE
-                binding.hiitSection.visibility = View.GONE
+                binding.genericSection.isVisible = false
+                binding.emomSection.isVisible = true
+                binding.hiitSection.isVisible = false
             }
             SessionType.HIIT -> {
-                binding.genericSection.visibility = View.GONE
-                binding.emomSection.visibility = View.GONE
-                binding.hiitSection.visibility = View.VISIBLE
+                binding.genericSection.isVisible = false
+                binding.emomSection.isVisible = false
+                binding.hiitSection.isVisible = true
             }
         }
-        binding.customSection.visibility = View.VISIBLE
+        binding.customSection.isVisible = true
     }
 
     override fun onDeleteConfirmation(id: Long, name: String) {

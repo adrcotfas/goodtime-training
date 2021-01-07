@@ -33,4 +33,8 @@ class StatisticsFragment : Fragment(), KodeinAware {
         binding.tabLayout.getTabAt(1)?.setIcon(R.drawable.ic_list)
         return binding.root
     }
+
+    fun onFilterButtonClicked() {
+        // open bottom sheet
+    }
 }

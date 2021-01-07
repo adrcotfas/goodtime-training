@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -144,15 +145,15 @@ class CustomWorkoutFragment:
 
     private fun toggleEmptyState(visible: Boolean) {
         if (visible) {
-            binding.emptyState.visibility = View.VISIBLE
-            binding.saveButton.visibility = View.GONE
-            binding.totalTime.visibility = View.GONE
+            binding.emptyState.isVisible = true
+            binding.saveButton.isVisible = false
+            binding.totalTime.isVisible = false
             binding.title.text = "New workout"
             viewModel.currentWorkout.name = "New workout"
             viewModel.hasUnsavedSession = false
         } else {
-            binding.emptyState.visibility = View.GONE
-            binding.totalTime.visibility = View.VISIBLE
+            binding.emptyState.isVisible = false
+            binding.totalTime.isVisible = true
         }
     }
 
@@ -244,7 +245,7 @@ class CustomWorkoutFragment:
 
     @SuppressLint("SetTextI18n")
     private fun setSaveButtonVisibility(visible: Boolean) {
-        binding.saveButton.visibility = if (visible) View.VISIBLE else View.GONE
+        binding.saveButton.isVisible = visible
         binding.title.setTextColor(if (visible) ResourcesHelper.grey800 else ResourcesHelper.grey500)
     }
 
@@ -266,7 +267,7 @@ class CustomWorkoutFragment:
                 SessionType.HIIT -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
             }
         }
-        binding.totalTime.visibility = if (total == 0) View.GONE else View.VISIBLE
+        binding.totalTime.isVisible = total != 0
         binding.totalTime.text = StringUtils.secondsToNiceFormat(total)
     }
 

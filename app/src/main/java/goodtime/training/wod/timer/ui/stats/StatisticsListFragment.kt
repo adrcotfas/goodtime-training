@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -56,8 +57,8 @@ class StatisticsListFragment : Fragment(), KodeinAware {
         viewModel = ViewModelProvider(this, viewModelFactory).get(StatisticsViewModel::class.java)
         viewModel.getSessions().observe(viewLifecycleOwner, { sessions ->
             logAdapter.data = sessions
-            binding.recyclerView.visibility = if (sessions.isNotEmpty()) View.VISIBLE else View.GONE
-            binding.emptyState.visibility = if (sessions.isEmpty()) View.VISIBLE else View.GONE
+            binding.recyclerView.isVisible = sessions.isNotEmpty()
+            binding.emptyState.isVisible= sessions.isEmpty()
         })
 
         return binding.root

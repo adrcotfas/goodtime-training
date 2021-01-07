@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="title" type="String" />
+        <variable name="drawable" type= "android.graphics.drawable.Drawable" />
+    </data>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/root"
+        android:layout_width="wrap_content"
+        android:text="@{title}"
+        app:chipStartPadding="4dp"
+        app:chipEndPadding="4dp"
+        app:chipMinTouchTargetSize="24dp"
+        app:chipIcon="@{drawable}"
+        style="@style/FavoritesChipStyleSmaller.Grey">
+    </com.google.android.material.chip.Chip>
+</layout>
