@@ -24,15 +24,17 @@ data class Session(
         @Nullable
         var notes: String? = null,
         var name: String? = null, // non-null for custom workouts
-        var timestamp: Long = System.currentTimeMillis()) {
+        var timestamp: Long = System.currentTimeMillis(),
+        var completed: Boolean = true) {
 
     companion object {
         fun constructSession(
                 skeleton: SessionSkeleton,
                 actualDuration: Int = 0,
                 actualRounds: Int = 0,
-                notes: String? = null) : Session {
-            return Session(0, skeleton, actualDuration, actualRounds, notes = notes)
+                notes: String? = null,
+                completed: Boolean = true) : Session {
+            return Session(0, skeleton, actualDuration, actualRounds, notes = notes, completed = completed)
         }
     }
 }
