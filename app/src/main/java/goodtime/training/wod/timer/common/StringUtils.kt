@@ -75,8 +75,8 @@ class StringUtils {
             var result = ""
             if (seconds != 0L) {
                 if (days != 0L) result += "${days}d\n"
-                if (hours != 0L) result += "${hours}h"
-                if (remMin != 0L) result += " $remMin min"
+                if (hours != 0L) result += "${hours}h "
+                if (remMin != 0L) result += "$remMin min"
             } else {
                 result = "0 min"
             }
