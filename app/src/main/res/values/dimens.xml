@@ -9,6 +9,7 @@
     <dimen name="smallTextSize">14sp</dimen>
     <dimen name="smallerTextSize">12sp</dimen>
     <dimen name="tinyTextSize">10sp</dimen>
+    <dimen name="tiniestTextSize">8sp</dimen>
 
     <dimen name="largeTextSize">20sp</dimen>
 

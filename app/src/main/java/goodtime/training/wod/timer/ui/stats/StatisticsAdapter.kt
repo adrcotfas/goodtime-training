@@ -19,6 +19,8 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
         fun onClick(position: Int)
     }
 
+    var personalRecordSessionId = -1L
+
     var data = listOf<Session>()
         set(data) {
             field = data
@@ -32,7 +34,7 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
     override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position], personalRecordSessionId)
         holder.itemView.setOnClickListener { listener.onClick(position) }
     }
 
@@ -44,29 +46,30 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
         private val timestamp: TextView = itemView.findViewById(R.id.timestamp)
         private val rounds: TextView = itemView.findViewById(R.id.rounds)
         private val duration: TextView = itemView.findViewById(R.id.duration)
-        private val notes: TextView = itemView.findViewById(R.id.notes) //TODO: toggle visibility according to content; add notes to Entity
+        private val notes: TextView = itemView.findViewById(R.id.notes)
+        private val prIcon: TextView = itemView.findViewById(R.id.personal_record)
 
-        fun bind(session: Session) {
-            if (session.name.isNullOrEmpty()) {
+        fun bind(session: Session, prId : Long) {
+            if (session.isCustom()) {
+                // empty string for registered custom workouts whose skeleton was deleted
+                title.text = session.name ?: ""
+                icon.setImageDrawable(ResourcesHelper.getCustomWorkoutDrawable())
+            } else {
                 icon.setImageDrawable(ResourcesHelper.getDrawableFor(session.skeleton.type))
                 title.text = StringUtils.toFavoriteFormatExtended(session.skeleton)
-            } else {
-                title.text = session.name
-                icon.setImageDrawable(ResourcesHelper.getCustomWorkoutDrawable())
             }
 
             timestamp.text = formatDateAndTime(session.timestamp)
-            val hasRounds = session.actualRounds > 0
-            rounds.isVisible = hasRounds
-            if (hasRounds) {
+            if (session.actualRounds > 0) {
+                rounds.isVisible = true
                 rounds.text = "${session.actualRounds} rounds"
             }
 
-            val hasNotes = !session.notes.isNullOrEmpty()
-            notes.isVisible = hasNotes
-            if (hasNotes) {
+            if (!session.notes.isNullOrEmpty()) {
+                notes.isVisible = true
                 notes.text = session.notes
             }
+            prIcon.isVisible = session.id == prId
 
             duration.text = StringUtils.secondsToNiceFormat(session.actualDuration)
         }

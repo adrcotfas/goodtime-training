@@ -67,7 +67,10 @@ class TimerViewModel(
 
     fun init(sessionsRaw: String) {
         sessions = TypeConverter.toSessionSkeletons(sessionsRaw)
+
         sessionToSaveInRepo = Session()
+        sessionToSaveInRepo.isTimeBased = sessions.find { it.type == SessionType.FOR_TIME } != null
+
         durations.clear()
         for (index in 0 until sessions.size) {
             durations.add(0)

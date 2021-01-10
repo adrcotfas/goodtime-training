@@ -32,6 +32,23 @@
         tools:text="INT. 10 x 15 min 30 s"/>
 
     <TextView
+        android:id="@+id/personal_record"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        android:background="@drawable/shape_gold_circle"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/tiniestTextSize"
+        android:layout_marginStart="8dp"
+        android:text="PR"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <TextView
         android:id="@+id/timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
