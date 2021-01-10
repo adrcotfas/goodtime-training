@@ -32,9 +32,13 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
     }
 
     override fun onStop() {
-        EventBus.getDefault().post(Events.Companion.FilterClearButtonClickEvent())
         super.onStop()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun onDestroy() {
+        EventBus.getDefault().post(Events.Companion.FilterClearButtonClickEvent())
+        super.onDestroy()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
