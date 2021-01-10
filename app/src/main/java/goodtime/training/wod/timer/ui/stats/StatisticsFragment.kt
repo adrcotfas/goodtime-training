@@ -16,7 +16,6 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-
 class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
     override val kodein by closestKodein()
 
@@ -50,11 +49,15 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
             savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatisticsBinding.inflate(layoutInflater, container, false)
+        setupViewPager()
+        return binding.root
+    }
+
+    private fun setupViewPager() {
         binding.pager.adapter = pagerAdapter
         binding.tabLayout.setupWithViewPager(binding.pager)
         binding.tabLayout.getTabAt(0)?.setIcon(R.drawable.ic_eye)
         binding.tabLayout.getTabAt(1)?.setIcon(R.drawable.ic_list)
-        return binding.root
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

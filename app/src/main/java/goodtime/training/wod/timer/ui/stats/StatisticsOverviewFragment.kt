@@ -38,15 +38,41 @@ class StatisticsOverviewFragment : Fragment(), KodeinAware {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatisticsOverviewBinding.inflate(inflater, container, false)
-        historyChartWrapper = HistoryChartWrapper(binding.chart, setupSpinner())
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        historyChartWrapper = HistoryChartWrapper(binding.chart, setupSpinner())
+        viewModel.filteredWorkoutName.observe(viewLifecycleOwner, {
+            if (it == null) {
+                removeObserverFromFilteredSessions()
+                observeAllSessions()
+            } else { // a filtered session was selected
+                removeObserverFromAllSessions()
+                observeFilteredSessions()
+            }
+        })
+    }
+
+    private fun observeAllSessions() {
         viewModel.getSessions().observe(viewLifecycleOwner, { sessions ->
             refreshStats(sessions)
             historyChartWrapper.refreshHistoryChart(sessions)
         })
-
-        return binding.root
     }
+
+    private fun removeObserverFromAllSessions() = viewModel.getSessions().removeObservers(viewLifecycleOwner)
+
+    private fun observeFilteredSessions() {
+        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value, true).observe(viewLifecycleOwner, { sessions ->
+            refreshStats(sessions)
+            historyChartWrapper.refreshHistoryChart(sessions)
+        })
+    }
+
+    private fun removeObserverFromFilteredSessions() = viewModel.getCustomSessions(
+            viewModel.filteredWorkoutName.value, true).removeObservers(viewLifecycleOwner)
+
 
     private fun setupSpinner() : Spinner {
         val rangeTypeAdapter = ArrayAdapter.createFromResource(requireContext(),

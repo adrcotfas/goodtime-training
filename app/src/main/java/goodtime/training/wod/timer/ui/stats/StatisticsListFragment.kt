@@ -28,7 +28,7 @@ class StatisticsListFragment : Fragment(), KodeinAware {
 
     private val itemClickListener = object: StatisticsAdapter.Listener {
         override fun onClick(position: Int) {
-            //TODO: implement this
+            //TODO: open AddEditStatsDialog
         }
     }
 
@@ -48,19 +48,8 @@ class StatisticsListFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        val recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = logAdapter
-
-        val dividerItemDecoration = DividerItemDecoration(recyclerView.context, LinearLayout.VERTICAL)
-        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.recycler_separator))
-        recyclerView.addItemDecoration(dividerItemDecoration)
-
-        removeObserverFromAllSessions()
-
+        setupRecyclerView()
         viewModel.filteredWorkoutName.observe(viewLifecycleOwner, {
             if (it == null) {
                 removeObserverFromFilteredSessions()
@@ -70,6 +59,17 @@ class StatisticsListFragment : Fragment(), KodeinAware {
                 observeFilteredSessions()
             }
         })
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setupRecyclerView() {
+        val recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = logAdapter
+
+        val dividerItemDecoration = DividerItemDecoration(recyclerView.context, LinearLayout.VERTICAL)
+        dividerItemDecoration.setDrawable(resources.getDrawable(R.drawable.recycler_separator))
+        recyclerView.addItemDecoration(dividerItemDecoration)
     }
 
     private fun observeAllSessions() {
