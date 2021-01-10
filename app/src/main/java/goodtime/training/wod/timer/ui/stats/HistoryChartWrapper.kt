@@ -96,7 +96,7 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
         chart.notifyDataSetChanged()
     }
 
-    private fun generateHistoryChartData(sessions: List<Session>, color: Int): LineData {
+    private fun generateHistoryChartData(sessions: List<Session>): LineData {
         val rangeType: HistorySpinnerRangeType = HistorySpinnerRangeType.values()[spinner.selectedItemPosition]
         val dummyIntervalRange = 15L
         val yVals: MutableList<Entry> = ArrayList()
@@ -181,12 +181,12 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
                 previousTime = crt
             }
         }
-        return LineData(generateLineDataSet(yVals, color))
+        return LineData(generateLineDataSet(yVals, ResourcesHelper.green))
     }
 
     fun refreshHistoryChart(sessions: List<Session>) {
         this.sessions = sessions
-        val data = generateHistoryChartData(sessions, ResourcesHelper.green)
+        val data = generateHistoryChartData(sessions)
         chart.moveViewToX(data.xMax)
         chart.data = data
         chart.data.isHighlightEnabled = false
