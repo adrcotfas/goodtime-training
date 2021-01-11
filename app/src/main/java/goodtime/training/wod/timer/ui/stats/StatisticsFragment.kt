@@ -80,4 +80,9 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
     fun onMessageEvent(event: Events.Companion.FilterClearButtonClickEvent) {
         viewModel.filteredWorkoutName.value = null
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: Events.Companion.AddToStatisticsClickEvent) {
+        //TODO: open dialog to add session to statistics
+    }
 }

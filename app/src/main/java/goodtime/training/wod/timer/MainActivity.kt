@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private lateinit var startButton: FloatingActionButton
     private lateinit var favoritesButton: Chip
+
+    private lateinit var addSessionButton: Chip
     private lateinit var filterButton: Chip
 
     private lateinit var newCustomWorkoutButton: Chip
@@ -87,13 +89,18 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         startButton = binding.contentMain.startButton
         favoritesButton = binding.contentMain.buttonFavorites.root
         newCustomWorkoutButton = binding.contentMain.buttonNew.root
-        filterButton = binding.contentMain.buttonFilter.root // used on the statistics page
 
+        filterButton = binding.contentMain.buttonFilter.root // used on the statistics page
         filterButton.setOnClickListener{
             EventBus.getDefault().post(Events.Companion.FilterButtonClickEvent())
         }
         filterButton.setOnCloseIconClickListener {
             EventBus.getDefault().post(Events.Companion.FilterClearButtonClickEvent())
+        }
+
+        addSessionButton = binding.contentMain.buttonAddSession.root
+        addSessionButton.setOnClickListener {
+            EventBus.getDefault().post(Events.Companion.AddToStatisticsClickEvent())
         }
 
         val toolbar = binding.contentMain.toolbar
@@ -125,7 +132,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             val isTopLevel = appBarConfiguration.topLevelDestinations.contains(destination.id)
             if (isTopLevel) toolbar.setNavigationIcon(R.drawable.ic_menu_open)
             else toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
-            supportActionBar?.title = if (isTopLevel) null else destination.label
+            supportActionBar?.title = if (isTopLevel || destination.label == "Statistics") null else destination.label
             toggleMinimalistMode(preferenceHelper.isMinimalistEnabled())
             bottomNavigationView.isVisible = isTopLevel
             startButton.apply { if (isTopLevel) show() else hide() }

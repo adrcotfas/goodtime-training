@@ -6,5 +6,6 @@ class Events {
         class FilterButtonClickEvent
         class FilterSelectedEvent(val name: String)
         class FilterClearButtonClickEvent
+        class AddToStatisticsClickEvent
     }
 }
