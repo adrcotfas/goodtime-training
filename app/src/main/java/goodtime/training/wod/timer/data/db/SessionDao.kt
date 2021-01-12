@@ -19,7 +19,6 @@ interface SessionDao {
     @TypeConverters(TypeConverter::class)
     fun get(): LiveData<List<Session>>
 
-    //TODO: and completed = :completed
     @Query("select * from Session where name = :name")
     @TypeConverters(TypeConverter::class)
     fun get(name: String?): LiveData<List<Session>>

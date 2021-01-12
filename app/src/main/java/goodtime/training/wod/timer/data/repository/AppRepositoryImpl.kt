@@ -23,7 +23,7 @@ class AppRepositoryImpl(
     }
 
     override fun getSessions() : LiveData<List<Session>> = sessionDao.get()
-    override fun getCustomSessions(name: String?, completed: Boolean) = sessionDao.get(name)
+    override fun getCustomSessions(name: String?) = sessionDao.get(name)
 
     override fun addSessionSkeleton(session: SessionSkeleton) {
         GlobalScope.launch {

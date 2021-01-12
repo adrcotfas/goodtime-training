@@ -83,7 +83,7 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     private fun removeObserverFromAllSessions() = viewModel.getSessions().removeObservers(viewLifecycleOwner)
 
     private fun observeFilteredSessions() {
-        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value, true).observe(viewLifecycleOwner, { sessions ->
+        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value).observe(viewLifecycleOwner, { sessions ->
             logAdapter.data = sessions
             logAdapter.personalRecordSessionId = findPersonalRecord(sessions.filter { it.isCompleted })
             binding.recyclerView.isVisible = sessions.isNotEmpty()
@@ -92,7 +92,7 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     }
 
     private fun removeObserverFromFilteredSessions() {
-        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value, true).removeObservers(viewLifecycleOwner)
+        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value).removeObservers(viewLifecycleOwner)
         logAdapter.personalRecordSessionId = -1
     }
 

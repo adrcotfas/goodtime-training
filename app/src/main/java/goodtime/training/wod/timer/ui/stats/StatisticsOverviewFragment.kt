@@ -64,14 +64,14 @@ class StatisticsOverviewFragment : Fragment(), KodeinAware {
     private fun removeObserverFromAllSessions() = viewModel.getSessions().removeObservers(viewLifecycleOwner)
 
     private fun observeFilteredSessions() {
-        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value, true).observe(viewLifecycleOwner, { sessions ->
+        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value).observe(viewLifecycleOwner, { sessions ->
             refreshStats(sessions)
             historyChartWrapper.refreshHistoryChart(sessions)
         })
     }
 
     private fun removeObserverFromFilteredSessions() = viewModel.getCustomSessions(
-            viewModel.filteredWorkoutName.value, true).removeObservers(viewLifecycleOwner)
+            viewModel.filteredWorkoutName.value).removeObservers(viewLifecycleOwner)
 
 
     private fun setupSpinner() : Spinner {

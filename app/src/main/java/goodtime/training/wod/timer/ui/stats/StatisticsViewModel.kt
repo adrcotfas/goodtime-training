@@ -20,7 +20,7 @@ class StatisticsViewModel(private val appRepository: AppRepository) : ViewModel(
     fun addSession(session: Session) = appRepository.addSession(session)
 
     fun getSessions(): LiveData<List<Session>> = appRepository.getSessions()
-    fun getCustomSessions(name: String?, completed: Boolean = true) = appRepository.getCustomSessions(name, completed)
+    fun getCustomSessions(name: String?) = appRepository.getCustomSessions(name)
 
     fun calculateOverviewStats(sessions: List<Session>): Stats {
         val today = LocalDate.now()
