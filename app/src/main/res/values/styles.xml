@@ -74,6 +74,13 @@
         <item name="closeIconTint">@color/transparent_dark</item>
     </style>
 
+    <style name="FavoritesChipStyle.Grey" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textAppearance">@style/FavoritesTextStyle</item>
+        <item name="android:textColor">@color/grey200</item>
+        <item name="chipBackgroundColor">@color/grey800</item>
+        <item name="closeIconVisible">false</item>
+    </style>
+
     <style name="FavoritesChipStyleSmaller" parent="Widget.MaterialComponents.Chip.Action">
         <item name="android:textAppearance">@style/FavoritesTextStyleSmaller</item>
         <item name="android:layout_height">42sp</item>

@@ -60,7 +60,8 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
             favorites = it
             binding.saveAsRadioButton.setOnCheckedChangeListener{ _, isChecked ->
                 binding.overwriteRadioButton.isChecked = !isChecked
-                refreshPositiveButtonVisibility(binding.editText.text)
+                refreshPositiveButtonState(binding.editText.text)
+                binding.textInputLayout.isEnabled = true
             }
             customWorkoutSkeletonsLd.removeObservers(this)
         })
@@ -68,9 +69,11 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
         if (isFresh) {
             binding.overwriteRadioButton.visibility = View.GONE
             binding.saveAsRadioButton.isChecked = true
+            binding.saveAsRadioButton.isVisible = false
             binding.saveAsRadioButton.buttonDrawable = null
             binding.workoutName.visibility = View.GONE
             binding.editText.setText(originalName)
+            binding.textInputLayout.isEnabled = true
         } else {
             binding.workoutName.text = "$originalName "
             binding.workoutName.setOnClickListener{ binding.overwriteRadioButton.isChecked = true}
@@ -80,47 +83,42 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
                 if (isChecked) {
                     hideKeyboardFrom(requireContext(), binding.root)
                 }
+                binding.textInputLayout.isEnabled = false
             }
         }
 
-        binding.editText.setOnClickListener {
-            binding.saveAsRadioButton.isChecked = true
-        }
-
         binding.editText.addTextChangedListener {
-            refreshPositiveButtonVisibility(it)
+            refreshPositiveButtonState(it)
         }
 
         b.apply {
             setView(binding.root)
             setPositiveButton(android.R.string.ok) { _, _ ->
                 listener.onCustomWorkoutSaved(
-                    if (isFresh) {
-                        customName
-                    } else {
-                        if (binding.overwriteRadioButton.isChecked) originalName
-                        else customName
-                    })
+                        if (isFresh) {
+                            customName
+                        } else {
+                            if (binding.overwriteRadioButton.isChecked) originalName
+                            else customName
+                        })
                 hideKeyboardFrom(requireContext(), binding.root)
             }
         }
         return b.create()
     }
 
-    private fun refreshPositiveButtonVisibility(it: Editable?) {
-        if (it.isNullOrEmpty() || it.toString().trim() == "") {
+    private fun refreshPositiveButtonState(text: Editable?) {
+        if (text.isNullOrEmpty() || text.toString().trim() == "") {
             togglePositiveButtonState(false)
-        } else {
-            for (w in favorites) {
-                if (w.name == it.toString()) {
-                    togglePositiveButtonState(false)
-                    return
-                }
-            }
-            togglePositiveButtonState(true)
-            val trim = it.toString().trim()
-            customName = trim
+            return
         }
+        if (favorites.find { it.name == text.toString() } != null) {
+            togglePositiveButtonState(false)
+            return
+        }
+        togglePositiveButtonState(true)
+        val trim = text.toString().trim()
+        customName = trim
     }
 
     private fun togglePositiveButtonState(enabled: Boolean) {
@@ -128,7 +126,7 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
         if (dialog != null) {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = enabled
         }
-        binding.errorMessage.isVisible = enabled
+        binding.textInputLayout.error = if (enabled) null else "Enter a valid name"
     }
 
     override fun onResume() {
@@ -136,7 +134,7 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
         if (binding.overwriteRadioButton.isChecked) {
             togglePositiveButtonState(true)
         } else {
-            refreshPositiveButtonVisibility(binding.editText.text)
+            refreshPositiveButtonState(binding.editText.text)
         }
     }
 }

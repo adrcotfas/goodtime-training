@@ -14,15 +14,14 @@ import goodtime.training.wod.timer.common.StringUtils.Companion.toString
 import goodtime.training.wod.timer.common.hideKeyboardFrom
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.SessionSkeleton
-import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectFavoriteBinding
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper.Listener,
-    DeleteConfirmationDialog.Listener {
+class SelectFavoriteDialog: DialogFragment(), KodeinAware,
+        DeleteConfirmationDialog.Listener {
     override val kodein by closestKodein()
     private val preferenceHelper: PreferenceHelper by instance()
 
@@ -31,8 +30,6 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     private lateinit var favorites: List<SessionSkeleton>
     private lateinit var binding: DialogSelectFavoriteBinding
     private lateinit var listener: Listener
-
-    private lateinit var sessionEditTextHelper: SessionEditTextHelper
 
     interface Listener {
         fun onFavoriteSelected(session: SessionSkeleton)
@@ -51,15 +48,11 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
         val b = MaterialAlertDialogBuilder(requireContext())
 
         binding = DialogSelectFavoriteBinding.inflate(layoutInflater)
-
         setupFavorites()
-
         binding.customSessionDescription.text = toFavoriteDescriptionDetailed(favoriteCandidate)
+
         b.apply {
             setView(binding.root)
-            binding.saveButton.setOnClickListener{
-                repo.addSessionSkeleton(sessionEditTextHelper.generateFromCurrentSelection())
-            }
         }
         return b.create()
     }
@@ -67,104 +60,44 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware, SessionEditTextHelper
     @SuppressLint("SetTextI18n")
     private fun setupFavorites() {
         binding.selectFavoriteTitle.text = "Select ${toString(favoriteCandidate.type)} favorite"
-        repo.getSessionSkeletons(favoriteCandidate.type).observe(
-            this, {
-                favorites = it
-                binding.selectFavoriteTitle.isVisible = it.isNotEmpty()
-                refreshActiveSection(favoriteCandidate.type)
-                initSessionEditTextHelper()
-                binding.saveButton.isEnabled = !it.contains(favoriteCandidate) && favoriteCandidate.duration != 0
 
-                val favoritesChipGroup = binding.favorites
-                favoritesChipGroup.isSingleSelection = true
-                favoritesChipGroup.removeAllViews()
-                for (favorite in favorites) {
-                    val chip = Chip(requireContext()).apply {
-                        text = toFavoriteFormat(favorite)
-                    }
-                    chip.setOnCloseIconClickListener {
-                        if (parentFragmentManager.findFragmentByTag("DeleteConfirmation") == null) {
-                            if (preferenceHelper.showDeleteConfirmationDialog()) {
-                                DeleteConfirmationDialog.newInstance(this, favorite.id, chip.text.toString())
+
+        binding.favoriteCandidateChip.text = toFavoriteFormat(favoriteCandidate)
+        binding.favoriteCandidateChip.setOnClickListener {
+            repo.addSessionSkeleton(favoriteCandidate)
+            binding.currentSelectionSection.visibility = View.GONE
+        }
+
+        repo.getSessionSkeletons(favoriteCandidate.type).observe(
+                this, { favorites ->
+            this.favorites = favorites
+            binding.selectFavoriteTitle.isVisible = favorites.isNotEmpty()
+            val favoritesChipGroup = binding.favorites
+            favoritesChipGroup.isSingleSelection = true
+            favoritesChipGroup.removeAllViews()
+            for (favorite in this.favorites) {
+                val chip = Chip(requireContext()).apply {
+                    text = toFavoriteFormat(favorite)
+                }
+                chip.setOnCloseIconClickListener {
+                    if (parentFragmentManager.findFragmentByTag("DeleteConfirmation") == null) {
+                        if (preferenceHelper.showDeleteConfirmationDialog()) {
+                            DeleteConfirmationDialog.newInstance(this, favorite.id, chip.text.toString())
                                     .show(parentFragmentManager, "DeleteConfirmation")
-                            } else {
-                                onDeleteConfirmation(favorite.id, "")
-                            }
+                        } else {
+                            onDeleteConfirmation(favorite.id, "")
                         }
                     }
-                    chip.setOnClickListener {
-                        listener.onFavoriteSelected(favorite)
-                        hideKeyboardFrom(requireContext(), binding.root)
-                        dismiss()
-                    }
-                    favoritesChipGroup.addView(chip)
                 }
-            })
-    }
-
-    private fun initSessionEditTextHelper() {
-        val sessionType = favoriteCandidate.type
-        sessionEditTextHelper =
-            when(sessionType) {
-                SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                    SessionEditTextHelper(
-                        this,
-                        genericMinutesEt = binding.genericMinutesLayout.editText,
-                        genericSecondsEt = binding.genericSecondsLayout.editText,
-                        sessionType = sessionType
-                    )
+                chip.setOnClickListener {
+                    listener.onFavoriteSelected(favorite)
+                    hideKeyboardFrom(requireContext(), binding.root)
+                    dismiss()
                 }
-                SessionType.EMOM -> {
-                    SessionEditTextHelper(
-                        this,
-                        emomRoundsEt = binding.emomRoundsLayout.editText,
-                        emomMinutesEt = binding.emomMinutesLayout.editText,
-                        emomSecondsEt = binding.emomSecondsLayout.editText,
-                        sessionType = sessionType
-                    )
-                }
-                SessionType.HIIT -> {
-                    SessionEditTextHelper(
-                        this,
-                        hiitRoundsEt = binding.hiitRoundsLayout.editText,
-                        hiitSecondsWorkEt = binding.hiitSecondsWorkLayout.editText,
-                        hiitSecondsRestEt = binding.hiitSecondsRestLayout.editText,
-                        sessionType = sessionType
-                    )
-                }
+                favoritesChipGroup.addView(chip)
             }
-        sessionEditTextHelper.updateEditTexts(favoriteCandidate)
-    }
-
-    override fun onTextChanged(isValid: Boolean, sessionSkeleton: SessionSkeleton) {
-        binding.saveButton.isEnabled = isValid
-        binding.customSessionDescription.text =
-            if (isValid) toFavoriteDescriptionDetailed(sessionSkeleton)
-            else "Please enter valid values."
-        if (isValid) {
-            binding.saveButton.isEnabled = !favorites.contains(sessionEditTextHelper.generateFromCurrentSelection())
-        }
-    }
-
-    private fun refreshActiveSection(sessionType: SessionType) {
-        when (sessionType) {
-            SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                binding.genericSection.isVisible = true
-                binding.emomSection.isVisible = false
-                binding.hiitSection.isVisible = false
-            }
-            SessionType.EMOM -> {
-                binding.genericSection.isVisible = false
-                binding.emomSection.isVisible = true
-                binding.hiitSection.isVisible = false
-            }
-            SessionType.HIIT -> {
-                binding.genericSection.isVisible = false
-                binding.emomSection.isVisible = false
-                binding.hiitSection.isVisible = true
-            }
-        }
-        binding.customSection.isVisible = true
+            binding.currentSelectionSection.isVisible = this.favorites.find { it.isSame(favoriteCandidate) } == null
+        })
     }
 
     override fun onDeleteConfirmation(id: Long, name: String) {

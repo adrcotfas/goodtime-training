@@ -156,6 +156,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             favoritesButton.isVisible = isTopLevel
             newCustomWorkoutButton.isVisible = destination.label == "CustomWorkout"
             filterButton.isVisible = currentDestination.label == "Statistics"
+            addSessionButton.isVisible = currentDestination.label == "Statistics"
         }
 
         startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }
