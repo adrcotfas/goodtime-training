@@ -20,7 +20,7 @@ class ReminderTimePreferenceDialogBuilder(context: Context, private val listener
                 .setHour(time.hour)
                 .setMinute(time.minute)
                 .setTimeFormat(if (is24HourFormat) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
-                .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
+                .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD)
                 .build()
         dialog.addOnPositiveButtonClickListener{
             val newValue = LocalTime.of(dialog.hour, dialog.minute).toSecondOfDay()
