@@ -280,7 +280,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                     "Press the action button to start the workout using the current selection.",
                     false, 0.5f
                 )
-                bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, toolbar, 0, 12)
+                bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, bottomNavigationView, 0, 12)
                     .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
                     .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)
                     .relayShowAlignTop(startButtonBalloon, startButton, 0, -12)
