@@ -15,11 +15,11 @@ interface SessionDao {
     @TypeConverters(TypeConverter::class)
     suspend fun add(session: Session)
 
-    @Query("select * from Session")
+    @Query("select * from Session order by timestamp desc")
     @TypeConverters(TypeConverter::class)
     fun get(): LiveData<List<Session>>
 
-    @Query("select * from Session where name = :name")
+    @Query("select * from Session where name = :name order by timestamp desc")
     @TypeConverters(TypeConverter::class)
     fun get(name: String?): LiveData<List<Session>>
 }
