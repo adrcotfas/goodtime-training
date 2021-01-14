@@ -3,12 +3,12 @@ package goodtime.training.wod.timer.ui.timer
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import goodtime.training.wod.timer.common.StringUtils
-import goodtime.training.wod.timer.common.StringUtils.Companion.secondsToTimerFormat
+import goodtime.training.wod.timer.common.StringUtils.Companion.secondsToNiceFormat
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 
 import goodtime.training.wod.timer.common.timers.CountDownTimer
 import goodtime.training.wod.timer.data.model.Session
-import goodtime.training.wod.timer.data.model.Session.Companion.constructSession
+import goodtime.training.wod.timer.data.model.Session.Companion.prepareSessionToAdd
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
@@ -23,7 +23,7 @@ class TimerViewModel(
     val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionSkeleton>()
 
-    var sessionToSaveInRepo = Session()
+    var sessionToAdd = Session()
 
     /**
      * Holds the counted rounds in seconds elapsed
@@ -32,7 +32,7 @@ class TimerViewModel(
 
     // store the working time for each session
     var durations = ArrayList<Int>()
-    lateinit var timer : CountDownTimer
+    lateinit var timer: CountDownTimer
 
     /**
      * Indicates the index of a session part of a custom workout
@@ -54,13 +54,13 @@ class TimerViewModel(
 
     var isCustomWorkout = false
 
-    fun getTotalRounds() : Int  {
+    fun getTotalRounds(): Int {
         val sessionId = currentSessionIdx.value!!
         return sessions[sessionId].numRounds
     }
 
-    fun getCurrentSessionType() : SessionType = sessions[currentSessionIdx.value!!].type
-    fun getCurrentSessionDuration() : Int {
+    fun getCurrentSessionType(): SessionType = sessions[currentSessionIdx.value!!].type
+    fun getCurrentSessionDuration(): Int {
         val session = sessions[currentSessionIdx.value!!]
         return if (isResting.value!! && session.type != SessionType.REST)
             session.breakDuration
@@ -70,16 +70,14 @@ class TimerViewModel(
 
     fun init(sessionsRaw: String) {
         sessions = TypeConverter.toSessionSkeletons(sessionsRaw)
-
-        sessionToSaveInRepo = Session()
-        sessionToSaveInRepo.isTimeBased = sessions.find { it.type == SessionType.FOR_TIME } != null
+        sessionToAdd = Session()
 
         durations.clear()
         for (index in 0 until sessions.size) {
             durations.add(0)
         }
         countedRounds = ArrayList()
-        for(i in 0 until  sessions.size) {
+        for (i in 0 until sessions.size) {
             countedRounds.add(0)
         }
 
@@ -115,7 +113,7 @@ class TimerViewModel(
                     session.duration.toLong()
 
         val secondsToUse =
-                if (prev != null && prev != 0L ) prev
+                if (prev != null && prev != 0L) prev
                 else originalSeconds
 
         timer = CountDownTimer(secondsToUse, originalSeconds, object : CountDownTimer.Listener {
@@ -152,34 +150,37 @@ class TimerViewModel(
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(false)
         }
+        prepareSessionToAdd()
+        repository.addSession(sessionToAdd)
+    }
 
+    fun prepareSessionToAdd() {
         val index = currentSessionIdx.value!!
         updateDurations(getCurrentSessionType(), index, true)
         if (preferenceHelper.logIncompleteSessions()) {
             if (isCustomWorkout) {
-                sessionToSaveInRepo.notes = ""
+                sessionToAdd.notes = ""
                 for (session in sessions.withIndex()) {
                     if (session.index == 0) continue
                     if (session.index > index) break
-                    sessionToSaveInRepo.actualRounds += getRounds(session.index)
-                    sessionToSaveInRepo.actualDuration += durations[session.index]
-                    sessionToSaveInRepo.notes +=
-                            "- ${StringUtils.toString(session.value.type)} " +
-                                    "/ ${secondsToTimerFormat(durations[session.index])}"
+                    sessionToAdd.actualRounds += getRounds(session.index)
+                    sessionToAdd.actualDuration += durations[session.index]
+                    sessionToAdd.notes +=
+                            "${StringUtils.toFavoriteFormatExtended(session.value)} " +
+                                    "/ ${secondsToNiceFormat(durations[session.index])}"
                     if (getRounds(session.index) > 0) {
-                        sessionToSaveInRepo.notes += " / ${getRounds(session.index)} rounds"
+                        sessionToAdd.notes += " / ${getRounds(session.index)} rounds"
                     }
-                    sessionToSaveInRepo.notes +=
+                    sessionToAdd.notes +=
                             if (session.index < sessions.size - 1) "\n" else "(incomplete)"
                 }
-                repository.addSession(sessionToSaveInRepo)
+                sessionToAdd.isTimeBased = sessions.find { it.type == SessionType.FOR_TIME } != null
             } else {
                 if (sessions[index].type != SessionType.REST) {
-                    repository.addSession(
-                            constructSession(
-                                    sessions[index],
-                                    durations[index],
-                                    countedRounds[index]))
+                    sessionToAdd = prepareSessionToAdd(
+                            sessions[index],
+                            durations[index],
+                            countedRounds[index])
                 }
             }
         }
@@ -199,15 +200,15 @@ class TimerViewModel(
         handleFinishTimer()
     }
 
-    private fun isLastSession() : Boolean {
+    private fun isLastSession(): Boolean {
         return sessions.size == currentSessionIdx.value!! + 1
     }
 
-    private fun isLastRound() : Boolean {
+    private fun isLastRound(): Boolean {
         return sessions[currentSessionIdx.value!!].numRounds == currentRoundIdx.value!! + 1
     }
 
-    private fun handleTimerTick(seconds : Int) {
+    private fun handleTimerTick(seconds: Int) {
         secondsUntilFinished.value = seconds
         if (seconds == 2) {
             //TODO: handle bug when pausing exactly here -> sound should not restart
@@ -219,7 +220,7 @@ class TimerViewModel(
         val currentRoundIdx = currentRoundIdx.value!!
         val secondsUntilFinished = secondsUntilFinished.value!!
         val sessionSkeleton = sessions[index]
-        when(sessionType) {
+        when (sessionType) {
             SessionType.AMRAP, SessionType.REST -> {
                 if (abandoned) {
                     durations[index] = sessionSkeleton.duration - secondsUntilFinished
@@ -326,9 +327,11 @@ class TimerViewModel(
                         || (isLastRound() && isLastSession() && !isResting.value!!)) {
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
-
                         notifier.notifyTrainingComplete()
                     } else {
+                        if (isLastRound()) {
+                            isResting.value = !isResting.value!!
+                        }
                         currentRoundIdx.value = 0
                         ++index
                         currentSessionIdx.value = index
@@ -385,6 +388,6 @@ class TimerViewModel(
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(false)
         }
-        repository.addSession(sessionToSaveInRepo)
+        repository.addSession(sessionToAdd)
     }
 }

@@ -38,7 +38,7 @@ data class Session(
     fun isCustom() = skeleton.type == SessionType.REST
 
     companion object {
-        fun constructSession(
+        fun prepareSessionToAdd(
                 skeleton: SessionSkeleton,
                 actualDuration: Int = 0,
                 actualRounds: Int = 0,

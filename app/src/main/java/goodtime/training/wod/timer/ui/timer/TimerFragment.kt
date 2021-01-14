@@ -53,7 +53,7 @@ class TimerFragment : Fragment(), KodeinAware {
         if (viewModel.timerState.value == TimerState.INACTIVE) {
             viewModel.init(args.sessions)
             viewModel.startWorkout()
-            viewModel.sessionToSaveInRepo.name = args.name
+            viewModel.sessionToAdd.name = args.name
         }
 
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -178,34 +178,31 @@ class TimerFragment : Fragment(), KodeinAware {
         binding.circleProgress?.isVisible = false
         binding.inProgressContainer.isVisible = false
         binding.finishedWorkoutContainer.isVisible = true
-
         binding.congrats.text = StringUtils.generateCongrats()
 
-        var totalDuration = 0
-        var rounds = 0
-        var notes = ""
         for (idx in 0 until viewModel.sessions.size) {
             if (idx == 0) { // skip the pre-workout countdown
                 // add the custom workout header if it's the case
-                if (viewModel.sessionToSaveInRepo.name != null) {
-                    binding.summaryLayout.summaryContainer.addView(createSummaryRowCustomHeader(viewModel.sessionToSaveInRepo.name!!))
+                if (viewModel.sessionToAdd.name != null) {
+                    binding.summaryLayout.summaryContainer.addView(createSummaryRowCustomHeader(viewModel.sessionToAdd.name!!))
                 }
                 continue
             }
             val session = viewModel.sessions[idx]
             val duration = viewModel.durations[idx]
-            rounds += viewModel.getRounds(idx)
             binding.summaryLayout.summaryContainer.addView(createSummaryRow(session, duration))
-            totalDuration += duration
         }
+
+        viewModel.prepareSessionToAdd()
+        val rounds = viewModel.sessionToAdd.actualRounds
+        val totalDuration = viewModel.sessionToAdd.actualDuration
+        val notes = viewModel.sessionToAdd.notes
+
         binding.summaryLayout.summaryContainer.addView(createSummaryTotalRow(totalDuration))
 
-        if (viewModel.sessionToSaveInRepo.name == null) {
-            // if this is not a custom workout, fill up the notes
-            binding.summaryLayout.notesEdit.setText(notes)
-            // and fill up with the singular session
-            viewModel.sessionToSaveInRepo.skeleton = viewModel.sessions[1]
+        if (!viewModel.isCustomWorkout) {
             // we don't need no skeleton for custom workouts
+            viewModel.sessionToAdd.skeleton = viewModel.sessions[1]
         }
 
         if (rounds != 0) {
@@ -216,27 +213,27 @@ class TimerFragment : Fragment(), KodeinAware {
 //            binding.summaryLayout.roundsEdit.visibility = View.GONE
 //            binding.summaryLayout.repsEdit.visibility = View.GONE
         }
-        viewModel.sessionToSaveInRepo.actualRounds = rounds
-        viewModel.sessionToSaveInRepo.actualDuration = totalDuration
+        viewModel.sessionToAdd.actualRounds = rounds
+        viewModel.sessionToAdd.actualDuration = totalDuration
         if (!binding.summaryLayout.repsEdit.editableText.isNullOrEmpty()) {
-            viewModel.sessionToSaveInRepo.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
+            viewModel.sessionToAdd.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
         }
-        viewModel.sessionToSaveInRepo.notes = notes
+        viewModel.sessionToAdd.notes = notes
 
         // listen to edit text changes and update the session to be saved
         binding.summaryLayout.repsEdit.addTextChangedListener {
             if (!binding.summaryLayout.repsEdit.editableText.isNullOrEmpty()) {
-                viewModel.sessionToSaveInRepo.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
+                viewModel.sessionToAdd.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
             }
         }
         binding.summaryLayout.roundsEdit.addTextChangedListener {
             if (!binding.summaryLayout.roundsEdit.editableText.isNullOrEmpty()) {
-                viewModel.sessionToSaveInRepo.actualRounds = toInt(binding.summaryLayout.roundsEdit.editableText.toString())
+                viewModel.sessionToAdd.actualRounds = toInt(binding.summaryLayout.roundsEdit.editableText.toString())
             }
         }
         binding.summaryLayout.notesEdit.addTextChangedListener {
             if (!binding.summaryLayout.notesEdit.editableText.isNullOrEmpty()) {
-                viewModel.sessionToSaveInRepo.notes = binding.summaryLayout.notesEdit.editableText.toString()
+                viewModel.sessionToAdd.notes = binding.summaryLayout.notesEdit.editableText.toString()
             }
         }
 
