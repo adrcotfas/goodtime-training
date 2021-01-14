@@ -2,7 +2,8 @@ package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import goodtime.training.wod.timer.BuildConfig
+import goodtime.training.wod.timer.common.StringUtils
+import goodtime.training.wod.timer.common.StringUtils.Companion.secondsToTimerFormat
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 
 import goodtime.training.wod.timer.common.timers.CountDownTimer
@@ -51,6 +52,8 @@ class TimerViewModel(
      */
     val isResting = MutableLiveData(false)
 
+    var isCustomWorkout = false
+
     fun getTotalRounds() : Int  {
         val sessionId = currentSessionIdx.value!!
         return sessions[sessionId].numRounds
@@ -84,6 +87,8 @@ class TimerViewModel(
         currentSessionIdx.value = 0
         secondsUntilFinished.value = sessions[0].duration
         isResting.value = false
+
+        isCustomWorkout = sessions.size > 2 // 2 because of the pre-workout countdown
 
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(true)
@@ -142,25 +147,41 @@ class TimerViewModel(
         timerState.value = TimerState.INACTIVE
     }
 
-    //TODO: update sessionToAdd here too to save custom interrupted workouts
-    // TODO: update Session with an "incomplete" flag so we don't compare complete with incomplete ones (exclude incomplete from charts)
     fun abandonWorkout() {
         stopTimer()
-        if (preferenceHelper.logIncompleteSessions()) {
-            val type = getCurrentSessionType()
-            val index = currentSessionIdx.value!!
-            updateDurations(type, index, true)
-
-            if (sessions[index].type != SessionType.REST) {
-                repository.addSession(
-                        constructSession(
-                                sessions[index],
-                                durations[index],
-                                countedRounds[index]))
-            }
-        }
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(false)
+        }
+
+        val index = currentSessionIdx.value!!
+        updateDurations(getCurrentSessionType(), index, true)
+        if (preferenceHelper.logIncompleteSessions()) {
+            if (isCustomWorkout) {
+                sessionToSaveInRepo.notes = ""
+                for (session in sessions.withIndex()) {
+                    if (session.index == 0) continue
+                    if (session.index > index) break
+                    sessionToSaveInRepo.actualRounds += getRounds(session.index)
+                    sessionToSaveInRepo.actualDuration += durations[session.index]
+                    sessionToSaveInRepo.notes +=
+                            "- ${StringUtils.toString(session.value.type)} " +
+                                    "/ ${secondsToTimerFormat(durations[session.index])}"
+                    if (getRounds(session.index) > 0) {
+                        sessionToSaveInRepo.notes += " / ${getRounds(session.index)} rounds"
+                    }
+                    sessionToSaveInRepo.notes +=
+                            if (session.index < sessions.size - 1) "\n" else "(incomplete)"
+                }
+                repository.addSession(sessionToSaveInRepo)
+            } else {
+                if (sessions[index].type != SessionType.REST) {
+                    repository.addSession(
+                            constructSession(
+                                    sessions[index],
+                                    durations[index],
+                                    countedRounds[index]))
+                }
+            }
         }
     }
 
@@ -363,9 +384,6 @@ class TimerViewModel(
     fun handleCompletion() {
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(false)
-        }
-        if (BuildConfig.DEBUG && sessionToSaveInRepo.skeleton.type == SessionType.REST && sessionToSaveInRepo.name.isNullOrEmpty()) {
-            error("Assertion failed")
         }
         repository.addSession(sessionToSaveInRepo)
     }
