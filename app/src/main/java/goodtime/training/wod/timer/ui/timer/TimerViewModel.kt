@@ -16,9 +16,10 @@ import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.workout.TimerState
 
 class TimerViewModel(
-        private val notifier: TimerNotificationHelper,
-        private val preferenceHelper: PreferenceHelper,
-        private val repository: AppRepository) : ViewModel() {
+    private val notifier: TimerNotificationHelper,
+    private val preferenceHelper: PreferenceHelper,
+    private val repository: AppRepository
+) : ViewModel() {
 
     val timerState = MutableLiveData(TimerState.INACTIVE)
     var sessions = ArrayList<SessionSkeleton>()
@@ -107,18 +108,24 @@ class TimerViewModel(
 
         // will be used when starting fresh
         val originalSeconds =
-                if (isResting.value!! && session.type != SessionType.REST)
-                    session.breakDuration.toLong()
-                else
-                    session.duration.toLong()
+            if (isResting.value!! && session.type != SessionType.REST)
+                session.breakDuration.toLong()
+            else
+                session.duration.toLong()
 
         val secondsToUse =
-                if (prev != null && prev != 0L) prev
-                else originalSeconds
+            if (prev != null && prev != 0L) prev
+            else originalSeconds
 
         timer = CountDownTimer(secondsToUse, originalSeconds, object : CountDownTimer.Listener {
-            override fun onTick(seconds: Int) { handleTimerTick(seconds) }
-            override fun onFinishSet() { handleFinishTimer()}
+            override fun onTick(seconds: Int) {
+                handleTimerTick(seconds)
+            }
+
+            override fun onFinishSet() {
+                handleFinishTimer()
+            }
+
             override fun onHalfwayThere() {
                 if (isResting.value == false) {
                     notifier.notifyMiddleOfTraining()
@@ -150,38 +157,39 @@ class TimerViewModel(
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(false)
         }
-        prepareSessionToAdd()
+        if (preferenceHelper.logIncompleteSessions()) {
+            prepareSessionToAdd()
+        }
         repository.addSession(sessionToAdd)
     }
 
     fun prepareSessionToAdd() {
         val index = currentSessionIdx.value!!
         updateDurations(getCurrentSessionType(), index, true)
-        if (preferenceHelper.logIncompleteSessions()) {
-            if (isCustomWorkout) {
-                sessionToAdd.notes = ""
-                for (session in sessions.withIndex()) {
-                    if (session.index == 0) continue
-                    if (session.index > index) break
-                    sessionToAdd.actualRounds += getRounds(session.index)
-                    sessionToAdd.actualDuration += durations[session.index]
-                    sessionToAdd.notes +=
-                            "${StringUtils.toFavoriteFormatExtended(session.value)} " +
-                                    "/ ${secondsToNiceFormat(durations[session.index])}"
-                    if (getRounds(session.index) > 0) {
-                        sessionToAdd.notes += " / ${getRounds(session.index)} rounds"
-                    }
-                    sessionToAdd.notes +=
-                            if (session.index < sessions.size - 1) "\n" else "(incomplete)"
+        if (isCustomWorkout) {
+            sessionToAdd.notes = ""
+            for (session in sessions.withIndex()) {
+                if (session.index == 0) continue
+                if (session.index > index) break
+                sessionToAdd.actualRounds += getRounds(session.index)
+                sessionToAdd.actualDuration += durations[session.index]
+                sessionToAdd.notes +=
+                    "${StringUtils.toFavoriteFormatExtended(session.value)} " +
+                            "/ ${secondsToNiceFormat(durations[session.index])}"
+                if (getRounds(session.index) > 0) {
+                    sessionToAdd.notes += " / ${getRounds(session.index)} rounds"
                 }
-                sessionToAdd.isTimeBased = sessions.find { it.type == SessionType.FOR_TIME } != null
-            } else {
-                if (sessions[index].type != SessionType.REST) {
-                    sessionToAdd = prepareSessionToAdd(
-                            sessions[index],
-                            durations[index],
-                            countedRounds[index])
-                }
+                sessionToAdd.notes +=
+                    if (session.index < sessions.size - 1) "\n" else "(incomplete)"
+            }
+            sessionToAdd.isTimeBased = sessions.find { it.type == SessionType.FOR_TIME } != null
+        } else {
+            if (sessions[index].type != SessionType.REST) {
+                sessionToAdd = prepareSessionToAdd(
+                    sessions[index],
+                    durations[index],
+                    countedRounds[index]
+                )
             }
         }
     }
@@ -251,7 +259,8 @@ class TimerViewModel(
                         durations[index] = fullRoundsDuration + sessionSkeleton.duration +
                                 sessionSkeleton.breakDuration - secondsUntilFinished
                     } else {
-                        durations[index] = fullRoundsDuration + sessionSkeleton.duration - secondsUntilFinished
+                        durations[index] =
+                            fullRoundsDuration + sessionSkeleton.duration - secondsUntilFinished
                     }
                 } else {
                     durations[index] = sessionSkeleton.duration * sessionSkeleton.numRounds +
@@ -323,8 +332,9 @@ class TimerViewModel(
             SessionType.HIIT -> {
                 // if this is the last round but not in the final session, take the break
                 if ((isLastRound() && !isLastSession() && isResting.value!!)
-                        // if this is the final session and final work round, skip the break
-                        || (isLastRound() && isLastSession() && !isResting.value!!)) {
+                    // if this is the final session and final work round, skip the break
+                    || (isLastRound() && isLastSession() && !isResting.value!!)
+                ) {
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
                         notifier.notifyTrainingComplete()
@@ -351,10 +361,10 @@ class TimerViewModel(
                         currentRoundIdx.value = currentRoundIdx.value!! + 1
                     }
                     secondsUntilFinished.value =
-                            if (isRestingVal)
-                                sessions[index].breakDuration
-                            else
-                                sessions[index].duration
+                        if (isRestingVal)
+                            sessions[index].breakDuration
+                        else
+                            sessions[index].duration
                     startWorkout()
 
                     if (isLastRound()) {
