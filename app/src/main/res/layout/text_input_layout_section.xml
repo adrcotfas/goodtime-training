@@ -21,7 +21,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:hintEnabled="false"
             android:isScrollContainer="false"
-            app:errorEnabled="true"
             app:errorContentDescription="">
 
             <com.google.android.material.textfield.TextInputEditText
