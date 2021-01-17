@@ -1,371 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageButton
-                android:id="@+id/close_button"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/ic_close"
-                android:background="?attr/actionBarItemBackground"/>
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_constraintStart_toEndOf="@+id/close_button"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="Add session"
-                android:gravity="center_vertical"
-                android:textColor="@color/grey200"
-                style="@style/DialogTitleTextStyle" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/save_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@android:string/ok"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                style="@style/Widget.App.Button"
-                android:layout_marginEnd="16dp"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <RelativeLayout
-            android:id="@+id/session_type_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/header"
-            app:layout_constraintBottom_toTopOf="@id/radio_group"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="24dp"
-            android:gravity="center_horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:textColor="@color/grey200"
-                android:text="Session type"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"/>
-            <Spinner
-                android:id="@+id/session_type_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:entries="@array/session_types"/>
-        </RelativeLayout>
-
-        <RadioGroup
-            android:id="@+id/radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/session_type_section"
-            app:layout_constraintBottom_toTopOf="@id/favorites_container"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="24dp"
-            android:checkedButton="@id/radio_button_from_favorites">
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radio_button_from_favorites"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="From favorites"
-                android:textSize="16dp"
-                android:paddingStart="8dp"/>
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radio_button_select_custom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:singleLine="true"
-                android:text="Custom"
-                android:textSize="16dp"
-                android:paddingStart="8dp"
-                android:layout_marginStart="16dp" />
-        </RadioGroup>
-
-        <LinearLayout
-            android:id="@+id/favorites_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintHeight_max="235dp"
-            app:layout_constraintTop_toBottomOf="@id/radio_group"
+        <ImageButton
+            android:id="@+id/close_button"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/actionBarItemBackground"
+            android:src="@drawable/ic_close"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/custom_section"
-            android:layout_marginTop="8dp"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="32dp"
-            android:orientation="vertical"
-            tools:visibility="gone">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/empty_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/grey800"
-                android:textSize="16dp"
-                android:layout_gravity="center"
-                android:layout_margin="32dp"
-                android:visibility="gone"
-                android:text="No items"
-                tools:visibility="visible"/>
+        <TextView
+            android:id="@+id/title"
+            style="@style/DialogTitleTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical"
+            android:text="Add session"
+            android:textColor="@color/grey200"
+            app:layout_constraintStart_toEndOf="@+id/close_button"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                tools:background="@color/grey500"
-                tools:layout_height="600dp">
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/favorites"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:chipSpacingHorizontal="16dp"
-                    app:selectionRequired="true"
-                    app:singleSelection="true" />
-            </ScrollView>
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/custom_section"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            style="@style/Widget.App.Button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintTop_toBottomOf="@id/favorites_container"
+            android:layout_marginEnd="16dp"
+            android:text="@android:string/ok"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <TextView
-                android:id="@+id/custom_session_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:textStyle="italic"
-                android:lines="2"
-                android:ellipsize="end"
-                android:scrollHorizontally="false"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                style="@style/MaterialAlertDialog.Body.Text"
-                android:visibility="gone"/>
-
-            <!-- Dummy item to prevent EditTexts from receiving focus -->
-            <LinearLayout
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:layout_width="0px"
-                android:layout_height="0px"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/generic_section"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                tools:visibility="gone">
-                <include
-                    android:id="@+id/generic_minutes_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/generic_section_separator"
-                    app:unit="@{`minutes`}"
-                    app:value="@{`15`}" />
-
-                <TextView
-                    android:id="@+id/generic_section_separator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/generic_minutes_layout"
-                    app:layout_constraintEnd_toStartOf="@id/generic_seconds_layout"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    style="@style/TimerStyleLite.Small"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginHorizontal="8dp"
-                    android:textColor="@color/grey500"
-                    android:text="@string/colon"/>
-                <include
-                    android:id="@+id/generic_seconds_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/generic_section_separator"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`00`}"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/emom_section"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <include
-                    android:id="@+id/emom_rounds_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_section_separator1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:unit="@{`rounds`}"
-                    app:value="@{`10`}" />
-
-                <TextView
-                    android:id="@+id/emom_section_separator1"
-                    style="@style/TimerStyleLite.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/x"
-                    android:textColor="@color/grey500"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_minutes_layout"
-                    app:layout_constraintStart_toEndOf="@+id/emom_rounds_layout" />
-
-                <include
-                    android:id="@+id/emom_minutes_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_section_separator2"
-                    app:layout_constraintStart_toEndOf="@+id/emom_section_separator1"
-                    app:unit="@{`minutes`}"
-                    app:value="@{`1`}" />
-
-                <TextView
-                    android:id="@+id/emom_section_separator2"
-                    style="@style/TimerStyleLite.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:text="@string/colon"
-                    android:textColor="@color/grey500"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_seconds_layout"
-                    app:layout_constraintStart_toEndOf="@+id/emom_minutes_layout" />
-
-                <include
-                    android:id="@+id/emom_seconds_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/emom_section_separator2"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`00`}" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/hiit_section"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
-                tools:visibility="gone">
-
-                <include
-                    android:id="@+id/hiit_rounds_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:unit="@{`rounds`}"
-                    app:value="@{`8`}" />
-
-                <TextView
-                    android:id="@+id/hiit_section_separator1"
-                    style="@style/TimerStyleLite.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/x"
-                    android:textColor="@color/grey500"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/hiit_seconds_work_layout"
-                    app:layout_constraintStart_toEndOf="@+id/hiit_rounds_layout" />
-
-                <include
-                    android:id="@+id/hiit_seconds_work_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator2"
-                    app:layout_constraintStart_toEndOf="@+id/hiit_section_separator1"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`20`}" />
-
-                <TextView
-                    android:id="@+id/hiit_section_separator2"
-                    style="@style/TimerStyleLite.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/slash"
-                    android:textColor="@color/grey500"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/hiit_seconds_rest_layout"
-                    app:layout_constraintStart_toEndOf="@+id/hiit_seconds_work_layout" />
-
-                <include
-                    android:id="@+id/hiit_seconds_rest_layout"
-                    layout="@layout/text_input_layout_section"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/hiit_section_separator2"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`10`}" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+
+    <include
+        android:id="@+id/section_add_edit"
+        layout="@layout/section_add_edit_session"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="32dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

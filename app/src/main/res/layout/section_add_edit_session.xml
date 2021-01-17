@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/session_type_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/radio_group"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:text="Session type"
+                android:textColor="@color/grey200"
+                android:textSize="16dp" />
+
+            <Spinner
+                android:id="@+id/session_type_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:entries="@array/session_types" />
+        </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:checkedButton="@id/radio_button_from_favorites"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/favorites_container"
+            app:layout_constraintTop_toBottomOf="@id/session_type_section">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radio_button_from_favorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:text="From favorites"
+                android:textSize="16dp" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radio_button_select_custom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:paddingStart="8dp"
+                android:singleLine="true"
+                android:text="Custom"
+                android:textSize="16dp" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/favorites_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/custom_section"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_max="235dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radio_group"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/empty_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="32dp"
+                android:text="No items"
+                android:textColor="@color/grey800"
+                android:textSize="16dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                tools:background="@color/grey500"
+                tools:layout_height="600dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/favorites"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:chipSpacingHorizontal="16dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true" />
+            </ScrollView>
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/custom_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favorites_container"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/custom_session_description"
+                style="@style/MaterialAlertDialog.Body.Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:ellipsize="end"
+                android:lines="2"
+                android:scrollHorizontally="false"
+                android:textStyle="italic"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Dummy item to prevent EditTexts from receiving focus -->
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="0px"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/generic_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
+                tools:visibility="gone">
+
+                <include
+                    android:id="@+id/generic_minutes_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@id/generic_section_separator"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:unit="@{`minutes`}"
+                    app:value="@{`15`}" />
+
+                <TextView
+                    android:id="@+id/generic_section_separator"
+                    style="@style/TimerStyleLite.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/colon"
+                    android:textColor="@color/grey500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/generic_seconds_layout"
+                    app:layout_constraintStart_toEndOf="@id/generic_minutes_layout"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/generic_seconds_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/generic_section_separator"
+                    app:unit="@{`seconds`}"
+                    app:value="@{`00`}" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/emom_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
+                tools:visibility="visible">
+
+                <include
+                    android:id="@+id/emom_rounds_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/emom_section_separator1"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:unit="@{`rounds`}"
+                    app:value="@{`10`}" />
+
+                <TextView
+                    android:id="@+id/emom_section_separator1"
+                    style="@style/TimerStyleLite.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/x"
+                    android:textColor="@color/grey500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/emom_minutes_layout"
+                    app:layout_constraintStart_toEndOf="@+id/emom_rounds_layout"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/emom_minutes_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/emom_section_separator2"
+                    app:layout_constraintStart_toEndOf="@+id/emom_section_separator1"
+                    app:unit="@{`minutes`}"
+                    app:value="@{`1`}" />
+
+                <TextView
+                    android:id="@+id/emom_section_separator2"
+                    style="@style/TimerStyleLite.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/colon"
+                    android:textColor="@color/grey500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/emom_seconds_layout"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toEndOf="@+id/emom_minutes_layout"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/emom_seconds_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/emom_section_separator2"
+                    app:unit="@{`seconds`}"
+                    app:value="@{`00`}" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/hiit_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
+                tools:visibility="gone">
+
+                <include
+                    android:id="@+id/hiit_rounds_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator1"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:unit="@{`rounds`}"
+                    app:value="@{`8`}" />
+
+                <TextView
+                    android:id="@+id/hiit_section_separator1"
+                    style="@style/TimerStyleLite.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/x"
+                    android:textColor="@color/grey500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/hiit_seconds_work_layout"
+                    app:layout_constraintStart_toEndOf="@+id/hiit_rounds_layout"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/hiit_seconds_work_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator2"
+                    app:layout_constraintStart_toEndOf="@+id/hiit_section_separator1"
+                    app:unit="@{`seconds`}"
+                    app:value="@{`20`}" />
+
+                <TextView
+                    android:id="@+id/hiit_section_separator2"
+                    style="@style/TimerStyleLite.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/slash"
+                    android:textColor="@color/grey500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/hiit_seconds_rest_layout"
+                    app:layout_constraintStart_toEndOf="@+id/hiit_seconds_work_layout"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/hiit_seconds_rest_layout"
+                    layout="@layout/text_input_layout_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/hiit_section_separator2"
+                    app:unit="@{`seconds`}"
+                    app:value="@{`10`}" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

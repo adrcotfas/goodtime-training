@@ -16,6 +16,7 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogAddSessionToCustomWorkoutBinding
+import goodtime.training.wod.timer.databinding.SectionAddEditSessionBinding
 import goodtime.training.wod.timer.ui.main.SessionEditTextHelper
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -26,7 +27,10 @@ import org.kodein.di.generic.instance
 class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
+
     private lateinit var binding: DialogAddSessionToCustomWorkoutBinding
+    private lateinit var sectionAddEdit: SectionAddEditSessionBinding
+
     private lateinit var listener: Listener
     private lateinit var candidate: SessionSkeleton
     private var candidateIdx = INVALID_CANDIDATE_IDX
@@ -62,7 +66,9 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogAddSessionToCustomWorkoutBinding.inflate(layoutInflater)
+        sectionAddEdit = binding.sectionAddEdit
         this.inflater = inflater
+
         binding.title.text = if (isEditMode()) "Edit session" else "Add session"
         togglePositiveButtonState(false)
 
@@ -94,25 +100,25 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     private fun initSessionEditTextHelper() {
         sessionEditTextHelper = SessionEditTextHelper(
                 this,
-                binding.genericMinutesLayout.editText,
-                binding.genericSecondsLayout.editText,
-                binding.emomRoundsLayout.editText,
-                binding.emomMinutesLayout.editText,
-                binding.emomSecondsLayout.editText,
-                binding.hiitRoundsLayout.editText,
-                binding.hiitSecondsWorkLayout.editText,
-                binding.hiitSecondsRestLayout.editText,
+                sectionAddEdit.genericMinutesLayout.editText,
+                sectionAddEdit.genericSecondsLayout.editText,
+                sectionAddEdit.emomRoundsLayout.editText,
+                sectionAddEdit.emomMinutesLayout.editText,
+                sectionAddEdit.emomSecondsLayout.editText,
+                sectionAddEdit.hiitRoundsLayout.editText,
+                sectionAddEdit.hiitSecondsWorkLayout.editText,
+                sectionAddEdit.hiitSecondsRestLayout.editText,
                 if (isEditMode()) candidate.type else SessionType.AMRAP
         )
     }
 
     private fun setupSpinner() {
-        binding.sessionTypeSpinner.adapter =
+        sectionAddEdit.sessionTypeSpinner.adapter =
                 SessionTypeSpinnerAdapter(
                         requireContext(),
                         resources.getStringArray(R.array.session_types)
                 )
-        binding.sessionTypeSpinner.onItemSelectedListener = object :
+        sectionAddEdit.sessionTypeSpinner.onItemSelectedListener = object :
                 AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                     parent: AdapterView<*>?,
@@ -135,16 +141,16 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     }
 
     private fun setupRadioGroup() {
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+        sectionAddEdit.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.radio_button_select_custom) {
                 togglePositiveButtonState(true)
-                binding.favoritesContainer.isVisible = false
-                binding.customSection.isVisible = true
+                sectionAddEdit.favoritesContainer.isVisible = false
+                sectionAddEdit.customSection.isVisible = true
                 setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
             } else if (checkedId == R.id.radio_button_from_favorites) {
                 togglePositiveButtonState(false)
-                binding.favoritesContainer.isVisible = true
-                binding.customSection.isVisible = false
+                sectionAddEdit.favoritesContainer.isVisible = true
+                sectionAddEdit.customSection.isVisible = false
                 hideKeyboardFrom(requireContext(), binding.root)
             }
         }
@@ -152,7 +158,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
 
     private fun setupEditCandidate() {
         if (isEditMode()) {
-            binding.sessionTypeSpinner.setSelection(candidate.type.value)
+            sectionAddEdit.sessionTypeSpinner.setSelection(candidate.type.value)
             sessionEditTextHelper.updateEditTexts(candidate)
         }
     }
@@ -162,7 +168,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
         repo.getSessionSkeletons(sessionType).observe(
                 this, {
             favorites = it
-            val favoritesChipGroup = binding.favorites
+            val favoritesChipGroup = sectionAddEdit.favorites
             favoritesChipGroup.removeAllViews()
 
             for (favorite in favorites) {
@@ -177,10 +183,10 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                     }
                 }
                 favoritesChipGroup.addView(chip)
-                binding.emptyState.isVisible = false
+                binding.sectionAddEdit.emptyState.isVisible = false
             }
             if (favorites.isEmpty()) {
-                binding.emptyState.isVisible = true
+                binding.sectionAddEdit.emptyState.isVisible = true
             }
         })
     }
@@ -192,26 +198,26 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     private fun refreshActiveSection(sessionType: SessionType) {
         when (sessionType) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                binding.genericSection.isVisible = true
-                binding.emomSection.isVisible = false
-                binding.hiitSection.isVisible = false
+                sectionAddEdit.genericSection.isVisible = true
+                sectionAddEdit.emomSection.isVisible = false
+                sectionAddEdit.hiitSection.isVisible = false
             }
             SessionType.EMOM -> {
-                binding.genericSection.isVisible = false
-                binding.emomSection.isVisible = true
-                binding.hiitSection.isVisible = false
+                sectionAddEdit.genericSection.isVisible = false
+                sectionAddEdit.emomSection.isVisible = true
+                sectionAddEdit.hiitSection.isVisible = false
             }
             SessionType.HIIT -> {
-                binding.genericSection.isVisible = false
-                binding.emomSection.isVisible = false
-                binding.hiitSection.isVisible = true
+                sectionAddEdit.genericSection.isVisible = false
+                sectionAddEdit.emomSection.isVisible = false
+                sectionAddEdit.hiitSection.isVisible = true
             }
         }
-        binding.customSessionDescription.isVisible = true
+        sectionAddEdit.customSessionDescription.isVisible = true
     }
 
     private fun setDescription(value: String) {
-        binding.customSessionDescription.text = value
+        sectionAddEdit.customSessionDescription.text = value
     }
 
     override fun onTextChanged(isValid: Boolean, sessionSkeleton: SessionSkeleton) {
@@ -224,5 +230,5 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
         )
     }
 
-    private fun isInCustomSection() = binding.radioGroup.checkedRadioButtonId == R.id.radio_button_select_custom
+    private fun isInCustomSection() = sectionAddEdit.radioGroup.checkedRadioButtonId == R.id.radio_button_select_custom
 }
