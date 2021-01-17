@@ -1,16 +1,15 @@
 package goodtime.training.wod.timer.ui.main
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteDescriptionDetailed
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteFormat
-import goodtime.training.wod.timer.common.StringUtils.Companion.toString
 import goodtime.training.wod.timer.common.hideKeyboardFrom
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.SessionSkeleton
@@ -20,7 +19,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SelectFavoriteDialog: DialogFragment(), KodeinAware,
+class SelectFavoriteDialog: BottomSheetDialogFragment(), KodeinAware,
         DeleteConfirmationDialog.Listener {
     override val kodein by closestKodein()
     private val preferenceHelper: PreferenceHelper by instance()
@@ -44,24 +43,15 @@ class SelectFavoriteDialog: DialogFragment(), KodeinAware,
         }
     }
 
-    override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = MaterialAlertDialogBuilder(requireContext())
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSelectFavoriteBinding.inflate(layoutInflater)
         setupFavorites()
         binding.customSessionDescription.text = toFavoriteDescriptionDetailed(favoriteCandidate)
-
-        b.apply {
-            setView(binding.root)
-        }
-        return b.create()
+        return binding.root
     }
 
     @SuppressLint("SetTextI18n")
     private fun setupFavorites() {
-        binding.selectFavoriteTitle.text = "Select ${toString(favoriteCandidate.type)} favorite"
-
-
         binding.favoriteCandidateChip.text = toFavoriteFormat(favoriteCandidate)
         binding.favoriteCandidateChip.setOnClickListener {
             repo.addSessionSkeleton(favoriteCandidate)

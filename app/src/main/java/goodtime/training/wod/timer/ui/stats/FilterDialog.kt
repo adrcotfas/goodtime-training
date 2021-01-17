@@ -1,22 +1,19 @@
 package goodtime.training.wod.timer.ui.stats
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogFilterCustomWorkoutBinding
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class FilterDialog : DialogFragment(), KodeinAware {
+class FilterDialog : BottomSheetDialogFragment(), KodeinAware {
     override val kodein by closestKodein()
     private lateinit var binding : DialogFilterCustomWorkoutBinding
 
@@ -35,12 +32,10 @@ class FilterDialog : DialogFragment(), KodeinAware {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogFilterCustomWorkoutBinding.inflate(layoutInflater)
         setupChipGroup()
-        val b = MaterialAlertDialogBuilder(requireContext())
-        b.setTitle("Select workout").setView(binding.root)
-        return b.create()
+        return binding.root
     }
 
     private fun setupChipGroup() {

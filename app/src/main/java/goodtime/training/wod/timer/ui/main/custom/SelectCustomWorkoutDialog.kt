@@ -1,22 +1,22 @@
 package goodtime.training.wod.timer.ui.main.custom
 
-import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectCustomWorkoutBinding
 import com.google.android.material.chip.Chip
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.ui.main.DeleteConfirmationDialog
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmationDialog.Listener {
+class SelectCustomWorkoutDialog: BottomSheetDialogFragment(), KodeinAware, DeleteConfirmationDialog.Listener {
     override val kodein by closestKodein()
     private val preferenceHelper: PreferenceHelper by instance()
 
@@ -39,15 +39,10 @@ class SelectCustomWorkoutDialog: DialogFragment(), KodeinAware, DeleteConfirmati
         }
     }
 
-    override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = MaterialAlertDialogBuilder(requireContext())
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSelectCustomWorkoutBinding.inflate(layoutInflater)
         setupFavorites()
-        b.apply {
-            setView(binding.root)
-        }
-        return b.create()
+        return binding.root
     }
 
     private fun setupFavorites() {

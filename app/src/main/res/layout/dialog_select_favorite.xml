@@ -67,6 +67,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="8dp"
+                android:text="Select favorite"
                 android:visibility="gone"
                 style="@style/MaterialAlertDialog.Title.Text"/>
 
