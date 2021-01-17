@@ -54,7 +54,7 @@ class CustomWorkoutFragment:
 
         initCurrentWorkout()
 
-        binding.saveButton.setOnClickListener{
+        binding.saveButton.root.setOnClickListener{
             if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
                 SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
                         .show(parentFragmentManager, "SaveCustomWorkoutDialog")
@@ -64,7 +64,7 @@ class CustomWorkoutFragment:
         if (viewModel.hasUnsavedSession) {
             setSaveButtonVisibility(true)
         }
-        binding.addSessionButton.setOnClickListener {
+        binding.addSessionButton.root.setOnClickListener {
             if (parentFragmentManager.findFragmentByTag("AddEditSessionDialog") == null) {
                 AddEditSessionDialog.newInstance(this).show(parentFragmentManager, "AddEditSessionDialog")
             }
@@ -146,7 +146,7 @@ class CustomWorkoutFragment:
     private fun toggleEmptyState(visible: Boolean) {
         if (visible) {
             binding.emptyState.isVisible = true
-            binding.saveButton.isVisible = false
+            binding.saveButton.root.isVisible = false
             binding.totalTime.isVisible = false
             binding.title.text = "New workout"
             viewModel.currentWorkout.name = "New workout"
@@ -245,7 +245,7 @@ class CustomWorkoutFragment:
 
     @SuppressLint("SetTextI18n")
     private fun setSaveButtonVisibility(visible: Boolean) {
-        binding.saveButton.isVisible = visible
+        binding.saveButton.root.isVisible = visible
         binding.title.setTextColor(if (visible) ResourcesHelper.grey800 else ResourcesHelper.grey500)
     }
 

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteDescriptionDetailed
 import goodtime.training.wod.timer.common.StringUtils.Companion.toFavoriteFormat
 import goodtime.training.wod.timer.common.hideKeyboardFrom
@@ -29,6 +30,7 @@ class SelectFavoriteDialog: BottomSheetDialogFragment(), KodeinAware,
     private lateinit var favorites: List<SessionSkeleton>
     private lateinit var binding: DialogSelectFavoriteBinding
     private lateinit var listener: Listener
+    private lateinit var inflater: LayoutInflater
 
     interface Listener {
         fun onFavoriteSelected(session: SessionSkeleton)
@@ -45,6 +47,7 @@ class SelectFavoriteDialog: BottomSheetDialogFragment(), KodeinAware,
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSelectFavoriteBinding.inflate(layoutInflater)
+        this.inflater = inflater
         setupFavorites()
         binding.customSessionDescription.text = toFavoriteDescriptionDetailed(favoriteCandidate)
         return binding.root
@@ -66,9 +69,8 @@ class SelectFavoriteDialog: BottomSheetDialogFragment(), KodeinAware,
             favoritesChipGroup.isSingleSelection = true
             favoritesChipGroup.removeAllViews()
             for (favorite in this.favorites) {
-                val chip = Chip(requireContext()).apply {
-                    text = toFavoriteFormat(favorite)
-                }
+                val chip = inflater.inflate(R.layout.chip_entry, favoritesChipGroup, false) as Chip
+                chip.text = toFavoriteFormat(favorite)
                 chip.setOnCloseIconClickListener {
                     if (parentFragmentManager.findFragmentByTag("DeleteConfirmation") == null) {
                         if (preferenceHelper.showDeleteConfirmationDialog()) {

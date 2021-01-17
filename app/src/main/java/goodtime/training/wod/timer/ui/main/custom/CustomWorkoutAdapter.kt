@@ -95,6 +95,7 @@ class CustomWorkoutAdapter(
         val sessionChip: Chip = view.findViewById(R.id.session_chip)
 
         fun bind(session: SessionSkeleton) {
+            sessionChip.isCloseIconVisible = false
             if (session.type == SessionType.REST) {
                 sessionChip.setTextColor(ResourcesHelper.red)
                 sessionChip.chipBackgroundColor = ColorStateList.valueOf(ResourcesHelper.darkRed)

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ChipEntryGreen" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="android:textAppearance">@style/ChipTextStyleMedium</item>
+        <item name="android:textColor">@color/green_goodtime</item>
+        <item name="chipBackgroundColor">@color/green_goodtime_dark</item>
+        <item name="closeIconTint">@color/transparent_dark</item>
+        <item name="chipIconVisible">false</item>
+    </style>
+
+    <style name="ChipEntryGrey" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="android:textAppearance">@style/ChipTextStyleMedium</item>
+        <item name="android:textColor">@color/grey500</item>
+        <item name="chipBackgroundColor">@color/grey800</item>
+        <item name="closeIconVisible">false</item>
+        <item name="chipIconVisible">false</item>
+    </style>
+
+    <style name="ChipActionGrey" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textAppearance">@style/ChipTextStyleMedium</item>
+        <item name="android:layout_height">42sp</item>
+        <item name="android:textColor">@color/grey200</item>
+        <item name="chipBackgroundColor">@color/grey800</item>
+        <item name="closeIconVisible">false</item>
+    </style>
+
+    <style name="ChipActionSmall" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textAppearance">@style/ChipTextStyleSmall</item>
+        <item name="android:layout_height">42sp</item>
+        <item name="chipIconSize">20sp</item>
+        <item name="iconStartPadding">4dp</item>
+        <item name="iconEndPadding">0dp</item>
+        <item name="chipCornerRadius">64dp</item>
+    </style>
+
+    <style name="ChipAction" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:textAppearance">@style/ChipTextStyleSmall</item>
+        <item name="android:layout_height">42sp</item>
+        <item name="chipIconSize">20sp</item>
+        <item name="iconStartPadding">4dp</item>
+        <item name="iconEndPadding">0dp</item>
+        <item name="chipCornerRadius">64dp</item>
+        <item name="android:textColor">@color/green_goodtime</item>
+        <item name="chipBackgroundColor">@color/green_goodtime_dark</item>
+        <item name="closeIconTint">@color/transparent_dark</item>
+    </style>
+
+    <style name="ChoiceChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textAppearance">@style/ChipTextStyleSmall</item>
+        <item name="android:layout_height">42sp</item>
+        <item name="chipIconSize">20sp</item>
+        <item name="iconStartPadding">4dp</item>
+        <item name="iconEndPadding">0dp</item>
+        <item name="chipCornerRadius">64dp</item>
+        <item name="chipBackgroundColor">@color/chip_color_work</item>
+        <item name="android:textColor">@color/chip_text_color_work</item>
+        <item name="chipIconTint">@color/chip_text_color_work</item>
+    </style>
+
+    <style name="ChoiceChip.Medium">
+        <item name="android:textAppearance">@style/ChipTextStyleMedium</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ChipButton" parent="ChipActionSmall">
+        <item name="android:textColor">@color/grey500</item>
+        <item name="chipIconTint">@color/grey500</item>
+        <item name="chipBackgroundColor">@color/grey1200</item>
+        <item name="closeIconTint">@color/grey500</item>
+    </style>
+
+    <style name="ChipTextStyleSmall">
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/roboto_condensed</item>
+        <item name="android:fontFamily">@font/roboto_condensed</item>
+    </style>
+
+    <style name="ChipTextStyleMedium">
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/roboto_condensed</item>
+        <item name="android:fontFamily">@font/roboto_condensed</item>
+    </style>
+</resources>

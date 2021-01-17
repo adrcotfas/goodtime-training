@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
@@ -13,7 +12,6 @@ import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.*
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
-import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogAddSessionToCustomWorkoutBinding
 import goodtime.training.wod.timer.databinding.SectionAddEditSessionBinding
@@ -113,30 +111,29 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     }
 
     private fun setupSpinner() {
-        sectionAddEdit.sessionTypeSpinner.adapter =
-                SessionTypeSpinnerAdapter(
-                        requireContext(),
-                        resources.getStringArray(R.array.session_types)
-                )
-        sectionAddEdit.sessionTypeSpinner.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-            ) {
-                val sessionType = TypeConverter().fromInt(position)
-                sessionEditTextHelper.updateSessionType(sessionType)
-                setupFavorites(sessionType)
-                refreshActiveSection(sessionType)
-                if (isEditMode() && sessionType == candidate.type) {
-                    setupEditCandidate()
-                } else {
-                    sessionEditTextHelper.resetToDefaults()
+        sectionAddEdit.sessionTypeChips
+        for (sessionType in SessionType.values()) {
+            val chip = inflater.inflate(R.layout.chip_choice_small, sectionAddEdit.sessionTypeChips, false) as Chip
+            chip.apply {
+                text = StringUtils.toString(sessionType)
+                chipIcon = ResourcesHelper.getDrawableFor(sessionType)
+                isChipIconVisible = true
+                id = sessionType.ordinal
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        sessionEditTextHelper.updateSessionType(sessionType)
+                        setupFavorites(sessionType)
+                        refreshActiveSection(sessionType)
+                        if (isEditMode() && sessionType == candidate.type) {
+                            setupEditCandidate()
+                        } else {
+                            sessionEditTextHelper.resetToDefaults()
+                        }
+                    }
                 }
             }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            sectionAddEdit.sessionTypeChips.addView(chip)
+            sectionAddEdit.sessionTypeChips.check(0)
         }
     }
 
@@ -158,7 +155,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
 
     private fun setupEditCandidate() {
         if (isEditMode()) {
-            sectionAddEdit.sessionTypeSpinner.setSelection(candidate.type.value)
+            sectionAddEdit.sessionTypeChips.check(candidate.type.value)
             sessionEditTextHelper.updateEditTexts(candidate)
         }
     }
@@ -172,8 +169,9 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
             favoritesChipGroup.removeAllViews()
 
             for (favorite in favorites) {
-                val chip = inflater.inflate(R.layout.choice_chip, favoritesChipGroup, false) as Chip
+                val chip = inflater.inflate(R.layout.chip_choice, favoritesChipGroup, false) as Chip
                 chip.apply {
+                    isCloseIconVisible = false
                     text = StringUtils.toFavoriteFormat(favorite)
                     setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {

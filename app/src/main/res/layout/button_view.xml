@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="title" type="String" />
@@ -8,13 +9,14 @@
     </data>
 
     <com.google.android.material.chip.Chip
+        tools:text="sample"
         android:id="@+id/root"
+        android:layout_height="42sp"
         android:layout_width="wrap_content"
         android:text="@{title}"
         app:chipStartPadding="4dp"
         app:chipEndPadding="4dp"
-        app:chipMinTouchTargetSize="24dp"
         app:chipIcon="@{drawable}"
-        style="@style/FavoritesChipStyleSmaller.Grey">
+        style="@style/ChipButton">
     </com.google.android.material.chip.Chip>
 </layout>

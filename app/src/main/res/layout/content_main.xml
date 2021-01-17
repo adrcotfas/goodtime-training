@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout"
@@ -15,93 +14,93 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/mobile_navigation"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"/>
+            app:navGraph="@navigation/mobile_navigation" />
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_constraintTop_toTopOf="parent"
             android:background="@android:color/black"
+            app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_menu_open"
             app:popupTheme="@style/Theme.PopupOverlay" />
 
         <include
             android:id="@+id/button_filter"
+            layout="@layout/button_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="42sp"
+            android:layout_marginEnd="8dp"
+            app:drawable="@{@drawable/ic_filter}"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
             app:layout_constraintEnd_toStartOf="@id/button_add_session"
             app:layout_constraintTop_toTopOf="@id/toolbar"
-            app:layout_constraintBottom_toBottomOf="@id/toolbar"
-            android:layout_marginEnd="8dp"
-            app:title="@{@string/filter}"
-            app:drawable="@{@drawable/ic_filter}"
-            layout="@layout/button_view"/>
+            app:title="@{@string/filter}" />
 
         <include
             android:id="@+id/button_add_session"
+            layout="@layout/button_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="42sp"
+            android:layout_marginEnd="16dp"
+            app:drawable="@{@drawable/ic_add}"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/toolbar"
-            app:layout_constraintBottom_toBottomOf="@id/toolbar"
-            android:layout_marginEnd="16dp"
-            app:title="@{`Add`}"
-            app:drawable="@{@drawable/ic_add}"
-            layout="@layout/button_view"/>
+            app:title="@{`Add`}" />
 
         <include
             android:id="@+id/button_favorites"
+            layout="@layout/button_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="42sp"
+            android:layout_marginEnd="16dp"
+            app:drawable="@{@drawable/ic_heart_outline}"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/toolbar"
-            app:layout_constraintBottom_toBottomOf="@id/toolbar"
-            android:layout_marginEnd="16dp"
-            app:title="@{`Favorites`}"
-            app:drawable="@{@drawable/ic_heart_outline}"
-            layout="@layout/button_view"/>
+            app:title="@{`Favorites`}" />
 
         <include
             android:id="@+id/button_new"
+            layout="@layout/button_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="42sp"
+            android:layout_marginEnd="8dp"
+            app:drawable="@{@drawable/ic_add}"
+            app:layout_constraintBottom_toBottomOf="@id/toolbar"
             app:layout_constraintEnd_toStartOf="@id/button_favorites"
             app:layout_constraintTop_toTopOf="@id/toolbar"
-            app:layout_constraintBottom_toBottomOf="@id/toolbar"
-            android:layout_marginEnd="8dp"
-            app:title="@{`New`}"
-            app:drawable="@{@drawable/ic_add}"
-            layout="@layout/button_view"/>
+            app:title="@{`New`}" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/start_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_run"
-            app:tint="@color/green_goodtime"
-            app:backgroundTint="@color/green_goodtime_darker"
-            app:fabCustomSize="70dp"
-            app:maxImageSize="36dp"
-            app:borderWidth="0dp"
             android:layout_marginBottom="80dp"
+            android:contentDescription="Start "
+            app:backgroundTint="@color/green_goodtime_darker"
+            app:borderWidth="0dp"
+            app:fabCustomSize="70dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:contentDescription="Start " />
+            app:layout_constraintStart_toStartOf="parent"
+            app:maxImageSize="36dp"
+            app:srcCompat="@drawable/ic_run"
+            app:tint="@color/green_goodtime" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation_view"
+            style="@style/WorkoutBottomAppBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:menu="@menu/menu_main_bottom"
-            app:itemRippleColor="@color/green_goodtime_darker"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:visibility="gone"
+            app:itemRippleColor="@color/green_goodtime_darker"
             app:labelVisibilityMode="labeled"
-            style="@style/WorkoutBottomAppBarStyle"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/menu_main_bottom" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

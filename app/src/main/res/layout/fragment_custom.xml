@@ -1,125 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_container"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginBottom="104dp"
-        android:backgroundTint="@color/grey1200"
-        app:cardCornerRadius="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_container"
             android:layout_width="match_parent"
-            android:layout_height="304dp"
-            android:layout_margin="24dp">
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginBottom="104dp"
+            android:backgroundTint="@color/grey1200"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3">
 
-            <LinearLayout
-                android:id="@+id/header"
-                android:layout_width="0dp"
-
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="4dp"
-                android:orientation="vertical"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/app_font"
-                    android:maxLines="1"
-                    android:text="Sample workout"
-                    android:textColor="@color/grey500"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/total_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/app_font"
-                    android:text="16 min 30 s"
-                    android:textColor="@color/grey800"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/title" />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:overScrollMode="never"
-                app:layout_constraintBottom_toTopOf="@id/add_session_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHeight_max="212dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/header"/>
+                android:layout_height="304dp"
+                android:layout_margin="24dp">
 
-            <TextView
-                android:id="@+id/empty_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/grey800"
-                android:textSize="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:text="No items"/>
+                <LinearLayout
+                    android:id="@+id/header"
+                    android:layout_width="0dp"
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/add_session_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add session"
-                app:chipIcon="@drawable/ic_add"
-                android:layout_marginHorizontal="8dp"
-                android:paddingEnd="12dp"
-                app:chipMinTouchTargetSize="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="1.0"
-                style="@style/FavoritesChipStyleSmaller.Grey">
-            </com.google.android.material.chip.Chip>
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="4dp"
+                    android:orientation="vertical"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/save_button"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_chainStyle="spread"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:text="Save"
-                app:chipMinTouchTargetSize="24dp"
-                app:chipIcon="@drawable/ic_done"
-                android:layout_marginHorizontal="8dp"
-                android:visibility="gone"
-                tools:visibility="visible"
-                style="@style/FavoritesChipStyleSmaller.Grey">
-            </com.google.android.material.chip.Chip>
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/app_font"
+                        android:maxLines="1"
+                        android:text="Sample workout"
+                        android:textColor="@color/grey500"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/total_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/app_font"
+                        android:text="16 min 30 s"
+                        android:textColor="@color/grey800"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/title" />
+                </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:overScrollMode="never"
+                    app:layout_constraintBottom_toTopOf="@id/add_session_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_max="212dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/header" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/empty_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No items"
+                    android:textColor="@color/grey800"
+                    android:textSize="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/add_session_button"
+                    layout="@layout/button_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42sp"
+                    android:layout_marginHorizontal="8dp"
+                    android:paddingEnd="12dp"
+                    app:drawable="@{@drawable/ic_add}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:title="@{`Add session`}" />
+
+                <include
+                    android:id="@+id/save_button"
+                    layout="@layout/button_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="42sp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:visibility="gone"
+                    app:drawable="@{@drawable/ic_done}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:title="@{`Save`}"
+                    tools:visibility="visible" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

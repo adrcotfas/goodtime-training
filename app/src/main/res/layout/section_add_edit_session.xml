@@ -7,34 +7,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/session_type_section"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/session_type_chips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="16dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/radio_group"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:text="Session type"
-                android:textColor="@color/grey200"
-                android:textSize="16dp" />
-
-            <Spinner
-                android:id="@+id/session_type_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:entries="@array/session_types" />
-        </RelativeLayout>
+            app:chipSpacingHorizontal="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:selectionRequired="true"
+            app:singleSelection="true" />
 
         <RadioGroup
             android:id="@+id/radio_group"
@@ -45,7 +26,7 @@
             android:checkedButton="@id/radio_button_from_favorites"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@id/favorites_container"
-            app:layout_constraintTop_toBottomOf="@id/session_type_section">
+            app:layout_constraintTop_toBottomOf="@id/session_type_chips">
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/radio_button_from_favorites"

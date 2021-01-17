@@ -10,6 +10,7 @@ import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectCustomWorkoutBinding
 import com.google.android.material.chip.Chip
+import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.ui.main.DeleteConfirmationDialog
 import org.kodein.di.KodeinAware
@@ -25,6 +26,7 @@ class SelectCustomWorkoutDialog: BottomSheetDialogFragment(), KodeinAware, Delet
     private lateinit var favorites : List<CustomWorkoutSkeleton>
     private lateinit var binding: DialogSelectCustomWorkoutBinding
     private lateinit var listener: Listener
+    private lateinit var inflater: LayoutInflater
 
     interface Listener {
         fun onFavoriteSelected(workout: CustomWorkoutSkeleton)
@@ -41,6 +43,7 @@ class SelectCustomWorkoutDialog: BottomSheetDialogFragment(), KodeinAware, Delet
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSelectCustomWorkoutBinding.inflate(layoutInflater)
+        this.inflater = inflater
         setupFavorites()
         return binding.root
     }
@@ -53,9 +56,8 @@ class SelectCustomWorkoutDialog: BottomSheetDialogFragment(), KodeinAware, Delet
                 val favoritesChipGroup = binding.favorites
                 favoritesChipGroup.removeAllViews()
                 for (favorite in favorites) {
-                    val chip = Chip(requireContext()).apply {
-                        text = favorite.name
-                    }
+                    val chip = inflater.inflate(R.layout.chip_entry, favoritesChipGroup, false) as Chip
+                    chip.text = favorite.name
                     chip.setOnCloseIconClickListener {
                         if (parentFragmentManager.findFragmentByTag("DeleteConfirmation") == null) {
                             if (preferenceHelper.showDeleteConfirmationDialog()) {

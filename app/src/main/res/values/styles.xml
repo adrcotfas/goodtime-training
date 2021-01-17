@@ -66,53 +66,6 @@
         <item name="elevation">0dp</item>
     </style>
 
-    <!--    Favorites-->
-    <style name="FavoritesChipStyle.Green" parent="Widget.MaterialComponents.Chip.Entry">
-        <item name="android:textAppearance">@style/FavoritesTextStyle</item>
-        <item name="android:textColor">@color/green_goodtime</item>
-        <item name="chipBackgroundColor">@color/green_goodtime_dark</item>
-        <item name="closeIconTint">@color/transparent_dark</item>
-    </style>
-
-    <style name="FavoritesChipStyle.Grey" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="android:textAppearance">@style/FavoritesTextStyle</item>
-        <item name="android:textColor">@color/grey200</item>
-        <item name="chipBackgroundColor">@color/grey800</item>
-        <item name="closeIconVisible">false</item>
-    </style>
-
-    <style name="FavoritesChipStyleSmaller" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="android:textAppearance">@style/FavoritesTextStyleSmaller</item>
-        <item name="android:layout_height">42sp</item>
-        <item name="chipIconSize">20sp</item>
-        <item name="iconStartPadding">4dp</item>
-        <item name="iconEndPadding">0dp</item>
-        <item name="chipCornerRadius">64dp</item>
-    </style>
-
-    <style name="FavoritesChipStyleSmaller.Green">
-        <item name="android:textColor">@color/green_goodtime</item>
-        <item name="chipBackgroundColor">@color/green_goodtime_dark</item>
-    </style>
-
-    <style name="FavoritesChipStyleSmaller.Grey">
-        <item name="android:textColor">@color/grey500</item>
-        <item name="chipIconTint">@color/grey500</item>
-        <item name="chipBackgroundColor">@color/grey1200</item>
-    </style>
-
-    <style name="FavoritesTextStyle">
-        <item name="android:textSize">20sp</item>
-        <item name="fontFamily">@font/roboto_condensed</item>
-        <item name="android:fontFamily">@font/roboto_condensed</item>
-    </style>
-
-    <style name="FavoritesTextStyleSmaller">
-        <item name="android:textSize">16sp</item>
-        <item name="fontFamily">@font/roboto_condensed</item>
-        <item name="android:fontFamily">@font/roboto_condensed</item>
-    </style>
-
     <style name="WorkoutTimerTextStyle">
         <item name="android:textSize">80sp</item>
         <item name="fontFamily">@font/timer_font</item>
