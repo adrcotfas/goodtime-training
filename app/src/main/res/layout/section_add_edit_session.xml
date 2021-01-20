@@ -144,8 +144,7 @@
                     app:layout_constraintEnd_toStartOf="@id/generic_section_separator"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:unit="@{`minutes`}"
-                    app:value="@{`15`}" />
+                    app:unit="@{`minutes`}" />
 
                 <TextView
                     android:id="@+id/generic_section_separator"
@@ -168,8 +167,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/generic_section_separator"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`00`}" />
+                    app:unit="@{`seconds`}"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -189,8 +187,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/emom_section_separator1"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:unit="@{`rounds`}"
-                    app:value="@{`10`}" />
+                    app:unit="@{`rounds`}"/>
 
                 <TextView
                     android:id="@+id/emom_section_separator1"
@@ -213,8 +210,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toStartOf="@+id/emom_section_separator2"
                     app:layout_constraintStart_toEndOf="@+id/emom_section_separator1"
-                    app:unit="@{`minutes`}"
-                    app:value="@{`1`}" />
+                    app:unit="@{`minutes`}"/>
 
                 <TextView
                     android:id="@+id/emom_section_separator2"
@@ -238,8 +234,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/emom_section_separator2"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`00`}" />
+                    app:unit="@{`seconds`}"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -259,8 +254,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator1"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:unit="@{`rounds`}"
-                    app:value="@{`8`}" />
+                    app:unit="@{`rounds`}" />
 
                 <TextView
                     android:id="@+id/hiit_section_separator1"
@@ -283,8 +277,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator2"
                     app:layout_constraintStart_toEndOf="@+id/hiit_section_separator1"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`20`}" />
+                    app:unit="@{`seconds`}"/>
 
                 <TextView
                     android:id="@+id/hiit_section_separator2"
@@ -307,8 +300,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/hiit_section_separator2"
-                    app:unit="@{`seconds`}"
-                    app:value="@{`10`}" />
+                    app:unit="@{`seconds`}"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -54,6 +54,9 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
             dialog.candidateIdx = candidateIdx
             if (dialog.isEditMode()) {
                 dialog.candidate = candidate
+            } else {
+                dialog.candidate = SessionSkeleton()
+                dialog.candidate.type = SessionType.AMRAP
             }
             return dialog
         }
@@ -72,9 +75,8 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
 
         setupButtons()
         initSessionEditTextHelper()
-        setupSpinner()
+        setupSessionTypeChips()
         setupRadioGroup()
-        setupEditCandidate()
 
         return binding.root
     }
@@ -110,7 +112,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
         )
     }
 
-    private fun setupSpinner() {
+    private fun setupSessionTypeChips() {
         sectionAddEdit.sessionTypeChips
         for (sessionType in SessionType.values()) {
             val chip = inflater.inflate(R.layout.chip_choice_small, sectionAddEdit.sessionTypeChips, false) as Chip
@@ -121,20 +123,20 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                 id = sessionType.ordinal
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
-                        sessionEditTextHelper.updateSessionType(sessionType)
-                        setupFavorites(sessionType)
-                        refreshActiveSection(sessionType)
-                        if (isEditMode() && sessionType == candidate.type) {
-                            setupEditCandidate()
-                        } else {
+                        if (isInCustomSection()) {
+                            refreshActiveSection(sessionType)
                             sessionEditTextHelper.resetToDefaults()
+                            setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
+                        } else {
+                            setupFavorites(sessionType)
                         }
                     }
                 }
             }
             sectionAddEdit.sessionTypeChips.addView(chip)
-            sectionAddEdit.sessionTypeChips.check(0)
         }
+        sectionAddEdit.sessionTypeChips.check(if (isEditMode()) candidate.type.value else 0)
+        if (!isEditMode()) refreshActiveSection(SessionType.AMRAP)
     }
 
     private fun setupRadioGroup() {
@@ -151,11 +153,9 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                 hideKeyboardFrom(requireContext(), binding.root)
             }
         }
-    }
-
-    private fun setupEditCandidate() {
         if (isEditMode()) {
-            sectionAddEdit.sessionTypeChips.check(candidate.type.value)
+            sectionAddEdit.radioGroup.check(R.id.radio_button_select_custom)
+            refreshActiveSection(candidate.type)
             sessionEditTextHelper.updateEditTexts(candidate)
         }
     }
@@ -211,6 +211,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                 sectionAddEdit.hiitSection.isVisible = true
             }
         }
+        sessionEditTextHelper.updateSessionType(sessionType)
         sectionAddEdit.customSessionDescription.isVisible = true
     }
 

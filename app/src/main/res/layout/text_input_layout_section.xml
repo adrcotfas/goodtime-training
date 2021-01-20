@@ -5,7 +5,6 @@
 
     <data>
         <variable name="unit" type="String" />
-        <variable name="value" type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,7 +35,6 @@
                 android:selectAllOnFocus="true"
                 app:fontFamily="@font/timer_font"
                 android:includeFontPadding="false"
-                android:text="@{value}"
                 android:maxLength="2"
                 android:imeOptions="actionNext"
                 tools:text="15"/>

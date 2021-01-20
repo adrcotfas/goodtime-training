@@ -201,7 +201,7 @@ data class SessionEditTextHelper(
                 setEditTextValue(genericSecondsEt!!, "00")
             }
             SessionType.FOR_TIME -> {
-                setEditTextValue(genericMinutesEt!!, "12")
+                setEditTextValue(genericMinutesEt!!, "15")
                 setEditTextValue(genericSecondsEt!!, "00")
             }
             SessionType.EMOM -> {
