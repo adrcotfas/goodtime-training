@@ -127,9 +127,8 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                             refreshActiveSection(sessionType)
                             sessionEditTextHelper.resetToDefaults()
                             setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
-                        } else {
-                            setupFavorites(sessionType)
                         }
+                        setupFavorites(sessionType)
                     }
                 }
             }
