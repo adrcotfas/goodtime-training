@@ -42,7 +42,9 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
             override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, id: Long) {
                 (chart.xAxis.valueFormatter as DayWeekMonthXAxisFormatter)
                         .setRangeType(HistorySpinnerRangeType.values()[position])
-                refreshHistoryChart(sessions)
+                if (this@HistoryChartWrapper::sessions.isInitialized) {
+                    refreshHistoryChart(sessions)
+                }
             }
             override fun onNothingSelected(adapterView: AdapterView<*>?) {}
         }
