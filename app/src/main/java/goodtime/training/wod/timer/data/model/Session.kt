@@ -13,6 +13,7 @@ import androidx.room.ForeignKey.SET_DEFAULT
                 onUpdate = CASCADE,
                 onDelete = SET_DEFAULT)])
 @TypeConverters(TypeConverter::class)
+//TODO: rename to CompletedWorkout
 data class Session(
         @PrimaryKey(autoGenerate = true)
         var id: Long = 0,

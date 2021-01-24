@@ -9,20 +9,12 @@
         <item name="chipIconVisible">false</item>
     </style>
 
-    <style name="ChipEntryGrey" parent="Widget.MaterialComponents.Chip.Entry">
+    <style name="ChipEntryGrey" parent="Widget.MaterialComponents.Chip.Action">
         <item name="android:textAppearance">@style/ChipTextStyleMedium</item>
         <item name="android:textColor">@color/grey500</item>
         <item name="chipBackgroundColor">@color/grey800</item>
         <item name="closeIconVisible">false</item>
         <item name="chipIconVisible">false</item>
-    </style>
-
-    <style name="ChipActionGrey" parent="Widget.MaterialComponents.Chip.Action">
-        <item name="android:textAppearance">@style/ChipTextStyleMedium</item>
-        <item name="android:layout_height">42sp</item>
-        <item name="android:textColor">@color/grey200</item>
-        <item name="chipBackgroundColor">@color/grey800</item>
-        <item name="closeIconVisible">false</item>
     </style>
 
     <style name="ChipActionSmall" parent="Widget.MaterialComponents.Chip.Action">
