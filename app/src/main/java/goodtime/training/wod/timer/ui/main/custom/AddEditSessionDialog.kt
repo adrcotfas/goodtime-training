@@ -144,6 +144,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                 togglePositiveButtonState(true)
                 sectionAddEdit.favoritesContainer.isVisible = false
                 sectionAddEdit.customSection.isVisible = true
+                sessionEditTextHelper.resetToDefaults()
                 setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
             } else if (checkedId == R.id.radio_button_from_favorites) {
                 togglePositiveButtonState(false)
