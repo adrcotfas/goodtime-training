@@ -83,6 +83,8 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: Events.Companion.AddToStatisticsClickEvent) {
-        //TODO: open dialog to add session to statistics
+        if (parentFragmentManager.findFragmentByTag("AddEditCompletedWorkout") == null) {
+            AddEditCompletedWorkoutDialog.newInstance().show(parentFragmentManager, "AddEditCompletedWorkout")
+        }
     }
 }

@@ -23,6 +23,19 @@ class AppRepositoryImpl(
     }
 
     override fun getSessions() : LiveData<List<Session>> = sessionDao.get()
+
+    override fun editSession(session: Session) {
+        GlobalScope.launch {
+            sessionDao.edit(session)
+        }
+    }
+
+    override fun removeSession(id: Long) {
+        GlobalScope.launch {
+            sessionDao.remove(id)
+        }
+    }
+
     override fun getCustomSessions(name: String?) = sessionDao.get(name)
 
     override fun addSessionSkeleton(session: SessionSkeleton) {
@@ -48,9 +61,9 @@ class AppRepositoryImpl(
 
     override fun getCustomWorkoutSkeletons() = customWorkoutSkeletonDao.get()
 
-    override fun editCustomWorkoutSkeleton(name: String, workout: CustomWorkoutSkeleton) {
+    override fun editCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton) {
         GlobalScope.launch {
-            customWorkoutSkeletonDao.edit(name, workout.name, workout.sessions)
+            customWorkoutSkeletonDao.update(workout)
         }
     }
 

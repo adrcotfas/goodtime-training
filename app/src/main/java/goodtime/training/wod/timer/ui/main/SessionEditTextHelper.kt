@@ -9,6 +9,7 @@ import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.toInt
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
+import java.lang.IllegalArgumentException
 import java.security.InvalidParameterException
 
 data class SessionEditTextHelper(
@@ -72,6 +73,7 @@ data class SessionEditTextHelper(
                     lastHiitEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
                     initHiitSection()
                 }
+                else -> { }
             }
         }
     }
@@ -181,6 +183,7 @@ data class SessionEditTextHelper(
             SessionType.HIIT
             -> SessionSkeleton(0,
                 toInt(hiitSecondsWorkEt!!.text.toString()), toInt(hiitSecondsRestEt!!.text.toString()), toInt(hiitRoundsEt!!.text.toString()), sessionType)
+            else -> throw IllegalArgumentException("invalid for custom workout types")
         }
     }
 
@@ -218,6 +221,7 @@ data class SessionEditTextHelper(
                 setEditTextValue(genericMinutesEt!!, "01")
                 setEditTextValue(genericSecondsEt!!, "00")
             }
+            else -> { /* do nothing*/ }
         }
     }
 
@@ -243,6 +247,7 @@ data class SessionEditTextHelper(
                 hiitSecondsWorkEt!!.setText(addPrefixIfNeeded(session.duration.toString()))
                 hiitSecondsRestEt!!.setText(addPrefixIfNeeded(session.breakDuration.toString()))
             }
+            else -> throw IllegalArgumentException("invalid for custom workout types")
         }
     }
 

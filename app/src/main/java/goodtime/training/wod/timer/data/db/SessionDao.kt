@@ -1,10 +1,7 @@
 package goodtime.training.wod.timer.data.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.TypeConverters
+import androidx.room.*
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.TypeConverter
 
@@ -15,6 +12,9 @@ interface SessionDao {
     @TypeConverters(TypeConverter::class)
     suspend fun add(session: Session)
 
+    @Update
+    fun edit(session: Session)
+
     @Query("select * from Session order by timestamp desc")
     @TypeConverters(TypeConverter::class)
     fun get(): LiveData<List<Session>>
@@ -22,4 +22,7 @@ interface SessionDao {
     @Query("select * from Session where name = :name order by timestamp desc")
     @TypeConverters(TypeConverter::class)
     fun get(name: String?): LiveData<List<Session>>
+
+    @Query("delete from Session where id = :id")
+    fun remove(id: Long)
 }

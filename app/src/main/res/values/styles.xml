@@ -169,5 +169,23 @@
         <item name="android:paddingBottom">16dp</item>
         <item name="android:layout_marginBottom">16dp</item>
     </style>
-    
+
+    <style name="ClickableTextView">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:drawablePadding">32dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textSize">@dimen/regularTextSize</item>
+        <item name="android:textColor">@color/grey200</item>
+    </style>
+
+    <style name="ClickableTextViewEnd">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">30dp</item>
+        <item name="android:paddingEnd">30dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textSize">@dimen/regularTextSize</item>
+        <item name="android:textColor">@color/grey200</item>
+    </style>
+
 </resources>

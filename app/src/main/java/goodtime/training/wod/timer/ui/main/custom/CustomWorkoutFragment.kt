@@ -22,6 +22,7 @@ import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.kodein.di.generic.instance
+import java.lang.IllegalArgumentException
 
 class CustomWorkoutFragment:
         WorkoutTypeFragment(),
@@ -265,6 +266,7 @@ class CustomWorkoutFragment:
                 SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> session.duration
                 SessionType.EMOM -> (session.duration * session.numRounds)
                 SessionType.HIIT -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
+                else -> throw IllegalArgumentException("invalid for custom")
             }
         }
         binding.totalTime.isVisible = total != 0

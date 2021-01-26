@@ -51,6 +51,7 @@ class StringUtils {
                     val breakString = "${session.breakDuration} s"
                     "${session.numRounds} × $workString / $breakString"
                 }
+                else -> ""
             }
         }
 
@@ -128,6 +129,7 @@ class StringUtils {
                     "${session.numRounds} high intensity intervals of $workString of work with $breakString of rest"
                 }
                 SessionType.REST -> "Rest for ${secondsToNiceFormatExtended(session.duration)}"
+                else -> ""
             }
         }
 
@@ -150,6 +152,7 @@ class StringUtils {
                 SessionType.EMOM -> "INTERVALS"
                 SessionType.HIIT -> "HIIT"
                 SessionType.REST -> "REST"
+                SessionType.CUSTOM -> "CUSTOM"
             }
         }
 

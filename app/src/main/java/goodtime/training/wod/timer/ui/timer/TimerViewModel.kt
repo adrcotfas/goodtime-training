@@ -186,7 +186,7 @@ class TimerViewModel(
         } else {
             if (sessions[index].type != SessionType.REST) {
                 sessionToAdd = prepareSessionToAdd(
-                    sessions[index],
+                    sessions[index], 0,
                     durations[index],
                     countedRounds[index]
                 )

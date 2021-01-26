@@ -50,6 +50,9 @@ class ResourcesHelper {
                         SessionType.REST -> {
                             R.drawable.ic_break
                         }
+                        SessionType.CUSTOM -> {
+                            R.drawable.ic_science
+                        }
                     }, null
             )!!
         }

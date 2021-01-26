@@ -12,6 +12,6 @@ class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewMod
     var hasUnsavedSession = false
 
     fun saveCurrentSelection() {
-        appRepository.addCustomWorkoutSkeleton(currentWorkout)
+        appRepository.editCustomWorkoutSkeleton(currentWorkout)
     }
 }
