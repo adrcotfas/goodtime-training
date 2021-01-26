@@ -129,7 +129,7 @@
                         android:layout_marginStart="32dp"
                         android:text="Active time"
                         android:textColor="@color/grey200"
-                        android:textSize="@dimen/largeTextSize"
+                        android:textSize="@dimen/regularTextSize"
                         app:fontFamily="@font/app_font"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -192,7 +192,7 @@
                         android:layout_marginStart="32dp"
                         android:text="Rounds and repetitions"
                         android:textColor="@color/grey200"
-                        android:textSize="@dimen/largeTextSize"
+                        android:textSize="@dimen/regularTextSize"
                         app:fontFamily="@font/app_font"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
