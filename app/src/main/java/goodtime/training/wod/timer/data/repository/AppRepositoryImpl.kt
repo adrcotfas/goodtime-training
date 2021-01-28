@@ -24,6 +24,8 @@ class AppRepositoryImpl(
 
     override fun getSessions() : LiveData<List<Session>> = sessionDao.get()
 
+    override fun getSession(id: Long) = sessionDao.get(id)
+
     override fun editSession(session: Session) {
         GlobalScope.launch {
             sessionDao.edit(session)

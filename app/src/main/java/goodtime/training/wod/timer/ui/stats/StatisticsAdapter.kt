@@ -16,7 +16,7 @@ import goodtime.training.wod.timer.data.model.Session
 class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<StatisticsAdapter.ViewHolder>() {
 
     interface Listener {
-        fun onClick(position: Int)
+        fun onClick(id: Long)
     }
 
     var personalRecordSessionId = -1L
@@ -35,7 +35,7 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(data[position], personalRecordSessionId)
-        holder.itemView.setOnClickListener { listener.onClick(position) }
+        holder.itemView.setOnClickListener { listener.onClick(data[position].id) }
     }
 
     class ViewHolder private constructor(itemView: View)

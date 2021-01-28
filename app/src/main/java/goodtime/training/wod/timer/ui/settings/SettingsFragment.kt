@@ -10,6 +10,7 @@ import androidx.preference.*
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
+import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -17,7 +18,7 @@ import org.kodein.di.generic.instance
 class SettingsFragment:
         PreferenceFragmentCompat(),
         KodeinAware,
-        ReminderTimePreferenceDialogBuilder.Listener,
+        TimePickerDialogBuilder.Listener,
         SoundProfileDialog.Listener {
 
     override val kodein by closestKodein()
@@ -108,7 +109,7 @@ class SettingsFragment:
     private fun setupReminderPreference() {
         timePickerPreference = findPreference(PreferenceHelper.REMINDER_TIME)!!
         timePickerPreference.setOnPreferenceClickListener {
-            val dialog = ReminderTimePreferenceDialogBuilder(requireContext(), this)
+            val dialog = TimePickerDialogBuilder(requireContext(), this)
                     .buildDialog(preferenceHelper.getReminderTime())
             dialog.show(parentFragmentManager, "MaterialTimePicker")
             true
@@ -121,8 +122,8 @@ class SettingsFragment:
                 preferenceHelper.getReminderTime(), DateFormat.is24HourFormat(context))
     }
 
-    override fun onReminderTimeSet(secondOfDay: Int) {
-        preferenceHelper.setReminderTime(secondOfDay)
+    override fun onTimeSet(secondOfDay: Long) {
+        preferenceHelper.setReminderTime(secondOfDay.toInt())
         updateReminderTimeSummary()
     }
 

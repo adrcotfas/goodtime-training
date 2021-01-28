@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,12 +24,16 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
     private lateinit var binding: FragmentStatisticsListBinding
 
-    private val viewModelFactory : LogViewModelFactory by instance()
+    private val viewModelFactory: LogViewModelFactory by instance()
     private lateinit var viewModel: StatisticsViewModel
+    private lateinit var allSessionsLd: LiveData<List<Session>>
+    private lateinit var filteredSessionsLd: LiveData<List<Session>>
 
-    private val itemClickListener = object: StatisticsAdapter.Listener {
-        override fun onClick(position: Int) {
-            //TODO: open AddEditStatsDialog
+    private val itemClickListener = object : StatisticsAdapter.Listener {
+        override fun onClick(id: Long) {
+            if (parentFragmentManager.findFragmentByTag("AddEditCompletedWorkout") == null) {
+                AddEditCompletedWorkoutDialog.newInstance(id).show(parentFragmentManager, "AddEditCompletedWorkout")
+            }
         }
     }
 
@@ -52,7 +57,9 @@ class StatisticsListFragment : Fragment(), KodeinAware {
         setupRecyclerView()
         viewModel.filteredWorkoutName.observe(viewLifecycleOwner, {
             if (it == null) {
-                removeObserverFromFilteredSessions()
+                if (this::filteredSessionsLd.isInitialized) {
+                    removeObserverFromFilteredSessions()
+                }
                 observeAllSessions()
             } else { // a filtered session was selected
                 removeObserverFromAllSessions()
@@ -73,17 +80,19 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     }
 
     private fun observeAllSessions() {
-        viewModel.getSessions().observe(viewLifecycleOwner, { sessions ->
+        allSessionsLd = viewModel.getSessions()
+        allSessionsLd.observe(viewLifecycleOwner, { sessions ->
             logAdapter.data = sessions
             binding.recyclerView.isVisible = sessions.isNotEmpty()
             binding.emptyState.isVisible = sessions.isEmpty()
         })
     }
 
-    private fun removeObserverFromAllSessions() = viewModel.getSessions().removeObservers(viewLifecycleOwner)
+    private fun removeObserverFromAllSessions() = allSessionsLd.removeObservers(viewLifecycleOwner)
 
     private fun observeFilteredSessions() {
-        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value).observe(viewLifecycleOwner, { sessions ->
+        filteredSessionsLd = viewModel.getCustomSessions(viewModel.filteredWorkoutName.value)
+        filteredSessionsLd.observe(viewLifecycleOwner, { sessions ->
             logAdapter.data = sessions
             logAdapter.personalRecordSessionId = findPersonalRecord(sessions.filter { it.isCompleted })
             binding.recyclerView.isVisible = sessions.isNotEmpty()
@@ -92,7 +101,7 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     }
 
     private fun removeObserverFromFilteredSessions() {
-        viewModel.getCustomSessions(viewModel.filteredWorkoutName.value).removeObservers(viewLifecycleOwner)
+        filteredSessionsLd.removeObservers(viewLifecycleOwner)
         logAdapter.personalRecordSessionId = -1
     }
 

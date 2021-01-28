@@ -17,7 +17,7 @@ import androidx.room.ForeignKey.SET_DEFAULT
 data class Session(
         @PrimaryKey(autoGenerate = true)
         var id: Long = 0,
-        var skeleton: SessionSkeleton = SessionSkeleton(), // custom workouts have the skeleton.type == REST //TODO: change this
+        var skeleton: SessionSkeleton = SessionSkeleton(),
         var actualDuration: Int = 0, // might differ from the skeleton's duration in case of FOR_TIME
         var actualRounds: Int = 0,
         var actualReps: Int = 0,
@@ -36,7 +36,7 @@ data class Session(
          */
         var isTimeBased: Boolean = false) {
 
-    fun isCustom() = skeleton.type == SessionType.REST
+    fun isCustom() = skeleton.type == SessionType.CUSTOM
 
     companion object {
         fun prepareSessionToAdd(

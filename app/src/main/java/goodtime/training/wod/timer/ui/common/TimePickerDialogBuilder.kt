@@ -1,17 +1,17 @@
-package goodtime.training.wod.timer.ui.settings
+package goodtime.training.wod.timer.ui.common
 
 import android.content.Context
 import android.text.format.DateFormat
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import java.time.LocalTime
+import java.time.*
 
-class ReminderTimePreferenceDialogBuilder(context: Context, private val listener: Listener) {
+class TimePickerDialogBuilder(context: Context, private val listener: Listener) {
 
     private val is24HourFormat = DateFormat.is24HourFormat(context)
 
     interface Listener {
-        fun onReminderTimeSet(secondOfDay: Int)
+        fun onTimeSet(secondOfDay: Long)
     }
 
     fun buildDialog(secondOfDay: Int): MaterialTimePicker {
@@ -24,7 +24,7 @@ class ReminderTimePreferenceDialogBuilder(context: Context, private val listener
                 .build()
         dialog.addOnPositiveButtonClickListener{
             val newValue = LocalTime.of(dialog.hour, dialog.minute).toSecondOfDay()
-            listener.onReminderTimeSet(newValue)
+            listener.onTimeSet(newValue.toLong())
         }
         return dialog
     }

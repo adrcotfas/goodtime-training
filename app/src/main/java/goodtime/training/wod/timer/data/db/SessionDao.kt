@@ -23,6 +23,10 @@ interface SessionDao {
     @TypeConverters(TypeConverter::class)
     fun get(name: String?): LiveData<List<Session>>
 
+    @Query("select * from Session where id = :id")
+    @TypeConverters(TypeConverter::class)
+    fun get(id: Long): LiveData<Session>
+
     @Query("delete from Session where id = :id")
     fun remove(id: Long)
 }

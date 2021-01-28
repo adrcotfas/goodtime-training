@@ -11,6 +11,7 @@ interface AppRepository {
     // finished sessions
     fun addSession(session: Session)
     fun getSessions(): LiveData<List<Session>>
+    fun getSession(id: Long): LiveData<Session>
     fun editSession(session: Session)
     fun removeSession(id: Long)
     fun getCustomSessions(name: String?): LiveData<List<Session>>

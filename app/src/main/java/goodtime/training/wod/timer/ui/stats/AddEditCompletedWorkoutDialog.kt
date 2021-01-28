@@ -19,12 +19,15 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogAddToStatisticsBinding
 import goodtime.training.wod.timer.databinding.SectionAddEditSessionBinding
+import goodtime.training.wod.timer.ui.common.DatePickerDialogHelper
+import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import goodtime.training.wod.timer.ui.main.SessionEditTextHelper
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import java.time.*
 
-class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
+class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener, TimePickerDialogBuilder.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
 
@@ -44,18 +47,23 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
     companion object {
         const val INVALID_CANDIDATE_IDX = -1L
 
-        fun newInstance(candidateIdx: Long = INVALID_CANDIDATE_IDX,
-                        candidate: Session = Session()
-        ): AddEditCompletedWorkoutDialog {
+        fun newInstance(candidateIdx: Long = INVALID_CANDIDATE_IDX): AddEditCompletedWorkoutDialog {
             val dialog = AddEditCompletedWorkoutDialog()
             dialog.candidateIdx = candidateIdx
-            if (dialog.isEditMode()) {
-                dialog.candidate = candidate
-            } else {
+            if (!dialog.isEditMode()) {
                 dialog.candidate = Session()
                 dialog.candidate.skeleton.type = SessionType.AMRAP
             }
             return dialog
+        }
+
+        private fun millisToSecondOfDay(millis: Long): Long {
+            return Instant.ofEpochMilli(millis)
+                    .atZone(ZoneId.systemDefault()).toLocalTime().toSecondOfDay().toLong()
+        }
+
+        private fun millisToLocalDate(millis: Long): LocalDate {
+            return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
         }
     }
 
@@ -69,32 +77,62 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
         binding.title.text = if (isEditMode()) "Edit session" else "Add session"
         togglePositiveButtonState(false)
 
+        if (isEditMode()) {
+            repo.getSession(candidateIdx).observe(this, {
+                candidate = it
+                doSetup()
+            })
+        } else {
+            doSetup()
+        }
+
+        return binding.root
+    }
+
+    private fun doSetup() {
         setupButtons()
         initSessionEditTextHelper()
         setupSessionTypeChips()
         setupRadioGroup()
+        setupDateAndTimePickers()
+    }
 
-        return binding.root
+    private fun setupDateAndTimePickers() {
+        val localTime = LocalTime.ofSecondOfDay(millisToSecondOfDay(candidate.timestamp))
+        binding.editDate.text = StringUtils.formatDateLong(millisToLocalDate(candidate.timestamp))
+        binding.editTime.text = StringUtils.formatTime(localTime)
+
+        binding.editDate.setOnClickListener {
+            val picker = DatePickerDialogHelper.buildDatePicker(candidate.timestamp)
+            picker.addOnPositiveButtonClickListener {
+                val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                candidate.timestamp = LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                binding.editDate.text = StringUtils.formatDateLong(localDate)
+            }
+            picker.show(parentFragmentManager, "MaterialDatePicker")
+        }
+
+        binding.editTime.setOnClickListener {
+            val dialog = TimePickerDialogBuilder(requireContext(), this)
+                    .buildDialog(millisToSecondOfDay(candidate.timestamp).toInt())
+            dialog.show(parentFragmentManager, "MaterialTimePicker")
+        }
+    }
+
+    override fun onTimeSet(secondOfDay: Long) {
+        val localDate = millisToLocalDate(candidate.timestamp)
+        val localTime = LocalTime.ofSecondOfDay(secondOfDay)
+        candidate.timestamp = LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        binding.editTime.text = StringUtils.formatTime(localTime)
     }
 
     private fun setupButtons() {
         binding.closeButton.setOnClickListener { dismiss() }
         binding.saveButton.setOnClickListener {
-            val skeleton = if (isInCustomSection()) sessionEditTextHelper.generateFromCurrentSelection()
-            else candidate.skeleton
             if (isEditMode()) {
-                if (binding.sectionAddEdit.sessionTypeChips.checkedChipId == SessionType.CUSTOM.value) {
-                    repo.editSession(Session(id = candidateIdx, skeleton = SessionSkeleton(), name = customWorkoutSelection.name))
-                } else {
-                    repo.editSession(Session.prepareSessionToAdd(skeleton, candidate.id))
-                }
+                    repo.editSession(candidate)
             } else {
-                //TODO: add other properties
-                if (binding.sectionAddEdit.sessionTypeChips.checkedChipId == SessionType.CUSTOM.value) {
-                    repo.addSession(Session(id = 0, skeleton = SessionSkeleton(), name = customWorkoutSelection.name))
-                } else {
-                    repo.addSession(Session.prepareSessionToAdd(skeleton))
-                }
+                    repo.addSession(candidate)
             }
             dismiss()
             hideKeyboardFrom(requireContext(), binding.root)
@@ -160,7 +198,7 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
                 hideKeyboardFrom(requireContext(), binding.root)
             }
         }
-        if (isEditMode()) {
+        if (isEditMode() && !candidate.isCustom()) {
             sectionAddEdit.radioButtonSelectCustom.isChecked = true
             refreshActiveSection(candidate.skeleton.type)
             sessionEditTextHelper.updateEditTexts(candidate.skeleton)
@@ -185,10 +223,20 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
                 chip.apply {
                     isCloseIconVisible = false
                     text = if (favorite is SessionSkeleton) StringUtils.toFavoriteFormat(favorite) else (favorite as CustomWorkoutSkeleton).name
+                    if (isEditMode() && candidate.isCustom() && text == candidate.name) {
+                        isChecked = true
+                        togglePositiveButtonState(true)
+                    }
                     setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
                             if (favorite is SessionSkeleton) candidate.skeleton = favorite
-                            else customWorkoutSelection = favorite as CustomWorkoutSkeleton
+                            else {
+                                //TODO: handle active time / isForTime here
+                                customWorkoutSelection = favorite as CustomWorkoutSkeleton
+                                candidate.name = customWorkoutSelection.name
+                                candidate.isCustom()
+                                candidate.skeleton.type = SessionType.CUSTOM
+                            }
                             togglePositiveButtonState(true)
                         }
                     }
@@ -242,7 +290,10 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
     }
 
     override fun onTextChanged(isValid: Boolean, sessionSkeleton: SessionSkeleton) {
-        if (isInCustomSection()) togglePositiveButtonState(isValid)
+        if (isInCustomSection()) {
+            togglePositiveButtonState(isValid)
+            candidate.skeleton = sessionEditTextHelper.generateFromCurrentSelection()
+        }
     }
 
     private fun isInCustomSection() = sectionAddEdit.radioGroup.checkedRadioButtonId == R.id.radio_button_select_custom
