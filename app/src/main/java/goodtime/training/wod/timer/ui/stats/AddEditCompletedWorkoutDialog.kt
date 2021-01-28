@@ -85,7 +85,6 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
         } else {
             doSetup()
         }
-
         return binding.root
     }
 
@@ -130,9 +129,9 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
         binding.closeButton.setOnClickListener { dismiss() }
         binding.saveButton.setOnClickListener {
             if (isEditMode()) {
-                    repo.editSession(candidate)
+                repo.editSession(candidate)
             } else {
-                    repo.addSession(candidate)
+                repo.addSession(candidate)
             }
             dismiss()
             hideKeyboardFrom(requireContext(), binding.root)
@@ -190,7 +189,11 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
                 togglePositiveButtonState(true)
                 sectionAddEdit.favoritesContainer.isVisible = false
                 sectionAddEdit.customSection.isVisible = true
-                sessionEditTextHelper.resetToDefaults()
+                if (candidate.skeleton.type != sessionEditTextHelper.sessionType) {
+                    // this is to refresh new selections
+                    // but to not refresh the edit texts when editing a session
+                    sessionEditTextHelper.resetToDefaults()
+                }
             } else if (checkedId == R.id.radio_button_from_favorites) {
                 togglePositiveButtonState(false)
                 sectionAddEdit.favoritesContainer.isVisible = true
@@ -274,7 +277,7 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
             else -> {
             }
         }
-        sessionEditTextHelper.updateSessionType(sessionType)
+        sessionEditTextHelper.sessionType = sessionType
     }
 
     private fun toggleCustomWorkoutFavoritesView(visible: Boolean) {

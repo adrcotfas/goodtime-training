@@ -22,7 +22,7 @@ data class SessionEditTextHelper(
     private var hiitRoundsEt: TextInputEditText? = null,
     private var hiitSecondsWorkEt: TextInputEditText? = null,
     private var hiitSecondsRestEt: TextInputEditText? = null,
-    private var sessionType: SessionType,
+    var sessionType: SessionType,
 ){
 
     init {
@@ -33,10 +33,6 @@ data class SessionEditTextHelper(
 
     interface Listener {
         fun onTextChanged(isValid: Boolean, sessionSkeleton: SessionSkeleton)
-    }
-
-    fun updateSessionType(sessionType: SessionType) {
-        this.sessionType = sessionType
     }
 
     private fun setupTextEditSections(initAll: Boolean) {
