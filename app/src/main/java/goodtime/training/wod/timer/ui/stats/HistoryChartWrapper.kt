@@ -5,13 +5,11 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.Spinner
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.ResourcesHelper
@@ -26,7 +24,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.round
 
-class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spinner) {
+class HistoryChartWrapper(private val chart: BarChart, private val spinner: Spinner) {
 
     private var xValues: MutableList<LocalDate> = mutableListOf()
     private lateinit var sessions: List<Session>
@@ -98,10 +96,10 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
         chart.notifyDataSetChanged()
     }
 
-    private fun generateHistoryChartData(sessions: List<Session>): LineData {
+    private fun generateHistoryChartData(sessions: List<Session>): BarData {
         val rangeType: HistorySpinnerRangeType = HistorySpinnerRangeType.values()[spinner.selectedItemPosition]
-        val dummyIntervalRange = 15L
-        val yVals: MutableList<Entry> = ArrayList()
+        val dummyIntervalRange = 42L
+        val yVals: MutableList<BarEntry> = ArrayList()
         val tree = TreeMap<LocalDate, Int>()
 
         // generate dummy data
@@ -168,7 +166,7 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
                     HistorySpinnerRangeType.MONTHS -> crt.minusMonths(1)
                 }
                 while (previousTime.isBefore(beforeWhat)) {
-                    yVals.add(Entry(i.toFloat(), 0f))
+                    yVals.add(BarEntry(i.toFloat(), 0f))
                     previousTime = when (rangeType) {
                         HistorySpinnerRangeType.DAYS -> previousTime.plusDays(1)
                         HistorySpinnerRangeType.WEEKS -> previousTime.plusWeeks(1)
@@ -177,18 +175,19 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
                     xValues.add(previousTime)
                     ++i
                 }
-                yVals.add(Entry(i.toFloat(), tree[crt]!!.toFloat()))
+                yVals.add(BarEntry(i.toFloat(), tree[crt]!!.toFloat()))
                 xValues.add(crt)
                 ++i
                 previousTime = crt
             }
         }
-        return LineData(generateLineDataSet(yVals, ResourcesHelper.green))
+        return BarData(generateLineDataSet(yVals, ResourcesHelper.green))
     }
 
     fun refreshHistoryChart(sessions: List<Session>) {
         this.sessions = sessions
         val data = generateHistoryChartData(sessions)
+        data.barWidth = 0.4f
         chart.moveViewToX(data.xMax)
         chart.data = data
         chart.data.isHighlightEnabled = false
@@ -197,7 +196,7 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
         chart.axisLeft.axisMinimum = 0f
         chart.axisLeft.axisMaximum = sixMinutes
 
-        val visibleXCount = 8
+        val visibleXCount = 10
 
         chart.setVisibleXRangeMaximum(visibleXCount.toFloat())
         chart.setVisibleXRangeMinimum(visibleXCount.toFloat())
@@ -211,17 +210,9 @@ class HistoryChartWrapper(private val chart: LineChart, private val spinner: Spi
         }
     }
 
-    private fun generateLineDataSet(entries: List<Entry>, color: Int): LineDataSet {
-        val set = LineDataSet(entries, null)
+    private fun generateLineDataSet(entries: List<BarEntry>, color: Int): BarDataSet {
+        val set = BarDataSet(entries, null)
         set.color = color
-        set.setCircleColor(color)
-        set.setDrawFilled(true)
-        set.fillColor = color
-        set.lineWidth = 3f
-        set.circleRadius = 3f
-        set.setDrawCircleHole(false)
-        set.disableDashedLine()
-        set.setDrawValues(false)
         return set
     }
 }

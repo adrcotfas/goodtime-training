@@ -1,6 +1,5 @@
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,48 +10,48 @@
         android:layout_margin="16dp">
 
         <RelativeLayout
+            style="@style/SectionCommon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            style="@style/SectionCommon">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/header"
+                style="@style/SectionHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:text="@string/statistics_overview"
-                style="@style/SectionHeader"
-                tools:ignore="RelativeOverlap"/>
+                tools:ignore="RelativeOverlap" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/header"
+                android:baselineAligned="false"
                 android:gravity="bottom"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/today_value"
+                        style="@style/OverviewTextValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/OverviewTextValue"/>
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/today_description"
+                        style="@style/OverviewTextDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/OverviewTextDescription"
-                        android:text="@string/statistics_today"/>
+                        android:text="@string/statistics_today" />
 
                 </LinearLayout>
 
@@ -60,21 +59,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/week_value"
+                        style="@style/OverviewTextValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/OverviewTextValue"/>
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/week_description"
+                        style="style/OverviewTextDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="style/OverviewTextDescription"
-                        android:text="@string/statistics_this_week"/>
+                        android:text="@string/statistics_this_week" />
 
                 </LinearLayout>
 
@@ -82,21 +81,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/month_value"
+                        style="@style/OverviewTextValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/OverviewTextValue"/>
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/month_description"
+                        style="style/OverviewTextDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="style/OverviewTextDescription"
-                        android:text="@string/statistics_this_month"/>
+                        android:text="@string/statistics_this_month" />
 
                 </LinearLayout>
 
@@ -104,21 +103,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/total_value"
+                        style="@style/OverviewTextValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/OverviewTextValue"/>
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/total_description"
+                        style="style/OverviewTextDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="style/OverviewTextDescription"
-                        android:text="@string/statistics_total"/>
+                        android:text="@string/statistics_total" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -132,35 +131,36 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp">
 
-        <RelativeLayout android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="@style/SectionCommon">
+        <RelativeLayout
+            style="@style/SectionCommon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/header_history"
+                style="@style/SectionHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:text="@string/statistics_history"
-                style="@style/SectionHeader"
                 tools:ignore="RelativeOverlap" />
 
             <Spinner
                 android:id="@+id/range_type"
+                style="@style/SpinnerStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                style="@style/SpinnerStyle"/>
+                android:layout_alignParentEnd="true" />
 
-            <com.github.mikephil.charting.charts.LineChart
+            <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:layout_below="@+id/range_type"/>
-        </RelativeLayout>
+                android:layout_below="@+id/range_type" />
 
+        </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
 
