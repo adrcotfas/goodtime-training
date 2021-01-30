@@ -94,6 +94,38 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
         setupSessionTypeChips()
         setupRadioGroup()
         setupDateAndTimePickers()
+        binding.extendedSection.isVisible = isEditMode()
+        setupActiveTime()
+    }
+
+    private fun updateActiveTime() {
+        if (!candidate.isTimeBased) {
+            val checked = binding.isCompleted.isChecked
+            binding.activeTimeMinutes.inputLayout.isEnabled = !checked
+            binding.activeTimeSeconds.inputLayout.isEnabled = !checked
+            binding.activeTimeMinutes.editText.isEnabled = !checked
+            binding.activeTimeSeconds.editText.isEnabled = !checked
+            //TODO: set minimum to 1 second
+        } else {
+            binding.activeTimeMinutes.inputLayout.isEnabled = true
+            binding.activeTimeSeconds.inputLayout.isEnabled = true
+            binding.activeTimeMinutes.editText.isEnabled = true
+            binding.activeTimeSeconds.editText.isEnabled = true
+            //TODO: set minimum to N * FOR_TIME * 1 second
+        }
+
+        val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(candidate.actualDuration)
+        binding.activeTimeMinutes.editText.setText(minutesAndSeconds.first.toString())
+        binding.activeTimeSeconds.editText.setText(minutesAndSeconds.second.toString())
+    }
+
+    private fun setupActiveTime() {
+        binding.isCompleted.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                updateActiveTime()
+            }
+        }
+        binding.isCompleted.isChecked = if (isEditMode()) candidate.isCompleted else true
     }
 
     private fun setupDateAndTimePickers() {
@@ -172,6 +204,12 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
                         if (isInCustomSection() && sessionType != SessionType.CUSTOM) {
                             sessionEditTextHelper.resetToDefaults()
                         }
+                        if ((sessionType == SessionType.CUSTOM
+                                && !this@AddEditCompletedWorkoutDialog::customWorkoutSelection.isInitialized)
+                                || !isInCustomSection()) {
+                            binding.extendedSection.isVisible = false
+                        }
+                        candidate.isTimeBased = candidate.skeleton.type == SessionType.FOR_TIME
                         toggleCustomWorkoutFavoritesView(sessionType == SessionType.CUSTOM)
                         setupFavorites(sessionType)
                     }
@@ -189,6 +227,7 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
                 togglePositiveButtonState(true)
                 sectionAddEdit.favoritesContainer.isVisible = false
                 sectionAddEdit.customSection.isVisible = true
+                binding.extendedSection.isVisible = true
                 if (candidate.skeleton.type != sessionEditTextHelper.sessionType) {
                     // this is to refresh new selections
                     // but to not refresh the edit texts when editing a session
@@ -196,6 +235,7 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
                 }
             } else if (checkedId == R.id.radio_button_from_favorites) {
                 togglePositiveButtonState(false)
+                binding.extendedSection.isVisible = false
                 sectionAddEdit.favoritesContainer.isVisible = true
                 sectionAddEdit.customSection.isVisible = false
                 hideKeyboardFrom(requireContext(), binding.root)
@@ -210,44 +250,49 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
 
     @SuppressLint("SetTextI18n")
     private fun setupFavorites(sessionType: SessionType) {
-        val favorites =
+        val favoritesLd =
                 if (sessionType == SessionType.CUSTOM) {
                     repo.getCustomWorkoutSkeletons()
                 } else {
                     repo.getSessionSkeletons(sessionType)
                 }
-        favorites.observe(
-                this, {
+        favoritesLd.observe(
+                this, { favorites ->
             val favoritesChipGroup = sectionAddEdit.favorites
             favoritesChipGroup.removeAllViews()
 
-            for (favorite in it) {
+            for (favorite in favorites) {
                 val chip = inflater.inflate(R.layout.chip_choice, favoritesChipGroup, false) as Chip
                 chip.apply {
                     isCloseIconVisible = false
                     text = if (favorite is SessionSkeleton) StringUtils.toFavoriteFormat(favorite) else (favorite as CustomWorkoutSkeleton).name
-                    if (isEditMode() && candidate.isCustom() && text == candidate.name) {
+                    if (candidate.isCustom() && text == candidate.name) {
                         isChecked = true
                         togglePositiveButtonState(true)
                     }
                     setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
-                            if (favorite is SessionSkeleton) candidate.skeleton = favorite
-                            else {
-                                //TODO: handle active time / isForTime here
+                            if (favorite is SessionSkeleton) {
+                                candidate.skeleton = favorite
+                                candidate.actualDuration = candidate.skeleton.getActualDuration()
+                            } else {
                                 customWorkoutSelection = favorite as CustomWorkoutSkeleton
                                 candidate.name = customWorkoutSelection.name
-                                candidate.isCustom()
                                 candidate.skeleton.type = SessionType.CUSTOM
+
+                                candidate.actualDuration = Session.calculateTotal(customWorkoutSelection.sessions)
+                                candidate.isTimeBased = customWorkoutSelection.sessions.find { it.type == SessionType.FOR_TIME } != null
                             }
                             togglePositiveButtonState(true)
+                            updateActiveTime()
+                            binding.extendedSection.isVisible = true
                         }
                     }
                 }
                 favoritesChipGroup.addView(chip)
                 binding.sectionAddEdit.emptyState.isVisible = false
             }
-            if (it.isEmpty()) {
+            if (favorites.isEmpty()) {
                 binding.sectionAddEdit.emptyState.isVisible = true
             }
         })
@@ -296,6 +341,8 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
         if (isInCustomSection()) {
             togglePositiveButtonState(isValid)
             candidate.skeleton = sessionEditTextHelper.generateFromCurrentSelection()
+            candidate.actualDuration = candidate.skeleton.getActualDuration()
+            updateActiveTime()
         }
     }
 

@@ -158,12 +158,12 @@ class TimerViewModel(
             notifier.toggleDndMode(false)
         }
         if (preferenceHelper.logIncompleteSessions()) {
-            prepareSessionToAdd()
+            prepareSessionToAdd(false)
+            repository.addSession(sessionToAdd)
         }
-        repository.addSession(sessionToAdd)
     }
 
-    fun prepareSessionToAdd() {
+    fun prepareSessionToAdd(completed: Boolean = true) {
         val index = currentSessionIdx.value!!
         updateDurations(getCurrentSessionType(), index, true)
         if (isCustomWorkout) {
@@ -183,12 +183,14 @@ class TimerViewModel(
                     if (session.index < sessions.size - 1) "\n" else "(incomplete)"
             }
             sessionToAdd.isTimeBased = sessions.find { it.type == SessionType.FOR_TIME } != null
+            sessionToAdd.isCompleted = completed
         } else {
             if (sessions[index].type != SessionType.REST) {
                 sessionToAdd = prepareSessionToAdd(
                     sessions[index], 0,
                     durations[index],
-                    countedRounds[index]
+                    countedRounds[index],
+                    completed = completed
                 )
             }
         }

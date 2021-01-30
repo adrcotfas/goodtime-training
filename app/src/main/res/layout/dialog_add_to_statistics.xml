@@ -67,175 +67,183 @@
                     tools:visibility="gone" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white_5percent" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/edit_date"
-                        style="@style/ClickableTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:drawableTint="@color/grey500"
-                        android:paddingStart="32dp"
-                        android:text="Mon, Jan 25, 2021" />
-
-                    <TextView
-                        android:id="@+id/edit_time"
-                        style="@style/ClickableTextViewEnd"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:text="09:30 AM"
-                        tools:ignore="RelativeOverlap" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white_5percent" />
-
-                <CheckBox
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="24dp"
-                    android:textSize="@dimen/regularTextSize"
-                    android:textColor="@color/grey200"
-                    android:paddingStart="8dp"
-                    android:text="Workout was completed" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white_5percent" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/active_time_section"
+                    android:id="@+id/extended_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:visibility="visible">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/active_time_title"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white_5percent" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/edit_date"
+                            style="@style/ClickableTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentStart="true"
+                            android:drawableTint="@color/grey500"
+                            android:paddingStart="32dp"
+                            android:text="Mon, Jan 25, 2021" />
+
+                        <TextView
+                            android:id="@+id/edit_time"
+                            style="@style/ClickableTextViewEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentEnd="true"
+                            android:text="09:30 AM"
+                            tools:ignore="RelativeOverlap" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white_5percent" />
+
+                    <CheckBox
+                        android:id="@+id/is_completed"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginStart="24dp"
+                        android:paddingStart="8dp"
+                        android:text="Workout was completed"
+                        android:textColor="@color/grey200"
+                        android:textSize="@dimen/regularTextSize" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white_5percent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/active_time_section"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:text="Active time"
-                        android:textColor="@color/grey200"
-                        android:textSize="@dimen/regularTextSize"
-                        app:fontFamily="@font/app_font"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <include
-                        android:id="@+id/active_time_minutes"
-                        layout="@layout/text_input_layout_section"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:layout_constraintEnd_toStartOf="@id/active_time_separator"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/active_time_title"
-                        app:unit="@{`minutes`}" />
-
-                    <TextView
-                        android:id="@+id/active_time_separator"
-                        style="@style/TimerStyleLite.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
                         android:layout_marginTop="8dp"
-                        android:text="@string/colon"
-                        android:textColor="@color/grey500"
-                        app:layout_constraintBottom_toBottomOf="@+id/active_time_minutes"
-                        app:layout_constraintEnd_toStartOf="@id/active_time_seconds"
-                        app:layout_constraintStart_toEndOf="@id/active_time_minutes"
-                        app:layout_constraintTop_toTopOf="@+id/active_time_minutes" />
+                        android:visibility="visible">
 
-                    <include
-                        android:id="@+id/active_time_seconds"
-                        layout="@layout/text_input_layout_section"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@+id/active_time_minutes"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/active_time_separator"
-                        app:layout_constraintTop_toTopOf="@+id/active_time_minutes"
-                        app:unit="@{`seconds`}" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/active_time_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:text="Active time"
+                            android:textColor="@color/grey200"
+                            android:textSize="@dimen/regularTextSize"
+                            app:fontFamily="@font/app_font"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/white_5percent" />
+                        <include
+                            android:id="@+id/active_time_minutes"
+                            layout="@layout/text_input_layout_section"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            app:layout_constraintEnd_toStartOf="@id/active_time_separator"
+                            app:layout_constraintHorizontal_chainStyle="packed"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/active_time_title"
+                            app:unit="@{`minutes`}" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/generic_section"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:visibility="visible">
+                        <TextView
+                            android:id="@+id/active_time_separator"
+                            style="@style/TimerStyleLite.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/colon"
+                            android:textColor="@color/grey500"
+                            app:layout_constraintBottom_toBottomOf="@+id/active_time_minutes"
+                            app:layout_constraintEnd_toStartOf="@id/active_time_seconds"
+                            app:layout_constraintStart_toEndOf="@id/active_time_minutes"
+                            app:layout_constraintTop_toTopOf="@+id/active_time_minutes" />
 
-                    <TextView
-                        android:id="@+id/rounds_title"
+                        <include
+                            android:id="@+id/active_time_seconds"
+                            layout="@layout/text_input_layout_section"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="@+id/active_time_minutes"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/active_time_separator"
+                            app:layout_constraintTop_toTopOf="@+id/active_time_minutes"
+                            app:unit="@{`seconds`}" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/white_5percent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/generic_section"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:text="Rounds and repetitions"
-                        android:textColor="@color/grey200"
-                        android:textSize="@dimen/regularTextSize"
-                        app:fontFamily="@font/app_font"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_marginTop="8dp"
+                        android:visibility="visible">
 
-                    <include
-                        android:id="@+id/rounds_layout"
-                        layout="@layout/text_input_layout_section_medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        <TextView
+                            android:id="@+id/rounds_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:text="Rounds and repetitions"
+                            android:textColor="@color/grey200"
+                            android:textSize="@dimen/regularTextSize"
+                            app:fontFamily="@font/app_font"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <include
+                            android:id="@+id/rounds_layout"
+                            layout="@layout/text_input_layout_section_medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="32dp"
+                            app:layout_constraintEnd_toStartOf="@id/reps_layout"
+                            app:layout_constraintHorizontal_chainStyle="packed"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/rounds_title"
+                            app:unit="@{`rounds`}" />
+
+                        <include
+                            android:id="@+id/reps_layout"
+                            layout="@layout/text_input_layout_section_medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="@id/rounds_layout"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/rounds_layout"
+                            app:layout_constraintTop_toTopOf="@id/rounds_layout"
+                            app:unit="@{`reps`}" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="32dp"
-                        app:layout_constraintEnd_toStartOf="@id/reps_layout"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/rounds_title"
-                        app:unit="@{`rounds`}" />
+                        android:background="@color/white_5percent" />
 
                     <include
-                        android:id="@+id/reps_layout"
-                        layout="@layout/text_input_layout_section_medium"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/notes_layout"
+                        layout="@layout/text_input_layout_section_large"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@id/rounds_layout"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/rounds_layout"
-                        app:layout_constraintTop_toTopOf="@id/rounds_layout"
-                        app:unit="@{`reps`}" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/white_5percent" />
-
-                <include
-                    android:id="@+id/notes_layout"
-                    layout="@layout/text_input_layout_section_large"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="16dp"
-                    app:unit="@{`notes`}" />
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="16dp"
+                        app:unit="@{`notes`}" />
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

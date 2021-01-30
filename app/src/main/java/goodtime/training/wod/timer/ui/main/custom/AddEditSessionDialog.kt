@@ -213,7 +213,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
             }
             else -> {}
         }
-        sessionEditTextHelper.updateSessionType(sessionType)
+        sessionEditTextHelper.sessionType = sessionType
         sectionAddEdit.customSessionDescription.isVisible = true
     }
 

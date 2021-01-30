@@ -3,6 +3,7 @@ package goodtime.training.wod.timer.data.model
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.ForeignKey.SET_DEFAULT
+import java.lang.IllegalArgumentException
 
 @Entity(
         foreignKeys =
@@ -47,6 +48,19 @@ data class Session(
                 notes: String? = null,
                 completed: Boolean = true) : Session {
             return Session(id, skeleton, actualDuration, actualRounds, notes = notes, isCompleted = completed)
+        }
+
+        fun calculateTotal(sessions: ArrayList<SessionSkeleton>): Int {
+            var total = 0
+            for (session in sessions) {
+                total += when (session.type) { //TODO: this ended up being null but how?
+                    SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> session.duration
+                    SessionType.EMOM -> (session.duration * session.numRounds)
+                    SessionType.HIIT -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
+                    else -> throw IllegalArgumentException("invalid for custom")
+                }
+            }
+            return total
         }
     }
 }

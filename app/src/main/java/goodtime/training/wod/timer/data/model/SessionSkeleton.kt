@@ -20,4 +20,13 @@ data class SessionSkeleton (
                 (this.numRounds == other.numRounds) &&
                 (this.type == other.type)
     }
+
+    fun getActualDuration(): Int {
+        return when(type) {
+            SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> duration
+            SessionType.EMOM -> duration * numRounds
+            SessionType.HIIT -> duration * numRounds + breakDuration * numRounds
+            else -> 0
+        }
+    }
 }

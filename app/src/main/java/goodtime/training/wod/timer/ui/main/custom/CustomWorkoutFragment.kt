@@ -14,10 +14,7 @@ import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
-import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
-import goodtime.training.wod.timer.data.model.SessionSkeleton
-import goodtime.training.wod.timer.data.model.SessionType
-import goodtime.training.wod.timer.data.model.TypeConverter
+import goodtime.training.wod.timer.data.model.*
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
@@ -260,15 +257,7 @@ class CustomWorkoutFragment:
     }
 
     private fun updateTotalDuration() {
-        var total = 0
-        for (session in viewModel.currentWorkout.sessions) {
-            total += when (session.type) { //TODO: this ended up being null but how?
-                SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> session.duration
-                SessionType.EMOM -> (session.duration * session.numRounds)
-                SessionType.HIIT -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
-                else -> throw IllegalArgumentException("invalid for custom")
-            }
-        }
+        val total = Session.calculateTotal(viewModel.currentWorkout.sessions)
         binding.totalTime.isVisible = total != 0
         binding.totalTime.text = StringUtils.secondsToNiceFormat(total)
     }
