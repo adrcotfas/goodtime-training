@@ -41,7 +41,7 @@ class ResourcesHelper {
                         SessionType.FOR_TIME -> {
                             R.drawable.ic_flash
                         }
-                        SessionType.EMOM -> {
+                        SessionType.INTERVALS -> {
                             R.drawable.ic_status_goodtime
                         }
                         SessionType.HIIT -> {

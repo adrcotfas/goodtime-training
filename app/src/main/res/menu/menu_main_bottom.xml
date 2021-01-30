@@ -9,9 +9,9 @@
         android:icon="@drawable/ic_flash"
         android:title="@string/session_type_for_time" />
     <item
-        android:id="@+id/nav_emom"
+        android:id="@+id/nav_intervals"
         android:icon="@drawable/ic_hourglass"
-        android:title="@string/session_type_emom" />
+        android:title="@string/session_type_intervals" />
     <item
         android:id="@+id/nav_hiit"
         android:icon="@drawable/ic_fire2"

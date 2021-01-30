@@ -20,7 +20,7 @@ import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
 import goodtime.training.wod.timer.ui.main.amrap_for_time.AmrapViewModelFactory
 import goodtime.training.wod.timer.ui.main.amrap_for_time.ForTimeViewModelFactory
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutViewModelFactory
-import goodtime.training.wod.timer.ui.main.emom.EmomViewModelFactory
+import goodtime.training.wod.timer.ui.main.intervals.IntervalsViewModelFactory
 import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
 import goodtime.training.wod.timer.ui.settings.EncryptedPreferenceDataStore
 import goodtime.training.wod.timer.ui.stats.LogViewModelFactory
@@ -59,7 +59,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
         bind() from provider { AmrapViewModelFactory(instance()) }
         bind() from provider { ForTimeViewModelFactory(instance()) }
-        bind() from provider { EmomViewModelFactory(instance()) }
+        bind() from provider { IntervalsViewModelFactory(instance()) }
         bind() from provider { HiitViewModelFactory(instance()) }
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { LogViewModelFactory(instance()) }
@@ -95,7 +95,7 @@ class GoodtimeApplication : Application(), KodeinAware {
 
         repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.FOR_TIME))
         repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 20,
-            SessionType.EMOM))
+            SessionType.INTERVALS))
 
         val tabata = SessionSkeleton(
             0, 20, 10, 8,
@@ -111,9 +111,9 @@ class GoodtimeApplication : Application(), KodeinAware {
             0, 3, 3, 3,
             SessionType.HIIT
         )
-        val dummyEmom = SessionSkeleton(
+        val dummyIntervals = SessionSkeleton(
             0, 3, 0, 2,
-            SessionType.EMOM
+            SessionType.INTERVALS
         )
         val dummyRest = SessionSkeleton(0, 30, 5, 0, SessionType.REST)
         repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Dummy",
@@ -122,7 +122,7 @@ class GoodtimeApplication : Application(), KodeinAware {
                 dummyForTime,
                 dummyHiit,
                 dummyRest,
-                dummyEmom,
+                dummyIntervals,
                 dummyRest,
                 dummyAmrap)))
 
@@ -134,8 +134,8 @@ class GoodtimeApplication : Application(), KodeinAware {
         repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("3 x Tabata", arrayListOf(
             tabata, rest30Sec, tabata, rest30Sec, tabata)))
 
-        val emom5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.EMOM)
+        val intervals5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.INTERVALS)
         repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Power Intervals", arrayListOf(
-            emom5, rest1Min, emom5, rest1Min, emom5)))
+            intervals5, rest1Min, intervals5, rest1Min, intervals5)))
     }
 }

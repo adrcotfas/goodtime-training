@@ -55,7 +55,7 @@ data class Session(
             for (session in sessions) {
                 total += when (session.type) { //TODO: this ended up being null but how?
                     SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> session.duration
-                    SessionType.EMOM -> (session.duration * session.numRounds)
+                    SessionType.INTERVALS -> (session.duration * session.numRounds)
                     SessionType.HIIT -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
                     else -> throw IllegalArgumentException("invalid for custom")
                 }

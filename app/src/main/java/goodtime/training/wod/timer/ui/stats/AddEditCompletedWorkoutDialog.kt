@@ -175,9 +175,9 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
                 this,
                 sectionAddEdit.genericMinutesLayout.editText,
                 sectionAddEdit.genericSecondsLayout.editText,
-                sectionAddEdit.emomRoundsLayout.editText,
-                sectionAddEdit.emomMinutesLayout.editText,
-                sectionAddEdit.emomSecondsLayout.editText,
+                sectionAddEdit.intervalsRoundsLayout.editText,
+                sectionAddEdit.intervalsMinutesLayout.editText,
+                sectionAddEdit.intervalsSecondsLayout.editText,
                 sectionAddEdit.hiitRoundsLayout.editText,
                 sectionAddEdit.hiitSecondsWorkLayout.editText,
                 sectionAddEdit.hiitSecondsRestLayout.editText,
@@ -306,17 +306,17 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
         when (sessionType) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
                 sectionAddEdit.genericSection.isVisible = true
-                sectionAddEdit.emomSection.isVisible = false
+                sectionAddEdit.intervalsSection.isVisible = false
                 sectionAddEdit.hiitSection.isVisible = false
             }
-            SessionType.EMOM -> {
+            SessionType.INTERVALS -> {
                 sectionAddEdit.genericSection.isVisible = false
-                sectionAddEdit.emomSection.isVisible = true
+                sectionAddEdit.intervalsSection.isVisible = true
                 sectionAddEdit.hiitSection.isVisible = false
             }
             SessionType.HIIT -> {
                 sectionAddEdit.genericSection.isVisible = false
-                sectionAddEdit.emomSection.isVisible = false
+                sectionAddEdit.intervalsSection.isVisible = false
                 sectionAddEdit.hiitSection.isVisible = true
             }
             else -> {
@@ -328,7 +328,7 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
     private fun toggleCustomWorkoutFavoritesView(visible: Boolean) {
         if (visible) {
             sectionAddEdit.genericSection.isVisible = false
-            sectionAddEdit.emomSection.isVisible = false
+            sectionAddEdit.intervalsSection.isVisible = false
             sectionAddEdit.hiitSection.isVisible = false
             sectionAddEdit.radioButtonSelectCustom.isVisible = false
             sectionAddEdit.radioButtonFromFavorites.isChecked = true

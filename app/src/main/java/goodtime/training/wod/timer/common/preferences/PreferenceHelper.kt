@@ -15,7 +15,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         const val INVALID_FAVORITE_ID = -1L
         private const val AMRAP_FAVORITE_ID = "amrap_favorite_id"
         private const val FOR_TIME_FAVORITE_ID = "for_time_favorite_id"
-        private const val EMOM_FAVORITE_ID = "emom_favorite_id"
+        private const val INTERVALS_FAVORITE_ID = "intervals_favorite_id"
         private const val HIIT_FAVORITE_ID = "hiit_favorite_id"
         private const val CUSTOM_WORKOUT_FAVORITE_NAME = "custom_workout_favorite_id"
 
@@ -61,7 +61,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         return when (sessionType) {
             SessionType.AMRAP -> AMRAP_FAVORITE_ID
             SessionType.FOR_TIME -> FOR_TIME_FAVORITE_ID
-            SessionType.EMOM -> EMOM_FAVORITE_ID
+            SessionType.INTERVALS -> INTERVALS_FAVORITE_ID
             SessionType.HIIT -> HIIT_FAVORITE_ID
             else -> ""
         }

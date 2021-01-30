@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.emom.EmomFragment">
+    tools:context=".ui.main.intervals.IntervalsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pickers"

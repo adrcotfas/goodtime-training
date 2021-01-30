@@ -13,21 +13,21 @@ import java.lang.IllegalArgumentException
 import java.security.InvalidParameterException
 
 data class SessionEditTextHelper(
-    private var listener: Listener,
-    private var genericMinutesEt: TextInputEditText? = null,
-    private var genericSecondsEt: TextInputEditText? = null,
-    private var emomRoundsEt: TextInputEditText? = null,
-    private var emomMinutesEt: TextInputEditText? = null,
-    private var emomSecondsEt: TextInputEditText? = null,
-    private var hiitRoundsEt: TextInputEditText? = null,
-    private var hiitSecondsWorkEt: TextInputEditText? = null,
-    private var hiitSecondsRestEt: TextInputEditText? = null,
-    var sessionType: SessionType,
+        private var listener: Listener,
+        private var genericMinutesEt: TextInputEditText? = null,
+        private var genericSecondsEt: TextInputEditText? = null,
+        private var intervalsRoundsEt: TextInputEditText? = null,
+        private var intervalsMinutesEt: TextInputEditText? = null,
+        private var intervalsSecondsEt: TextInputEditText? = null,
+        private var hiitRoundsEt: TextInputEditText? = null,
+        private var hiitSecondsWorkEt: TextInputEditText? = null,
+        private var hiitSecondsRestEt: TextInputEditText? = null,
+        var sessionType: SessionType,
 ){
 
     init {
-        val initAll = !listOf(genericMinutesEt, genericSecondsEt, emomRoundsEt,
-            emomMinutesEt, emomSecondsEt, hiitRoundsEt, hiitSecondsWorkEt, hiitSecondsRestEt).contains(null)
+        val initAll = !listOf(genericMinutesEt, genericSecondsEt, intervalsRoundsEt,
+            intervalsMinutesEt, intervalsSecondsEt, hiitRoundsEt, hiitSecondsWorkEt, hiitSecondsRestEt).contains(null)
         setupTextEditSections(initAll)
     }
 
@@ -37,20 +37,20 @@ data class SessionEditTextHelper(
 
     private fun setupTextEditSections(initAll: Boolean) {
         val genericEts = listOf(genericMinutesEt, genericSecondsEt)
-        val emomEts = listOf(emomRoundsEt, emomMinutesEt, emomSecondsEt)
+        val intervalsEts = listOf(intervalsRoundsEt, intervalsMinutesEt, intervalsSecondsEt)
         val hiitEts = listOf(hiitRoundsEt, hiitSecondsWorkEt, hiitSecondsRestEt)
-        val allEts = genericEts + emomEts + hiitEts
+        val allEts = genericEts + intervalsEts + hiitEts
 
         val lastGenericEt = genericSecondsEt
-        val lastEmomEt = emomSecondsEt
+        val lastIntervalsEt = intervalsSecondsEt
         val lastHiitEt = hiitSecondsRestEt
-        val allLastEts = listOf(lastGenericEt, lastEmomEt, lastHiitEt)
+        val allLastEts = listOf(lastGenericEt, lastIntervalsEt, lastHiitEt)
 
         if (initAll) {
             for (it in allEts) setupEditTextBehaviorOnFocus(it!!)
             for (it in allLastEts) it!!.imeOptions = EditorInfo.IME_ACTION_DONE
             initGenericSection()
-            initEmomSection()
+            initIntervalsSection()
             initHiitSection()
         } else {
             when (sessionType) {
@@ -59,10 +59,10 @@ data class SessionEditTextHelper(
                     lastGenericEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
                     initGenericSection()
                 }
-                SessionType.EMOM -> {
-                    for (it in emomEts) setupEditTextBehaviorOnFocus(it!!)
-                    lastEmomEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
-                    initEmomSection()
+                SessionType.INTERVALS -> {
+                    for (it in intervalsEts) setupEditTextBehaviorOnFocus(it!!)
+                    lastIntervalsEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
+                    initIntervalsSection()
                 }
                 SessionType.HIIT -> {
                     for (it in hiitEts) setupEditTextBehaviorOnFocus(it!!)
@@ -92,27 +92,27 @@ data class SessionEditTextHelper(
         }
     }
 
-    private fun initEmomSection() {
-        emomRoundsEt!!.addTextChangedListener {
-            setupEditTextLimit(it, emomRoundsEt!!, 60)
+    private fun initIntervalsSection() {
+        intervalsRoundsEt!!.addTextChangedListener {
+            setupEditTextLimit(it, intervalsRoundsEt!!, 60)
             val rounds = toInt(it.toString())
-            val minutes = toInt(emomMinutesEt!!.text.toString())
-            val seconds = toInt(emomSecondsEt!!.text.toString())
+            val minutes = toInt(intervalsMinutesEt!!.text.toString())
+            val seconds = toInt(intervalsSecondsEt!!.text.toString())
             val enabled = rounds != 0 && (minutes != 0 || seconds != 0)
             listener.onTextChanged(enabled, generateFromCurrentSelection())
         }
-        emomMinutesEt!!.addTextChangedListener {
-            setupEditTextLimit(it, emomMinutesEt!!, 10)
-            val rounds = toInt(emomRoundsEt!!.text.toString())
+        intervalsMinutesEt!!.addTextChangedListener {
+            setupEditTextLimit(it, intervalsMinutesEt!!, 10)
+            val rounds = toInt(intervalsRoundsEt!!.text.toString())
             val minutes = toInt(it.toString())
-            val seconds = toInt(emomSecondsEt!!.text.toString())
+            val seconds = toInt(intervalsSecondsEt!!.text.toString())
             val enabled = rounds != 0 && (minutes != 0 || seconds != 0)
             listener.onTextChanged(enabled, generateFromCurrentSelection())
         }
-        emomSecondsEt!!.addTextChangedListener {
-            setupEditTextLimit(it, emomSecondsEt!!, 59)
-            val rounds = toInt(emomRoundsEt!!.text.toString())
-            val minutes = toInt(emomMinutesEt!!.text.toString())
+        intervalsSecondsEt!!.addTextChangedListener {
+            setupEditTextLimit(it, intervalsSecondsEt!!, 59)
+            val rounds = toInt(intervalsRoundsEt!!.text.toString())
+            val minutes = toInt(intervalsMinutesEt!!.text.toString())
             val seconds = toInt(it.toString())
             val enabled = rounds != 0 && (minutes != 0 || seconds != 0)
             listener.onTextChanged(enabled, generateFromCurrentSelection())
@@ -173,9 +173,9 @@ data class SessionEditTextHelper(
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST
             -> SessionSkeleton(0,
                 getCurrentSelectionDuration(sessionType), 0, 0, sessionType)
-            SessionType.EMOM
+            SessionType.INTERVALS
             -> SessionSkeleton(0,
-                getCurrentSelectionDuration(sessionType), 0, toInt(emomRoundsEt!!.text.toString()), sessionType)
+                getCurrentSelectionDuration(sessionType), 0, toInt(intervalsRoundsEt!!.text.toString()), sessionType)
             SessionType.HIIT
             -> SessionSkeleton(0,
                 toInt(hiitSecondsWorkEt!!.text.toString()), toInt(hiitSecondsRestEt!!.text.toString()), toInt(hiitRoundsEt!!.text.toString()), sessionType)
@@ -187,7 +187,7 @@ data class SessionEditTextHelper(
         return when(sessionType) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST
             -> toInt(genericMinutesEt!!.text.toString()) * 60 + toInt(genericSecondsEt!!.text.toString())
-            SessionType.EMOM -> toInt(emomMinutesEt!!.text.toString()) * 60 + toInt(emomSecondsEt!!.text.toString())
+            SessionType.INTERVALS -> toInt(intervalsMinutesEt!!.text.toString()) * 60 + toInt(intervalsSecondsEt!!.text.toString())
             else -> throw InvalidParameterException("wrong session type: $sessionType")
         }
     }
@@ -203,10 +203,10 @@ data class SessionEditTextHelper(
                 setEditTextValue(genericMinutesEt!!, "15")
                 setEditTextValue(genericSecondsEt!!, "00")
             }
-            SessionType.EMOM -> {
-                setEditTextValue(emomRoundsEt!!, "10")
-                setEditTextValue(emomMinutesEt!!, "01")
-                setEditTextValue(emomSecondsEt!!, "00")
+            SessionType.INTERVALS -> {
+                setEditTextValue(intervalsRoundsEt!!, "10")
+                setEditTextValue(intervalsMinutesEt!!, "01")
+                setEditTextValue(intervalsSecondsEt!!, "00")
             }
             SessionType.HIIT -> {
                 setEditTextValue(hiitRoundsEt!!, "08")
@@ -232,11 +232,11 @@ data class SessionEditTextHelper(
                 genericMinutesEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
                 genericSecondsEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
             }
-            SessionType.EMOM -> {
-                emomRoundsEt!!.setText(addPrefixIfNeeded(session.numRounds.toString()))
+            SessionType.INTERVALS -> {
+                intervalsRoundsEt!!.setText(addPrefixIfNeeded(session.numRounds.toString()))
                 val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(session.duration)
-                emomMinutesEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
-                emomSecondsEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
+                intervalsMinutesEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.first.toString()))
+                intervalsSecondsEt!!.setText(addPrefixIfNeeded(minutesAndSeconds.second.toString()))
             }
             SessionType.HIIT -> {
                 hiitRoundsEt!!.setText(addPrefixIfNeeded(session.numRounds.toString()))

@@ -1,4 +1,4 @@
-package goodtime.training.wod.timer.ui.main.emom
+package goodtime.training.wod.timer.ui.main.intervals
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,26 +17,26 @@ import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
-import goodtime.training.wod.timer.databinding.FragmentEmomBinding
+import goodtime.training.wod.timer.databinding.FragmentIntervalsBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
 import org.kodein.di.generic.instance
 
-class EmomFragment : WorkoutTypeFragment() {
+class IntervalsFragment : WorkoutTypeFragment() {
 
     private val preferenceHelper: PreferenceHelper by instance()
-    private val viewModelFactory: EmomViewModelFactory by instance()
-    private lateinit var viewModel: EmomViewModel
+    private val viewModelFactory: IntervalsViewModelFactory by instance()
+    private lateinit var viewModel: IntervalsViewModel
 
-    private lateinit var binding: FragmentEmomBinding
+    private lateinit var binding: FragmentIntervalsBinding
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
     private lateinit var roundsPicker: NumberPicker
 
     private val minuteListener = object : NumberPicker.ScrollListener {
         override fun onScrollFinished(value: Int) {
-            viewModel.emomData.setMinutes(value)
+            viewModel.data.setMinutes(value)
             EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
         }
 
@@ -47,7 +47,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
     private val secondsListener = object : NumberPicker.ScrollListener {
         override fun onScrollFinished(value: Int) {
-            viewModel.emomData.setSeconds(value)
+            viewModel.data.setSeconds(value)
             EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
         }
 
@@ -58,7 +58,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
     private val roundsListener = object : NumberPicker.ScrollListener {
         override fun onScrollFinished(value: Int) {
-            viewModel.emomData.setRounds(value)
+            viewModel.data.setRounds(value)
             EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
         }
 
@@ -69,7 +69,7 @@ class EmomFragment : WorkoutTypeFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(EmomViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(IntervalsViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -78,26 +78,26 @@ class EmomFragment : WorkoutTypeFragment() {
             savedInstanceState: Bundle?
     ): View {
 
-        binding = FragmentEmomBinding.inflate(inflater, container, false)
+        binding = FragmentIntervalsBinding.inflate(inflater, container, false)
 
         val favoritesLd = viewModel.getFavorites()
         favoritesLd.observe(viewLifecycleOwner, { favorites ->
-            val id = preferenceHelper.getCurrentFavoriteId(SessionType.EMOM)
+            val id = preferenceHelper.getCurrentFavoriteId(SessionType.INTERVALS)
             val idx = favorites.indexOfFirst { it.id == id }
 
             //TODO: extract defaults to constants
             val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 60)
             val rounds = if (idx != -1) favorites[idx].numRounds else 20
-            viewModel.emomData = EmomSpinnerData(minutesAndSeconds.first, minutesAndSeconds.second, rounds)
+            viewModel.data = IntervalsSpinnerData(minutesAndSeconds.first, minutesAndSeconds.second, rounds)
             favoritesLd.removeObservers(viewLifecycleOwner)
 
             setupNumberPickers()
 
-            viewModel.emomData.get().observe(
+            viewModel.data.get().observe(
                     viewLifecycleOwner, { data ->
                 val duration = data.first
                 viewModel.session = SessionSkeleton(duration = duration, breakDuration = 0,
-                        numRounds = data.second, type = SessionType.EMOM)
+                        numRounds = data.second, type = SessionType.INTERVALS)
                 updateMainButtonsState(duration)
             })
         })
@@ -126,19 +126,19 @@ class EmomFragment : WorkoutTypeFragment() {
         minutePicker = NumberPicker(
                 requireContext(), binding.pickerMinutes,
                 viewModel.minutesPickerData,
-                viewModel.emomData.getMinutes(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener
+                viewModel.data.getMinutes(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = minuteListener
         )
 
         secondsPicker = NumberPicker(
                 requireContext(), binding.pickerSeconds,
                 viewModel.secondsPickerData,
-                viewModel.emomData.getSeconds(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener
+                viewModel.data.getSeconds(), rowHeight, textSize = PickerSize.MEDIUM, scrollListener = secondsListener
         )
 
         roundsPicker = NumberPicker(
                 requireContext(), binding.pickerRounds,
                 viewModel.roundsPickerData,
-                viewModel.emomData.getRounds(), rowHeight,
+                viewModel.data.getRounds(), rowHeight,
                 textSize = PickerSize.MEDIUM,
                 textColor = Color.NEUTRAL,
                 prefixWithZero = true,
@@ -147,7 +147,7 @@ class EmomFragment : WorkoutTypeFragment() {
     }
 
     override fun onStartWorkout() {
-        val action = EmomFragmentDirections.toWorkout(
+        val action = IntervalsFragmentDirections.toWorkout(
                 sessions =
                 TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
                         + getSelectedSessions().toTypedArray())
@@ -162,7 +162,7 @@ class EmomFragment : WorkoutTypeFragment() {
         minutePicker.smoothScrollToValue(duration.first)
         secondsPicker.smoothScrollToValue(duration.second)
         roundsPicker.smoothScrollToValue(session.numRounds)
-        preferenceHelper.setCurrentFavoriteId(SessionType.EMOM, session.id)
+        preferenceHelper.setCurrentFavoriteId(SessionType.INTERVALS, session.id)
     }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */

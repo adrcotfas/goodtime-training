@@ -1,10 +1,10 @@
-package goodtime.training.wod.timer.ui.main.emom
+package goodtime.training.wod.timer.ui.main.intervals
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import goodtime.training.wod.timer.common.CombinedLiveData
 
-class EmomSpinnerData(private var minutes: Int, private var seconds: Int, private var rounds: Int) {
+class IntervalsSpinnerData(private var minutes: Int, private var seconds: Int, private var rounds: Int) {
 
     private val _minutes = MutableLiveData(minutes)
     private val _seconds = MutableLiveData(seconds)

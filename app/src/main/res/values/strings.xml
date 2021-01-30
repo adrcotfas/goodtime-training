@@ -10,14 +10,14 @@
 
     <string name="session_type_amrap">AMRAP</string>
     <string name="session_type_for_time">FOR TIME</string>
-    <string name="session_type_emom">INTERVALS</string>
+    <string name="session_type_intervals">INTERVALS</string>
     <string name="session_type_hiit">HIIT</string>
     <string name="session_type_rest">REST</string>
 
     <string-array name="session_types">
         <item>@string/session_type_amrap</item>
         <item>@string/session_type_for_time</item>
-        <item>@string/session_type_emom</item>
+        <item>@string/session_type_intervals</item>
         <item>@string/session_type_hiit</item>
         <item>@string/session_type_rest</item>
     </string-array>

@@ -10,15 +10,15 @@ import goodtime.training.wod.timer.common.NumberPickerAdapter
 import goodtime.training.wod.timer.common.smoothSnapToPosition
 
 class NumberPicker(
-    context: Context,
-    private val recyclerView: RecyclerView,
-    data: ArrayList<Int>,
-    defaultValue: Int,
-    private val rowHeight: Float,
-    prefixWithZero: Boolean = true,
-    textSize: PickerSize = PickerSize.LARGE,
-    textColor: Color = Color.GREEN,
-    private val scrollListener: ScrollListener
+        context: Context,
+        private val recyclerView: RecyclerView,
+        data: ArrayList<Int>,
+        defaultValue: Int,
+        private val rowHeight: Float,
+        prefixWithZero: Boolean = true,
+        textSize: PickerSize = PickerSize.LARGE,
+        textColor: Color = Color.GREEN,
+        private val scrollListener: ScrollListener
 ) : NumberPickerAdapter.Listener {
 
     companion object {
@@ -26,20 +26,22 @@ class NumberPicker(
             MEDIUM,
             LARGE
         }
+
         enum class Color {
             GREEN,
             RED,
             NEUTRAL
         }
     }
+
     interface ScrollListener {
         fun onScrollFinished(value: Int)
         fun onScroll()
     }
 
     private val loopingLayoutManager = LoopingLayoutManager(context)
-    private val viewAdapter : NumberPickerAdapter =
-        NumberPickerAdapter(data, this, prefixWithZero, textSize, textColor)
+    private val viewAdapter: NumberPickerAdapter =
+            NumberPickerAdapter(data, this, prefixWithZero, textSize, textColor)
     private val snapHelper = LoopingSnapHelper()
 
     init {
@@ -75,7 +77,7 @@ class NumberPicker(
     private fun adjustScrollToSnap(position: Int) {
         val view = loopingLayoutManager.findViewByPosition(position)
         val snapDistance: IntArray? =
-            view?.let { snapHelper.calculateDistanceToFinalSnap(loopingLayoutManager, it) }
+                view?.let { snapHelper.calculateDistanceToFinalSnap(loopingLayoutManager, it) }
         snapDistance?.let {
             val y = snapDistance[1]
             if (y != 0) {
@@ -84,7 +86,7 @@ class NumberPicker(
         }
     }
 
-    fun getCurrentValue() : Int {
+    fun getCurrentValue(): Int {
         val center = snapHelper.findSnapView(recyclerView.layoutManager)
         return (center?.findViewById(R.id.text) as TextView).text.toString().toInt()
     }

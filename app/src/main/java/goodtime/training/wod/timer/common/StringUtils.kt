@@ -15,7 +15,7 @@ import kotlin.random.Random
 class StringUtils {
 
     companion object {
-        fun secondsToMinutesAndSeconds(seconds: Int) : Pair<Int, Int> {
+        fun secondsToMinutesAndSeconds(seconds: Int): Pair<Int, Int> {
             val min = TimeUnit.SECONDS.toMinutes(seconds.toLong()).toInt()
             val sec = seconds - min * 60
             return Pair(min, sec)
@@ -31,10 +31,10 @@ class StringUtils {
         fun secondsOfDayToTimerFormat(seconds: Int, is24HourFormat: Boolean = true): String {
             val time = LocalTime.ofSecondOfDay(seconds.toLong())
             return time.format(
-                DateTimeFormatter.ofPattern(
-                    if (is24HourFormat) "HH:mm"
-                    else "hh:mm a"
-                )
+                    DateTimeFormatter.ofPattern(
+                            if (is24HourFormat) "HH:mm"
+                            else "hh:mm a"
+                    )
             )
         }
 
@@ -47,11 +47,11 @@ class StringUtils {
         }
 
         fun toFavoriteFormat(session: SessionSkeleton): String {
-            return when(session.type) {
+            return when (session.type) {
                 SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
                     secondsToNiceFormat(session.duration)
                 }
-                SessionType.EMOM -> {
+                SessionType.INTERVALS -> {
                     "${session.numRounds} × ${secondsToNiceFormat(session.duration)}"
                 }
                 SessionType.HIIT -> {
@@ -64,7 +64,7 @@ class StringUtils {
         }
 
         fun toFavoriteFormatExtended(session: SessionSkeleton): String {
-            val prefix = if (session.type != SessionType.EMOM) toString(session.type) else "INT."
+            val prefix = if (session.type != SessionType.INTERVALS) toString(session.type) else "INT."
             return "$prefix ${toFavoriteFormat(session)}"
         }
 
@@ -111,29 +111,25 @@ class StringUtils {
             return when (session.type) {
                 SessionType.AMRAP -> "As many rounds/reps as possible in ${
                     secondsToNiceFormatExtended(
-                        session.duration
+                            session.duration
                     )
                 }"
                 SessionType.FOR_TIME -> "For time with a time cap of ${
                     secondsToNiceFormatExtended(
-                        session.duration
+                            session.duration
                     )
                 }"
-                SessionType.EMOM -> {
-                    (if (session.duration == 60) "Every minute on the minute for ${
-                        secondsToNiceFormatExtended(
-                            session.numRounds * session.duration
-                        )
-                    }"
+                SessionType.INTERVALS -> {
+                    if (session.duration == 60)
+                        "Every minute on the minute for ${secondsToNiceFormatExtended(session.numRounds * session.duration)}"
                     else
-                        "Every ${secondsToNiceFormatExtended(session.duration)} for " +
-                                secondsToNiceFormatExtended(session.numRounds * session.duration))
+                        "${session.numRounds} rounds of ${secondsToNiceFormatExtended(session.duration)}"
                 }
                 SessionType.HIIT -> {
                     val workString =
-                        session.duration.toString() + " second" + if (session.duration > 1) "s" else ""
+                            session.duration.toString() + " second" + if (session.duration > 1) "s" else ""
                     val breakString =
-                        session.breakDuration.toString() + " second" + if (session.breakDuration > 1) "s" else ""
+                            session.breakDuration.toString() + " second" + if (session.breakDuration > 1) "s" else ""
                     "${session.numRounds} high intensity intervals of $workString of work with $breakString of rest"
                 }
                 SessionType.REST -> "Rest for ${secondsToNiceFormatExtended(session.duration)}"
@@ -153,11 +149,11 @@ class StringUtils {
             return "$timeString   $dateString"
         }
 
-        fun toString(sessionType: SessionType) : String {
+        fun toString(sessionType: SessionType): String {
             return when (sessionType) {
                 SessionType.AMRAP -> "AMRAP"
                 SessionType.FOR_TIME -> "FOR TIME"
-                SessionType.EMOM -> "INTERVALS"
+                SessionType.INTERVALS -> "INTERVALS"
                 SessionType.HIIT -> "HIIT"
                 SessionType.REST -> "REST"
                 SessionType.CUSTOM -> "CUSTOM"
@@ -165,27 +161,27 @@ class StringUtils {
         }
 
         private val congratsStrings = arrayListOf(
-            "Good job! \uD83D\uDCAA",
-            "Not bad! \uD83E\uDD1C\uD83E\uDD1B",
-            "Well done! \uD83D\uDD25",
-            "Congrats! \uD83C\uDFC5",
-            "Congrats! \uD83C\uDFC6"
+                "Good job! \uD83D\uDCAA",
+                "Not bad! \uD83E\uDD1C\uD83E\uDD1B",
+                "Well done! \uD83D\uDD25",
+                "Congrats! \uD83C\uDFC5",
+                "Congrats! \uD83C\uDFC6"
         )
 
-        fun generateCongrats() : String {
+        fun generateCongrats(): String {
             val randomIdx = Random.nextInt(0, congratsStrings.size)
             return congratsStrings[randomIdx]
         }
 
-        fun getDaysOfWeekShort() : ArrayList<String> {
+        fun getDaysOfWeekShort(): ArrayList<String> {
             val daysOfWeekRaw = mutableListOf(
-                DayOfWeek.MONDAY,
-                DayOfWeek.TUESDAY,
-                DayOfWeek.WEDNESDAY,
-                DayOfWeek.THURSDAY,
-                DayOfWeek.FRIDAY,
-                DayOfWeek.SATURDAY,
-                DayOfWeek.SUNDAY
+                    DayOfWeek.MONDAY,
+                    DayOfWeek.TUESDAY,
+                    DayOfWeek.WEDNESDAY,
+                    DayOfWeek.THURSDAY,
+                    DayOfWeek.FRIDAY,
+                    DayOfWeek.SATURDAY,
+                    DayOfWeek.SUNDAY
             )
 
             val result = ArrayList<String>(7)

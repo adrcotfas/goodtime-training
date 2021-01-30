@@ -22,8 +22,8 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_emom"
-        android:name="goodtime.training.wod.timer.ui.main.emom.EmomFragment">
+        android:id="@+id/nav_intervals"
+        android:name="goodtime.training.wod.timer.ui.main.intervals.IntervalsFragment">
         <action
             android:id="@+id/to_workout"
             app:destination="@id/nav_workout" />

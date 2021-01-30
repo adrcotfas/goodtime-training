@@ -122,7 +122,7 @@ class TimerFragment : Fragment(), KodeinAware {
             val type = viewModel.getCurrentSessionType()
             binding.finishButton.isVisible = type == SessionType.FOR_TIME
             binding.roundCounterButtonContainer.isVisible = type == SessionType.FOR_TIME || type == SessionType.AMRAP
-            binding.round.isVisible = type == SessionType.HIIT || type == SessionType.EMOM
+            binding.round.isVisible = type == SessionType.HIIT || type == SessionType.INTERVALS
             binding.round.text =
                     "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
             binding.workoutImage.setImageDrawable(ResourcesHelper.getDrawableFor(type))

@@ -99,9 +99,9 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                 this,
                 sectionAddEdit.genericMinutesLayout.editText,
                 sectionAddEdit.genericSecondsLayout.editText,
-                sectionAddEdit.emomRoundsLayout.editText,
-                sectionAddEdit.emomMinutesLayout.editText,
-                sectionAddEdit.emomSecondsLayout.editText,
+                sectionAddEdit.intervalsRoundsLayout.editText,
+                sectionAddEdit.intervalsMinutesLayout.editText,
+                sectionAddEdit.intervalsSecondsLayout.editText,
                 sectionAddEdit.hiitRoundsLayout.editText,
                 sectionAddEdit.hiitSecondsWorkLayout.editText,
                 sectionAddEdit.hiitSecondsRestLayout.editText,
@@ -198,17 +198,17 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
         when (sessionType) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
                 sectionAddEdit.genericSection.isVisible = true
-                sectionAddEdit.emomSection.isVisible = false
+                sectionAddEdit.intervalsSection.isVisible = false
                 sectionAddEdit.hiitSection.isVisible = false
             }
-            SessionType.EMOM -> {
+            SessionType.INTERVALS -> {
                 sectionAddEdit.genericSection.isVisible = false
-                sectionAddEdit.emomSection.isVisible = true
+                sectionAddEdit.intervalsSection.isVisible = true
                 sectionAddEdit.hiitSection.isVisible = false
             }
             SessionType.HIIT -> {
                 sectionAddEdit.genericSection.isVisible = false
-                sectionAddEdit.emomSection.isVisible = false
+                sectionAddEdit.intervalsSection.isVisible = false
                 sectionAddEdit.hiitSection.isVisible = true
             }
             else -> {}

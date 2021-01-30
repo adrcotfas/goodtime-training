@@ -42,14 +42,14 @@ class TimerViewModel(
     val currentSessionIdx = MutableLiveData(0)
 
     /**
-     * For EMOM and Tabata workouts this will indicate the current round
+     * For Intervals and HIIT workouts this will indicate the current round
      */
     val currentRoundIdx = MutableLiveData<Int>()
 
     val secondsUntilFinished = MutableLiveData<Int>()
 
     /**
-     * used for Tabata workouts to signal the rest
+     * used for HIIT workouts to signal the rest
      */
     val isResting = MutableLiveData(false)
 
@@ -241,7 +241,7 @@ class TimerViewModel(
             SessionType.FOR_TIME -> {
                 durations[index] = sessionSkeleton.duration - secondsUntilFinished
             }
-            SessionType.EMOM -> {
+            SessionType.INTERVALS -> {
                 if (abandoned) {
                     // rounds already finished
                     val fullRoundsDuration = sessionSkeleton.duration * currentRoundIdx
@@ -269,6 +269,7 @@ class TimerViewModel(
                             sessionSkeleton.breakDuration * (sessionSkeleton.numRounds)
                 }
             }
+            else -> {}
         }
     }
 
@@ -300,7 +301,7 @@ class TimerViewModel(
                     }
                 }
             }
-            SessionType.EMOM -> {
+            SessionType.INTERVALS -> {
                 if (isLastRound()) {
                     if (isLastSession()) {
                         timerState.value = TimerState.FINISHED
@@ -380,6 +381,7 @@ class TimerViewModel(
                     }
                 }
             }
+            else -> {}
         }
     }
 

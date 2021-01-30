@@ -173,7 +173,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/emom_section"
+                android:id="@+id/intervals_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -181,17 +181,17 @@
                 tools:visibility="visible">
 
                 <include
-                    android:id="@+id/emom_rounds_layout"
+                    android:id="@+id/intervals_rounds_layout"
                     layout="@layout/text_input_layout_section"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_section_separator1"
+                    app:layout_constraintEnd_toStartOf="@+id/intervals_section_separator1"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:unit="@{`rounds`}" />
 
                 <TextView
-                    android:id="@+id/emom_section_separator1"
+                    android:id="@+id/intervals_section_separator1"
                     style="@style/TimerStyleLite.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -200,21 +200,21 @@
                     android:text="@string/x"
                     android:textColor="@color/grey500"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_minutes_layout"
-                    app:layout_constraintStart_toEndOf="@+id/emom_rounds_layout"
+                    app:layout_constraintEnd_toStartOf="@+id/intervals_minutes_layout"
+                    app:layout_constraintStart_toEndOf="@+id/intervals_rounds_layout"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <include
-                    android:id="@+id/emom_minutes_layout"
+                    android:id="@+id/intervals_minutes_layout"
                     layout="@layout/text_input_layout_section"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_section_separator2"
-                    app:layout_constraintStart_toEndOf="@+id/emom_section_separator1"
+                    app:layout_constraintEnd_toStartOf="@+id/intervals_section_separator2"
+                    app:layout_constraintStart_toEndOf="@+id/intervals_section_separator1"
                     app:unit="@{`minutes`}" />
 
                 <TextView
-                    android:id="@+id/emom_section_separator2"
+                    android:id="@+id/intervals_section_separator2"
                     style="@style/TimerStyleLite.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -223,18 +223,18 @@
                     android:text="@string/colon"
                     android:textColor="@color/grey500"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/emom_seconds_layout"
+                    app:layout_constraintEnd_toStartOf="@+id/intervals_seconds_layout"
                     app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toEndOf="@+id/emom_minutes_layout"
+                    app:layout_constraintStart_toEndOf="@+id/intervals_minutes_layout"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <include
-                    android:id="@+id/emom_seconds_layout"
+                    android:id="@+id/intervals_seconds_layout"
                     layout="@layout/text_input_layout_section"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/emom_section_separator2"
+                    app:layout_constraintStart_toEndOf="@+id/intervals_section_separator2"
                     app:unit="@{`seconds`}" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

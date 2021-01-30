@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             setOf(
                 R.id.nav_amrap,
                 R.id.nav_for_time,
-                R.id.nav_emom,
+                R.id.nav_intervals,
                 R.id.nav_hiit,
                 R.id.nav_custom
             ),
