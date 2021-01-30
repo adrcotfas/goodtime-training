@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.calculateRowHeight
 import goodtime.training.wod.timer.common.number_picker.NumberPicker
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.Color
@@ -18,6 +19,7 @@ import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentHiitBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
+import org.greenrobot.eventbus.EventBus
 import org.kodein.di.generic.instance
 
 class HiitFragment : WorkoutTypeFragment() {
@@ -27,20 +29,41 @@ class HiitFragment : WorkoutTypeFragment() {
     private lateinit var viewModel: HiitViewModel
 
     private lateinit var binding: FragmentHiitBinding
-    private lateinit var secondsWorkPicker:  NumberPicker
+    private lateinit var secondsWorkPicker: NumberPicker
     private lateinit var secondsBreakPicker: NumberPicker
     private lateinit var roundsPicker: NumberPicker
 
-    private val secondsWorkListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) { viewModel.hiitData.setSecondsWork(value) }
+    private val secondsWorkListener = object : NumberPicker.ScrollListener {
+        override fun onScrollFinished(value: Int) {
+            viewModel.hiitData.setSecondsWork(value)
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
+        }
+
+        override fun onScroll() {
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(false))
+        }
     }
 
-    private val secondsBreakListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) { viewModel.hiitData.setSecondsBreak(value) }
+    private val secondsBreakListener = object : NumberPicker.ScrollListener {
+        override fun onScrollFinished(value: Int) {
+            viewModel.hiitData.setSecondsBreak(value)
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
+        }
+
+        override fun onScroll() {
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(false))
+        }
     }
 
-    private val roundsListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) { viewModel.hiitData.setRounds(value) }
+    private val roundsListener = object : NumberPicker.ScrollListener {
+        override fun onScrollFinished(value: Int) {
+            viewModel.hiitData.setRounds(value)
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
+        }
+
+        override fun onScroll() {
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(false))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +82,7 @@ class HiitFragment : WorkoutTypeFragment() {
         val favoritesLd = viewModel.getFavorites()
         favoritesLd.observe(viewLifecycleOwner, { favorites ->
             val id = preferenceHelper.getCurrentFavoriteId(SessionType.HIIT)
-            val idx = favorites.indexOfFirst{it.id == id}
+            val idx = favorites.indexOfFirst { it.id == id }
 
             viewModel.hiitData = HiitSpinnerData(
                     if (idx != -1) favorites[idx].duration else 20,
@@ -74,8 +97,7 @@ class HiitFragment : WorkoutTypeFragment() {
                 viewModel.session =
                         SessionSkeleton(duration = hiitData.first, breakDuration = hiitData.second,
                                 numRounds = hiitData.third, type = SessionType.HIIT)
-            }
-            )
+            })
         })
 
         showBalloonsIfNeeded()
@@ -131,9 +153,9 @@ class HiitFragment : WorkoutTypeFragment() {
     }
 
     override fun onStartWorkout() {
-        val action = HiitFragmentDirections.toWorkout( sessions =
-                TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
-                        + getSelectedSessions().toTypedArray())
+        val action = HiitFragmentDirections.toWorkout(sessions =
+        TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                + getSelectedSessions().toTypedArray())
         )
         findNavController().navigate(action)
     }
@@ -147,6 +169,9 @@ class HiitFragment : WorkoutTypeFragment() {
         preferenceHelper.setCurrentFavoriteId(SessionType.HIIT, session.id)
     }
 
-    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
-    override fun onFavoriteDeleted(name: String) {/* Do nothing */ }
+    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */
+    }
+
+    override fun onFavoriteDeleted(name: String) {/* Do nothing */
+    }
 }

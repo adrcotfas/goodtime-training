@@ -1,11 +1,11 @@
 package goodtime.training.wod.timer.ui.main
 
-import android.annotation.SuppressLint
 import android.view.View
 import androidx.fragment.app.Fragment
-import goodtime.training.wod.timer.MainActivity
+import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
+import org.greenrobot.eventbus.EventBus
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 
@@ -37,7 +37,7 @@ abstract class WorkoutTypeFragment:
             return
         }
         isDurationValid = duration != 0
-        (requireActivity() as MainActivity).setStartButtonState(isDurationValid)
+        EventBus.getDefault().post(Events.Companion.SetStartButtonStateWithColor(isDurationValid))
     }
 
     private fun hideContent() {

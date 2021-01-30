@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.calculateRowHeight
 import goodtime.training.wod.timer.common.number_picker.NumberPicker
@@ -16,10 +17,11 @@ import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentAmrapForTimeBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
+import org.greenrobot.eventbus.EventBus
 import org.kodein.di.generic.instance
 
-open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
-    private val sessionType: SessionType)
+open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>(
+        private val sessionType: SessionType)
     : WorkoutTypeFragment() {
 
     private var pickersAreSetup = false
@@ -30,22 +32,32 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
     private lateinit var minutePicker: NumberPicker
     private lateinit var secondsPicker: NumberPicker
 
-    private val minuteListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) {
-                viewModel.timeData.setMinutes(value)
+    private val minuteListener = object : NumberPicker.ScrollListener {
+        override fun onScrollFinished(value: Int) {
+            viewModel.timeData.setMinutes(value)
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
+        }
+
+        override fun onScroll() {
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(false))
         }
     }
 
-    private val secondsListener = object: NumberPicker.ScrollListener {
-        override fun onScroll(value: Int) {
-                viewModel.timeData.setSeconds(value)
+    private val secondsListener = object : NumberPicker.ScrollListener {
+        override fun onScrollFinished(value: Int) {
+            viewModel.timeData.setSeconds(value)
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(true))
+        }
+
+        override fun onScroll() {
+            EventBus.getDefault().post(Events.Companion.SetStartButtonState(false))
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = FragmentAmrapForTimeBinding.inflate(inflater, container, false)
 
@@ -61,15 +73,15 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
             setupNumberPickers()
 
             viewModel.timeData.get().observe(
-                viewLifecycleOwner, { duration ->
-                    viewModel.session = SessionSkeleton(
+                    viewLifecycleOwner, { duration ->
+                viewModel.session = SessionSkeleton(
                         duration = duration,
                         breakDuration = 0,
                         numRounds = 0,
                         type = sessionType
-                    )
-                    updateMainButtonsState(duration)
-                }
+                )
+                updateMainButtonsState(duration)
+            }
             )
         })
 
@@ -135,6 +147,9 @@ open class MinutesAndSecondsFragment<ViewModelType: MinutesAndSecondsViewModel>(
 
     //TODO: extract the two functions to a common interface;
     //use the viewModel to access the repo and get the corresponding workout or session
-    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */ }
-    override fun onFavoriteDeleted(name: String) {/* Do nothing */ }
+    override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {/* Do nothing */
+    }
+
+    override fun onFavoriteDeleted(name: String) {/* Do nothing */
+    }
 }

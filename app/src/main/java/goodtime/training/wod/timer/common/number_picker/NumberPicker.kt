@@ -33,7 +33,8 @@ class NumberPicker(
         }
     }
     interface ScrollListener {
-        fun onScroll(value: Int)
+        fun onScrollFinished(value: Int)
+        fun onScroll()
     }
 
     private val loopingLayoutManager = LoopingLayoutManager(context)
@@ -48,6 +49,7 @@ class NumberPicker(
             adapter = viewAdapter
             layoutParams.height = 3 * rowHeight.toInt()
             layoutParams.width = rowHeight.toInt()
+            setHasFixedSize(true)
         }
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -55,8 +57,9 @@ class NumberPicker(
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {
                         val value = getCurrentValue()
-                        scrollListener.onScroll(value)
+                        scrollListener.onScrollFinished(value)
                     }
+                    else -> scrollListener.onScroll()
                 }
             }
         })
@@ -91,7 +94,7 @@ class NumberPicker(
         val bottom = loopingLayoutManager.bottomRightIndex
         if (position == top || position == bottom) {
             adjustScrollToSnap(position)
-            scrollListener.onScroll(getCurrentValue())
+            scrollListener.onScrollFinished(getCurrentValue())
         } else {
             // TODO: do I need this?
             // center of the picker was clicked

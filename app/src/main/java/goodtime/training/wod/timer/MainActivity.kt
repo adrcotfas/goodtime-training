@@ -201,8 +201,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     private fun getVisibleFragment() =
         (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
-    fun setStartButtonState(enabled: Boolean) {
-        startButton.isEnabled = enabled
+    private fun setStartButtonStateWithColor(enabled: Boolean) {
+        setStartButtonState(enabled)
         if (enabled) {
             startButton.background?.setTint(ResourcesHelper.darkerGreen)
             startButton.drawable?.setTint(ResourcesHelper.green)
@@ -210,6 +210,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             startButton.background?.setTint(ResourcesHelper.grey1000)
             startButton.drawable?.setTint(ResourcesHelper.grey800)
         }
+    }
+
+    private fun setStartButtonState(enabled: Boolean) {
+        startButton.isEnabled = enabled
+        favoritesButton.isEnabled = enabled
     }
 
     private fun toggleFullscreenMode(newState: Boolean) {
@@ -301,5 +306,15 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         filterButton.text = getString(R.string.filter)
         filterButton.isCloseIconVisible = false
         filterButton.isChipIconVisible = true
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: Events.Companion.SetStartButtonState) {
+        setStartButtonState(event.enabled)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: Events.Companion.SetStartButtonStateWithColor) {
+        setStartButtonStateWithColor(event.enabled)
     }
 }

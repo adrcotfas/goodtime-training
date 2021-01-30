@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import goodtime.training.wod.timer.MainActivity
+import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
@@ -18,8 +18,8 @@ import goodtime.training.wod.timer.data.model.*
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
+import org.greenrobot.eventbus.EventBus
 import org.kodein.di.generic.instance
-import java.lang.IllegalArgumentException
 
 class CustomWorkoutFragment:
         WorkoutTypeFragment(),
@@ -277,6 +277,6 @@ class CustomWorkoutFragment:
     }
 
     private fun refreshStartButtonState(state: Boolean = viewModel.currentWorkout.sessions.isNotEmpty()) {
-        (requireActivity() as MainActivity).setStartButtonState(state)
+        EventBus.getDefault().post(Events.Companion.SetStartButtonStateWithColor(state))
     }
 }
