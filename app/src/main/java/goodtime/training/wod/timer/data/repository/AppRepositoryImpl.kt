@@ -62,6 +62,7 @@ class AppRepositoryImpl(
     }
 
     override fun getCustomWorkoutSkeletons() = customWorkoutSkeletonDao.get()
+    override fun getCustomWorkoutSkeleton(name: String) = customWorkoutSkeletonDao.get(name)
 
     override fun editCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton) {
         GlobalScope.launch {

@@ -14,11 +14,11 @@ import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import java.time.LocalTime
 
 class SettingsFragment:
         PreferenceFragmentCompat(),
         KodeinAware,
-        TimePickerDialogBuilder.Listener,
         SoundProfileDialog.Listener {
 
     override val kodein by closestKodein()
@@ -109,8 +109,13 @@ class SettingsFragment:
     private fun setupReminderPreference() {
         timePickerPreference = findPreference(PreferenceHelper.REMINDER_TIME)!!
         timePickerPreference.setOnPreferenceClickListener {
-            val dialog = TimePickerDialogBuilder(requireContext(), this)
+            val dialog = TimePickerDialogBuilder(requireContext())
                     .buildDialog(preferenceHelper.getReminderTime())
+            dialog.addOnPositiveButtonClickListener {
+                val newValue = LocalTime.of(dialog.hour, dialog.minute).toSecondOfDay()
+                preferenceHelper.setReminderTime(newValue)
+                updateReminderTimeSummary()
+            }
             dialog.show(parentFragmentManager, "MaterialTimePicker")
             true
         }
@@ -120,11 +125,6 @@ class SettingsFragment:
     private fun updateReminderTimeSummary() {
         timePickerPreference.summary = StringUtils.secondsOfDayToTimerFormat(
                 preferenceHelper.getReminderTime(), DateFormat.is24HourFormat(context))
-    }
-
-    override fun onTimeSet(secondOfDay: Long) {
-        preferenceHelper.setReminderTime(secondOfDay.toInt())
-        updateReminderTimeSummary()
     }
 
     private fun setupSoundProfilePreference() {

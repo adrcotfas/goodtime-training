@@ -19,14 +19,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:hintEnabled="false"
-            android:isScrollContainer="false"
+            android:isScrollContainer="true"
+            android:scrollbars="vertical"
             app:errorContentDescription="">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:minHeight="60dp"
+                android:layout_height="wrap_content"
+                android:minHeight="96dp"
+                android:gravity="top|start"
                 android:inputType="textMultiLine"
                 android:textColor="@color/grey200"
                 android:textSize="@dimen/smallTextSize"
@@ -46,6 +48,6 @@
             android:layout_marginStart="12dp"
             android:text="@{unit}"
             android:textColor="@color/grey500"
-            tools:text="rounds" />
+            tools:text="notes" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

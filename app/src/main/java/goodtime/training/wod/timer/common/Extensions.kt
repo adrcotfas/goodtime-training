@@ -1,10 +1,10 @@
 package goodtime.training.wod.timer.common
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.PickerSize
 
@@ -53,12 +54,12 @@ fun View.hideKeyboard(activity: Activity) {
 
 fun calculateRowHeight(layoutInflater: LayoutInflater, size: PickerSize = PickerSize.LARGE): Float {
     val textView = layoutInflater
-        .inflate(
-            when (size) {
-                PickerSize.LARGE -> R.layout.row_number_picker_large
-                PickerSize.MEDIUM -> R.layout.row_number_picker_medium
-            }, null
-        ) as TextView
+            .inflate(
+                    when (size) {
+                        PickerSize.LARGE -> R.layout.row_number_picker_large
+                        PickerSize.MEDIUM -> R.layout.row_number_picker_medium
+                    }, null
+            ) as TextView
     val fm = textView.paint.fontMetrics
     return fm.descent - fm.ascent
 }
@@ -71,7 +72,36 @@ fun RecyclerView.smoothSnapToPosition(position: Int) {
         override fun getVerticalSnapPreference(): Int = SNAP_TO_START
     }
     smoothScroller.targetPosition = position
-    this.post{ layoutManager?.startSmoothScroll(smoothScroller) }
+    this.post { layoutManager?.startSmoothScroll(smoothScroller) }
+}
+
+@SuppressLint("SetTextI18n")
+fun TextInputEditText.setTextWithZeroPrefix(text: String) {
+    when {
+        text.isEmpty() -> setText("00")
+        text.length == 1 -> setText("0${text}")
+        else -> setText(text)
+    }
+}
+
+@SuppressLint("SetTextI18n")
+fun TextInputEditText.setupZeroPrefixBehaviourOnFocus() {
+    setOnFocusChangeListener { _, hasFocus ->
+        if (!hasFocus) {
+            if (editableText.isNullOrEmpty()) setText("00")
+            // prefix single digits with a zero
+            if (editableText?.length == 1) {
+                text?.insert(0, "0")
+            }
+        }
+    }
+}
+
+@SuppressLint("SetTextI18n")
+fun TextInputEditText.trimTo(limit: Int) {
+    if(toInt(editableText.toString()) > limit) {
+        setText(if (limit < 10) "0$limit" else limit.toString())
+    }
 }
 
 fun toInt(string: String): Int {

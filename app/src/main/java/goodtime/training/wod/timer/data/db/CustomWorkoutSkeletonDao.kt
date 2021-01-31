@@ -18,6 +18,9 @@ interface CustomWorkoutSkeletonDao {
     @Query("select * from CustomWorkoutSkeleton order by `name`")
     fun get() : LiveData<List<CustomWorkoutSkeleton>>
 
+    @Query("select * from CustomWorkoutSkeleton where name = :name")
+    fun get(name: String) : LiveData<CustomWorkoutSkeleton>
+
     @Query("delete from CustomWorkoutSkeleton where name = :name")
     suspend fun remove(name: String)
 

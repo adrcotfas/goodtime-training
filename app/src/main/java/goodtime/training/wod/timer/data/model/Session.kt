@@ -62,5 +62,25 @@ data class Session(
             }
             return total
         }
+
+        /**
+         * The absolute minimum of seconds needed to complete such a workout, considering FOR TIME sessions
+         * For example, you would hypothetically need at least 1 minute and 1 second to complete
+         * a 1 minute AMRAM and a 1 minute FOR_TIME
+         */
+        fun calculateMinimumToComplete(sessions: ArrayList<SessionSkeleton>): Int {
+            var total = 0
+            var numberOfForTimeWorkouts = 0
+            for (session in sessions) {
+                total += when (session.type) { //TODO: this ended up being null but how?
+                    SessionType.AMRAP, SessionType.REST -> session.duration
+                    SessionType.INTERVALS -> (session.duration * session.numRounds)
+                    SessionType.HIIT -> (session.duration * session.numRounds + session.breakDuration * session.numRounds)
+                    else -> 0
+                }
+                if (session.type == SessionType.FOR_TIME) ++numberOfForTimeWorkouts
+            }
+            return total + numberOfForTimeWorkouts
+        }
     }
 }

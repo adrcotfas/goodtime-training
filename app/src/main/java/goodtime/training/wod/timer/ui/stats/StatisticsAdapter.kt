@@ -63,11 +63,15 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
             if (session.actualRounds > 0) {
                 rounds.isVisible = true
                 rounds.text = "${session.actualRounds} rounds"
+            } else {
+                rounds.isVisible = false
             }
 
             if (!session.notes.isNullOrEmpty()) {
                 notes.isVisible = true
                 notes.text = session.notes
+            } else {
+                notes.isVisible = false
             }
             prIcon.isVisible = session.id == prId
 

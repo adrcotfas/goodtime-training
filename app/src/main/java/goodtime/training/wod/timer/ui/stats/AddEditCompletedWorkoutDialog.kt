@@ -11,6 +11,7 @@ import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
+import goodtime.training.wod.timer.common.TimeUtils
 import goodtime.training.wod.timer.common.hideKeyboardFrom
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.Session
@@ -27,7 +28,7 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import java.time.*
 
-class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener, TimePickerDialogBuilder.Listener {
+class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
 
@@ -130,31 +131,31 @@ class AddEditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, 
 
     private fun setupDateAndTimePickers() {
         val localTime = LocalTime.ofSecondOfDay(millisToSecondOfDay(candidate.timestamp))
-        binding.editDate.text = StringUtils.formatDateLong(millisToLocalDate(candidate.timestamp))
-        binding.editTime.text = StringUtils.formatTime(localTime)
+        binding.editDate.text = TimeUtils.formatDateLong(millisToLocalDate(candidate.timestamp))
+        binding.editTime.text = TimeUtils.formatTime(localTime)
 
         binding.editDate.setOnClickListener {
             val picker = DatePickerDialogHelper.buildDatePicker(candidate.timestamp)
             picker.addOnPositiveButtonClickListener {
                 val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
                 candidate.timestamp = LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                binding.editDate.text = StringUtils.formatDateLong(localDate)
+                binding.editDate.text = TimeUtils.formatDateLong(localDate)
             }
             picker.show(parentFragmentManager, "MaterialDatePicker")
         }
 
         binding.editTime.setOnClickListener {
-            val dialog = TimePickerDialogBuilder(requireContext(), this)
+            val dialog = TimePickerDialogBuilder(requireContext())
                     .buildDialog(millisToSecondOfDay(candidate.timestamp).toInt())
+            dialog.addOnPositiveButtonClickListener {
+                val newValue = LocalTime.of(dialog.hour, dialog.minute).toSecondOfDay()
+                val localDate = millisToLocalDate(candidate.timestamp)
+                val newLocalTime = LocalTime.ofSecondOfDay(newValue.toLong())
+                candidate.timestamp = LocalDateTime.of(localDate, newLocalTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                binding.editTime.text = TimeUtils.formatTime(newLocalTime)
+            }
             dialog.show(parentFragmentManager, "MaterialTimePicker")
         }
-    }
-
-    override fun onTimeSet(secondOfDay: Long) {
-        val localDate = millisToLocalDate(candidate.timestamp)
-        val localTime = LocalTime.ofSecondOfDay(secondOfDay)
-        candidate.timestamp = LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        binding.editTime.text = StringUtils.formatTime(localTime)
     }
 
     private fun setupButtons() {

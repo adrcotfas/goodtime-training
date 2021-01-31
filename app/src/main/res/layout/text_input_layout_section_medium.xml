@@ -4,7 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="unit" type="String" />
+        <variable
+            name="unit"
+            type="String" />
+
+        <variable
+            name="maxLength"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,43 +20,43 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-            android:layout_width="90sp"
+            android:layout_width="80sp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:hintEnabled="false"
             android:isScrollContainer="false"
-            app:errorContentDescription="">
+            app:errorContentDescription=""
+            app:hintEnabled="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="numberDecimal"
                 android:digits="0123456789"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:textColor="@color/grey200"
-                android:textSize="28sp"
-                android:selectAllOnFocus="true"
-                app:fontFamily="@font/timer_font"
-                android:includeFontPadding="false"
-                android:maxLength="3"
                 android:gravity="center_horizontal"
                 android:imeOptions="actionNext"
-                tools:text="15"/>
+                android:includeFontPadding="false"
+                android:inputType="numberDecimal"
+                android:maxLength="@{maxLength}"
+                android:maxLines="1"
+                android:selectAllOnFocus="true"
+                android:singleLine="true"
+                android:textColor="@color/grey200"
+                android:textSize="28sp"
+                app:fontFamily="@font/timer_font"
+                tools:text="15" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/input_layout"
-            app:layout_constraintStart_toStartOf="@id/input_layout"
-            app:layout_constraintEnd_toEndOf="@id/input_layout"
             android:layout_marginTop="6dp"
-            android:textSize="12sp"
             android:text="@{unit}"
             android:textColor="@color/grey500"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/input_layout"
+            app:layout_constraintStart_toStartOf="@id/input_layout"
+            app:layout_constraintTop_toTopOf="@id/input_layout"
             tools:text="rounds" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

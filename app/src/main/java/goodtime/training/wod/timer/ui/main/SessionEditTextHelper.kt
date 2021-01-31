@@ -1,11 +1,11 @@
 package goodtime.training.wod.timer.ui.main
 
-import android.annotation.SuppressLint
-import android.text.Editable
 import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.textfield.TextInputEditText
 import goodtime.training.wod.timer.common.StringUtils
+import goodtime.training.wod.timer.common.trimTo
+import goodtime.training.wod.timer.common.setupZeroPrefixBehaviourOnFocus
 import goodtime.training.wod.timer.common.toInt
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -47,7 +47,7 @@ data class SessionEditTextHelper(
         val allLastEts = listOf(lastGenericEt, lastIntervalsEt, lastHiitEt)
 
         if (initAll) {
-            for (it in allEts) setupEditTextBehaviorOnFocus(it!!)
+            for (it in allEts) it!!.setupZeroPrefixBehaviourOnFocus()
             for (it in allLastEts) it!!.imeOptions = EditorInfo.IME_ACTION_DONE
             initGenericSection()
             initIntervalsSection()
@@ -55,17 +55,17 @@ data class SessionEditTextHelper(
         } else {
             when (sessionType) {
                 SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                    for (it in genericEts) setupEditTextBehaviorOnFocus(it!!)
+                    for (it in genericEts) it!!.setupZeroPrefixBehaviourOnFocus()
                     lastGenericEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
                     initGenericSection()
                 }
                 SessionType.INTERVALS -> {
-                    for (it in intervalsEts) setupEditTextBehaviorOnFocus(it!!)
+                    for (it in intervalsEts) it!!.setupZeroPrefixBehaviourOnFocus()
                     lastIntervalsEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
                     initIntervalsSection()
                 }
                 SessionType.HIIT -> {
-                    for (it in hiitEts) setupEditTextBehaviorOnFocus(it!!)
+                    for (it in hiitEts) it!!.setupZeroPrefixBehaviourOnFocus()
                     lastHiitEt!!.imeOptions = EditorInfo.IME_ACTION_DONE
                     initHiitSection()
                 }
@@ -76,7 +76,7 @@ data class SessionEditTextHelper(
 
     private fun initGenericSection() {
         genericMinutesEt!!.addTextChangedListener {
-            setupEditTextLimit(it, genericMinutesEt!!, 60)
+            genericMinutesEt!!.trimTo(60)
             val minutes = toInt(it.toString())
             val seconds = toInt(genericSecondsEt!!.text.toString())
             val enabled = minutes != 0 || seconds != 0
@@ -84,7 +84,7 @@ data class SessionEditTextHelper(
         }
 
         genericSecondsEt!!.addTextChangedListener {
-            setupEditTextLimit(it, genericSecondsEt!!, 59)
+            genericSecondsEt!!.trimTo(59)
             val minutes = toInt(genericMinutesEt!!.text.toString())
             val seconds = toInt(it.toString())
             val enabled = minutes != 0 || seconds != 0
@@ -94,7 +94,7 @@ data class SessionEditTextHelper(
 
     private fun initIntervalsSection() {
         intervalsRoundsEt!!.addTextChangedListener {
-            setupEditTextLimit(it, intervalsRoundsEt!!, 60)
+            intervalsRoundsEt!!.trimTo(60)
             val rounds = toInt(it.toString())
             val minutes = toInt(intervalsMinutesEt!!.text.toString())
             val seconds = toInt(intervalsSecondsEt!!.text.toString())
@@ -102,7 +102,7 @@ data class SessionEditTextHelper(
             listener.onTextChanged(enabled, generateFromCurrentSelection())
         }
         intervalsMinutesEt!!.addTextChangedListener {
-            setupEditTextLimit(it, intervalsMinutesEt!!, 10)
+            intervalsMinutesEt!!.trimTo(10)
             val rounds = toInt(intervalsRoundsEt!!.text.toString())
             val minutes = toInt(it.toString())
             val seconds = toInt(intervalsSecondsEt!!.text.toString())
@@ -110,7 +110,7 @@ data class SessionEditTextHelper(
             listener.onTextChanged(enabled, generateFromCurrentSelection())
         }
         intervalsSecondsEt!!.addTextChangedListener {
-            setupEditTextLimit(it, intervalsSecondsEt!!, 59)
+            intervalsSecondsEt!!.trimTo(59)
             val rounds = toInt(intervalsRoundsEt!!.text.toString())
             val minutes = toInt(intervalsMinutesEt!!.text.toString())
             val seconds = toInt(it.toString())
@@ -121,7 +121,7 @@ data class SessionEditTextHelper(
 
     private fun initHiitSection() {
         hiitRoundsEt!!.addTextChangedListener {
-            setupEditTextLimit(it, hiitRoundsEt!!, 60)
+            hiitRoundsEt!!.trimTo(60)
             val rounds = toInt(it.toString())
             val secondsWork = toInt(hiitSecondsWorkEt!!.text.toString())
             val secondsRest = toInt(hiitSecondsRestEt!!.text.toString())
@@ -129,7 +129,7 @@ data class SessionEditTextHelper(
             listener.onTextChanged(enabled, generateFromCurrentSelection())
         }
         hiitSecondsWorkEt!!.addTextChangedListener {
-            setupEditTextLimit(it, hiitSecondsWorkEt!!, 90)
+            hiitSecondsWorkEt!!.trimTo(90)
             val rounds = toInt(hiitRoundsEt!!.text.toString())
             val secondsWork = toInt(it.toString())
             val secondsRest = toInt(hiitSecondsRestEt!!.text.toString())
@@ -137,34 +137,12 @@ data class SessionEditTextHelper(
             listener.onTextChanged(enabled, generateFromCurrentSelection())
         }
         hiitSecondsRestEt!!.addTextChangedListener {
-            setupEditTextLimit(it, hiitSecondsRestEt!!, 90)
+            hiitSecondsRestEt!!.trimTo(90)
             val rounds = toInt(hiitRoundsEt!!.text.toString())
             val secondsWork = toInt(hiitSecondsWorkEt!!.text.toString())
             val secondsRest = toInt(it.toString())
             val enabled = rounds != 0 && (secondsWork != 0 && secondsRest != 0)
             listener.onTextChanged(enabled, generateFromCurrentSelection())
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setupEditTextLimit(editable: Editable?, textInputEditText: TextInputEditText, limit: Int) {
-        if(toInt(editable.toString()) > limit) {
-            textInputEditText.setText(if (limit < 10) "0$limit" else limit.toString())
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun setupEditTextBehaviorOnFocus(textInputEditText: TextInputEditText) {
-        textInputEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                if (textInputEditText.editableText.isNullOrEmpty()) {
-                    textInputEditText.setText("00")
-                }
-                // prefix single digits with a zero
-                if (textInputEditText.editableText?.length == 1) {
-                    textInputEditText.text?.insert(0, "0")
-                }
-            }
         }
     }
 

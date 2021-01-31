@@ -32,7 +32,7 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     private val itemClickListener = object : StatisticsAdapter.Listener {
         override fun onClick(id: Long) {
             if (parentFragmentManager.findFragmentByTag("AddEditCompletedWorkout") == null) {
-                AddEditCompletedWorkoutDialog.newInstance(id).show(parentFragmentManager, "AddEditCompletedWorkout")
+                EditCompletedWorkoutDialog.newInstance(id).show(parentFragmentManager, "AddEditCompletedWorkout")
             }
         }
     }

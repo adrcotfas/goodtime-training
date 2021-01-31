@@ -38,14 +38,6 @@ class StringUtils {
             )
         }
 
-        fun formatDateLong(date: LocalDate): String {
-            return date.format(DateTimeFormatter.ofPattern("EEE', 'MMM d', ' yyyy"))
-        }
-
-        fun formatTime(time: LocalTime): String {
-            return time.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-        }
-
         fun toFavoriteFormat(session: SessionSkeleton): String {
             return when (session.type) {
                 SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {

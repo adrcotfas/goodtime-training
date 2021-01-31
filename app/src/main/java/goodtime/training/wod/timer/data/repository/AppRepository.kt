@@ -22,6 +22,7 @@ interface AppRepository {
 
     fun addCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton)
     fun getCustomWorkoutSkeletons() : LiveData<List<CustomWorkoutSkeleton>>
+    fun getCustomWorkoutSkeleton(name: String): LiveData<CustomWorkoutSkeleton>
     fun editCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton)
     fun removeCustomWorkoutSkeleton(name: String)
 }
