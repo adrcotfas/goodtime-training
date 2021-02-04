@@ -53,14 +53,22 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
 
         repo.getSession(candidateIdx).observe(this, { session ->
             candidate = session
-            if (candidate.isCustom() && candidate.name != null) {
-                repo.getCustomWorkoutSkeleton(candidate.name!!).observe(this, { customWorkout ->
-                    customWorkoutSelection = customWorkout
+            if (candidate.isCustom()) {
+                if (candidate.name != null) {
+                    repo.getCustomWorkoutSkeleton(candidate.name!!).observe(this, { customWorkout ->
+                        customWorkoutSelection = customWorkout
+                        minimumMinutesAndSeconds =
+                            Session.calculateMinimumToComplete(customWorkout.sessions)
+                        maximumMinutesAndSeconds = Session.calculateTotal(customWorkout.sessions)
+                        doSetup()
+                    })
+                } else { // the custom workout was deleted and this is a leftover
                     minimumMinutesAndSeconds =
-                        Session.calculateMinimumToComplete(customWorkout.sessions)
-                    maximumMinutesAndSeconds = Session.calculateTotal(customWorkout.sessions)
+                        if (candidate.isTimeBased) 1
+                        else candidate.actualDuration
+                    maximumMinutesAndSeconds = candidate.actualDuration
                     doSetup()
-                })
+                }
             } else {
                 minimumMinutesAndSeconds =
                     if (candidate.skeleton.type == SessionType.FOR_TIME) 1
@@ -141,7 +149,7 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
     private fun setupSessionDescription() {
         if (candidate.isCustom()) {
             // empty string for registered custom workouts whose skeleton was deleted
-            binding.sessionDescription.text = candidate.name ?: "Custom workout"
+            binding.sessionDescription.text = candidate.name ?: ""
             binding.icon.setImageDrawable(ResourcesHelper.getCustomWorkoutDrawable())
         } else {
             binding.icon.setImageDrawable(ResourcesHelper.getDrawableFor(candidate.skeleton.type))

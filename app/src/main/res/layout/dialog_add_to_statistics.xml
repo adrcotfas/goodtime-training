@@ -147,7 +147,7 @@
                             app:chipSpacingHorizontal="16dp"
                             app:selectionRequired="true"
                             app:singleSelection="true"
-                            android:visibility="gone"/>
+                            android:visibility="visible"/>
                     </ScrollView>
                 </LinearLayout>
 

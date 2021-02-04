@@ -66,7 +66,7 @@ class AppRepositoryImpl(
 
     override fun editCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton) {
         GlobalScope.launch {
-            customWorkoutSkeletonDao.update(workout)
+            customWorkoutSkeletonDao.add(workout)
         }
     }
 
