@@ -109,6 +109,7 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
     }
 
     private fun setupButtons() {
+        binding.closeButton.setOnClickListener { dismiss() }
         binding.saveButton.setOnClickListener {
             candidate.isCompleted = binding.isCompleted.isChecked
             candidate.actualDuration = activeTimeEts.getCurrentDuration()

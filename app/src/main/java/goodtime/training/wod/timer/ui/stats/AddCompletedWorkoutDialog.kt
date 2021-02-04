@@ -24,7 +24,9 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import java.time.*
 
-class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
+class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
+    SessionEditTextHelper.Listener,
+    MinutesAndSecondsEditTexts.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
 
@@ -32,11 +34,17 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
     private lateinit var sectionEditTexts: SectionEditTextViewsBinding
 
     private lateinit var sessionEditTextHelper: SessionEditTextHelper
+    private lateinit var activeTimeEts: MinutesAndSecondsEditTexts
+
     private lateinit var inflater: LayoutInflater
 
     private var candidate = Session()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = DialogAddToStatisticsBinding.inflate(layoutInflater)
         sectionEditTexts = binding.sectionEditTextViews
         this.inflater = inflater
@@ -48,6 +56,7 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
     }
 
     private fun doSetup() {
+        binding.favoritesContainer.isVisible = false
         setupButtons()
         initSessionEditTextHelper()
         setupSessionTypeChips()
@@ -59,14 +68,18 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
 
     private fun setupDateAndTimePickers() {
         val localTime = LocalTime.ofSecondOfDay(TimeUtils.millisToSecondOfDay(candidate.timestamp))
-        binding.editDate.text = TimeUtils.formatDateLong(TimeUtils.millisToLocalDate(candidate.timestamp))
+        binding.editDate.text =
+            TimeUtils.formatDateLong(TimeUtils.millisToLocalDate(candidate.timestamp))
         binding.editTime.text = TimeUtils.formatTime(localTime)
 
         binding.editDate.setOnClickListener {
             val picker = DatePickerDialogHelper.buildDatePicker(candidate.timestamp)
             picker.addOnPositiveButtonClickListener {
-                val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
-                candidate.timestamp = LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                val localDate =
+                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                candidate.timestamp =
+                    LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault())
+                        .toInstant().toEpochMilli()
                 binding.editDate.text = TimeUtils.formatDateLong(localDate)
             }
             picker.show(parentFragmentManager, "MaterialDatePicker")
@@ -74,12 +87,14 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
 
         binding.editTime.setOnClickListener {
             val dialog = TimePickerDialogBuilder(requireContext())
-                    .buildDialog(TimeUtils.millisToSecondOfDay(candidate.timestamp).toInt())
+                .buildDialog(TimeUtils.millisToSecondOfDay(candidate.timestamp).toInt())
             dialog.addOnPositiveButtonClickListener {
                 val newValue = LocalTime.of(dialog.hour, dialog.minute).toSecondOfDay()
                 val localDate = TimeUtils.millisToLocalDate(candidate.timestamp)
                 val newLocalTime = LocalTime.ofSecondOfDay(newValue.toLong())
-                candidate.timestamp = LocalDateTime.of(localDate, newLocalTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                candidate.timestamp =
+                    LocalDateTime.of(localDate, newLocalTime).atZone(ZoneId.systemDefault())
+                        .toInstant().toEpochMilli()
                 binding.editTime.text = TimeUtils.formatTime(newLocalTime)
             }
             dialog.show(parentFragmentManager, "MaterialTimePicker")
@@ -96,6 +111,9 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
                 candidate.actualRounds = 0
                 candidate.actualReps = 0
             }
+            if (candidate.isCustom() && candidate.isTimeBased) {
+                candidate.actualDuration = activeTimeEts.getCurrentDuration()
+            }
             candidate.notes = binding.notesLayout.editText.text.toString()
             repo.addSession(candidate)
             dismiss()
@@ -105,16 +123,16 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
 
     private fun initSessionEditTextHelper() {
         sessionEditTextHelper = SessionEditTextHelper(
-                this,
-                sectionEditTexts.genericMinutesLayout.editText,
-                sectionEditTexts.genericSecondsLayout.editText,
-                sectionEditTexts.intervalsRoundsLayout.editText,
-                sectionEditTexts.intervalsMinutesLayout.editText,
-                sectionEditTexts.intervalsSecondsLayout.editText,
-                sectionEditTexts.hiitRoundsLayout.editText,
-                sectionEditTexts.hiitSecondsWorkLayout.editText,
-                sectionEditTexts.hiitSecondsRestLayout.editText,
-                SessionType.AMRAP
+            this,
+            sectionEditTexts.genericMinutesLayout.editText,
+            sectionEditTexts.genericSecondsLayout.editText,
+            sectionEditTexts.intervalsRoundsLayout.editText,
+            sectionEditTexts.intervalsMinutesLayout.editText,
+            sectionEditTexts.intervalsSecondsLayout.editText,
+            sectionEditTexts.hiitRoundsLayout.editText,
+            sectionEditTexts.hiitSecondsWorkLayout.editText,
+            sectionEditTexts.hiitSecondsRestLayout.editText,
+            SessionType.AMRAP
         )
         sessionEditTextHelper.resetToDefaults()
     }
@@ -124,7 +142,11 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
             if (sessionType == SessionType.REST) {
                 continue
             }
-            val chip = inflater.inflate(R.layout.chip_choice_small, binding.sessionTypeChips, false) as Chip
+            val chip = inflater.inflate(
+                R.layout.chip_choice_small,
+                binding.sessionTypeChips,
+                false
+            ) as Chip
             chip.apply {
                 text = StringUtils.toString(sessionType)
                 chipIcon = ResourcesHelper.getDrawableFor(sessionType)
@@ -137,8 +159,9 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
                         if (sessionType != SessionType.CUSTOM) {
                             sessionEditTextHelper.resetToDefaults()
                         }
-                        candidate.skeleton.type = sessionType
+
                         toggleCustomWorkoutFavoritesView(sessionType == SessionType.CUSTOM)
+                        candidate.skeleton.type = sessionType
                     }
                 }
             }
@@ -152,34 +175,49 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
     private fun setupFavorites() {
         val favoritesLd = repo.getCustomWorkoutSkeletons()
         favoritesLd.observe(
-                this, { favorites ->
-            val favoritesChipGroup = binding.favorites
-            favoritesChipGroup.removeAllViews()
+            this, { favorites ->
+                val favoritesChipGroup = binding.favorites
+                favoritesChipGroup.removeAllViews()
 
-            for (favorite in favorites) {
-                val chip = inflater.inflate(R.layout.chip_choice, favoritesChipGroup, false) as Chip
-                chip.apply {
-                    isCloseIconVisible = false
-                    text = favorite.name
-                    setOnCheckedChangeListener { _, isChecked ->
-                        if (isChecked) {
-                            candidate.skeleton = SessionSkeleton()
-                            candidate.name = favorite.name
-                            candidate.skeleton.type = SessionType.CUSTOM
+                for (favorite in favorites) {
+                    val chip =
+                        inflater.inflate(R.layout.chip_choice, favoritesChipGroup, false) as Chip
+                    chip.apply {
+                        isCloseIconVisible = false
+                        text = favorite.name
+                        setOnCheckedChangeListener { _, isChecked ->
+                            if (isChecked) {
+                                candidate.skeleton = SessionSkeleton()
+                                candidate.name = favorite.name
+                                candidate.skeleton.type = SessionType.CUSTOM
 
-                            candidate.actualDuration = Session.calculateTotal(favorite.sessions)
-                            candidate.isTimeBased = favorite.sessions.find { it.type == SessionType.FOR_TIME } != null
-                            togglePositiveButtonState(true)
+                                candidate.actualDuration = Session.calculateTotal(favorite.sessions)
+                                candidate.isTimeBased =
+                                    favorite.sessions.find { it.type == SessionType.FOR_TIME } != null
+
+                                binding.activeTimeTopSeparator.isVisible = candidate.isTimeBased
+                                binding.activeTimeSection.isVisible = candidate.isTimeBased
+                                if (candidate.isTimeBased) {
+                                    activeTimeEts = MinutesAndSecondsEditTexts(
+                                        this@AddCompletedWorkoutDialog,
+                                        minutesEt = binding.activeTimeMinutes.editText,
+                                        secondsEt = binding.activeTimeSeconds.editText,
+                                        actualDuration = candidate.actualDuration,
+                                        min = Session.calculateMinimumToComplete(favorite.sessions),
+                                        max = Session.calculateTotal(favorite.sessions)
+                                    )
+                                }
+                                togglePositiveButtonState(true)
+                            }
                         }
                     }
+                    favoritesChipGroup.addView(chip)
+                    binding.emptyState.isVisible = false
                 }
-                favoritesChipGroup.addView(chip)
-                binding.emptyState.isVisible = false
-            }
-            if (favorites.isEmpty()) {
-                binding.emptyState.isVisible = true
-            }
-        })
+                if (favorites.isEmpty()) {
+                    binding.emptyState.isVisible = true
+                }
+            })
     }
 
     private fun togglePositiveButtonState(enabled: Boolean) {
@@ -210,7 +248,7 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
     }
 
     private fun toggleCustomWorkoutFavoritesView(visible: Boolean) {
-        binding.favorites.isVisible = visible
+        binding.favoritesContainer.isVisible = visible
         if (visible) {
             sectionEditTexts.genericSection.isVisible = false
             sectionEditTexts.intervalsSection.isVisible = false
@@ -235,4 +273,8 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware, Sess
             candidate.actualDuration = candidate.skeleton.getActualDuration()
         }
     }
+
+    override fun onValidityChanged(isValid: Boolean) { } // do nothing
+    override fun onMaxTimeSet(isMaxTime: Boolean) { } // do nothing
+    override fun onForTimeMinimumConditionViolated() { } // do nothing
 }

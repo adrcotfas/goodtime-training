@@ -146,7 +146,8 @@
                             android:layout_height="wrap_content"
                             app:chipSpacingHorizontal="16dp"
                             app:selectionRequired="true"
-                            app:singleSelection="true" />
+                            app:singleSelection="true"
+                            android:visibility="gone"/>
                     </ScrollView>
                 </LinearLayout>
 
@@ -154,7 +155,78 @@
                     android:id="@+id/section_edit_text_views"
                     layout="@layout/section_edit_text_views"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"/>
+
+                <LinearLayout
+                    android:id="@+id/active_time_top_separator"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white_5percent"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/active_time_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/active_time_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="Active time"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/grey200"
+                        android:textSize="@dimen/regularTextSize"
+                        app:fontFamily="@font/app_font"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <include
+                        android:id="@+id/active_time_minutes"
+                        layout="@layout/text_input_layout_section_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintEnd_toStartOf="@id/active_time_separator"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/active_time_title"
+                        app:maxLength="@{3}"
+                        app:unit="@{`minutes`}" />
+
+                    <TextView
+                        android:id="@+id/active_time_separator"
+                        style="@style/TimerStyleLite.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/colon"
+                        android:textColor="@color/grey500"
+                        app:layout_constraintBottom_toBottomOf="@+id/active_time_minutes"
+                        app:layout_constraintEnd_toStartOf="@id/active_time_seconds"
+                        app:layout_constraintStart_toEndOf="@id/active_time_minutes"
+                        app:layout_constraintTop_toTopOf="@+id/active_time_minutes" />
+
+                    <include
+                        android:id="@+id/active_time_seconds"
+                        layout="@layout/text_input_layout_section_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/active_time_minutes"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/active_time_separator"
+                        app:layout_constraintTop_toTopOf="@+id/active_time_minutes"
+                        app:maxLength="@{2}"
+                        app:unit="@{`seconds`}" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

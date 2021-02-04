@@ -6,7 +6,7 @@ import goodtime.training.wod.timer.common.*
 
 class MinutesAndSecondsEditTexts(
         private val listener: Listener,
-        var isTimeBasedCompleted: Boolean,
+        var isTimeBasedCompleted: Boolean = true,
         private val minutesEt: TextInputEditText,
         private val secondsEt: TextInputEditText,
         actualDuration: Int,
