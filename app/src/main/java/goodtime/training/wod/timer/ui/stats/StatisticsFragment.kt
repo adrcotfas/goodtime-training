@@ -84,7 +84,8 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: Events.Companion.AddToStatisticsClickEvent) {
         if (parentFragmentManager.findFragmentByTag("AddEditCompletedWorkout") == null) {
-            AddEditCompletedWorkoutDialog.newInstance().show(parentFragmentManager, "AddEditCompletedWorkout")
+            val dialog = AddCompletedWorkoutDialog()
+            dialog.show(parentFragmentManager, "AddEditCompletedWorkout")
         }
     }
 }

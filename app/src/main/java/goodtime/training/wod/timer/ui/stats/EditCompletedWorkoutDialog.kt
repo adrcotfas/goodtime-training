@@ -149,7 +149,6 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
         }
     }
 
-    //TODO: move to common place - in DatePicker class
     private fun setupDateAndTimePickers() {
         val localTime = LocalTime.ofSecondOfDay(TimeUtils.millisToSecondOfDay(candidate.timestamp))
         binding.editDate.text =

@@ -1,0 +1,210 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/custom_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/custom_session_description"
+            style="@style/MaterialAlertDialog.Body.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginHorizontal="24dp"
+            android:ellipsize="end"
+            android:lines="2"
+            android:paddingBottom="16dp"
+            android:scrollHorizontally="false"
+            android:textStyle="italic"
+            android:visibility="visible"
+            tools:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Dummy item to prevent EditTexts from receiving focus -->
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/generic_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
+            tools:visibility="gone">
+
+            <include
+                android:id="@+id/generic_minutes_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@id/generic_section_separator"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:unit="@{`minutes`}" />
+
+            <TextView
+                android:id="@+id/generic_section_separator"
+                style="@style/TimerStyleLite.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/colon"
+                android:textColor="@color/grey500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/generic_seconds_layout"
+                app:layout_constraintStart_toEndOf="@id/generic_minutes_layout"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/generic_seconds_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/generic_section_separator"
+                app:unit="@{`seconds`}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/intervals_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
+            tools:visibility="visible">
+
+            <include
+                android:id="@+id/intervals_rounds_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/intervals_section_separator1"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:unit="@{`rounds`}" />
+
+            <TextView
+                android:id="@+id/intervals_section_separator1"
+                style="@style/TimerStyleLite.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/x"
+                android:textColor="@color/grey500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/intervals_minutes_layout"
+                app:layout_constraintStart_toEndOf="@+id/intervals_rounds_layout"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/intervals_minutes_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/intervals_section_separator2"
+                app:layout_constraintStart_toEndOf="@+id/intervals_section_separator1"
+                app:unit="@{`minutes`}" />
+
+            <TextView
+                android:id="@+id/intervals_section_separator2"
+                style="@style/TimerStyleLite.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/colon"
+                android:textColor="@color/grey500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/intervals_seconds_layout"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@+id/intervals_minutes_layout"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/intervals_seconds_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/intervals_section_separator2"
+                app:unit="@{`seconds`}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/hiit_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/custom_session_description"
+            tools:visibility="gone">
+
+            <include
+                android:id="@+id/hiit_rounds_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator1"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:unit="@{`rounds`}" />
+
+            <TextView
+                android:id="@+id/hiit_section_separator1"
+                style="@style/TimerStyleLite.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/x"
+                android:textColor="@color/grey500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/hiit_seconds_work_layout"
+                app:layout_constraintStart_toEndOf="@+id/hiit_rounds_layout"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/hiit_seconds_work_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator2"
+                app:layout_constraintStart_toEndOf="@+id/hiit_section_separator1"
+                app:unit="@{`seconds`}" />
+
+            <TextView
+                android:id="@+id/hiit_section_separator2"
+                style="@style/TimerStyleLite.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/slash"
+                android:textColor="@color/grey500"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/hiit_seconds_rest_layout"
+                app:layout_constraintStart_toEndOf="@+id/hiit_seconds_work_layout"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/hiit_seconds_rest_layout"
+                layout="@layout/text_input_layout_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/hiit_section_separator2"
+                app:unit="@{`seconds`}" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -15,19 +15,19 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogAddSessionToCustomWorkoutBinding
 import goodtime.training.wod.timer.databinding.SectionAddEditSessionBinding
+import goodtime.training.wod.timer.databinding.SectionEditTextViewsBinding
 import goodtime.training.wod.timer.ui.main.SessionEditTextHelper
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-
-//TODO: make the view setup and updates more efficient, especially the Custom section
 class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
 
     private lateinit var binding: DialogAddSessionToCustomWorkoutBinding
     private lateinit var sectionAddEdit: SectionAddEditSessionBinding
+    private lateinit var sectionEditTexts: SectionEditTextViewsBinding
 
     private lateinit var listener: Listener
     private lateinit var candidate: SessionSkeleton
@@ -67,6 +67,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogAddSessionToCustomWorkoutBinding.inflate(layoutInflater)
         sectionAddEdit = binding.sectionAddEdit
+        sectionEditTexts = binding.sectionAddEdit.customSectionContainer
         this.inflater = inflater
 
         binding.title.text = if (isEditMode()) "Edit session" else "Add session"
@@ -97,14 +98,14 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     private fun initSessionEditTextHelper() {
         sessionEditTextHelper = SessionEditTextHelper(
                 this,
-                sectionAddEdit.genericMinutesLayout.editText,
-                sectionAddEdit.genericSecondsLayout.editText,
-                sectionAddEdit.intervalsRoundsLayout.editText,
-                sectionAddEdit.intervalsMinutesLayout.editText,
-                sectionAddEdit.intervalsSecondsLayout.editText,
-                sectionAddEdit.hiitRoundsLayout.editText,
-                sectionAddEdit.hiitSecondsWorkLayout.editText,
-                sectionAddEdit.hiitSecondsRestLayout.editText,
+                sectionEditTexts.genericMinutesLayout.editText,
+                sectionEditTexts.genericSecondsLayout.editText,
+                sectionEditTexts.intervalsRoundsLayout.editText,
+                sectionEditTexts.intervalsMinutesLayout.editText,
+                sectionEditTexts.intervalsSecondsLayout.editText,
+                sectionEditTexts.hiitRoundsLayout.editText,
+                sectionEditTexts.hiitSecondsWorkLayout.editText,
+                sectionEditTexts.hiitSecondsRestLayout.editText,
                 if (isEditMode()) candidate.type else SessionType.AMRAP
         )
     }
@@ -144,13 +145,13 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
             if (checkedId == R.id.radio_button_select_custom) {
                 togglePositiveButtonState(true)
                 sectionAddEdit.favoritesContainer.isVisible = false
-                sectionAddEdit.customSection.isVisible = true
+                sectionAddEdit.customSectionContainer.customSection.isVisible = true
                 sessionEditTextHelper.resetToDefaults()
                 setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
             } else if (checkedId == R.id.radio_button_from_favorites) {
                 togglePositiveButtonState(false)
                 sectionAddEdit.favoritesContainer.isVisible = true
-                sectionAddEdit.customSection.isVisible = false
+                sectionAddEdit.customSectionContainer.customSection.isVisible = false
                 hideKeyboardFrom(requireContext(), binding.root)
             }
         }
@@ -197,28 +198,28 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     private fun refreshActiveSection(sessionType: SessionType) {
         when (sessionType) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
-                sectionAddEdit.genericSection.isVisible = true
-                sectionAddEdit.intervalsSection.isVisible = false
-                sectionAddEdit.hiitSection.isVisible = false
+                sectionEditTexts.genericSection.isVisible = true
+                sectionEditTexts.intervalsSection.isVisible = false
+                sectionEditTexts.hiitSection.isVisible = false
             }
             SessionType.INTERVALS -> {
-                sectionAddEdit.genericSection.isVisible = false
-                sectionAddEdit.intervalsSection.isVisible = true
-                sectionAddEdit.hiitSection.isVisible = false
+                sectionEditTexts.genericSection.isVisible = false
+                sectionEditTexts.intervalsSection.isVisible = true
+                sectionEditTexts.hiitSection.isVisible = false
             }
             SessionType.HIIT -> {
-                sectionAddEdit.genericSection.isVisible = false
-                sectionAddEdit.intervalsSection.isVisible = false
-                sectionAddEdit.hiitSection.isVisible = true
+                sectionEditTexts.genericSection.isVisible = false
+                sectionEditTexts.intervalsSection.isVisible = false
+                sectionEditTexts.hiitSection.isVisible = true
             }
             else -> {}
         }
         sessionEditTextHelper.sessionType = sessionType
-        sectionAddEdit.customSessionDescription.isVisible = true
+        sectionEditTexts.customSessionDescription.isVisible = true
     }
 
     private fun setDescription(value: String) {
-        sectionAddEdit.customSessionDescription.text = value
+        sectionEditTexts.customSessionDescription.text = value
     }
 
     override fun onTextChanged(isValid: Boolean, sessionSkeleton: SessionSkeleton) {
