@@ -15,11 +15,16 @@ import goodtime.training.wod.timer.data.model.Session
 
 class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<StatisticsAdapter.ViewHolder>() {
 
+    var selectedItems: ArrayList<Long> = arrayListOf()
+
     interface Listener {
         fun onClick(id: Long)
+        fun onLongClick(id: Long)
+        fun notifyEmpty()
     }
 
     var personalRecordSessionId = -1L
+    var isInActionMode = false
 
     var data = listOf<Session>()
         set(data) {
@@ -34,8 +39,41 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
     override fun getItemCount() = data.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val id = data[position].id
+
         holder.bind(data[position], personalRecordSessionId)
-        holder.itemView.setOnClickListener { listener.onClick(data[position].id) }
+        holder.overlay.isVisible = selectedItems.contains(id)
+
+        holder.itemView.setOnClickListener {
+            listener.onClick(id)
+            if (isInActionMode) {
+                handleSelection(id, position)
+            }
+        }
+        holder.itemView.setOnLongClickListener {
+            listener.onLongClick(id)
+            if (!isInActionMode) isInActionMode = true
+            handleSelection(id, position)
+            true
+        }
+    }
+
+    private fun handleSelection(id: Long, position: Int) {
+        if (selectedItems.contains(id)) {
+            selectedItems.remove(id)
+        } else {
+            selectedItems.add(id)
+        }
+        if (selectedItems.isEmpty()) listener.notifyEmpty()
+        notifyItemChanged(position)
+    }
+
+    fun selectAll() {
+        selectedItems.clear()
+        for (session in data) {
+            selectedItems.add(session.id)
+        }
+        notifyDataSetChanged()
     }
 
     class ViewHolder private constructor(itemView: View)
@@ -48,8 +86,9 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
         private val duration: TextView = itemView.findViewById(R.id.duration)
         private val notes: TextView = itemView.findViewById(R.id.notes)
         private val prIcon: TextView = itemView.findViewById(R.id.personal_record)
+        val overlay: View = itemView.findViewById(R.id.overlay)
 
-        fun bind(session: Session, prId : Long) {
+        fun bind(session: Session, prId: Long) {
             if (session.isCustom()) {
                 // empty string for registered custom workouts whose skeleton was deleted
                 title.text = session.name ?: ""
@@ -79,10 +118,10 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
         }
 
         companion object {
-            fun from(parent: ViewGroup) : ViewHolder {
-                val layoutInflater =  LayoutInflater.from(parent.context)
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
                 val view = layoutInflater
-                    .inflate(R.layout.row_statistics_row, parent, false)
+                        .inflate(R.layout.row_statistics_row, parent, false)
                 return ViewHolder(view)
             }
         }

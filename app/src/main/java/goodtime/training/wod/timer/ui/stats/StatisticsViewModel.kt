@@ -13,14 +13,20 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoField
 import java.time.temporal.TemporalAdjusters
+import java.util.ArrayList
 
-class StatisticsViewModel(private val appRepository: AppRepository) : ViewModel() {
+class StatisticsViewModel(private val repo: AppRepository) : ViewModel() {
 
     val filteredWorkoutName = MutableLiveData<String?>(null)
-    fun addSession(session: Session) = appRepository.addSession(session)
 
-    fun getSessions(): LiveData<List<Session>> = appRepository.getSessions()
-    fun getCustomSessions(name: String?) = appRepository.getCustomSessions(name)
+    fun deleteCompletedWorkouts(selectedItems: ArrayList<Long>) {
+        for (i in selectedItems) {
+            repo.removeSession(i)
+        }
+    }
+
+    fun getSessions(): LiveData<List<Session>> = repo.getSessions()
+    fun getCustomSessions(name: String?) = repo.getCustomSessions(name)
 
     fun calculateOverviewStats(sessions: List<Session>): Stats {
         val today = LocalDate.now()
@@ -50,6 +56,34 @@ class StatisticsViewModel(private val appRepository: AppRepository) : ViewModel(
 
     fun getThisWeekNumber() = LocalDate.now().with(TemporalAdjusters.previousOrSame(StringUtils.firstDayOfWeek())).get(ChronoField.ALIGNED_WEEK_OF_YEAR)
     fun getCurrentMonthString(): String = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM"))
+
+    fun findPersonalRecord(sessions: List<Session>): Long {
+        var id = -1L
+        if (sessions.isNotEmpty()) {
+            if (sessions[0].isTimeBased) {
+                id = sessions.minWithOrNull { o1, o2 ->
+                    when {
+                        o1.actualDuration > o2.actualDuration -> 1
+                        o1.actualDuration == o2.actualDuration -> 0
+                        else -> -1
+                    }
+                }?.id ?: -1L
+            } else {
+                if (sessions.find { it.actualRounds > 0 || it.actualReps > 0 } != null) {
+                    id = sessions.maxWithOrNull { o1, o2 ->
+                        when {
+                            (o1.actualRounds > o2.actualRounds) ||
+                                    ((o1.actualRounds == o2.actualRounds) &&
+                                            (o1.actualReps > o2.actualReps)) -> 1
+                            ((o1.actualRounds == o2.actualRounds) && ((o1.actualReps == o2.actualReps))) -> 0
+                            else -> -1
+                        }
+                    }?.id ?: -1L
+                }
+            }
+        }
+        return id
+    }
 
     class Stats(var today: Long, var week: Long, var month: Long, var total: Long)
 }

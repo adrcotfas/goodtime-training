@@ -2,6 +2,7 @@ package goodtime.training.wod.timer.ui.stats
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.ActionMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.databinding.FragmentStatisticsListBinding
@@ -19,7 +21,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class StatisticsListFragment : Fragment(), KodeinAware {
+class StatisticsListFragment : Fragment(), KodeinAware, ActionModeCallback.Listener {
 
     override val kodein by closestKodein()
     private lateinit var binding: FragmentStatisticsListBinding
@@ -29,15 +31,28 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     private lateinit var allSessionsLd: LiveData<List<Session>>
     private lateinit var filteredSessionsLd: LiveData<List<Session>>
 
+    private lateinit var actionMode: ActionMode
+    private var actionModeCallback = ActionModeCallback(this)
+
     private val itemClickListener = object : StatisticsAdapter.Listener {
         override fun onClick(id: Long) {
-            if (parentFragmentManager.findFragmentByTag("AddEditCompletedWorkout") == null) {
-                EditCompletedWorkoutDialog.newInstance(id).show(parentFragmentManager, "AddEditCompletedWorkout")
+            if (!logAdapter.isInActionMode) {
+                if (parentFragmentManager.findFragmentByTag("AddEditCompletedWorkout") == null) {
+                    EditCompletedWorkoutDialog.newInstance(id).show(parentFragmentManager, "AddEditCompletedWorkout")
+                }
             }
         }
+
+        override fun onLongClick(id: Long) {
+            if (!logAdapter.isInActionMode) {
+                actionMode = requireActivity().startActionMode(actionModeCallback)!!
+            }
+        }
+
+        override fun notifyEmpty() = actionMode.finish()
     }
 
-    private val logAdapter = StatisticsAdapter(itemClickListener)
+    private val logAdapter: StatisticsAdapter = StatisticsAdapter(itemClickListener)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +97,7 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     private fun observeAllSessions() {
         allSessionsLd = viewModel.getSessions()
         allSessionsLd.observe(viewLifecycleOwner, { sessions ->
+            //TODO: use DiffUtil like in Goodtime
             logAdapter.data = sessions
             binding.recyclerView.isVisible = sessions.isNotEmpty()
             binding.emptyState.isVisible = sessions.isEmpty()
@@ -93,8 +109,9 @@ class StatisticsListFragment : Fragment(), KodeinAware {
     private fun observeFilteredSessions() {
         filteredSessionsLd = viewModel.getCustomSessions(viewModel.filteredWorkoutName.value)
         filteredSessionsLd.observe(viewLifecycleOwner, { sessions ->
+            //TODO: use DiffUtil like in Goodtime
             logAdapter.data = sessions
-            logAdapter.personalRecordSessionId = findPersonalRecord(sessions.filter { it.isCompleted })
+            logAdapter.personalRecordSessionId = viewModel.findPersonalRecord(sessions.filter { it.isCompleted })
             binding.recyclerView.isVisible = sessions.isNotEmpty()
             binding.emptyState.isVisible = sessions.isEmpty()
         })
@@ -105,31 +122,31 @@ class StatisticsListFragment : Fragment(), KodeinAware {
         logAdapter.personalRecordSessionId = -1
     }
 
-    private fun findPersonalRecord(sessions: List<Session>): Long {
-        var id = -1L
-        if (sessions.isNotEmpty()) {
-            if (sessions[0].isTimeBased) {
-                id = sessions.minWithOrNull { o1, o2 ->
-                    when {
-                        o1.actualDuration > o2.actualDuration -> 1
-                        o1.actualDuration == o2.actualDuration -> 0
-                        else -> -1
-                    }
-                }?.id ?: -1L
-            } else {
-                if (sessions.find { it.actualRounds > 0 || it.actualReps > 0 } != null) {
-                    id = sessions.maxWithOrNull { o1, o2 ->
-                        when {
-                            (o1.actualRounds > o2.actualRounds) ||
-                                    ((o1.actualRounds == o2.actualRounds) &&
-                                            (o1.actualReps > o2.actualReps)) -> 1
-                            ((o1.actualRounds == o2.actualRounds) && ((o1.actualReps == o2.actualReps))) -> 0
-                            else -> -1
-                        }
-                    }?.id ?: -1L
-                }
+    override fun onSelectAllItems() {
+        logAdapter.selectAll()
+    }
+
+    override fun onDeleteItem() {
+        MaterialAlertDialogBuilder(requireContext()).apply {
+            setTitle("Delete selected items?")
+            setPositiveButton(android.R.string.ok) { _, _ ->
+                viewModel.deleteCompletedWorkouts(logAdapter.selectedItems)
+                logAdapter.isInActionMode = false
+                logAdapter.selectedItems.clear()
+                actionMode.finish()
             }
-        }
-        return id
+        }.create().show()
+    }
+
+    override fun onCloseActionMode() {
+        logAdapter.isInActionMode = false
+        logAdapter.selectedItems.clear()
+        logAdapter.notifyDataSetChanged()
+        if (this::actionMode.isInitialized) actionMode.finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onCloseActionMode()
     }
 }
