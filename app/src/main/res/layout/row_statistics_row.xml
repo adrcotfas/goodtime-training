@@ -45,6 +45,18 @@
         android:textSize="@dimen/tiniestTextSize"
         android:layout_marginStart="8dp"
         android:text="PR"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/unfinished_indicator"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:src="@drawable/ic_close"
+        app:tint="@color/red_goodtime_dark"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title"
         android:visibility="gone"
         tools:visibility="visible"/>
 

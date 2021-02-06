@@ -87,6 +87,7 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
         private val duration: TextView = itemView.findViewById(R.id.duration)
         private val notes: TextView = itemView.findViewById(R.id.notes)
         private val prIcon: TextView = itemView.findViewById(R.id.personal_record)
+        private val unfinishedIndicator: ImageView = itemView.findViewById(R.id.unfinished_indicator)
         val overlay: View = itemView.findViewById(R.id.overlay)
 
         fun bind(session: Session, prId: Long) {
@@ -121,6 +122,8 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
                 notes.isVisible = false
             }
             prIcon.isVisible = session.id == prId
+
+            unfinishedIndicator.isVisible = !session.isCompleted
 
             duration.text = StringUtils.secondsToNiceFormat(session.actualDuration)
         }
