@@ -83,6 +83,7 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
         private val title: TextView = itemView.findViewById(R.id.title)
         private val timestamp: TextView = itemView.findViewById(R.id.timestamp)
         private val rounds: TextView = itemView.findViewById(R.id.rounds)
+        private val reps: TextView = itemView.findViewById(R.id.reps)
         private val duration: TextView = itemView.findViewById(R.id.duration)
         private val notes: TextView = itemView.findViewById(R.id.notes)
         private val prIcon: TextView = itemView.findViewById(R.id.personal_record)
@@ -104,6 +105,13 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
                 rounds.text = "${session.actualRounds} rounds"
             } else {
                 rounds.isVisible = false
+            }
+
+            if (session.actualReps > 0) {
+                reps.isVisible = true
+                reps.text = "${session.actualReps} reps"
+            } else {
+                reps.isVisible = false
             }
 
             if (!session.notes.isNullOrEmpty()) {
