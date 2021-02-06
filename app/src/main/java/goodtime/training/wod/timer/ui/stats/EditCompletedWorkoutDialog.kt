@@ -198,7 +198,7 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
     }
 
     override fun onMaxTimeSet(isMaxTime: Boolean) {
-        if (candidate.isTimeBased) return
+        if (candidate.isTimeBased || candidate.skeleton.type == SessionType.FOR_TIME) return
         binding.isCompleted.isChecked = isMaxTime
     }
 

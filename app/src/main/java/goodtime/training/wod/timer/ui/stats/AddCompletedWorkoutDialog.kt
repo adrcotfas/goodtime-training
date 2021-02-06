@@ -25,8 +25,8 @@ import org.kodein.di.generic.instance
 import java.time.*
 
 class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
-    SessionEditTextHelper.Listener,
-    MinutesAndSecondsEditTexts.Listener {
+        SessionEditTextHelper.Listener,
+        MinutesAndSecondsEditTexts.Listener {
     override val kodein by closestKodein()
     private val repo: AppRepository by instance()
 
@@ -41,9 +41,9 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
     private var candidate = Session()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = DialogAddToStatisticsBinding.inflate(layoutInflater)
         sectionEditTexts = binding.sectionEditTextViews
@@ -69,17 +69,17 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
     private fun setupDateAndTimePickers() {
         val localTime = LocalTime.ofSecondOfDay(TimeUtils.millisToSecondOfDay(candidate.timestamp))
         binding.editDate.text =
-            TimeUtils.formatDateLong(TimeUtils.millisToLocalDate(candidate.timestamp))
+                TimeUtils.formatDateLong(TimeUtils.millisToLocalDate(candidate.timestamp))
         binding.editTime.text = TimeUtils.formatTime(localTime)
 
         binding.editDate.setOnClickListener {
             val picker = DatePickerDialogHelper.buildDatePicker(candidate.timestamp)
             picker.addOnPositiveButtonClickListener {
                 val localDate =
-                    Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
+                        Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
                 candidate.timestamp =
-                    LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault())
-                        .toInstant().toEpochMilli()
+                        LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault())
+                                .toInstant().toEpochMilli()
                 binding.editDate.text = TimeUtils.formatDateLong(localDate)
             }
             picker.show(parentFragmentManager, "MaterialDatePicker")
@@ -87,14 +87,14 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
 
         binding.editTime.setOnClickListener {
             val dialog = TimePickerDialogBuilder(requireContext())
-                .buildDialog(TimeUtils.millisToSecondOfDay(candidate.timestamp).toInt())
+                    .buildDialog(TimeUtils.millisToSecondOfDay(candidate.timestamp).toInt())
             dialog.addOnPositiveButtonClickListener {
                 val newValue = LocalTime.of(dialog.hour, dialog.minute).toSecondOfDay()
                 val localDate = TimeUtils.millisToLocalDate(candidate.timestamp)
                 val newLocalTime = LocalTime.ofSecondOfDay(newValue.toLong())
                 candidate.timestamp =
-                    LocalDateTime.of(localDate, newLocalTime).atZone(ZoneId.systemDefault())
-                        .toInstant().toEpochMilli()
+                        LocalDateTime.of(localDate, newLocalTime).atZone(ZoneId.systemDefault())
+                                .toInstant().toEpochMilli()
                 binding.editTime.text = TimeUtils.formatTime(newLocalTime)
             }
             dialog.show(parentFragmentManager, "MaterialTimePicker")
@@ -123,16 +123,16 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
 
     private fun initSessionEditTextHelper() {
         sessionEditTextHelper = SessionEditTextHelper(
-            this,
-            sectionEditTexts.genericMinutesLayout.editText,
-            sectionEditTexts.genericSecondsLayout.editText,
-            sectionEditTexts.intervalsRoundsLayout.editText,
-            sectionEditTexts.intervalsMinutesLayout.editText,
-            sectionEditTexts.intervalsSecondsLayout.editText,
-            sectionEditTexts.hiitRoundsLayout.editText,
-            sectionEditTexts.hiitSecondsWorkLayout.editText,
-            sectionEditTexts.hiitSecondsRestLayout.editText,
-            SessionType.AMRAP
+                this,
+                sectionEditTexts.genericMinutesLayout.editText,
+                sectionEditTexts.genericSecondsLayout.editText,
+                sectionEditTexts.intervalsRoundsLayout.editText,
+                sectionEditTexts.intervalsMinutesLayout.editText,
+                sectionEditTexts.intervalsSecondsLayout.editText,
+                sectionEditTexts.hiitRoundsLayout.editText,
+                sectionEditTexts.hiitSecondsWorkLayout.editText,
+                sectionEditTexts.hiitSecondsRestLayout.editText,
+                SessionType.AMRAP
         )
         sessionEditTextHelper.resetToDefaults()
     }
@@ -143,9 +143,9 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
                 continue
             }
             val chip = inflater.inflate(
-                R.layout.chip_choice_small,
-                binding.sessionTypeChips,
-                false
+                    R.layout.chip_choice_small,
+                    binding.sessionTypeChips,
+                    false
             ) as Chip
             chip.apply {
                 text = StringUtils.toString(sessionType)
@@ -175,49 +175,49 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
     private fun setupFavorites() {
         val favoritesLd = repo.getCustomWorkoutSkeletons()
         favoritesLd.observe(
-            this, { favorites ->
-                val favoritesChipGroup = binding.favorites
-                favoritesChipGroup.removeAllViews()
+                this, { favorites ->
+            val favoritesChipGroup = binding.favorites
+            favoritesChipGroup.removeAllViews()
 
-                for (favorite in favorites) {
-                    val chip =
+            for (favorite in favorites) {
+                val chip =
                         inflater.inflate(R.layout.chip_choice, favoritesChipGroup, false) as Chip
-                    chip.apply {
-                        isCloseIconVisible = false
-                        text = favorite.name
-                        setOnCheckedChangeListener { _, isChecked ->
-                            if (isChecked) {
-                                candidate.skeleton = SessionSkeleton()
-                                candidate.name = favorite.name
-                                candidate.skeleton.type = SessionType.CUSTOM
+                chip.apply {
+                    isCloseIconVisible = false
+                    text = favorite.name
+                    setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            candidate.skeleton = SessionSkeleton()
+                            candidate.name = favorite.name
+                            candidate.skeleton.type = SessionType.CUSTOM
 
-                                candidate.actualDuration = Session.calculateTotal(favorite.sessions)
-                                candidate.isTimeBased =
+                            candidate.actualDuration = Session.calculateTotal(favorite.sessions)
+                            candidate.isTimeBased =
                                     favorite.sessions.find { it.type == SessionType.FOR_TIME } != null
 
-                                binding.activeTimeTopSeparator.isVisible = candidate.isTimeBased
-                                binding.activeTimeSection.isVisible = candidate.isTimeBased
-                                if (candidate.isTimeBased) {
-                                    activeTimeEts = MinutesAndSecondsEditTexts(
+                            binding.activeTimeTopSeparator.isVisible = candidate.isTimeBased
+                            binding.activeTimeSection.isVisible = candidate.isTimeBased
+                            if (candidate.isTimeBased) {
+                                activeTimeEts = MinutesAndSecondsEditTexts(
                                         this@AddCompletedWorkoutDialog,
                                         minutesEt = binding.activeTimeMinutes.editText,
                                         secondsEt = binding.activeTimeSeconds.editText,
                                         actualDuration = candidate.actualDuration,
                                         min = Session.calculateMinimumToComplete(favorite.sessions),
                                         max = Session.calculateTotal(favorite.sessions)
-                                    )
-                                }
-                                togglePositiveButtonState(true)
+                                )
                             }
+                            togglePositiveButtonState(true)
                         }
                     }
-                    favoritesChipGroup.addView(chip)
-                    binding.emptyState.isVisible = false
                 }
-                if (favorites.isEmpty()) {
-                    binding.emptyState.isVisible = true
-                }
-            })
+                favoritesChipGroup.addView(chip)
+                binding.emptyState.isVisible = false
+            }
+            if (favorites.isEmpty()) {
+                binding.emptyState.isVisible = true
+            }
+        })
     }
 
     private fun togglePositiveButtonState(enabled: Boolean) {
@@ -274,7 +274,7 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
         }
     }
 
-    override fun onValidityChanged(isValid: Boolean) { } // do nothing
-    override fun onMaxTimeSet(isMaxTime: Boolean) { } // do nothing
-    override fun onForTimeMinimumConditionViolated() { } // do nothing
+    override fun onValidityChanged(isValid: Boolean) {} // do nothing
+    override fun onMaxTimeSet(isMaxTime: Boolean) {} // do nothing
+    override fun onForTimeMinimumConditionViolated() {} // do nothing
 }
