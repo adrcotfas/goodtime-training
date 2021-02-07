@@ -22,9 +22,9 @@
             android:scrollHorizontally="false"
             android:textStyle="italic"
             android:visibility="visible"
-            tools:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
 
         <!-- Dummy item to prevent EditTexts from receiving focus -->
         <LinearLayout
@@ -45,12 +45,13 @@
 
             <include
                 android:id="@+id/generic_minutes_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@id/generic_section_separator"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
+                app:maxLength="@{2}"
                 app:unit="@{`minutes`}" />
 
             <TextView
@@ -69,11 +70,12 @@
 
             <include
                 android:id="@+id/generic_seconds_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/generic_section_separator"
+                app:maxLength="@{2}"
                 app:unit="@{`seconds`}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -87,12 +89,13 @@
 
             <include
                 android:id="@+id/intervals_rounds_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/intervals_section_separator1"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
+                app:maxLength="@{2}"
                 app:unit="@{`rounds`}" />
 
             <TextView
@@ -111,11 +114,12 @@
 
             <include
                 android:id="@+id/intervals_minutes_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/intervals_section_separator2"
                 app:layout_constraintStart_toEndOf="@+id/intervals_section_separator1"
+                app:maxLength="@{2}"
                 app:unit="@{`minutes`}" />
 
             <TextView
@@ -135,11 +139,12 @@
 
             <include
                 android:id="@+id/intervals_seconds_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/intervals_section_separator2"
+                app:maxLength="@{2}"
                 app:unit="@{`seconds`}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -153,12 +158,13 @@
 
             <include
                 android:id="@+id/hiit_rounds_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator1"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
+                app:maxLength="@{2}"
                 app:unit="@{`rounds`}" />
 
             <TextView
@@ -177,11 +183,12 @@
 
             <include
                 android:id="@+id/hiit_seconds_work_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/hiit_section_separator2"
                 app:layout_constraintStart_toEndOf="@+id/hiit_section_separator1"
+                app:maxLength="@{2}"
                 app:unit="@{`seconds`}" />
 
             <TextView
@@ -200,11 +207,12 @@
 
             <include
                 android:id="@+id/hiit_seconds_rest_layout"
-                layout="@layout/text_input_layout_section"
+                layout="@layout/text_input_layout_section_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/hiit_section_separator2"
+                app:maxLength="@{2}"
                 app:unit="@{`seconds`}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

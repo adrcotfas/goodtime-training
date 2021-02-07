@@ -20,7 +20,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-            android:layout_width="80sp"
+            android:layout_width="82sp"
             android:layout_height="wrap_content"
             android:isScrollContainer="false"
             app:errorContentDescription=""
@@ -44,7 +44,7 @@
                 android:textColor="@color/grey200"
                 android:textSize="28sp"
                 app:fontFamily="@font/timer_font"
-                tools:text="15" />
+                tools:text="999" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView

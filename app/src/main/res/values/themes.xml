@@ -17,7 +17,8 @@
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="radioButtonStyle">@style/Widget.App.RadioButton</item>
 
-        <item name="materialTimePickerTheme">@style/ThemeOverlay.MaterialAlertDialog</item>
+        <item name="materialTimePickerTheme">@style/ThemeOverlay.MaterialTimePicker</item>
+        <item name="materialCalendarTheme">@style/MaterialCalendarTheme</item>
         <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialog</item>
 
         <item name="windowActionModeOverlay">true</item>
@@ -31,6 +32,33 @@
 
     <style name="ThemeOverlay.MaterialAlertDialog"
         parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/green_goodtime</item>
+        <item name="colorSecondary">@color/green_goodtime</item>
+        <item name="colorSurface">@color/grey1000</item>
+        <item name="colorOnSurface">@color/grey200</item>
+        <item name="alertDialogStyle">@style/MaterialAlertDialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialog.Body.Text</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.App.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialTimePicker"
+        parent="ThemeOverlay.MaterialComponents.TimePicker">
+        <item name="colorPrimary">@color/green_goodtime</item>
+        <item name="colorSecondary">@color/green_goodtime</item>
+        <item name="colorSurface">@color/grey1000</item>
+        <item name="colorOnSurface">@color/grey200</item>
+        <item name="alertDialogStyle">@style/MaterialAlertDialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialog.Body.Text</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/Widget.App.Button</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/Widget.App.Button</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
+    </style>
+
+    <style name="MaterialCalendarTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
         <item name="colorPrimary">@color/green_goodtime</item>
         <item name="colorSecondary">@color/green_goodtime</item>
         <item name="colorSurface">@color/grey1000</item>
