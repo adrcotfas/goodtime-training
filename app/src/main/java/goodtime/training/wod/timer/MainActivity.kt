@@ -214,6 +214,9 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun setStartButtonState(enabled: Boolean) {
         startButton.isEnabled = enabled
+    }
+
+    private fun setFavoriteButtonState(enabled: Boolean) {
         favoritesButton.isEnabled = enabled
     }
 

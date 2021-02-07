@@ -88,7 +88,8 @@ class SelectFavoriteDialog: BottomSheetDialogFragment(), KodeinAware,
                 }
                 favoritesChipGroup.addView(chip)
             }
-            binding.currentSelectionSection.isVisible = this.favorites.find { it.isSame(favoriteCandidate) } == null
+            binding.currentSelectionSection.isVisible =
+                    (this.favorites.find { it.isSame(favoriteCandidate) } == null) && favoriteCandidate.duration != 0
         })
     }
 
