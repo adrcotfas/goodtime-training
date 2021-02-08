@@ -21,7 +21,7 @@ import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
 import org.kodein.di.generic.instance
 
-class CustomWorkoutFragment:
+class CustomWorkoutFragment :
         WorkoutTypeFragment(),
         CustomWorkoutAdapter.Listener,
         SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
@@ -34,7 +34,7 @@ class CustomWorkoutFragment:
     private lateinit var binding: FragmentCustomBinding
 
     private val touchHelper = ItemTouchHelper(ItemTouchCallback())
-    private lateinit var listAdapter : CustomWorkoutAdapter
+    private lateinit var listAdapter: CustomWorkoutAdapter
 
     private var isFresh = false
 
@@ -52,7 +52,7 @@ class CustomWorkoutFragment:
 
         initCurrentWorkout()
 
-        binding.saveButton.root.setOnClickListener{
+        binding.saveButton.root.setOnClickListener {
             if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
                 SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
                         .show(parentFragmentManager, "SaveCustomWorkoutDialog")
@@ -134,7 +134,7 @@ class CustomWorkoutFragment:
         val action = CustomWorkoutFragmentDirections.toWorkout(
                 viewModel.currentWorkout.name,
                 TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
-                        + getSelectedSessions().toTypedArray() ))
+                        + getSelectedSessions().toTypedArray()))
         findNavController().navigate(action)
     }
 
@@ -182,7 +182,7 @@ class CustomWorkoutFragment:
     }
 
     override fun onSessionEdit(idx: Int, session: SessionSkeleton) {
-        if(viewModel.currentWorkout.sessions[idx] != session) {
+        if (viewModel.currentWorkout.sessions[idx] != session) {
             viewModel.currentWorkout.sessions[idx] = session
             viewModel.hasUnsavedSession = true
 
@@ -209,7 +209,14 @@ class CustomWorkoutFragment:
         refreshStartButtonState()
     }
 
-    override fun onChipSelected(position: Int) {
+    override fun onDuplicateButtonClicked(position: Int) {
+        updateTotalDuration()
+        viewModel.hasUnsavedSession = true
+        setSaveButtonVisibility(true)
+        binding.recycler.scrollToPosition(position)
+    }
+
+    override fun onChipClicked(position: Int) {
         AddEditSessionDialog.newInstance(this, position, listAdapter.data[position])
                 .show(parentFragmentManager, "")
     }
@@ -218,7 +225,8 @@ class CustomWorkoutFragment:
         touchHelper.startDrag(holder)
     }
 
-    override fun onFavoriteSelected(session: SessionSkeleton) { /* do nothing*/ }
+    override fun onFavoriteSelected(session: SessionSkeleton) { /* do nothing*/
+    }
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
         viewModel.currentWorkout = workout

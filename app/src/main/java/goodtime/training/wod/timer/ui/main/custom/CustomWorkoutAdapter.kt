@@ -18,11 +18,9 @@ import goodtime.training.wod.timer.data.model.SessionType
 import java.util.Collections
 
 class CustomWorkoutAdapter(
-    var data: ArrayList<SessionSkeleton>,
-    private val listener: Listener
-)
-    : RecyclerView.Adapter<CustomWorkoutAdapter.ViewHolder>()
-{
+        var data: ArrayList<SessionSkeleton>,
+        private val listener: Listener
+) : RecyclerView.Adapter<CustomWorkoutAdapter.ViewHolder>() {
     /**
      * Use this to compare the data before and after releasing the drag handle for rearranging
      */
@@ -30,7 +28,8 @@ class CustomWorkoutAdapter(
 
     interface Listener {
         fun onDeleteButtonClicked(position: Int)
-        fun onChipSelected(position: Int)
+        fun onDuplicateButtonClicked(position: Int)
+        fun onChipClicked(position: Int)
         fun onScrollHandleTouch(holder: ViewHolder)
         fun onDataReordered()
     }
@@ -51,7 +50,7 @@ class CustomWorkoutAdapter(
             return@setOnTouchListener true
         }
 
-        holder.closeButton.setOnClickListener{
+        holder.deleteButton.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos == -1) {
                 return@setOnClickListener
@@ -61,9 +60,19 @@ class CustomWorkoutAdapter(
             listener.onDeleteButtonClicked(pos)
         }
 
-        holder.sessionChip.setOnClickListener{
+        holder.duplicateButton.setOnClickListener {
             val pos = holder.bindingAdapterPosition
-            listener.onChipSelected(pos)
+            if (pos == -1) {
+                return@setOnClickListener
+            }
+            data.add(pos + 1, data[pos])
+            notifyItemInserted(pos + 1)
+            listener.onDuplicateButtonClicked(pos + 1)
+        }
+
+        holder.sessionChip.setOnClickListener {
+            val pos = holder.bindingAdapterPosition
+            listener.onChipClicked(pos)
         }
     }
 
@@ -90,7 +99,8 @@ class CustomWorkoutAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val scrollHandle: ImageView = view.findViewById(R.id.scroll_handle)
-        val closeButton: ImageView = view.findViewById(R.id.close_button)
+        val duplicateButton: ImageView = view.findViewById(R.id.duplicate_button)
+        val deleteButton: ImageView = view.findViewById(R.id.delete_button)
         val parent: ConstraintLayout = view.findViewById(R.id.parent)
         val sessionChip: Chip = view.findViewById(R.id.session_chip)
 
@@ -111,10 +121,10 @@ class CustomWorkoutAdapter(
         }
 
         companion object {
-            fun from(parent: ViewGroup) : ViewHolder {
-                val layoutInflater =  LayoutInflater.from(parent.context)
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
                 val view = layoutInflater
-                    .inflate(R.layout.row_custom_workout_session, parent, false)
+                        .inflate(R.layout.row_custom_workout_session, parent, false)
                 return ViewHolder(view)
             }
         }

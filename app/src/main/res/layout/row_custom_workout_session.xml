@@ -27,15 +27,27 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/close_button"
+        app:layout_constraintEnd_toStartOf="@id/duplicate_button"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/scroll_handle"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="AMRAP 25 min"
-        tools:chipIcon="@drawable/ic_fire2"/>
+        tools:chipIcon="@drawable/ic_fire2"
+        tools:text="AMRAP 25 min" />
 
     <ImageView
-        android:id="@+id/close_button"
+        android:id="@+id/duplicate_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:padding="4dp"
+        android:src="@drawable/ic_duplicate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/delete_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/grey800" />
+
+    <ImageView
+        android:id="@+id/delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="4dp"
