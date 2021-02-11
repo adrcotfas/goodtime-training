@@ -26,7 +26,7 @@ class StatisticsListFragment : Fragment(), KodeinAware, ActionModeCallback.Liste
     override val kodein by closestKodein()
     private lateinit var binding: FragmentStatisticsListBinding
 
-    private val viewModelFactory: LogViewModelFactory by instance()
+    private val viewModelFactory: StatisticsViewModelFactory by instance()
     private lateinit var viewModel: StatisticsViewModel
     private lateinit var allSessionsLd: LiveData<List<Session>>
     private lateinit var filteredSessionsLd: LiveData<List<Session>>

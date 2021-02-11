@@ -1,10 +1,7 @@
 package goodtime.training.wod.timer.data.repository
 
 import androidx.lifecycle.LiveData
-import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
-import goodtime.training.wod.timer.data.model.Session
-import goodtime.training.wod.timer.data.model.SessionSkeleton
-import goodtime.training.wod.timer.data.model.SessionType
+import goodtime.training.wod.timer.data.model.*
 
 interface AppRepository {
 
@@ -25,4 +22,10 @@ interface AppRepository {
     fun getCustomWorkoutSkeleton(name: String): LiveData<CustomWorkoutSkeleton>
     fun editCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton)
     fun removeCustomWorkoutSkeleton(name: String)
+
+    fun addWeeklyGoal(goal: WeeklyGoal)
+    fun updateWeeklyGoal(goal: WeeklyGoal)
+    fun getWeeklyGoal() : LiveData<WeeklyGoal>
+    fun getSessionsOfCurrentWeek(): LiveData<List<Session>>
+    fun getSessionsOfLastWeek(): LiveData<List<Session>>
 }

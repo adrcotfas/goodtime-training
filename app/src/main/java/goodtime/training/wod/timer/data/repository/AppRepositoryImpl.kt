@@ -4,17 +4,16 @@ import androidx.lifecycle.LiveData
 import goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao
 import goodtime.training.wod.timer.data.db.SessionDao
 import goodtime.training.wod.timer.data.db.SessionSkeletonDao
-import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
-import goodtime.training.wod.timer.data.model.Session
-import goodtime.training.wod.timer.data.model.SessionSkeleton
-import goodtime.training.wod.timer.data.model.SessionType
+import goodtime.training.wod.timer.data.db.WeeklyGoalDao
+import goodtime.training.wod.timer.data.model.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class AppRepositoryImpl(
     private val sessionDao: SessionDao,
     private val sessionSkeletonDao: SessionSkeletonDao,
-    private val customWorkoutSkeletonDao: CustomWorkoutSkeletonDao)
+    private val customWorkoutSkeletonDao: CustomWorkoutSkeletonDao,
+    private val weeklyGoalDao: WeeklyGoalDao)
     : AppRepository {
     override fun addSession(session: Session) {
         GlobalScope.launch {
@@ -75,4 +74,21 @@ class AppRepositoryImpl(
             customWorkoutSkeletonDao.remove(name)
         }
     }
+
+    override fun addWeeklyGoal(goal: WeeklyGoal) {
+        GlobalScope.launch {
+            weeklyGoalDao.add(goal)
+        }
+    }
+
+    override fun updateWeeklyGoal(goal: WeeklyGoal) {
+        GlobalScope.launch {
+            weeklyGoalDao.update(goal)
+        }
+    }
+
+    override fun getWeeklyGoal(): LiveData<WeeklyGoal> = weeklyGoalDao.get()
+
+    override fun getSessionsOfCurrentWeek() = sessionDao.getSessionsOfCurrentWeek()
+    override fun getSessionsOfLastWeek() = sessionDao.getSessionsOfLastWeek()
 }

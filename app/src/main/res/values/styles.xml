@@ -154,6 +154,13 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="OverviewTextValue.Large">
+        <item name = "android:gravity">center</item>
+        <item name="android:textSize">@dimen/largeTextSize</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="OverviewTextDescription">
         <item name="android:textSize">@dimen/smallTextSize</item>
         <item name="android:singleLine">true</item>

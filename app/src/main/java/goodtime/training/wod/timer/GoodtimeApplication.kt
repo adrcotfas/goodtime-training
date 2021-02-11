@@ -5,16 +5,15 @@ import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import com.google.android.material.resources.TextAppearanceConfig
+import goodtime.training.wod.timer.common.TimeUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.preferences.reminders.ReminderHelper
 import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
-import goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao
-import goodtime.training.wod.timer.data.db.Database
-import goodtime.training.wod.timer.data.db.SessionDao
-import goodtime.training.wod.timer.data.db.SessionSkeletonDao
+import goodtime.training.wod.timer.data.db.*
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
+import goodtime.training.wod.timer.data.model.WeeklyGoal
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
 import goodtime.training.wod.timer.ui.main.amrap_for_time.AmrapViewModelFactory
@@ -23,7 +22,8 @@ import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutViewModelFactory
 import goodtime.training.wod.timer.ui.main.intervals.IntervalsViewModelFactory
 import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
 import goodtime.training.wod.timer.ui.settings.EncryptedPreferenceDataStore
-import goodtime.training.wod.timer.ui.stats.LogViewModelFactory
+import goodtime.training.wod.timer.ui.stats.StatisticsViewModelFactory
+import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -54,7 +54,8 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<SessionDao>() with eagerSingleton { instance<Database>().sessionsDao() }
         bind<SessionSkeletonDao>() with eagerSingleton { instance<Database>().sessionSkeletonDao() }
         bind<CustomWorkoutSkeletonDao>() with eagerSingleton { instance<Database>().customWorkoutSkeletonDao() }
-        bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance()) }
+        bind<WeeklyGoalDao>() with eagerSingleton { instance<Database>().weeklyGoalDao() }
+        bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance(), instance()) }
         bind<PreferenceHelper>() with eagerSingleton { PreferenceHelper(EncryptedPreferenceDataStore(applicationContext)) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
         bind() from provider { AmrapViewModelFactory(instance()) }
@@ -62,7 +63,8 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind() from provider { IntervalsViewModelFactory(instance()) }
         bind() from provider { HiitViewModelFactory(instance()) }
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
-        bind() from provider { LogViewModelFactory(instance()) }
+        bind() from provider { StatisticsViewModelFactory(instance()) }
+        bind() from provider { WeeklyGoalViewModelFactory(instance())}
         bind() from provider { TimerViewModelFactory(applicationContext, instance(), instance(), instance()) }
     }
 
@@ -137,5 +139,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         val intervals5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.INTERVALS)
         repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Power Intervals", arrayListOf(
             intervals5, rest1Min, intervals5, rest1Min, intervals5)))
+
+        repo.addWeeklyGoal(WeeklyGoal(75, TimeUtils.firstDayOfLastWeekMillis(), 0, 0))
     }
 }

@@ -2,6 +2,7 @@ package goodtime.training.wod.timer.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import goodtime.training.wod.timer.common.TimeUtils
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.TypeConverter
 
@@ -29,4 +30,13 @@ interface SessionDao {
 
     @Query("delete from Session where id = :id")
     fun remove(id: Long)
+
+    @Query("select * from Session where timestamp >= :firstDayOfCurrentWeek")
+    fun getSessionsOfCurrentWeek(
+            firstDayOfCurrentWeek: Long = TimeUtils.firstDayOfCurrentWeekMillis()): LiveData<List<Session>>
+
+    @Query("select * from Session where timestamp >= :firstDayOfLastWeek and timestamp < :firstDayOfCurrentWeek")
+    fun getSessionsOfLastWeek(
+            firstDayOfLastWeek: Long = TimeUtils.firstDayOfLastWeekMillis(),
+            firstDayOfCurrentWeek: Long = TimeUtils.firstDayOfCurrentWeekMillis()): LiveData<List<Session>>
 }

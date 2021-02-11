@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import goodtime.training.wod.timer.R
@@ -24,12 +25,16 @@ class StatisticsOverviewFragment : Fragment(), KodeinAware {
     private lateinit var binding: FragmentStatisticsOverviewBinding
     private lateinit var historyChartWrapper: HistoryChartWrapper
 
-    private val viewModelFactory : LogViewModelFactory by instance()
+    private val viewModelFactory : StatisticsViewModelFactory by instance()
     private lateinit var viewModel: StatisticsViewModel
+
+    private val weeklyGoalViewModelFactory: WeeklyGoalViewModelFactory by instance()
+    private lateinit var weeklyGoalViewModel: WeeklyGoalViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(StatisticsViewModel::class.java)
+        weeklyGoalViewModel = ViewModelProvider(this, weeklyGoalViewModelFactory).get(WeeklyGoalViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -47,11 +52,14 @@ class StatisticsOverviewFragment : Fragment(), KodeinAware {
             if (it == null) {
                 removeObserverFromFilteredSessions()
                 observeAllSessions()
+                binding.weeklyGoalSection.isVisible = true
             } else { // a filtered session was selected
                 removeObserverFromAllSessions()
                 observeFilteredSessions()
+                binding.weeklyGoalSection.isVisible = false
             }
         })
+        setupWeeklyGoal()
     }
 
     private fun observeAllSessions() {
@@ -94,5 +102,19 @@ class StatisticsOverviewFragment : Fragment(), KodeinAware {
         binding.weekDescription.text =
             "${resources.getString(R.string.statistics_week)} ${viewModel.getThisWeekNumber()}"
         binding.monthDescription.text = viewModel.getCurrentMonthString()
+    }
+
+    private fun setupWeeklyGoal() {
+        binding.editGoalButton.setOnClickListener {
+            EditWeeklyGoalDialog().show(parentFragmentManager, "EditWeeklyGoalDialog")
+        }
+        weeklyGoalViewModel.getWeeklyGoalData().observe(viewLifecycleOwner, {
+            val thereIsNoGoal = it.goal.minutes == 0
+            binding.goalText.text = if (thereIsNoGoal) "inactive" else "${it.goal.minutes} minutes"
+            binding.currentProgressValue.text = if (thereIsNoGoal) "-" else "${it.minutesThisWeek * 100 / it.goal.minutes}%"
+            binding.currentStreakValue.text = if (thereIsNoGoal) "-" else it.goal.currentStreak.toString()
+            binding.bestStreakValue.text = it.goal.bestStreak.toString()
+            if (!thereIsNoGoal) weeklyGoalViewModel.updateStreaks(it)
+        })
     }
 }

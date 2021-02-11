@@ -21,7 +21,7 @@ class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
 
     private lateinit var binding: FragmentStatisticsBinding
 
-    private val viewModelFactory : LogViewModelFactory by instance()
+    private val viewModelFactory : StatisticsViewModelFactory by instance()
     private lateinit var viewModel: StatisticsViewModel
 
     private lateinit var pagerAdapter: StatisticsViewPagerAdapter
