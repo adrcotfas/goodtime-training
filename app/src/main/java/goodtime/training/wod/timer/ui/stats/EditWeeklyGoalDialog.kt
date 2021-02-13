@@ -38,6 +38,11 @@ class EditWeeklyGoalDialog : DialogFragment(), KodeinAware {
             weeklyGoal.minutes = value.toInt()
         }
 
+        binding.slider.setLabelFormatter { value: Float ->
+            if (value == 0F) " Inactive"
+            else  "${value.toInt()} min"
+        }
+
         b.apply {
             setView(binding.root)
             setTitle("Weekly goal")

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -29,6 +30,9 @@ import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment
 import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
+import goodtime.training.wod.timer.ui.stats.EditWeeklyGoalDialog
+import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModel
+import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
 import kotlinx.android.synthetic.main.content_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -36,6 +40,7 @@ import org.greenrobot.eventbus.ThreadMode
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.lang.Integer.min
 
 
 class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -64,6 +69,9 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private lateinit var currentDestination: NavDestination
 
+    private val weeklyGoalViewModelFactory: WeeklyGoalViewModelFactory by instance()
+    private lateinit var weeklyGoalViewModel: WeeklyGoalViewModel
+
     override fun onStart() {
         super.onStart()
         EventBus.getDefault().register(this)
@@ -86,12 +94,16 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         preferenceHelper.dataStore.preferences.registerOnSharedPreferenceChangeListener(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        weeklyGoalViewModel = ViewModelProvider(this, weeklyGoalViewModelFactory).get(WeeklyGoalViewModel::class.java)
+        setupWeeklyGoal()
+
         startButton = binding.contentMain.startButton
         favoritesButton = binding.contentMain.buttonFavorites.root
         newCustomWorkoutButton = binding.contentMain.buttonNew.root
 
         filterButton = binding.contentMain.buttonFilter.root // used on the statistics page
-        filterButton.setOnClickListener{
+        filterButton.setOnClickListener {
             EventBus.getDefault().post(Events.Companion.FilterButtonClickEvent())
         }
         filterButton.setOnCloseIconClickListener {
@@ -115,14 +127,14 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         fullscreenHelper = FullscreenHelper(binding.contentMain.mainLayout)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_amrap,
-                R.id.nav_for_time,
-                R.id.nav_intervals,
-                R.id.nav_hiit,
-                R.id.nav_custom
-            ),
-            binding.drawerLayout
+                setOf(
+                        R.id.nav_amrap,
+                        R.id.nav_for_time,
+                        R.id.nav_intervals,
+                        R.id.nav_hiit,
+                        R.id.nav_custom
+                ),
+                binding.drawerLayout
         )
 
         bottomNavigationView = binding.contentMain.bottomNavigationView
@@ -159,7 +171,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             addSessionButton.isVisible = currentDestination.label == "Statistics"
         }
 
-        startButton.setOnClickListener{ getVisibleFragment().onStartWorkout() }
+        startButton.setOnClickListener { getVisibleFragment().onStartWorkout() }
         bottomNavigationView.setupWithNavController(navController)
         bottomNavigationView.setOnNavigationItemReselectedListener {
             // Nothing here to disable reselect
@@ -167,8 +179,36 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
         binding.navView.setupWithNavController(navController)
 
-        binding.contentMain.buttonFavorites.root.setOnClickListener{ onFavoritesButtonClick() }
+        binding.contentMain.buttonFavorites.root.setOnClickListener { onFavoritesButtonClick() }
         binding.contentMain.buttonNew.root.setOnClickListener { onNewCustomWorkoutButtonClick() }
+
+        binding.buttonSettings.root.setOnClickListener {
+            navController.navigate(R.id.action_global_settings)
+            binding.drawerLayout.closeDrawers()
+        }
+        binding.buttonStatistics.root.setOnClickListener {
+            navController.navigate(R.id.action_global_statistics)
+            binding.drawerLayout.closeDrawers()
+        }
+    }
+
+    private fun setupWeeklyGoal() {
+        binding.weeklyGoalSection.root.setOnClickListener {
+            EditWeeklyGoalDialog().show(supportFragmentManager, "EditWeeklyGoalDialog")
+        }
+        weeklyGoalViewModel.getWeeklyGoalData().observe(this, {
+            val thereIsNoGoal = it.goal.minutes == 0
+
+            binding.weeklyGoalSection.description.isVisible = !thereIsNoGoal
+            binding.weeklyGoalSection.progressBar.isVisible = !thereIsNoGoal
+
+            if (!thereIsNoGoal) {
+                val progress = (it.minutesThisWeek * 100 / it.goal.minutes).toInt()
+                binding.weeklyGoalSection.progressBar.progress = min(100, progress)
+                binding.weeklyGoalSection.description.text =
+                    "${progress}% (${it.minutesThisWeek} minutes / ${it.goal.minutes} minutes)"
+            }
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -181,12 +221,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             val sessions = fragment.getSelectedSessions()
             if (fragment is CustomWorkoutFragment) {
                 SelectCustomWorkoutDialog.newInstance(fragment).show(
-                    supportFragmentManager,
-                    "SelectFavorite"
+                        supportFragmentManager,
+                        "SelectFavorite"
                 )
             } else {
                 SelectFavoriteDialog.newInstance(sessions[0], fragment)
-                    .show(supportFragmentManager, "SelectFavorite")
+                        .show(supportFragmentManager, "SelectFavorite")
             }
         }
     }
@@ -199,7 +239,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     }
 
     private fun getVisibleFragment() =
-        (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
+            (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
     private fun setStartButtonStateWithColor(enabled: Boolean) {
         setStartButtonState(enabled)
@@ -214,10 +254,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun setStartButtonState(enabled: Boolean) {
         startButton.isEnabled = enabled
-    }
-
-    private fun setFavoriteButtonState(enabled: Boolean) {
-        favoritesButton.isEnabled = enabled
     }
 
     private fun toggleFullscreenMode(newState: Boolean) {
@@ -237,8 +273,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun toggleMinimalistMode(enabled: Boolean) {
         bottomNavigationView.labelVisibilityMode =
-            if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
-            else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+                if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
+                else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
 
         if (enabled) {
             val startPadding = dpToPx(this, 10f).toFloat()
@@ -266,32 +302,32 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             preferenceHelper.setMainBalloons(false)
             binding.root.post {
                 val bottomMenuBalloon = CustomBalloonFactory.create(
-                    this, this,
-                    "Use the bottom menu to change the workout type."
+                        this, this,
+                        "Use the bottom menu to change the workout type."
                 )
                 val amrapBalloon = CustomBalloonFactory.create(
-                    this, this,
-                    "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time."
+                        this, this,
+                        "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time."
                 )
                 val timePickersBalloon = CustomBalloonFactory.create(
-                    this, this,
-                    "Use the time pickers to change the duration.",
-                    false, 0.5f
+                        this, this,
+                        "Use the time pickers to change the duration.",
+                        false, 0.5f
                 )
                 val favoriteButtonBalloon = CustomBalloonFactory.create(
-                    this, this,
-                    "Use the favorites section to save, remove and load timer presets.",
-                    true, 0.83f
+                        this, this,
+                        "Use the favorites section to save, remove and load timer presets.",
+                        true, 0.83f
                 )
                 val startButtonBalloon = CustomBalloonFactory.create(
-                    this, this,
-                    "Press the action button to start the workout using the current selection.",
-                    false, 0.5f
+                        this, this,
+                        "Press the action button to start the workout using the current selection.",
+                        false, 0.5f
                 )
                 bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, bottomNavigationView, 0, 12)
-                    .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
-                    .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)
-                    .relayShowAlignTop(startButtonBalloon, startButton, 0, -12)
+                        .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
+                        .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)
+                        .relayShowAlignTop(startButtonBalloon, startButton, 0, -12)
                 bottomMenuBalloon.showAlignTop(bottomNavigationView, 0, -12)
             }
         }
