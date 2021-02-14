@@ -43,6 +43,9 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         private const val SHOW_HIIT_BALLOONS = "show_hiit_balloons"
         private const val SHOW_CUSTOM_BALLOONS = "show_custom_balloons"
 
+        const val EXPORT_BACKUP = "pref_export_backup"
+        const val IMPORT_BACKUP = "pref_import_backup"
+
         fun generatePreWorkoutSession(seconds: Int) : SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
         }

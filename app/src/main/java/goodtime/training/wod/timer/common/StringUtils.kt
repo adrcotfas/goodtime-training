@@ -141,6 +141,11 @@ class StringUtils {
             return "$timeString   $dateString"
         }
 
+        fun getDateAndTimeForBackup(): String {
+            val date = LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())
+            return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm"))
+        }
+
         fun toString(sessionType: SessionType): String {
             return when (sessionType) {
                 SessionType.AMRAP -> "AMRAP"

@@ -104,4 +104,19 @@
             app:iconSpaceReserved="false"
             android:enabled="true"/>
     </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="Backup"
+        app:iconSpaceReserved="false">
+        <Preference
+            app:key="pref_export_backup"
+            app:title="Export Backup"
+            app:iconSpaceReserved="false"
+            android:summary="The file can be imported back"/>
+        <Preference
+            app:key="pref_import_backup"
+            app:title="Import backup"
+            app:iconSpaceReserved="false"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

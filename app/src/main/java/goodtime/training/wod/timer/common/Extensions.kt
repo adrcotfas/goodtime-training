@@ -18,6 +18,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.number_picker.NumberPicker.Companion.PickerSize
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 fun EditText.onDone(callback: () -> Unit) {
     setOnEditorActionListener { _, actionId, _ ->
@@ -114,4 +118,17 @@ fun toInt(string: String): Int {
 fun hideKeyboardFrom(context: Context, view: View) {
     val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun <R> CoroutineScope.executeAsyncTask(
+    onPreExecute: () -> Unit,
+    doInBackground: () -> R,
+    onPostExecute: (R) -> Unit
+) = launch {
+    onPreExecute()
+    val result = withContext(Dispatchers.IO) {
+        // runs in background thread without blocking the Main Thread
+        doInBackground()
+    }
+    onPostExecute(result)
 }

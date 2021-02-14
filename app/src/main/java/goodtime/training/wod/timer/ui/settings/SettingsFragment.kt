@@ -1,25 +1,29 @@
 package goodtime.training.wod.timer.ui.settings
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
 import android.text.format.DateFormat
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
+import goodtime.training.wod.timer.data.db.GoodtimeDatabase
 import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import java.time.LocalTime
 
-class SettingsFragment:
-        PreferenceFragmentCompat(),
-        KodeinAware,
-        SoundProfileDialog.Listener {
+class SettingsFragment :
+    PreferenceFragmentCompat(),
+    KodeinAware,
+    SoundProfileDialog.Listener {
 
     override val kodein by closestKodein()
     private val preferenceHelper by instance<PreferenceHelper>()
@@ -30,6 +34,10 @@ class SettingsFragment:
     private lateinit var enableVoicePreference: SwitchPreferenceCompat
     private lateinit var soundProfilePreference: Preference
 
+    companion object {
+        private const val IMPORT_BACKUP_REQUEST = 123
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.preferenceDataStore = preferenceHelper.dataStore
         setPreferencesFromResource(R.xml.preferences, rootKey)
@@ -37,6 +45,7 @@ class SettingsFragment:
         setupCountdownPreference()
         setupReminderPreference()
         setupSoundProfilePreference()
+        setupBackupButtons()
     }
 
     override fun onResume() {
@@ -47,7 +56,7 @@ class SettingsFragment:
     private fun setupSoundPreference() {
         enableSoundPreference = findPreference(PreferenceHelper.SOUND_ENABLED)!!
         enableVoicePreference = findPreference(PreferenceHelper.VOICE_ENABLED)!!
-        enableSoundPreference.setOnPreferenceClickListener{
+        enableSoundPreference.setOnPreferenceClickListener {
             if (!enableSoundPreference.isChecked && enableVoicePreference.isChecked) {
                 enableVoicePreference.isChecked = false
             }
@@ -86,7 +95,10 @@ class SettingsFragment:
         }
     }
 
-    private fun updatePermissionPreferenceSummary(pref: Preference, notificationPolicyAccessGranted: Boolean) {
+    private fun updatePermissionPreferenceSummary(
+        pref: Preference,
+        notificationPolicyAccessGranted: Boolean
+    ) {
         if (notificationPolicyAccessGranted) {
             pref.summary = ""
         } else {
@@ -95,7 +107,8 @@ class SettingsFragment:
     }
 
     private fun isNotificationPolicyAccessDenied(): Boolean {
-        val notificationManager = requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return !notificationManager.isNotificationPolicyAccessGranted
     }
 
@@ -110,7 +123,7 @@ class SettingsFragment:
         timePickerPreference = findPreference(PreferenceHelper.REMINDER_TIME)!!
         timePickerPreference.setOnPreferenceClickListener {
             val dialog = TimePickerDialogBuilder(requireContext())
-                    .buildDialog(preferenceHelper.getReminderTime())
+                .buildDialog(preferenceHelper.getReminderTime())
             dialog.addOnPositiveButtonClickListener {
                 val newValue = LocalTime.of(dialog.hour, dialog.minute).toSecondOfDay()
                 preferenceHelper.setReminderTime(newValue)
@@ -124,7 +137,8 @@ class SettingsFragment:
 
     private fun updateReminderTimeSummary() {
         timePickerPreference.summary = StringUtils.secondsOfDayToTimerFormat(
-                preferenceHelper.getReminderTime(), DateFormat.is24HourFormat(context))
+            preferenceHelper.getReminderTime(), DateFormat.is24HourFormat(context)
+        )
     }
 
     private fun setupSoundProfilePreference() {
@@ -139,11 +153,43 @@ class SettingsFragment:
 
     private fun updateSoundProfileSummary() {
         soundProfilePreference.summary =
-                resources.getStringArray(R.array.pref_sound_profile_entries)[preferenceHelper.getSoundProfile()]
+            resources.getStringArray(R.array.pref_sound_profile_entries)[preferenceHelper.getSoundProfile()]
     }
 
     override fun onSoundProfileSelected(idx: Int) {
         preferenceHelper.setSoundProfile(idx)
         updateSoundProfileSummary()
+    }
+
+    private fun setupBackupButtons() {
+        findPreference<Preference>(PreferenceHelper.EXPORT_BACKUP)?.setOnPreferenceClickListener {
+            BackupOperations.doExport(lifecycleScope, requireContext())
+            true
+        }
+
+        findPreference<Preference>(PreferenceHelper.IMPORT_BACKUP)?.setOnPreferenceClickListener {
+            val intentType = "application/octet-stream"
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = intentType
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(intentType))
+            }
+            startActivityForResult(intent, IMPORT_BACKUP_REQUEST)
+            true
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == IMPORT_BACKUP_REQUEST && data != null) {
+            val uri = data.data
+            if (uri != null && resultCode == Activity.RESULT_OK) {
+                GoodtimeDatabase.getDatabase(requireContext())
+                onImportBackupResult(uri)
+            }
+        }
+    }
+
+    private fun onImportBackupResult(uri: Uri) {
+        BackupOperations.doImport(lifecycleScope, requireContext(), uri)
     }
 }

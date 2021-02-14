@@ -1,9 +1,9 @@
 package goodtime.training.wod.timer
 
 import android.app.Application
+import android.content.Context
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.room.Room
 import com.google.android.material.resources.TextAppearanceConfig
 import goodtime.training.wod.timer.common.TimeUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
@@ -40,21 +40,23 @@ class GoodtimeApplication : Application(), KodeinAware {
         fun getRes(): Resources {
             return res
         }
+
+        lateinit var context: Context
+            private set
+
         private lateinit var reminderHelper: ReminderHelper
         fun getReminderHelper(): ReminderHelper {
             return reminderHelper
         }
+
+        fun getDatabase(context: Context) = GoodtimeDatabase.getDatabase(context)
     }
 
     override val kodein = Kodein.lazy {
-        bind<Database>() with eagerSingleton {
-            Room.databaseBuilder(this@GoodtimeApplication, Database::class.java,
-                "goodtime-training-db")
-                .build() }
-        bind<SessionDao>() with eagerSingleton { instance<Database>().sessionsDao() }
-        bind<SessionSkeletonDao>() with eagerSingleton { instance<Database>().sessionSkeletonDao() }
-        bind<CustomWorkoutSkeletonDao>() with eagerSingleton { instance<Database>().customWorkoutSkeletonDao() }
-        bind<WeeklyGoalDao>() with eagerSingleton { instance<Database>().weeklyGoalDao() }
+        bind<SessionDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).sessionsDao() }
+        bind<SessionSkeletonDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).sessionSkeletonDao() }
+        bind<CustomWorkoutSkeletonDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).customWorkoutSkeletonDao() }
+        bind<WeeklyGoalDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).weeklyGoalDao() }
         bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance(), instance()) }
         bind<PreferenceHelper>() with eagerSingleton { PreferenceHelper(EncryptedPreferenceDataStore(applicationContext)) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
@@ -70,6 +72,7 @@ class GoodtimeApplication : Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
+        context = applicationContext
 
         res = resources
         reminderHelper = ReminderHelper(this)

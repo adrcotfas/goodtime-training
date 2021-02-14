@@ -44,6 +44,17 @@
                 <action android:name="@string/reminder_action"/>
             </intent-filter>
         </receiver>
+
+        <!--        Used for database back-ups-->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="goodtime.training.wod.timer"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+        </provider>
     </application>
 
 </manifest>
