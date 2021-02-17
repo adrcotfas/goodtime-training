@@ -34,7 +34,7 @@ class StatisticsOverviewFragment : Fragment(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(StatisticsViewModel::class.java)
-        weeklyGoalViewModel = ViewModelProvider(this, weeklyGoalViewModelFactory).get(WeeklyGoalViewModel::class.java)
+        weeklyGoalViewModel = ViewModelProvider(requireActivity(), weeklyGoalViewModelFactory).get(WeeklyGoalViewModel::class.java)
     }
 
     override fun onCreateView(

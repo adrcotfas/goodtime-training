@@ -67,7 +67,4 @@ class AppRepositoryImpl(
     }
 
     override fun getWeeklyGoal(): LiveData<WeeklyGoal> = weeklyGoalDao.get()
-
-    override fun getSessionsOfCurrentWeek() = sessionDao.getSessionsOfCurrentWeek()
-    override fun getSessionsOfLastWeek() = sessionDao.getSessionsOfLastWeek()
 }

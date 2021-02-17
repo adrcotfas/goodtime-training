@@ -13,6 +13,7 @@ import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.db.GoodtimeDatabase
+import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -26,6 +27,7 @@ class SettingsFragment :
 
     override val kodein by closestKodein()
     private val preferenceHelper by instance<PreferenceHelper>()
+    private val repo: AppRepository by instance()
 
     private lateinit var countdownPreference: SeekBarPreference
     private lateinit var timePickerPreference: Preference
@@ -201,7 +203,7 @@ class SettingsFragment :
             val uri = data.data
             if (uri != null && resultCode == Activity.RESULT_OK) {
                 GoodtimeDatabase.getDatabase(requireContext())
-                SmartWODBackupOperations.doImportSmartWOD(lifecycleScope, requireContext(), uri)
+                SmartWODBackupOperations.doImportSmartWOD(lifecycleScope, repo, requireContext(), uri)
             }
         }
     }

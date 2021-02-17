@@ -7,10 +7,10 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import goodtime.training.wod.timer.common.FileUtils
 import goodtime.training.wod.timer.common.executeAsyncTask
-import goodtime.training.wod.timer.data.db.GoodtimeDatabase
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
+import goodtime.training.wod.timer.data.repository.AppRepository
 import kotlinx.coroutines.launch
 import java.io.File
 import java.time.LocalDateTime
@@ -30,7 +30,7 @@ class SmartWODBackupOperations {
         /**
          * Imports a CSV file exported from SmartWOD
          */
-        fun doImportSmartWOD(scope: LifecycleCoroutineScope, context: Context, uri: Uri): Boolean {
+        fun doImportSmartWOD(scope: LifecycleCoroutineScope, repo: AppRepository, context: Context, uri: Uri): Boolean {
             scope.executeAsyncTask(
                 onPreExecute = {},
                 doInBackground = {
@@ -61,7 +61,7 @@ class SmartWODBackupOperations {
                     ).show()
                     if (it.second != null) {
                         (result.second as ArrayList<Session>).forEach {
-                            scope.launch { GoodtimeDatabase.getDatabase(context).sessionsDao().add(it) }
+                            scope.launch { repo.addSession(it) }
                         }
                     }
                 })

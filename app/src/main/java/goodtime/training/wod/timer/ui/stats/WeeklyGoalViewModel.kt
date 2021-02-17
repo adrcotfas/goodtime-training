@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer.ui.stats
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.common.CombinedLiveData
@@ -12,24 +13,31 @@ import java.util.concurrent.TimeUnit
 
 class WeeklyGoalViewModel(private val repo: AppRepository) : ViewModel() {
 
-    fun getWeeklyGoalData(): CombinedLiveData<WeeklyGoalData> {
-        return CombinedLiveData(repo.getWeeklyGoal(), repo.getSessionsOfLastWeek(), repo.getSessionsOfCurrentWeek()) {
-            data: List<Any?> ->
-            if (data[0] == null || data[1] == null || data[2] == null){
-                WeeklyGoalData(WeeklyGoal(0, 0,0, 0), 0, 0)
+    fun getWeeklyGoalData(liveData: LiveData<List<Session>> = repo.getSessions()): CombinedLiveData<WeeklyGoalData> {
+        return CombinedLiveData(repo.getWeeklyGoal(), liveData) { data: List<Any?> ->
+            if (data[0] == null || data[1] == null) {
+                WeeklyGoalData(WeeklyGoal(0, 0, 0, 0), 0, 0)
             } else {
-                val sessionsLastWeek = data[1] as List<Session>
+
+                val firstDayOfLastWeek: Long = TimeUtils.firstDayOfLastWeekMillis()
+                val firstDayOfCurrentWeek: Long = TimeUtils.firstDayOfCurrentWeekMillis()
+
+                val sessionsLastWeek =
+                    (data[1] as List<Session>).filter { session -> session.timestamp in firstDayOfLastWeek until firstDayOfCurrentWeek }
                 var secondsLastWeek = 0
                 sessionsLastWeek.forEach { secondsLastWeek += it.actualDuration }
 
-                val sessionsThisWeek = data[2] as List<Session>
+                val sessionsThisWeek =
+                    (data[1] as List<Session>).filter { session -> session.timestamp >= firstDayOfCurrentWeek }
+
                 var secondsThisWeek = 0
                 sessionsThisWeek.forEach { secondsThisWeek += it.actualDuration }
 
                 WeeklyGoalData(
-                        data[0] as WeeklyGoal,
-                        TimeUnit.SECONDS.toMinutes(secondsLastWeek.toLong()),
-                        TimeUnit.SECONDS.toMinutes(secondsThisWeek.toLong()))
+                    data[0] as WeeklyGoal,
+                    TimeUnit.SECONDS.toMinutes(secondsLastWeek.toLong()),
+                    TimeUnit.SECONDS.toMinutes(secondsThisWeek.toLong())
+                )
             }
         }
     }

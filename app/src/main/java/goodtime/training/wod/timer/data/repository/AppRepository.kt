@@ -26,6 +26,4 @@ interface AppRepository {
     suspend fun addWeeklyGoal(goal: WeeklyGoal)
     suspend fun updateWeeklyGoal(goal: WeeklyGoal)
     fun getWeeklyGoal() : LiveData<WeeklyGoal>
-    fun getSessionsOfCurrentWeek(): LiveData<List<Session>>
-    fun getSessionsOfLastWeek(): LiveData<List<Session>>
 }
