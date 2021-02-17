@@ -2,6 +2,7 @@ package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.StringUtils.Companion.secondsToNiceFormat
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
@@ -14,6 +15,7 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.data.workout.TimerState
+import kotlinx.coroutines.launch
 
 class TimerViewModel(
     private val notifier: TimerNotificationHelper,
@@ -159,7 +161,9 @@ class TimerViewModel(
         }
         if (preferenceHelper.logIncompleteSessions()) {
             prepareSessionToAdd(false)
-            repository.addSession(sessionToAdd)
+            viewModelScope.launch {
+                repository.addSession(sessionToAdd)
+            }
         }
     }
 
@@ -402,6 +406,8 @@ class TimerViewModel(
         if (preferenceHelper.isDndModeEnabled()) {
             notifier.toggleDndMode(false)
         }
-        repository.addSession(sessionToAdd)
+        viewModelScope.launch {
+            repository.addSession(sessionToAdd)
+        }
     }
 }

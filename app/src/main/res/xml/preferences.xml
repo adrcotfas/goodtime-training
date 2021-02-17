@@ -117,6 +117,10 @@
             app:key="pref_import_backup"
             app:title="Import backup"
             app:iconSpaceReserved="false"/>
+        <Preference
+            app:key="pref_import_backup_smart_wod"
+            app:title="Import CSV backup from SmartWOD"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

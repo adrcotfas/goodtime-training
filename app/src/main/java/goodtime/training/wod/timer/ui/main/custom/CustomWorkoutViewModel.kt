@@ -1,8 +1,10 @@
 package goodtime.training.wod.timer.ui.main.custom
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
+import kotlinx.coroutines.launch
 
 class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewModel() {
 
@@ -12,6 +14,8 @@ class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewMod
     var hasUnsavedSession = false
 
     fun saveCurrentSelection() {
-        appRepository.editCustomWorkoutSkeleton(currentWorkout)
+        viewModelScope.launch {
+            appRepository.editCustomWorkoutSkeleton(currentWorkout)
+        }
     }
 }

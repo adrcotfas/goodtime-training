@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
 import android.text.format.DateFormat
@@ -35,7 +34,8 @@ class SettingsFragment :
     private lateinit var soundProfilePreference: Preference
 
     companion object {
-        private const val IMPORT_BACKUP_REQUEST = 123
+        private const val IMPORT_BACKUP_REQUEST = 0
+        private const val IMPORT_BACKUP_SMART_WOD_REQUEST = 1
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -177,6 +177,17 @@ class SettingsFragment :
             startActivityForResult(intent, IMPORT_BACKUP_REQUEST)
             true
         }
+
+        findPreference<Preference>(PreferenceHelper.IMPORT_BACKUP_SMART_WOD)?.setOnPreferenceClickListener {
+            val intentType = "text/csv"
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = intentType
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(intentType))
+            }
+            startActivityForResult(intent, IMPORT_BACKUP_SMART_WOD_REQUEST)
+            true
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -184,12 +195,14 @@ class SettingsFragment :
             val uri = data.data
             if (uri != null && resultCode == Activity.RESULT_OK) {
                 GoodtimeDatabase.getDatabase(requireContext())
-                onImportBackupResult(uri)
+                BackupOperations.doImport(lifecycleScope, requireContext(), uri)
+            }
+        } else if (requestCode == IMPORT_BACKUP_SMART_WOD_REQUEST && data != null) {
+            val uri = data.data
+            if (uri != null && resultCode == Activity.RESULT_OK) {
+                GoodtimeDatabase.getDatabase(requireContext())
+                SmartWODBackupOperations.doImportSmartWOD(lifecycleScope, requireContext(), uri)
             }
         }
-    }
-
-    private fun onImportBackupResult(uri: Uri) {
-        BackupOperations.doImport(lifecycleScope, requireContext(), uri)
     }
 }

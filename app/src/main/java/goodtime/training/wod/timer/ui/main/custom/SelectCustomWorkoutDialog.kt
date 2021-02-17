@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
@@ -13,6 +14,7 @@ import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.ui.main.DeleteConfirmationDialog
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -78,7 +80,9 @@ class SelectCustomWorkoutDialog: BottomSheetDialogFragment(), KodeinAware, Delet
     }
 
     override fun onDeleteConfirmation(id: Long, name: String) {
-        repo.removeCustomWorkoutSkeleton(name)
-        listener.onFavoriteDeleted(name)
+        lifecycleScope.launch {
+            repo.removeCustomWorkoutSkeleton(name)
+            listener.onFavoriteDeleted(name)
+        }
     }
 }

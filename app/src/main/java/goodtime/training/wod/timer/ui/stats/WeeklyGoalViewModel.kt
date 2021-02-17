@@ -1,11 +1,13 @@
 package goodtime.training.wod.timer.ui.stats
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.common.CombinedLiveData
 import goodtime.training.wod.timer.common.TimeUtils
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.WeeklyGoal
 import goodtime.training.wod.timer.data.repository.AppRepository
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class WeeklyGoalViewModel(private val repo: AppRepository) : ViewModel() {
@@ -47,7 +49,9 @@ class WeeklyGoalViewModel(private val repo: AppRepository) : ViewModel() {
             } else { //goal failed - reset streak
                 data.goal.currentStreak = 0
             }
-            repo.updateWeeklyGoal(data.goal)
+            viewModelScope.launch {
+                repo.updateWeeklyGoal(data.goal)
+            }
         }
     }
 }

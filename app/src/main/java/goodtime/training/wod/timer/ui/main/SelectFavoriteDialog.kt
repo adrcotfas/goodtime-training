@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.R
@@ -16,6 +17,7 @@ import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSelectFavoriteBinding
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -57,8 +59,10 @@ class SelectFavoriteDialog: BottomSheetDialogFragment(), KodeinAware,
     private fun setupFavorites() {
         binding.favoriteCandidateChip.text = toFavoriteFormat(favoriteCandidate)
         binding.favoriteCandidateChip.setOnClickListener {
-            repo.addSessionSkeleton(favoriteCandidate)
-            binding.currentSelectionSection.visibility = View.GONE
+            lifecycleScope.launch {
+                repo.addSessionSkeleton(favoriteCandidate)
+                binding.currentSelectionSection.visibility = View.GONE
+            }
         }
 
         repo.getSessionSkeletons(favoriteCandidate.type).observe(
@@ -94,6 +98,8 @@ class SelectFavoriteDialog: BottomSheetDialogFragment(), KodeinAware,
     }
 
     override fun onDeleteConfirmation(id: Long, name: String) {
-        repo.removeSessionSkeleton(id)
+        lifecycleScope.launch {
+            repo.removeSessionSkeleton(id)
+        }
     }
 }

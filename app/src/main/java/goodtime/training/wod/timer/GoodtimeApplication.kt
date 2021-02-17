@@ -25,6 +25,7 @@ import goodtime.training.wod.timer.ui.settings.EncryptedPreferenceDataStore
 import goodtime.training.wod.timer.ui.stats.StatisticsViewModelFactory
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
+import kotlinx.coroutines.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.bind
@@ -88,61 +89,64 @@ class GoodtimeApplication : Application(), KodeinAware {
 
     private fun generateDefaultSessions() {
         val repo: AppRepository by instance()
-        repo.addSessionSkeleton(
-            SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(10).toInt(), type = SessionType.AMRAP)
-        )
-        repo.addSessionSkeleton(
-            SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.AMRAP)
-        )
-        repo.addSessionSkeleton(
-            SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(20).toInt(), type = SessionType.AMRAP)
-        )
 
-        repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.FOR_TIME))
-        repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 20,
-            SessionType.INTERVALS))
+        MainScope().launch {
+            repo.addSessionSkeleton(
+                SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(10).toInt(), type = SessionType.AMRAP)
+            )
+            repo.addSessionSkeleton(
+                SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.AMRAP)
+            )
+            repo.addSessionSkeleton(
+                SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(20).toInt(), type = SessionType.AMRAP)
+            )
 
-        val tabata = SessionSkeleton(
-            0, 20, 10, 8,
-            SessionType.HIIT
-        )
-        val rest30Sec = SessionSkeleton(0, 30, 0, 0, SessionType.REST)
-        val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 0, SessionType.REST)
+            repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.FOR_TIME))
+            repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 20,
+                SessionType.INTERVALS))
 
-        //TODO: remove before release
-        val dummyAmrap = SessionSkeleton(0, 5, type = SessionType.AMRAP)
-        val dummyForTime = SessionSkeleton(0, 5, type = SessionType.FOR_TIME)
-        val dummyHiit = SessionSkeleton(
-            0, 3, 3, 3,
-            SessionType.HIIT
-        )
-        val dummyIntervals = SessionSkeleton(
-            0, 3, 0, 2,
-            SessionType.INTERVALS
-        )
-        val dummyRest = SessionSkeleton(0, 30, 5, 0, SessionType.REST)
-        repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Dummy",
-            arrayListOf(
-                dummyAmrap,
-                dummyForTime,
-                dummyHiit,
-                dummyRest,
-                dummyIntervals,
-                dummyRest,
-                dummyAmrap)))
+            val tabata = SessionSkeleton(
+                0, 20, 10, 8,
+                SessionType.HIIT
+            )
+            val rest30Sec = SessionSkeleton(0, 30, 0, 0, SessionType.REST)
+            val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 0, SessionType.REST)
 
-        repo.addSessionSkeleton(rest30Sec)
-        repo.addSessionSkeleton(rest1Min)
+            //TODO: remove before release
+            val dummyAmrap = SessionSkeleton(0, 5, type = SessionType.AMRAP)
+            val dummyForTime = SessionSkeleton(0, 5, type = SessionType.FOR_TIME)
+            val dummyHiit = SessionSkeleton(
+                0, 3, 3, 3,
+                SessionType.HIIT
+            )
+            val dummyIntervals = SessionSkeleton(
+                0, 3, 0, 2,
+                SessionType.INTERVALS
+            )
+            val dummyRest = SessionSkeleton(0, 30, 5, 0, SessionType.REST)
+            repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Dummy",
+                arrayListOf(
+                    dummyAmrap,
+                    dummyForTime,
+                    dummyHiit,
+                    dummyRest,
+                    dummyIntervals,
+                    dummyRest,
+                    dummyAmrap)))
 
-        //Custom workouts
-        repo.addSessionSkeleton(tabata)
-        repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("3 x Tabata", arrayListOf(
-            tabata, rest30Sec, tabata, rest30Sec, tabata)))
+            repo.addSessionSkeleton(rest30Sec)
+            repo.addSessionSkeleton(rest1Min)
 
-        val intervals5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.INTERVALS)
-        repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Power Intervals", arrayListOf(
-            intervals5, rest1Min, intervals5, rest1Min, intervals5)))
+            //Custom workouts
+            repo.addSessionSkeleton(tabata)
+            repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("3 x Tabata", arrayListOf(
+                tabata, rest30Sec, tabata, rest30Sec, tabata)))
 
-        repo.addWeeklyGoal(WeeklyGoal(75, TimeUtils.firstDayOfLastWeekMillis(), 0, 0))
+            val intervals5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.INTERVALS)
+            repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Power Intervals", arrayListOf(
+                intervals5, rest1Min, intervals5, rest1Min, intervals5)))
+
+            repo.addWeeklyGoal(WeeklyGoal(75, TimeUtils.firstDayOfLastWeekMillis(), 0, 0))
+        }
     }
 }

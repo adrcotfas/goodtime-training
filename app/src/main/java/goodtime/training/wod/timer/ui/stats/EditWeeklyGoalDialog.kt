@@ -5,10 +5,12 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.data.model.WeeklyGoal
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogEditWeeklyGoalBinding
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -47,7 +49,9 @@ class EditWeeklyGoalDialog : DialogFragment(), KodeinAware {
             setView(binding.root)
             setTitle("Weekly goal")
             setPositiveButton(android.R.string.ok) { _, _ ->
-                repo.updateWeeklyGoal(weeklyGoal)
+                lifecycleScope.launch {
+                    repo.updateWeeklyGoal(weeklyGoal)
+                }
             }
         }
 

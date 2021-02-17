@@ -25,7 +25,7 @@ data class SessionSkeleton (
         return when(type) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> duration
             SessionType.INTERVALS -> duration * numRounds
-            SessionType.HIIT -> duration * numRounds + breakDuration * numRounds
+            SessionType.HIIT -> (duration * numRounds + breakDuration * numRounds) - breakDuration
             else -> 0
         }
     }

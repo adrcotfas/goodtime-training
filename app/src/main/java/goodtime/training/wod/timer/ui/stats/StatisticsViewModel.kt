@@ -3,9 +3,12 @@ package goodtime.training.wod.timer.ui.stats
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.repository.AppRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -21,7 +24,9 @@ class StatisticsViewModel(private val repo: AppRepository) : ViewModel() {
 
     fun deleteCompletedWorkouts(selectedItems: ArrayList<Long>) {
         for (i in selectedItems) {
-            repo.removeSession(i)
+            viewModelScope.launch(Dispatchers.IO) {
+                repo.removeSession(i)
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import goodtime.training.wod.timer.R
@@ -19,6 +20,7 @@ import goodtime.training.wod.timer.databinding.SectionEditTextViewsBinding
 import goodtime.training.wod.timer.ui.common.DatePickerDialogHelper
 import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import goodtime.training.wod.timer.ui.main.SessionEditTextHelper
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -115,7 +117,9 @@ class AddCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
                 candidate.actualDuration = activeTimeEts.getCurrentDuration()
             }
             candidate.notes = binding.notesLayout.editText.text.toString()
-            repo.addSession(candidate)
+            lifecycleScope.launch {
+                repo.addSession(candidate)
+            }
             dismiss()
             hideKeyboardFrom(requireContext(), binding.root)
         }

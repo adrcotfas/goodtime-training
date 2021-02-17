@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import goodtime.training.wod.timer.common.*
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
@@ -14,6 +15,7 @@ import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogEditCompletedWorkoutBinding
 import goodtime.training.wod.timer.ui.common.DatePickerDialogHelper
 import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -129,7 +131,9 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
                 candidate.actualReps = 0
             }
             candidate.notes = binding.notesLayout.editText.text.toString()
-            repo.editSession(candidate)
+            lifecycleScope.launch {
+                repo.editSession(candidate)
+            }
             dismiss()
         }
     }

@@ -14,7 +14,7 @@ interface SessionDao {
     suspend fun add(session: Session)
 
     @Update
-    fun edit(session: Session)
+    suspend fun edit(session: Session)
 
     @Query("select * from Session order by timestamp desc")
     @TypeConverters(TypeConverter::class)
@@ -29,7 +29,7 @@ interface SessionDao {
     fun get(id: Long): LiveData<Session>
 
     @Query("delete from Session where id = :id")
-    fun remove(id: Long)
+    suspend fun remove(id: Long)
 
     @Query("select * from Session where timestamp >= :firstDayOfCurrentWeek")
     fun getSessionsOfCurrentWeek(
