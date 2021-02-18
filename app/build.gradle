@@ -69,7 +69,6 @@ dependencies {
     // Room Database
     implementation "androidx.room:room-runtime:2.2.6"
     implementation "androidx.room:room-ktx:2.2.6"
-    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
     kapt "androidx.room:room-compiler:2.2.6"
 
     implementation 'com.google.code.gson:gson:2.8.6'

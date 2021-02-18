@@ -4,30 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.Nullable
 import androidx.preference.PreferenceDataStore
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 
-class EncryptedPreferenceDataStore(context: Context) : PreferenceDataStore() {
-    val preferences: SharedPreferences
-
-    companion object {
-        private const val CONFIG_FILE_NAME = "SharedPreferences"
-    }
-
-    init {
-        preferences = try {
-            val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-            EncryptedSharedPreferences.create(
-                    CONFIG_FILE_NAME,
-                    masterKeyAlias,
-                    context,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
-        } catch (e: Exception) {
-            context.getSharedPreferences(CONFIG_FILE_NAME, Context.MODE_PRIVATE)
-        }
-    }
+class PreferenceDataStore(context: Context) : PreferenceDataStore() {
+    val preferences: SharedPreferences =
+        context.getSharedPreferences("GoodtimeTrainingSharedPreferences", Context.MODE_PRIVATE)
 
     override fun putString(key: String?, @Nullable value: String?) {
         preferences.edit().putString(key, value).apply()

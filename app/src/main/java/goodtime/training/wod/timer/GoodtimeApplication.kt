@@ -21,7 +21,7 @@ import goodtime.training.wod.timer.ui.main.amrap_for_time.ForTimeViewModelFactor
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutViewModelFactory
 import goodtime.training.wod.timer.ui.main.intervals.IntervalsViewModelFactory
 import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
-import goodtime.training.wod.timer.ui.settings.EncryptedPreferenceDataStore
+import goodtime.training.wod.timer.ui.settings.PreferenceDataStore
 import goodtime.training.wod.timer.ui.stats.StatisticsViewModelFactory
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
@@ -59,7 +59,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<CustomWorkoutSkeletonDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).customWorkoutSkeletonDao() }
         bind<WeeklyGoalDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).weeklyGoalDao() }
         bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance(), instance()) }
-        bind<PreferenceHelper>() with eagerSingleton { PreferenceHelper(EncryptedPreferenceDataStore(applicationContext)) }
+        bind<PreferenceHelper>() with eagerSingleton { PreferenceHelper(PreferenceDataStore(applicationContext)) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
         bind() from provider { AmrapViewModelFactory(instance()) }
         bind() from provider { ForTimeViewModelFactory(instance()) }

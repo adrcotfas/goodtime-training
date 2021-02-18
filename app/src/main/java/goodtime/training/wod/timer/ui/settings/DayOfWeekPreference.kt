@@ -66,7 +66,7 @@ class DayOfWeekPreference @JvmOverloads constructor(
     }
 
     private fun setCheckedDay(currentDay: DayOfWeek, value: Boolean) {
-        (preferenceDataStore as EncryptedPreferenceDataStore).putBoolean(
+        (preferenceDataStore as PreferenceDataStore).putBoolean(
             PreferenceHelper.REMINDER_DAYS + "_" + currentDay.ordinal, value)
         notifyDependencyChange(shouldDisableDependents())
     }
@@ -81,7 +81,7 @@ class DayOfWeekPreference @JvmOverloads constructor(
 
     override fun onSetInitialValue(defaultValue: Any?) {
         setCheckedDays(
-            (preferenceDataStore as EncryptedPreferenceDataStore).getBooleanArray(
+            (preferenceDataStore as PreferenceDataStore).getBooleanArray(
                 PreferenceHelper.REMINDER_DAYS, DayOfWeek.values().size))
     }
 }

@@ -2,11 +2,11 @@ package goodtime.training.wod.timer.common.preferences
 
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
-import goodtime.training.wod.timer.ui.settings.EncryptedPreferenceDataStore
+import goodtime.training.wod.timer.ui.settings.PreferenceDataStore
 import java.time.DayOfWeek
 import java.time.LocalTime
 
-class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
+class PreferenceHelper(val dataStore: PreferenceDataStore) {
 
     companion object {
         private const val IS_FIRST_RUN = "pref_is_first_run"
@@ -47,7 +47,7 @@ class PreferenceHelper(val dataStore: EncryptedPreferenceDataStore) {
         const val IMPORT_BACKUP = "pref_import_backup"
         const val IMPORT_BACKUP_SMART_WOD = "pref_import_backup_smart_wod"
 
-        fun generatePreWorkoutSession(seconds: Int) : SessionSkeleton {
+        fun generatePreWorkoutSession(seconds: Int): SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
         }
     }
