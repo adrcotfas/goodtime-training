@@ -39,6 +39,12 @@
         <item name="android:fontFamily">@font/app_font</item>
     </style>
 
+    <style name="ChipTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/roboto_mono_regular</item>
+        <item name="android:fontFamily">@font/roboto_mono_regular</item>
+    </style>
+
     <style name="Widget.App.Button" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
         <item name="shapeAppearance">@style/ShapeAppearance.SmallComponent</item>
