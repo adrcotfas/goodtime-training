@@ -10,10 +10,9 @@
     <!--    used for the workout reminders-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
-    <!--TODO: Enable backup but check for "isRestoringFromBackup" before running all the preferenceHelper.isFirstRun()) stuff (only if possible)-->
     <application
         android:name="goodtime.training.wod.timer.GoodtimeApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
