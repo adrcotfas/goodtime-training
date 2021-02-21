@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer.ui.timer
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,58 +23,98 @@ class TimerViewModel(
     private val preferenceHelper: PreferenceHelper,
     private val repository: AppRepository
 ) : ViewModel() {
+    private lateinit var timer: CountDownTimer
+    private val listener = object : CountDownTimer.Listener {
+        override fun onTick(seconds: Int) {
+            handleTimerTick(seconds)
+        }
 
-    val timerState = MutableLiveData(TimerState.INACTIVE)
-    var sessions = ArrayList<SessionSkeleton>()
+        override fun onFinishSet() {
+            handleFinishTimer()
+        }
+
+        override fun onHalfwayThere() {
+            if (!getIsResting()) {
+                notifier.notifyMiddleOfTraining()
+            }
+        }
+    }
 
     var sessionToAdd = Session()
+    var sessions = ArrayList<SessionSkeleton>()
 
-    /**
-     * Holds the counted rounds in seconds elapsed
-     */
-    var countedRounds = ArrayList<Int>(0)
+    private val _timerState = MutableLiveData(TimerState.INACTIVE)
+    val timerState: LiveData<TimerState>
+        get() = _timerState
 
-    // store the working time for each session
+    fun getTimerState() = timerState.value
+
+
+    /** Holds the counted rounds for each session of the workout*/
+    private var countedRounds = ArrayList<Int>(0)
+    fun getCurrentSessionCountedRounds(): Int = countedRounds[getCurrentSessionIdx()]
+    private fun getCountedRounds(idx: Int) = countedRounds[idx]
+    fun addRound() {
+        countedRounds[_currentSessionIdx.value!!] += 1
+    }
+
+    /** Holds the duration of each session of the workout */
     var durations = ArrayList<Int>()
-    lateinit var timer: CountDownTimer
+
 
     /**
      * Indicates the index of a session part of a custom workout
      * For a regular workout this will be maximum 1; 0 for the pre-workout countdown and 1 for the actual workout
      */
-    val currentSessionIdx = MutableLiveData(0)
+    private val _currentSessionIdx = MutableLiveData(0)
+    val currentSessionIdx: LiveData<Int>
+        get() = _currentSessionIdx
+
+    private fun getCurrentSessionIdx() = currentSessionIdx.value!!
 
     /**
      * For Intervals and HIIT workouts this will indicate the current round
      */
-    val currentRoundIdx = MutableLiveData<Int>()
+    private val _currentRoundIdx = MutableLiveData<Int>()
+    val currentRoundIdx: LiveData<Int>
+        get() = _currentRoundIdx
 
-    val secondsUntilFinished = MutableLiveData<Int>()
+    fun getCurrentRound() = currentRoundIdx.value!! + 1
+
+    private val _secondsUntilFinished = MutableLiveData<Int>()
+    val secondsUntilFinished: LiveData<Int>
+        get() = _secondsUntilFinished
 
     /**
      * used for HIIT workouts to signal the rest
      */
-    val isResting = MutableLiveData(false)
+    private val _isResting = MutableLiveData(false)
+    val isResting: LiveData<Boolean>
+        get() = _isResting
+
+    fun getIsResting() = isResting.value!!
 
     var isCustomWorkout = false
 
-    fun getTotalRounds(): Int {
-        val sessionId = currentSessionIdx.value!!
-        return sessions[sessionId].numRounds
-    }
+    fun getCurrentSessionTotalRounds() = sessions[getCurrentSessionIdx()].numRounds
+    fun getCurrentSessionType(): SessionType = sessions[getCurrentSessionIdx()].type
 
-    fun getCurrentSessionType(): SessionType = sessions[currentSessionIdx.value!!].type
     fun getCurrentSessionDuration(): Int {
-        val session = sessions[currentSessionIdx.value!!]
-        return if (isResting.value!! && session.type != SessionType.REST)
+        val session = sessions[getCurrentSessionIdx()]
+        return if (getIsResting() && session.type != SessionType.REST)
             session.breakDuration
         else
             session.duration
     }
 
-    fun init(sessionsRaw: String) {
+    private fun isLastSession() = sessions.size == _currentSessionIdx.value!! + 1
+    private fun isLastSession(idx: Int) = sessions.size == idx + 1
+    private fun isLastRound() = sessions[_currentSessionIdx.value!!].numRounds == _currentRoundIdx.value!! + 1
+
+    fun init(sessionsRaw: String, name: String?) {
         sessions = TypeConverter.toSessionSkeletons(sessionsRaw)
         sessionToAdd = Session()
+        sessionToAdd.name = name
 
         durations.clear()
         for (index in 0 until sessions.size) {
@@ -84,10 +125,10 @@ class TimerViewModel(
             countedRounds.add(0)
         }
 
-        currentRoundIdx.value = 0
-        currentSessionIdx.value = 0
-        secondsUntilFinished.value = sessions[0].duration
-        isResting.value = false
+        _currentRoundIdx.value = 0
+        _currentSessionIdx.value = 0
+        _secondsUntilFinished.value = sessions[0].duration
+        _isResting.value = false
 
         isCustomWorkout = sessions.size > 2 // 2 because of the pre-workout countdown
 
@@ -96,21 +137,24 @@ class TimerViewModel(
         }
     }
 
+    /**
+     * Called at the start of each session
+     */
     fun startWorkout() {
-        timerState.value = TimerState.ACTIVE
-        val index = currentSessionIdx.value!!
+        _timerState.value = TimerState.ACTIVE
+        val index = _currentSessionIdx.value!!
         val session = sessions[index]
 
         if (session.type == SessionType.REST) {
-            isResting.value = true
+            _isResting.value = true
         }
 
         // will be used if the timer was paused
-        val prev = secondsUntilFinished.value?.toLong()
+        val prev = _secondsUntilFinished.value?.toLong()
 
         // will be used when starting fresh
         val originalSeconds =
-            if (isResting.value!! && session.type != SessionType.REST)
+            if (getIsResting() && session.type != SessionType.REST)
                 session.breakDuration.toLong()
             else
                 session.duration.toLong()
@@ -119,31 +163,17 @@ class TimerViewModel(
             if (prev != null && prev != 0L) prev
             else originalSeconds
 
-        timer = CountDownTimer(secondsToUse, originalSeconds, object : CountDownTimer.Listener {
-            override fun onTick(seconds: Int) {
-                handleTimerTick(seconds)
-            }
-
-            override fun onFinishSet() {
-                handleFinishTimer()
-            }
-
-            override fun onHalfwayThere() {
-                if (isResting.value == false) {
-                    notifier.notifyMiddleOfTraining()
-                }
-            }
-        })
+        timer = CountDownTimer(secondsToUse, originalSeconds, listener)
         timer.start()
 
     }
 
     fun toggleTimer() {
-        if (timerState.value == TimerState.ACTIVE) {
+        if (_timerState.value == TimerState.ACTIVE) {
             timer.cancel()
-            timerState.value = TimerState.PAUSED
+            _timerState.value = TimerState.PAUSED
             notifier.stop()
-        } else if (timerState.value == TimerState.PAUSED) {
+        } else if (_timerState.value == TimerState.PAUSED) {
             startWorkout()
         }
     }
@@ -151,7 +181,7 @@ class TimerViewModel(
     private fun stopTimer() {
         timer.cancel()
         notifier.stop()
-        timerState.value = TimerState.INACTIVE
+        _timerState.value = TimerState.INACTIVE
     }
 
     fun abandonWorkout() {
@@ -168,20 +198,20 @@ class TimerViewModel(
     }
 
     fun prepareSessionToAdd(completed: Boolean = true) {
-        val index = currentSessionIdx.value!!
-        updateDurations(getCurrentSessionType(), index, true)
+        val index = getCurrentSessionIdx()
+        updateDuration(index, completed)
         if (isCustomWorkout) {
             sessionToAdd.notes = ""
             for (session in sessions.withIndex()) {
                 if (session.index == 0) continue
                 if (session.index > index) break
-                sessionToAdd.actualRounds += getRounds(session.index)
+                sessionToAdd.actualRounds += getCountedRounds(session.index)
                 sessionToAdd.actualDuration += durations[session.index]
                 sessionToAdd.notes +=
                     "${StringUtils.toFavoriteFormatExtended(session.value)} " +
                             "/ ${secondsToNiceFormat(durations[session.index])}"
-                if (getRounds(session.index) > 0) {
-                    sessionToAdd.notes += " / ${getRounds(session.index)} rounds"
+                if (getCountedRounds(session.index) > 0) {
+                    sessionToAdd.notes += " / ${getCountedRounds(session.index)} rounds"
                 }
                 sessionToAdd.notes +=
                     if (session.index < sessions.size - 1) "\n" else "(incomplete)"
@@ -206,206 +236,166 @@ class TimerViewModel(
     fun finishCurrentSession() {
         timer.cancel()
         notifier.stop()
-        timerState.value = TimerState.INACTIVE
+        _timerState.value = TimerState.INACTIVE
         // when the timer is finished, save the last round but only if the user used the round counter
-        if (countedRounds[currentSessionIdx.value!!] != 0) {
-            addRound()
-        }
+        if (countedRounds[getCurrentSessionIdx()] != 0) addRound()
         handleFinishTimer()
     }
 
-    private fun isLastSession(): Boolean {
-        return sessions.size == currentSessionIdx.value!! + 1
-    }
-
-    private fun isLastRound(): Boolean {
-        return sessions[currentSessionIdx.value!!].numRounds == currentRoundIdx.value!! + 1
-    }
-
     private fun handleTimerTick(seconds: Int) {
-        secondsUntilFinished.value = seconds
+        _secondsUntilFinished.value = seconds
         if (seconds == 2) {
             //TODO: handle bug when pausing exactly here -> sound should not restart
             notifier.notifyCountDown()
         }
     }
 
-    private fun updateDurations(sessionType: SessionType, index: Int, abandoned: Boolean = false) {
+    private fun updateDuration(index: Int, abandoned: Boolean = false) {
         val currentRoundIdx = currentRoundIdx.value!!
         val secondsUntilFinished = secondsUntilFinished.value!!
         val sessionSkeleton = sessions[index]
-        when (sessionType) {
-            SessionType.AMRAP, SessionType.REST -> {
-                if (abandoned) {
-                    durations[index] = sessionSkeleton.duration - secondsUntilFinished
-                } else {
-                    durations[index] = sessionSkeleton.duration
-                }
-            }
-            SessionType.FOR_TIME -> {
-                durations[index] = sessionSkeleton.duration - secondsUntilFinished
-            }
-            SessionType.INTERVALS -> {
-                if (abandoned) {
+        if (!abandoned) {
+            durations[index] = sessionSkeleton.getActualDuration() +
+                    // For HIIT, include the last break too if this is not the last session
+                    if (sessionSkeleton.type == SessionType.HIIT && !isLastSession(index)) sessionSkeleton.breakDuration else 0
+        } else {
+            when (sessionSkeleton.type) {
+                SessionType.AMRAP, SessionType.REST -> durations[index] =
+                    sessionSkeleton.duration - secondsUntilFinished
+                SessionType.FOR_TIME -> durations[index] = sessionSkeleton.duration - secondsUntilFinished
+                SessionType.INTERVALS -> {
                     // rounds already finished
                     val fullRoundsDuration = sessionSkeleton.duration * currentRoundIdx
                     // the incomplete one
                     val lastRoundDuration = sessionSkeleton.duration - secondsUntilFinished
                     durations[index] = fullRoundsDuration + lastRoundDuration
-                } else {
-                    durations[index] = sessionSkeleton.duration * sessionSkeleton.numRounds
                 }
-            }
-            SessionType.HIIT -> {
-                if (abandoned) {
+                SessionType.HIIT -> {
                     // rounds already finished
                     val fullRoundsDuration = sessionSkeleton.duration * currentRoundIdx +
                             sessionSkeleton.breakDuration * currentRoundIdx
-                    if (isResting.value!!) {
+                    if (getIsResting()) {
                         durations[index] = fullRoundsDuration + sessionSkeleton.duration +
                                 sessionSkeleton.breakDuration - secondsUntilFinished
                     } else {
                         durations[index] =
                             fullRoundsDuration + sessionSkeleton.duration - secondsUntilFinished
                     }
-                } else {
-                    durations[index] = sessionSkeleton.duration * sessionSkeleton.numRounds +
-                            sessionSkeleton.breakDuration * (sessionSkeleton.numRounds)
+                }
+                else -> {
                 }
             }
-            else -> {}
         }
     }
 
-    //TODO: clean-up this mess
+    /**
+     * This is called whenever a session (part of a workout containing one or more sessions) is finished
+     */
     private fun handleFinishTimer() {
         val type = getCurrentSessionType()
-        var index = currentSessionIdx.value!!
-        updateDurations(type, index)
+        val index = _currentSessionIdx.value!!
+        updateDuration(index)
         when (type) {
             SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> {
                 if (type == SessionType.REST) {
                     // reset resting value here
-                    isResting.value = false
+                    _isResting.value = false
                 }
-                if (isLastSession()) {
-                    timerState.value = TimerState.FINISHED
-                    notifier.notifyTrainingComplete()
-                } else {
-                    ++index
-                    currentSessionIdx.value = index
-                    secondsUntilFinished.value = sessions[index].duration
-
-                    startWorkout()
-
-                    if (sessions[index].type == SessionType.REST) {
-                        notifier.notifyRest()
-                    } else {
-                        notifier.notifyStart()
-                    }
-                }
+                if (isLastSession()) handleCompletion()
+                else handleIntermediateSessionFinished()
             }
-            SessionType.INTERVALS -> {
-                if (isLastRound()) {
-                    if (isLastSession()) {
-                        timerState.value = TimerState.FINISHED
-                        notifier.notifyTrainingComplete()
-                    } else {
-                        currentRoundIdx.value = 0
-                        ++index
-                        currentSessionIdx.value = index
-                        secondsUntilFinished.value = sessions[index].duration
-
-                        startWorkout()
-
-                        if (sessions[index].type == SessionType.REST) {
-                            notifier.notifyRest()
-                        } else {
-                            notifier.notifyStart()
-                        }
-                    }
-                } else {
-                    currentRoundIdx.value = currentRoundIdx.value!! + 1
-                    secondsUntilFinished.value = sessions[currentSessionIdx.value!!].duration
-                    startWorkout()
-
-                    if (isLastRound()) {
-                        notifier.notifyLastRound()
-                    } else {
-                        notifier.notifyStart()
-                    }
-                }
+            SessionType.INTERVALS -> handleIntervalsSessionFinished(index)
+            SessionType.HIIT -> handleHIITSessionFinished(index)
+            else -> { // do nothing here
             }
-            SessionType.HIIT -> {
-                // if this is the last round but not in the final session, take the break
-                if ((isLastRound() && !isLastSession() && isResting.value!!)
-                    // if this is the final session and final work round, skip the break
-                    || (isLastRound() && isLastSession() && !isResting.value!!)
-                ) {
-                    if (isLastSession()) {
-                        timerState.value = TimerState.FINISHED
-                        notifier.notifyTrainingComplete()
-                    } else {
-                        if (isLastRound()) {
-                            isResting.value = !isResting.value!!
-                        }
-                        currentRoundIdx.value = 0
-                        ++index
-                        currentSessionIdx.value = index
-                        secondsUntilFinished.value = sessions[index].duration
-                        startWorkout()
-
-                        if (sessions[index].type == SessionType.REST) {
-                            notifier.notifyRest()
-                        } else {
-                            notifier.notifyStart()
-                        }
-                    }
-                } else {
-                    isResting.value = !isResting.value!!
-                    val isRestingVal: Boolean = isResting.value!!
-                    if (!isRestingVal) {
-                        currentRoundIdx.value = currentRoundIdx.value!! + 1
-                    }
-                    secondsUntilFinished.value =
-                        if (isRestingVal)
-                            sessions[index].breakDuration
-                        else
-                            sessions[index].duration
-                    startWorkout()
-
-                    if (isLastRound()) {
-                        notifier.notifyLastRound()
-                    } else {
-                        if (isRestingVal) {
-                            notifier.notifyRest()
-                        } else {
-                            notifier.notifyStart()
-                        }
-                    }
-                }
-            }
-            else -> {}
         }
     }
 
-    fun addRound() {
-        countedRounds[currentSessionIdx.value!!] += 1
+    private fun handleIntervalsSessionFinished(index: Int) {
+        if (isLastRound()) {
+            if (isLastSession()) {
+                handleCompletion()
+            } else {
+                _currentRoundIdx.value = 0
+                handleIntermediateSessionFinished()
+            }
+        } else {
+            _currentRoundIdx.value!!.plus(1)
+            _secondsUntilFinished.value = sessions[getCurrentSessionIdx()].duration
+            startWorkout()
+
+            if (isLastRound()) notifier.notifyLastRound()
+            else notifier.notifyStart()
+        }
     }
 
-    fun getRounds(idx: Int) = countedRounds[idx]
+    private fun handleHIITSessionFinished(index: Int) {
+        // if this is the last round but not in the final session, take the break
+        if ((isLastRound() && !isLastSession() && getIsResting())
+            // if this is the final session and final work round, skip the break
+            || (isLastRound() && isLastSession() && !getIsResting())
+        ) {
+            if (isLastSession()) {
+                handleCompletion()
+            } else {
+                if (isLastRound()) {
+                    _isResting.value = !_isResting.value!!
+                }
+                _currentRoundIdx.value = 0
+                handleIntermediateSessionFinished()
+            }
+        } else {
+            _isResting.value = !_isResting.value!!
+            val isRestingVal: Boolean = getIsResting()
 
-    fun getNumCurrentSessionRounds(): Int {
-        return countedRounds[currentSessionIdx.value!!]
+            if (!isRestingVal) _currentRoundIdx.value!!.plus(1)
+
+            _secondsUntilFinished.value =
+                if (isRestingVal)
+                    sessions[index].breakDuration
+                else
+                    sessions[index].duration
+            startWorkout()
+
+            if (isLastRound()) {
+                notifier.notifyLastRound()
+            } else {
+                if (isRestingVal) notifier.notifyRest()
+                else notifier.notifyStart()
+            }
+        }
     }
 
     /**
-     * This is called when the DONE button is pressed
+     * A session was finished but this is not the last one.
+     * We need to handle the start of the next one.
      */
-    fun handleCompletion() {
-        if (preferenceHelper.isDndModeEnabled()) {
-            notifier.toggleDndMode(false)
-        }
+    private fun handleIntermediateSessionFinished() {
+        _currentSessionIdx.value!!.plus(1)
+        _secondsUntilFinished.value = sessions[getCurrentSessionIdx()].duration
+
+        startWorkout()
+
+        if (sessions[getCurrentSessionIdx()].type == SessionType.REST)
+            notifier.notifyRest()
+        else
+            notifier.notifyStart()
+    }
+
+    /**
+     * The last session of the workout was completed
+     */
+    private fun handleCompletion() {
+        if (preferenceHelper.isDndModeEnabled()) notifier.toggleDndMode(false)
+        _timerState.value = TimerState.FINISHED
+        notifier.notifyTrainingComplete()
+    }
+
+    /**
+     * This is called when the user leaves the finished workout screen
+     */
+    fun finalize() {
+        _timerState.value = TimerState.INACTIVE
         viewModelScope.launch {
             repository.addSession(sessionToAdd)
         }

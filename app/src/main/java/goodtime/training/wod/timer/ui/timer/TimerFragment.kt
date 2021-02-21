@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
@@ -40,8 +40,8 @@ import org.kodein.di.generic.instance
 class TimerFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val viewModelFactory : TimerViewModelFactory by instance()
-    private lateinit var viewModel : TimerViewModel
+    private val viewModelFactory: TimerViewModelFactory by instance()
+    private lateinit var viewModel: TimerViewModel
     private lateinit var binding: FragmentWorkoutBinding
 
     private val args: TimerFragmentArgs by navArgs()
@@ -50,21 +50,23 @@ class TimerFragment : Fragment(), KodeinAware {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TimerViewModel::class.java)
 
-        if (viewModel.timerState.value == TimerState.INACTIVE) {
-            viewModel.init(args.sessions)
+        if (viewModel.getTimerState() == TimerState.INACTIVE) {
+            viewModel.init(args.sessions, args.name)
             viewModel.startWorkout()
-            viewModel.sessionToAdd.name = args.name
         }
+        setupHandleOnBackPressed()
+    }
 
+    private fun setupHandleOnBackPressed() {
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (viewModel.timerState.value != TimerState.FINISHED) {
+                if (viewModel.getTimerState() != TimerState.FINISHED) {
                     NavHostFragment.findNavController(this@TimerFragment)
-                            .navigate(R.id.nav_dialog_stop_workout)
+                        .navigate(R.id.nav_dialog_stop_workout)
                 } else {
-                    viewModel.timerState.value = TimerState.INACTIVE
+                    viewModel.finalize()
                     NavHostFragment.findNavController(this@TimerFragment)
-                            .popBackStack()
+                        .popBackStack()
                 }
             }
         }
@@ -73,7 +75,7 @@ class TimerFragment : Fragment(), KodeinAware {
 
     override fun onPause() {
         super.onPause()
-        val state = viewModel.timerState.value
+        val state = viewModel.getTimerState()
         if (state != TimerState.INACTIVE && state != TimerState.FINISHED) {
             NotificationHelper.showNotification(requireContext())
         }
@@ -86,91 +88,106 @@ class TimerFragment : Fragment(), KodeinAware {
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentWorkoutBinding.inflate(layoutInflater, container, false)
         viewModel.secondsUntilFinished.observe(viewLifecycleOwner, { seconds ->
-            val type = viewModel.getCurrentSessionType()
-            val total = viewModel.getCurrentSessionDuration()
-
-            val secondsToShow =
-                    if (type != SessionType.FOR_TIME) seconds + 1
-                    else total - seconds
-            binding.timer.text = StringUtils.secondsToTimerFormat(secondsToShow)
-            val newProgress = (total - seconds).toFloat() / total.toFloat()
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                binding.circleProgress?.onTick(newProgress)
-            }
+            onTick(seconds)
         })
 
         viewModel.isResting.observe(viewLifecycleOwner, { isResting ->
-            val color = if (isResting) ResourcesHelper.red else ResourcesHelper.green
-            val darkColor = if (isResting) ResourcesHelper.darkRed else ResourcesHelper.darkerGreen
-
-            binding.timer.setTextColor(color)
-            binding.round.setTextColor(color)
-            binding.workoutImage.setColorFilter(color)
-
-            if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                binding.circleProgress?.setColor(color, darkColor)
-            }
+            onIsRestingChanged(isResting)
         })
 
         viewModel.currentSessionIdx.observe(viewLifecycleOwner, {
-            val type = viewModel.getCurrentSessionType()
-            binding.finishButton.isVisible = type == SessionType.FOR_TIME
-            binding.roundCounterButtonContainer.isVisible = type == SessionType.FOR_TIME || type == SessionType.AMRAP
-            binding.round.isVisible = type == SessionType.HIIT || type == SessionType.INTERVALS
-            binding.round.text =
-                    "${viewModel.currentRoundIdx.value!! + 1}/${viewModel.getTotalRounds()}"
-            binding.workoutImage.setImageDrawable(ResourcesHelper.getDrawableFor(type))
-
-            refreshCounterButton()
+            onCurrentSessionChanged()
         })
 
         viewModel.currentRoundIdx.observe(viewLifecycleOwner, { currentRoundIdx ->
-            binding.round.text = "${currentRoundIdx + 1}/${viewModel.getTotalRounds()}"
+            binding.round.text = "${currentRoundIdx + 1}/${viewModel.getCurrentSessionTotalRounds()}"
         })
 
-        viewModel.timerState.observe(viewLifecycleOwner, Observer { timerState ->
-            val handler = Handler()
-            when (timerState) {
-                TimerState.PAUSED -> {
-                    handler.postDelayed({
-                        binding.timer.startAnimation(
-                                AnimationUtils.loadAnimation(
-                                        requireContext(),
-                                        R.anim.blink
-                                )
-                        )
-                    }, 100)
-                }
-                TimerState.ACTIVE -> {
-                    handler.post { binding.timer.clearAnimation() }
-                }
-                TimerState.FINISHED -> {
-                    drawFinishedScreen()
-                }
-                else -> return@Observer // do nothing
-            }
+        viewModel.timerState.observe(viewLifecycleOwner, { timerState ->
+            onTimerStateChanged(timerState)
         })
 
-        binding.finishButton.setOnClickListener{
+        binding.finishButton.setOnClickListener {
             viewModel.finishCurrentSession()
         }
 
-        binding.closeButton.setOnClickListener{
+        binding.closeButton.setOnClickListener {
             binding.closeButton.hide()
             requireActivity().onBackPressed()
-            viewModel.handleCompletion()
+            viewModel.finalize()
         }
 
         setupCounter()
 
-        binding.timer.setOnClickListener{ viewModel.toggleTimer()}
+        binding.timer.setOnClickListener { viewModel.toggleTimer() }
         return binding.root
+    }
+
+    private fun onCurrentSessionChanged() {
+        val type = viewModel.getCurrentSessionType()
+        binding.finishButton.isVisible = type == SessionType.FOR_TIME
+        binding.roundCounterButtonContainer.isVisible = type == SessionType.FOR_TIME || type == SessionType.AMRAP
+        binding.round.isVisible = type == SessionType.HIIT || type == SessionType.INTERVALS
+        binding.round.text =
+            "${viewModel.getCurrentRound()}/${viewModel.getCurrentSessionTotalRounds()}"
+        binding.workoutImage.setImageDrawable(ResourcesHelper.getDrawableFor(type))
+
+        refreshCounterButton()
+    }
+
+    private fun onTick(seconds: Int) {
+        val type = viewModel.getCurrentSessionType()
+        val total = viewModel.getCurrentSessionDuration()
+
+        val secondsToShow =
+            if (type != SessionType.FOR_TIME) seconds + 1
+            else total - seconds
+        binding.timer.text = StringUtils.secondsToTimerFormat(secondsToShow)
+        val newProgress = (total - seconds).toFloat() / total.toFloat()
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            binding.circleProgress?.onTick(newProgress)
+        }
+    }
+
+    private fun onIsRestingChanged(isResting: Boolean) {
+        val color = if (isResting) ResourcesHelper.red else ResourcesHelper.green
+        val darkColor = if (isResting) ResourcesHelper.darkRed else ResourcesHelper.darkerGreen
+
+        binding.timer.setTextColor(color)
+        binding.round.setTextColor(color)
+        binding.workoutImage.setColorFilter(color)
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            binding.circleProgress?.setColor(color, darkColor)
+        }
+    }
+
+    private fun onTimerStateChanged(timerState: TimerState?) {
+        when (timerState) {
+            TimerState.PAUSED -> {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    binding.timer.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            requireContext(),
+                            R.anim.blink
+                        )
+                    )
+                }, 100)
+            }
+            TimerState.ACTIVE -> {
+                Handler(Looper.getMainLooper()).post { binding.timer.clearAnimation() }
+            }
+            TimerState.FINISHED -> {
+                drawFinishedScreen()
+            }
+            else -> return // do nothing
+        }
     }
 
     // TODO: clean-up the multiple responsibilities
@@ -241,7 +258,7 @@ class TimerFragment : Fragment(), KodeinAware {
     }
 
     private fun setupCounter() {
-        binding.roundCounterButton.setOnClickListener{
+        binding.roundCounterButton.setOnClickListener {
             viewModel.addRound()
             refreshCounterButton()
         }
@@ -249,7 +266,7 @@ class TimerFragment : Fragment(), KodeinAware {
     }
 
     private fun refreshCounterButton() {
-        val numCountedRounds = viewModel.getNumCurrentSessionRounds()
+        val numCountedRounds = viewModel.getCurrentSessionCountedRounds()
         binding.roundCounterText.isVisible = numCountedRounds != 0
         binding.roundCounterButton.drawable.alpha = if (numCountedRounds == 0) 255 else 0
 
@@ -260,31 +277,31 @@ class TimerFragment : Fragment(), KodeinAware {
 
     private fun startConfetti() {
         binding.konfetti.build()
-                .addColors(
-                        ResourcesHelper.red,
-                        ResourcesHelper.darkRed,
-                        ResourcesHelper.green,
-                        ResourcesHelper.darkGreen,
-                        ResourcesHelper.darkerGreen,
-                        ResourcesHelper.grey500,
-                        ResourcesHelper.grey800
-                )
-                .setDirection(0.0, 359.0)
-                .setSpeed(1f, 5f)
-                .setFadeOutEnabled(true)
-                .setTimeToLive(3500)
-                .addShapes(Shape.Square, Shape.Circle)
-                .addSizes(Size(6))
-                .setPosition(
-                        -50f,
-                        DimensionsUtils.getScreenResolution(requireContext()).first + 50f,
-                        -50f,
-                        -50f
-                )
-                .streamFor(50, StreamEmitter.INDEFINITE)
+            .addColors(
+                ResourcesHelper.red,
+                ResourcesHelper.darkRed,
+                ResourcesHelper.green,
+                ResourcesHelper.darkGreen,
+                ResourcesHelper.darkerGreen,
+                ResourcesHelper.grey500,
+                ResourcesHelper.grey800
+            )
+            .setDirection(0.0, 359.0)
+            .setSpeed(1f, 5f)
+            .setFadeOutEnabled(true)
+            .setTimeToLive(3500)
+            .addShapes(Shape.Square, Shape.Circle)
+            .addSizes(Size(6))
+            .setPosition(
+                -50f,
+                DimensionsUtils.getScreenResolution(requireContext()).first + 50f,
+                -50f,
+                -50f
+            )
+            .streamFor(50, StreamEmitter.INDEFINITE)
     }
 
-    private fun createSummaryRow(session: SessionSkeleton, duration: Int = 0) : ConstraintLayout {
+    private fun createSummaryRow(session: SessionSkeleton, duration: Int = 0): ConstraintLayout {
         val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
@@ -297,7 +314,7 @@ class TimerFragment : Fragment(), KodeinAware {
         return layout
     }
 
-    private fun createSummaryRowCustomHeader(name: String) : ConstraintLayout {
+    private fun createSummaryRowCustomHeader(name: String): ConstraintLayout {
         val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
@@ -307,7 +324,7 @@ class TimerFragment : Fragment(), KodeinAware {
         return layout
     }
 
-    private fun createSummaryTotalRow(totalSeconds: Int) : ConstraintLayout {
+    private fun createSummaryTotalRow(totalSeconds: Int): ConstraintLayout {
         val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
