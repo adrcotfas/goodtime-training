@@ -1,6 +1,5 @@
 package goodtime.training.wod.timer.ui.timer
 
-import android.app.NotificationManager
 import android.content.Context
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
@@ -14,7 +13,7 @@ class TimerNotificationHelper(
         private val soundPlayer: SoundPlayer) {
 
     private val vibrator = VibrationHelper(context)
-    private val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
     private val torchHandler = TorchHelper(context)
 
     fun notifyCountDown() {
@@ -76,14 +75,6 @@ class TimerNotificationHelper(
     fun notifyLastRound() {
         if (preferenceHelper.isSoundEnabled() && preferenceHelper.isVoiceEnabled()) {
             soundPlayer.play(SoundPlayer.LAST_ROUND)
-        }
-    }
-
-    fun toggleDndMode(enabled: Boolean) {
-        if (notificationManager.isNotificationPolicyAccessGranted) {
-            notificationManager.setInterruptionFilter(
-                    if (enabled) NotificationManager.INTERRUPTION_FILTER_PRIORITY
-                    else NotificationManager.INTERRUPTION_FILTER_ALL)
         }
     }
 }

@@ -1,6 +1,7 @@
 package goodtime.training.wod.timer.common.notifications
 
 import android.annotation.TargetApi
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -17,6 +18,13 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
     companion object{
         private const val TRAINING_CHANNEL_ID = "goodtime.training.notification"
         private const val TRAINING_NOTIFICATION_ID = 42
+
+        fun getNotification(context: Context): Notification {
+            val builder = getBasicNotificationBuilder(context)
+            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.initIfNeeded()
+            return builder.build()
+        }
 
         fun showNotification(context: Context) {
             val builder = getBasicNotificationBuilder(context)
@@ -59,7 +67,7 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val channel = NotificationChannel(
                             TRAINING_CHANNEL_ID, "Goodtime Training",
-                            NotificationManager.IMPORTANCE_HIGH
+                            NotificationManager.IMPORTANCE_LOW
                     )
                     channel.apply {
                         setBypassDnd(true)

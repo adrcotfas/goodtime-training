@@ -10,6 +10,9 @@
     <!--    used for the workout reminders-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <!--    for the timer foreground service-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <application
         android:name="goodtime.training.wod.timer.GoodtimeApplication"
         android:allowBackup="true"
@@ -30,6 +33,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".ui.timer.TimeService"/>
 
         <receiver android:name=".common.preferences.reminders.BootReceiver">
             <intent-filter>

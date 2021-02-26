@@ -24,7 +24,9 @@ import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
 import goodtime.training.wod.timer.ui.settings.PreferenceDataStore
 import goodtime.training.wod.timer.ui.stats.StatisticsViewModelFactory
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
+import goodtime.training.wod.timer.ui.timer.TimerNotificationHelper
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
+import goodtime.training.wod.timer.ui.timer.WorkoutManager
 import kotlinx.coroutines.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -61,14 +63,22 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<AppRepository>() with eagerSingleton { AppRepositoryImpl(instance(), instance(), instance(), instance()) }
         bind<PreferenceHelper>() with eagerSingleton { PreferenceHelper(PreferenceDataStore(applicationContext)) }
         bind<SoundPlayer>() with eagerSingleton { SoundPlayer(applicationContext) }
+        bind<TimerNotificationHelper>() with eagerSingleton {
+            TimerNotificationHelper(
+                applicationContext,
+                instance(),
+                instance()
+            )
+        }
+        bind<WorkoutManager>() with eagerSingleton { WorkoutManager(instance()) }
         bind() from provider { AmrapViewModelFactory(instance()) }
         bind() from provider { ForTimeViewModelFactory(instance()) }
         bind() from provider { IntervalsViewModelFactory(instance()) }
         bind() from provider { HiitViewModelFactory(instance()) }
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { StatisticsViewModelFactory(instance()) }
-        bind() from provider { WeeklyGoalViewModelFactory(instance())}
-        bind() from provider { TimerViewModelFactory(applicationContext, instance(), instance(), instance()) }
+        bind() from provider { WeeklyGoalViewModelFactory(instance()) }
+        bind() from provider { TimerViewModelFactory(instance(), instance()) }
     }
 
     override fun onCreate() {
@@ -101,9 +111,19 @@ class GoodtimeApplication : Application(), KodeinAware {
                 SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(20).toInt(), type = SessionType.AMRAP)
             )
 
-            repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(15).toInt(), type = SessionType.FOR_TIME))
-            repo.addSessionSkeleton(SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 20,
-                SessionType.INTERVALS))
+            repo.addSessionSkeleton(
+                SessionSkeleton(
+                    0,
+                    TimeUnit.MINUTES.toSeconds(15).toInt(),
+                    type = SessionType.FOR_TIME
+                )
+            )
+            repo.addSessionSkeleton(
+                SessionSkeleton(
+                    0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 20,
+                    SessionType.INTERVALS
+                )
+            )
 
             val tabata = SessionSkeleton(
                 0, 20, 10, 8,
@@ -124,27 +144,42 @@ class GoodtimeApplication : Application(), KodeinAware {
                 SessionType.INTERVALS
             )
             val dummyRest = SessionSkeleton(0, 30, 5, 0, SessionType.REST)
-            repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Dummy",
-                arrayListOf(
-                    dummyAmrap,
-                    dummyForTime,
-                    dummyHiit,
-                    dummyRest,
-                    dummyIntervals,
-                    dummyRest,
-                    dummyAmrap)))
+            repo.addCustomWorkoutSkeleton(
+                CustomWorkoutSkeleton(
+                    "Dummy",
+                    arrayListOf(
+                        dummyAmrap,
+                        dummyForTime,
+                        dummyHiit,
+                        dummyRest,
+                        dummyIntervals,
+                        dummyRest,
+                        dummyAmrap
+                    )
+                )
+            )
 
             repo.addSessionSkeleton(rest30Sec)
             repo.addSessionSkeleton(rest1Min)
 
             //Custom workouts
             repo.addSessionSkeleton(tabata)
-            repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("3 x Tabata", arrayListOf(
-                tabata, rest30Sec, tabata, rest30Sec, tabata)))
+            repo.addCustomWorkoutSkeleton(
+                CustomWorkoutSkeleton(
+                    "3 x Tabata", arrayListOf(
+                        tabata, rest30Sec, tabata, rest30Sec, tabata
+                    )
+                )
+            )
 
             val intervals5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.INTERVALS)
-            repo.addCustomWorkoutSkeleton(CustomWorkoutSkeleton("Power Intervals", arrayListOf(
-                intervals5, rest1Min, intervals5, rest1Min, intervals5)))
+            repo.addCustomWorkoutSkeleton(
+                CustomWorkoutSkeleton(
+                    "Power Intervals", arrayListOf(
+                        intervals5, rest1Min, intervals5, rest1Min, intervals5
+                    )
+                )
+            )
 
             repo.addWeeklyGoal(WeeklyGoal(75, TimeUtils.firstDayOfLastWeekMillis(), 0, 0))
         }
