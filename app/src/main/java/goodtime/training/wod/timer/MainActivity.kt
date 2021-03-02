@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -22,7 +23,6 @@ import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
-import goodtime.training.wod.timer.common.preferences.reminders.ReminderHelper
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.FullscreenHelper
@@ -146,8 +146,9 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         navController.addOnDestinationChangedListener { _, destination, _ ->
             currentDestination = destination
             val isTopLevel = appBarConfiguration.topLevelDestinations.contains(destination.id)
-            if (isTopLevel) toolbar.setNavigationIcon(R.drawable.ic_menu_open)
-            else toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+            toolbar.setNavigationIcon(if (isTopLevel) R.drawable.ic_menu_open else R.drawable.ic_arrow_back)
+            binding.drawerLayout.setDrawerLockMode(if (isTopLevel) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
             supportActionBar?.title = if (isTopLevel || destination.label == "Statistics") null else destination.label
             toggleMinimalistMode(preferenceHelper.isMinimalistEnabled())
             bottomNavigationView.isVisible = isTopLevel
