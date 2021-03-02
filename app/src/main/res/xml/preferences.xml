@@ -53,13 +53,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory>
-        <SeekBarPreference
+        <goodtime.training.wod.timer.ui.settings.ProperSeekbarPreference
             app:key="pref_countdown"
-            app:title="Countdown"
-            app:min="3"
-            android:max="30"
-            app:defaultValue="10"
-            app:updatesContinuously="true"
+            app:layout="@layout/preference_countdown"
+            android:selectable="false"
+            app:allowDividerAbove="false"
             app:iconSpaceReserved="false"/>
 
         <CheckBoxPreference

@@ -29,7 +29,6 @@ class SettingsFragment :
     private val preferenceHelper by instance<PreferenceHelper>()
     private val repo: AppRepository by instance()
 
-    private lateinit var countdownPreference: SeekBarPreference
     private lateinit var timePickerPreference: Preference
     private lateinit var enableSoundPreference: SwitchPreferenceCompat
     private lateinit var enableVoicePreference: SwitchPreferenceCompat
@@ -44,7 +43,6 @@ class SettingsFragment :
         preferenceManager.preferenceDataStore = preferenceHelper.dataStore
         setPreferencesFromResource(R.xml.preferences, rootKey)
         setupSoundPreference()
-        setupCountdownPreference()
         setupReminderPreference()
         setupSoundProfilePreference()
         setupBackupButtons()
@@ -64,19 +62,6 @@ class SettingsFragment :
             }
             true
         }
-    }
-
-    private fun setupCountdownPreference() {
-        countdownPreference = findPreference(PreferenceHelper.PRE_WORKOUT_COUNTDOWN_SECONDS)!!
-        countdownPreference.setOnPreferenceChangeListener { _, newValue ->
-            updateCountdownPreferenceSummary(newValue as Int)
-            true
-        }
-        updateCountdownPreferenceSummary(countdownPreference.value)
-    }
-
-    private fun updateCountdownPreferenceSummary(value: Int) {
-        countdownPreference.summary = "$value seconds before starting a workout"
     }
 
     private fun setupDndPreference() {
