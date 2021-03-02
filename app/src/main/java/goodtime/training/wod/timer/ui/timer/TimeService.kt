@@ -18,8 +18,6 @@ class TimeService: Service(), KodeinAware{
         var ABANDON = "goodtime.action.abandon"
         var FINALIZE = "goodtime.action.finalize"
         var FOR_TIME_COMPLETE = "goodtime.action.complete_for_time"
-        var SESSIONS_RAW = "goodtime.sessions_raw"
-        var SESSIONS_NAME = "goodtime.sessions_name"
         const val GOODTIME_NOTIFICATION_ID = 42
     }
 
@@ -59,6 +57,11 @@ class TimeService: Service(), KodeinAware{
     private fun onStop() {
         stopForeground(true)
         stopSelf()
+    }
+
+    override fun onDestroy() {
+        preferenceHelper.setKilledDuringWorkout(false)
+        super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null

@@ -8,42 +8,27 @@
     <fragment
         android:id="@+id/nav_amrap"
         android:name="goodtime.training.wod.timer.ui.main.amrap_for_time.AmrapFragment">
-        <action
-            android:id="@+id/to_workout"
-            app:destination="@id/nav_workout" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_for_time"
         android:name="goodtime.training.wod.timer.ui.main.amrap_for_time.ForTimeFragment">
-        <action
-            android:id="@+id/to_workout"
-            app:destination="@id/nav_workout" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_intervals"
         android:name="goodtime.training.wod.timer.ui.main.intervals.IntervalsFragment">
-        <action
-            android:id="@+id/to_workout"
-            app:destination="@id/nav_workout" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_hiit"
         android:name="goodtime.training.wod.timer.ui.main.hiit.HiitFragment">
-        <action
-            android:id="@+id/to_workout"
-            app:destination="@id/nav_workout" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_custom"
         android:name="goodtime.training.wod.timer.ui.main.custom.CustomWorkoutFragment"
         android:label="CustomWorkout">
-        <action
-            android:id="@+id/to_workout"
-            app:destination="@id/nav_workout" />
     </fragment>
 
     <fragment
@@ -79,10 +64,13 @@
         android:label="StopWorkoutDialog" >
     </dialog>
 
-    <action android:id="@+id/action_global_settings"
+    <action android:id="@+id/to_settings"
         app:destination="@id/nav_settings"/>
 
-    <action android:id="@+id/action_global_statistics"
+    <action android:id="@+id/to_stats"
         app:destination="@id/nav_log"/>
+
+    <action android:id="@+id/to_workout"
+        app:destination="@id/nav_workout"/>
 
 </navigation>

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import goodtime.training.wod.timer.MobileNavigationDirections
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.calculateRowHeight
@@ -147,7 +148,7 @@ class IntervalsFragment : WorkoutTypeFragment() {
     }
 
     override fun onStartWorkout() {
-        val action = IntervalsFragmentDirections.toWorkout(
+        val action = MobileNavigationDirections.toWorkout(
                 sessions =
                 TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
                         + getSelectedSessions().toTypedArray())

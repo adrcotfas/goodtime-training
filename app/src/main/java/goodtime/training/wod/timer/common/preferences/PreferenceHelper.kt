@@ -43,6 +43,8 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         private const val SHOW_HIIT_BALLOONS = "show_hiit_balloons"
         private const val SHOW_CUSTOM_BALLOONS = "show_custom_balloons"
 
+        private const val KILLED_WHILE_TRAINING = "killed_while_training"
+
         const val EXPORT_BACKUP = "pref_export_backup"
         const val IMPORT_BACKUP = "pref_import_backup"
         const val IMPORT_BACKUP_SMART_WOD = "pref_import_backup_smart_wod"
@@ -104,6 +106,13 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     fun setIntervalsBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_INTERVALS_BALLOONS, enabled)
     fun setHiitBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_HIIT_BALLOONS, enabled)
     fun setCustomBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_CUSTOM_BALLOONS, enabled)
+
+    /**
+     * Detect when the user closed the app from the recent apps list while the service is in foreground.
+     * When the notification is clicked, the user should get back to the TimerFragment
+     */
+    fun setKilledDuringWorkout(killed: Boolean) = dataStore.putBoolean(KILLED_WHILE_TRAINING, killed)
+    fun wasKilledDuringWorkout() = dataStore.getBoolean(KILLED_WHILE_TRAINING, false)
 
     fun setBalloons(enabled: Boolean) = run {
         setMainBalloons(enabled)

@@ -84,7 +84,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     override fun onResume() {
         super.onResume()
-        ReminderHelper.removeNotification(applicationContext)
         showBalloonsIfNeeded()
     }
 
@@ -121,6 +120,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+
+        if (preferenceHelper.wasKilledDuringWorkout()) {
+            preferenceHelper.setKilledDuringWorkout(false)
+            navController.navigate(R.id.to_workout)
+        }
 
         setSupportActionBar(toolbar)
 
@@ -183,11 +187,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         binding.contentMain.buttonNew.root.setOnClickListener { onNewCustomWorkoutButtonClick() }
 
         binding.buttonSettings.root.setOnClickListener {
-            navController.navigate(R.id.action_global_settings)
+            navController.navigate(MobileNavigationDirections.toSettings())
             binding.drawerLayout.closeDrawers()
         }
         binding.buttonStatistics.root.setOnClickListener {
-            navController.navigate(R.id.action_global_statistics)
+            navController.navigate(MobileNavigationDirections.toStats())
             binding.drawerLayout.closeDrawers()
         }
     }

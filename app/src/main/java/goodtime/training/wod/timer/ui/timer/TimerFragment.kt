@@ -19,7 +19,6 @@ import androidx.navigation.fragment.navArgs
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
-import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.workout.TimerState
 import goodtime.training.wod.timer.databinding.FragmentWorkoutBinding
@@ -38,18 +37,17 @@ class TimerFragment : Fragment(), KodeinAware {
     private lateinit var viewModel: TimerViewModel
     private lateinit var binding: FragmentWorkoutBinding
 
-    private val preferenceHelper: PreferenceHelper by instance()
-
     private val args: TimerFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TimerViewModel::class.java)
         if (viewModel.getTimerState().value == TimerState.INACTIVE) {
             // Not the most elegant but should do for now
             // Initializing the WorkoutManager through the ViewModel because its LiveData would not be ready to be observed otherwise
             viewModel.init(args.sessions, args.name)
-            val intent = IntentWithAction(requireContext(), TimeService::class.java, START, args.sessions, args.name)
+            val intent = IntentWithAction(requireContext(), TimeService::class.java, START)
             startForegroundService(requireContext(), intent)
         }
         setupHandleOnBackPressed()
