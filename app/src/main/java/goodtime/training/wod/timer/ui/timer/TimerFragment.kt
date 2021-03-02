@@ -104,12 +104,6 @@ class TimerFragment : Fragment(), KodeinAware {
             startForegroundService(requireContext(), intent)
         }
 
-        binding.closeButton.setOnClickListener {
-            binding.closeButton.hide()
-            requireActivity().onBackPressed()
-            viewModel.finalize()
-        }
-
         setupCounter()
 
         binding.timer.setOnClickListener {
@@ -183,7 +177,6 @@ class TimerFragment : Fragment(), KodeinAware {
     private fun setupCounter() {
         binding.roundCounterButton.setOnClickListener {
             viewModel.addRound()
-            //TODO: consider LiveData for counted rounds too
             refreshCounterButton()
         }
         refreshCounterButton()
@@ -200,6 +193,11 @@ class TimerFragment : Fragment(), KodeinAware {
     }
 
 // TODO: move all of the bellow to a separate fragment
+//    binding.closeButton.setOnClickListener {
+//        binding.closeButton.hide()
+//        requireActivity().onBackPressed()
+//        viewModel.finalize()
+//    }
 //    private fun drawFinishedScreen() {
 //        binding.circleProgress?.isVisible = false
 //        binding.inProgressContainer.isVisible = false
