@@ -11,7 +11,7 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
             AudioAttributes.Builder()
                 .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
                 .build())
-        .setMaxStreams(2)
+        .setMaxStreams(3)
         .build()
 
     private var sounds = HashMap<Int, Int>(4)

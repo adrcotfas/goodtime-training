@@ -232,9 +232,13 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
         val secondsUntilFinished = secondsUntilFinished.value!!
         val sessionSkeleton = sessions[index]
         if (completed) {
-            durations[index] = sessionSkeleton.getActualDuration() +
-                    // For HIIT, include the last break too if this is not the last session
-                    if (sessionSkeleton.type == SessionType.HIIT && !isLastSession(index)) sessionSkeleton.breakDuration else 0
+            if (sessionSkeleton.type == SessionType.FOR_TIME) {
+                durations[index] = sessionSkeleton.duration - secondsUntilFinished
+            } else {
+                durations[index] = sessionSkeleton.getActualDuration() +
+                        // For HIIT, include the last break too if this is not the last session
+                        if (sessionSkeleton.type == SessionType.HIIT && !isLastSession(index)) sessionSkeleton.breakDuration else 0
+            }
         } else { // abandoned
             when (sessionSkeleton.type) {
                 SessionType.AMRAP, SessionType.REST -> durations[index] =
@@ -369,9 +373,9 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     }
 
     /**
-     * This is called when the user leaves the finished workout screen
+     * This is called when the user leaves the timer workout screen
      */
-    fun finalize() {
+    fun setInactive() {
         _timerState.value = TimerState.INACTIVE
     }
 }

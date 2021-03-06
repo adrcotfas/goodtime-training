@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.workout.TimerState
@@ -30,26 +31,26 @@ class StopWorkoutDialog : DialogFragment(), KodeinAware {
 
         isCancelable = false
         if (viewModel.getTimerState().value == TimerState.ACTIVE) {
-            val intent = IntentWithAction(requireContext(), TimeService::class.java, TimeService.TOGGLE)
+            val intent = IntentWithAction(requireContext(), TimerService::class.java, TimerService.TOGGLE)
             startForegroundService(requireContext(), intent)
         }
         val b = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Stop workout?")
             .setMessage("Are you sure you want to stop this workout?")
             .setPositiveButton(string.ok) { _: DialogInterface?, _: Int ->
-                val intent = IntentWithAction(requireContext(), TimeService::class.java, TimeService.ABANDON)
+                val intent = IntentWithAction(requireContext(), TimerService::class.java, TimerService.ABANDON)
                 startForegroundService(requireContext(), intent)
                 if (preferenceHelper.logIncompleteSessions()) viewModel.storeIncompleteWorkout()
 
                 //seems to work fine but is it a good idea?
-                NavHostFragment.findNavController(this).apply {
+                findNavController().apply {
                     popBackStack()
                     popBackStack()
                 }
             }
             .setNegativeButton(string.cancel) { _: DialogInterface?, _: Int ->
                 if (viewModel.getTimerState().value == TimerState.PAUSED) {
-                    val intent = IntentWithAction(requireContext(), TimeService::class.java, TimeService.TOGGLE)
+                    val intent = IntentWithAction(requireContext(), TimerService::class.java, TimerService.TOGGLE)
                     startForegroundService(requireContext(), intent)
                 }
             }

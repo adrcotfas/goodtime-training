@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".ui.timer.TimeService"/>
+        <service android:name=".ui.timer.TimerService" android:enabled="true"/>
 
         <receiver android:name=".common.preferences.reminders.BootReceiver">
             <intent-filter>

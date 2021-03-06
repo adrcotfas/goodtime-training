@@ -154,15 +154,16 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             bottomNavigationView.isVisible = isTopLevel
             startButton.apply { if (isTopLevel) show() else hide() }
 
-            val hideToolbar = destination.label == "WorkoutFragment" ||
-                    destination.label == "StopWorkoutDialog"
+            //TODO: extract fragment labels to untranslatable strings
+            val hideToolbar = destination.label == "TimerFragment" ||
+                    destination.label == "StopWorkoutDialog" || destination.label == "FinishedWorkoutFragment"
             toolbar.isVisible = !hideToolbar
 
             if (preferenceHelper.isFullscreenModeEnabled()) {
                 toggleFullscreenMode(hideToolbar)
             }
 
-            if (destination.label == "WorkoutFragment" || destination.label == "StopWorkoutDialog") {
+            if (destination.label == "TimerFragment" || destination.label == "StopWorkoutDialog") {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             } else {

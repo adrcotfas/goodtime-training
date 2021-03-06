@@ -10,7 +10,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 
-class TimeService: Service(), KodeinAware{
+class TimerService: Service(), KodeinAware{
 
     companion object {
         var START = "goodtime.action.start"
@@ -35,13 +35,14 @@ class TimeService: Service(), KodeinAware{
         val result = START_STICKY
         when(intent.action) {
             START -> {
+                //TODO: move all of these operations to the ViewModel and leave only notification related work?
                 workoutManager.startWorkout()
                 startForeground(GOODTIME_NOTIFICATION_ID, NotificationHelper.getNotification(context))
             }
             TOGGLE -> workoutManager.toggleTimer()
             FINALIZE -> {
                 if (preferenceHelper.isDndModeEnabled()) dndHandler.toggleDndMode(true)
-                workoutManager.finalize()
+                workoutManager.setInactive()
                 onStop()
             }
             ABANDON -> {
