@@ -38,7 +38,7 @@ class CircleProgressBar @JvmOverloads constructor(
     fun onTick(newProgress : Float) {
         val animator = ValueAnimator.ofFloat(if (newProgress <= 0F) 0F else progress, newProgress).apply {
             interpolator = LinearInterpolator()
-            duration = 600
+            duration = 1000
             addUpdateListener { animation ->
                 val animatedVal = animation.animatedValue as Float
                 progress = animatedVal
