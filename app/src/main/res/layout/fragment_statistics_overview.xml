@@ -1,296 +1,301 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            style="@style/SectionCommon"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="8dp">
 
-            <TextView
-                android:id="@+id/header"
-                style="@style/SectionHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="@string/statistics_overview"
-                tools:ignore="RelativeOverlap" />
-
-            <LinearLayout
+            <RelativeLayout
+                style="@style/SectionCommon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/header"
-                android:baselineAligned="false"
-                android:gravity="bottom"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/today_value"
-                        style="@style/OverviewTextValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/today_description"
-                        style="@style/OverviewTextDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/statistics_today" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/week_value"
-                        style="@style/OverviewTextValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/week_description"
-                        style="style/OverviewTextDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/statistics_this_week" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/month_value"
-                        style="@style/OverviewTextValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/month_description"
-                        style="style/OverviewTextDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/statistics_this_month" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/total_value"
-                        style="@style/OverviewTextValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/total_description"
-                        style="style/OverviewTextDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/statistics_total" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-
-        <RelativeLayout
-            style="@style/SectionCommon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/header_history"
-                style="@style/SectionHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="@string/statistics_history"
-                tools:ignore="RelativeOverlap" />
-
-            <Spinner
-                android:id="@+id/range_type"
-                style="@style/SpinnerStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true" />
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/chart"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_below="@+id/range_type" />
-
-        </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/weekly_goal_section"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp">
-
-        <RelativeLayout
-            style="@style/SectionCommon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/title_goal"
-                style="@style/SectionHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="Weekly goal"
-                tools:ignore="RelativeOverlap" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:orientation="horizontal"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:gravity="center_vertical"
-                android:layout_marginTop="12dp">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/goal_text"
+                    android:id="@+id/header"
+                    style="@style/SectionHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/OverviewTextDescription"
-                    android:text="inactive"
-                    android:layout_marginEnd="8dp"/>
-
-                <ImageButton
-                    android:id="@+id/edit_goal_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="?attr/actionBarItemBackground"
-                    android:tint="@color/grey500"
-                    android:src="@drawable/ic_edit" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title_goal"
-                android:baselineAligned="false"
-                android:gravity="bottom"
-                android:orientation="horizontal">
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/statistics_overview"
+                    tools:ignore="RelativeOverlap" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_below="@+id/header"
+                    android:baselineAligned="false"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/current_progress_value"
-                        style="@style/OverviewTextValue.Large"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="-" />
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/today_value"
+                            style="@style/OverviewTextValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/today_description"
+                            style="@style/OverviewTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/statistics_today" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/week_value"
+                            style="@style/OverviewTextValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/week_description"
+                            style="style/OverviewTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/statistics_this_week" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/month_value"
+                            style="@style/OverviewTextValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/month_description"
+                            style="style/OverviewTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/statistics_this_month" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/total_value"
+                            style="@style/OverviewTextValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/total_description"
+                            style="style/OverviewTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/statistics_total" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <RelativeLayout
+                style="@style/SectionCommon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/header_history"
+                    style="@style/SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/statistics_history"
+                    tools:ignore="RelativeOverlap" />
+
+                <Spinner
+                    android:id="@+id/range_type"
+                    style="@style/SpinnerStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_below="@+id/range_type" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/weekly_goal_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <RelativeLayout
+                style="@style/SectionCommon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_goal"
+                    style="@style/SectionHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="Weekly goal"
+                    tools:ignore="RelativeOverlap" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/goal_text"
                         style="@style/OverviewTextDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Current progress" />
+                        android:layout_marginEnd="8dp"
+                        android:text="inactive" />
+
+                    <ImageButton
+                        android:id="@+id/edit_goal_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:background="?attr/actionBarItemBackground"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_edit"
+                        android:tint="@color/grey500" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_below="@+id/title_goal"
+                    android:baselineAligned="false"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/current_streak_value"
-                        style="@style/OverviewTextValue.Large"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="-" />
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                    <TextView
-                        style="style/OverviewTextDescription"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/current_progress_value"
+                            style="@style/OverviewTextValue.Large"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-" />
+
+                        <TextView
+                            style="@style/OverviewTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current progress" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Current streak" />
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/current_streak_value"
+                            style="@style/OverviewTextValue.Large"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-" />
+
+                        <TextView
+                            style="style/OverviewTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current streak" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/best_streak_value"
+                            style="@style/OverviewTextValue.Large"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-" />
+
+                        <TextView
+                            style="style/OverviewTextDescription"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Best streak" />
+
+                    </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:gravity="center"
-                    android:orientation="vertical">
+            </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/best_streak_value"
-                        style="@style/OverviewTextValue.Large"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="-" />
-
-                    <TextView
-                        style="style/OverviewTextDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Best streak" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-</LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>
 
