@@ -160,6 +160,8 @@ class TimerFragment : Fragment(), KodeinAware {
                 Handler(Looper.getMainLooper()).post { binding.timer.clearAnimation() }
             }
             TimerState.FINISHED -> {
+                val intent = IntentWithAction(requireContext(), TimerService::class.java, TimerService.FINALIZE)
+                startForegroundService(requireContext(), intent)
                 findNavController().navigate(R.id.action_nav_timer_to_nav_finished_workout)
             }
             else -> return // do nothing

@@ -1,137 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/summary_scroll_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
+        android:id="@+id/summary_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/summary_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical"
-            tools:layout_height="100dp"
-            tools:background="@color/grey500">
-        </LinearLayout>
+            android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/edit_text_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/summary_container"
-            android:layout_marginTop="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white_5percent" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/rounds_layout"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/rounds_section"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:visibility="visible"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/reps_layout"
-                app:hintEnabled="true"
-                android:hint="Rounds"
-                app:expandedHintEnabled="false"
-                android:isScrollContainer="false"
-                app:errorEnabled="true"
-                app:errorContentDescription=""
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+                tools:visibility="visible">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/rounds_edit"
+                <include
+                    android:id="@+id/rounds_layout"
+                    layout="@layout/text_input_layout_section_medium"
                     android:layout_width="wrap_content"
-                    android:minWidth="100dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:digits="0123456789"
-                    android:singleLine="true"
-                    android:maxLines="1"
-                    android:textColor="@color/grey200"
-                    android:textSize="20sp"
-                    android:maxLength="8"
-                    android:selectAllOnFocus="true"
-                    app:fontFamily="@font/timer_font"
-                    android:includeFontPadding="false"
-                    android:imeOptions="actionDone"
-                    tools:text="104"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginEnd="64dp"
+                    app:layout_constraintEnd_toStartOf="@id/reps_layout"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:maxLength="@{3}"
+                    app:unit="@{`rounds`}" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/reps_layout"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/rounds_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:hintEnabled="true"
-                android:hint="Reps"
-                app:expandedHintEnabled="false"
-                android:isScrollContainer="false"
-                app:errorEnabled="true"
-                app:errorContentDescription=""
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/reps_edit"
+                <include
+                    android:id="@+id/reps_layout"
+                    layout="@layout/text_input_layout_section_medium"
                     android:layout_width="wrap_content"
-                    android:minWidth="100dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:digits="0123456789"
-                    android:singleLine="true"
-                    android:maxLines="1"
-                    android:textColor="@color/grey200"
-                    android:textSize="20sp"
-                    android:maxLength="8"
-                    android:selectAllOnFocus="true"
-                    app:fontFamily="@font/timer_font"
-                    android:includeFontPadding="false"
-                    android:imeOptions="actionDone"
-                    tools:text="24"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:layout_constraintBottom_toBottomOf="@id/rounds_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/rounds_layout"
+                    app:layout_constraintTop_toTopOf="@id/rounds_layout"
+                    app:maxLength="@{3}"
+                    app:unit="@{`reps`}" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white_5percent" />
+
+            <include
                 android:id="@+id/notes_layout"
-                android:layout_width="0dp"
+                layout="@layout/text_input_layout_section_large"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/reps_layout"
-                app:layout_constraintStart_toStartOf="@id/rounds_layout"
-                app:layout_constraintEnd_toEndOf="@id/reps_layout"
-                app:hintEnabled="true"
-                android:hint="Notes"
-                app:expandedHintEnabled="false"
-                android:isScrollContainer="false"
-                app:errorEnabled="true"
-                app:errorContentDescription=""
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rounds_section"
+                app:unit="@{`notes`}" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/notes_edit"
-                    android:layout_width="match_parent"
-                    android:minHeight="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:inputType="textMultiLine|textFilter|textNoSuggestions"
-                    android:textColor="@color/grey200"
-                    android:textSize="12sp"
-                    android:maxLength="350"
-                    android:singleLine="false"
-                    android:selectAllOnFocus="true"
-                    app:fontFamily="@font/timer_font"
-                    android:includeFontPadding="false"
-                    android:imeOptions="actionDone"
-                    android:gravity="top"
-                    tools:text="- AMRAP 15 min 32 rounds \n- FOR TIME 15 min 30s (14 min 3s)"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</layout>

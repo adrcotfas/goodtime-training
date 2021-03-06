@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -22,20 +22,16 @@ import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.toInt
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.SessionSkeleton
-import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.databinding.FragmentFinishedWorkoutBinding
-import goodtime.training.wod.timer.ui.timer.IntentWithAction
-import goodtime.training.wod.timer.ui.timer.TimerService
 import goodtime.training.wod.timer.ui.timer.TimerViewModel
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
-import nl.dionsegijn.konfetti.emitters.StreamEmitter
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class FinishedWorkoutFragment  : Fragment(), KodeinAware {
+class FinishedWorkoutFragment : Fragment(), KodeinAware {
     override val kodein by closestKodein()
 
     private val viewModelFactory: TimerViewModelFactory by instance()
@@ -45,9 +41,20 @@ class FinishedWorkoutFragment  : Fragment(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // required for the EditText to adjust when typing
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TimerViewModel::class.java)
         viewModel.setInactive()
         viewModel.prepareSession()
+    }
+
+    override fun onDestroy() {
+        // required for the time pickers to not become messed up
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+
+        super.onDestroy()
     }
 
     @SuppressLint("SetTextI18n")
@@ -71,10 +78,8 @@ class FinishedWorkoutFragment  : Fragment(), KodeinAware {
     private fun setupHandleOnBackPressed() {
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                    val intent = IntentWithAction(requireContext(), TimerService::class.java, TimerService.FINALIZE)
-                    ContextCompat.startForegroundService(requireContext(), intent)
-                    viewModel.finalize()
-                    findNavController().popBackStack()
+                viewModel.storeWorkout()
+                findNavController().popBackStack()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
@@ -84,55 +89,56 @@ class FinishedWorkoutFragment  : Fragment(), KodeinAware {
         binding.congrats.text = StringUtils.generateCongrats()
         sessionToAdd = viewModel.getPreparedSession()
 
-        for (idx in 0 until viewModel.getSessions().size) {
-            if (idx == 0) { // skip the pre-workout countdown
-                // add the custom workout header if it's the case
-                val name = sessionToAdd.name
-                if (name != null) {
-                    binding.summaryLayout.summaryContainer.addView(createSummaryRowCustomHeader(name))
-                }
-                continue
+        if (viewModel.getPreparedSession().isCustom()) {
+            val name = sessionToAdd.name
+            if (name != null) {
+                binding.summaryContainer.addView(createSummaryRowCustomHeader(name))
             }
-            val session = viewModel.getSessions()[idx]
-            val duration = viewModel.getDurations()[idx]
-            binding.summaryLayout.summaryContainer.addView(createSummaryRow(session, duration))
+        } else {
+            // 0 corresponds to the pre-workout countdown
+            val session = viewModel.getSessions()[1]
+            val duration = viewModel.getDurations()[1]
+            binding.summaryContainer.addView(createSummaryRow(session, duration))
         }
 
         val rounds = sessionToAdd.actualRounds
         val totalDuration = sessionToAdd.actualDuration
 
-        binding.summaryLayout.summaryContainer.addView(createSummaryTotalRow(totalDuration))
+        binding.summaryContainer.addView(createSummaryTotalRow(totalDuration))
+
+        val repsEditText = binding.summaryLayout.repsLayout.editText
+        val roundsEditText = binding.summaryLayout.roundsLayout.editText
 
         if (rounds != 0) {
-            binding.summaryLayout.roundsEdit.setText(rounds.toString())
-            binding.summaryLayout.repsEdit.setText("0")
-        } else {
-            //TODO: and show button to add these
-//            binding.summaryLayout.roundsEdit.visibility = View.GONE
-//            binding.summaryLayout.repsEdit.visibility = View.GONE
+            roundsEditText.setText(rounds.toString())
+            repsEditText.setText("0")
         }
 
-        if (!binding.summaryLayout.repsEdit.editableText.isNullOrEmpty()) {
-            sessionToAdd.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
+        if (!repsEditText.editableText.isNullOrEmpty()) {
+            sessionToAdd.actualReps = toInt(repsEditText.editableText.toString())
         }
 
-        // listen to edit text changes and update the session to be saved
-        binding.summaryLayout.repsEdit.addTextChangedListener {
-            if (!binding.summaryLayout.repsEdit.editableText.isNullOrEmpty()) {
-                sessionToAdd.actualReps = toInt(binding.summaryLayout.repsEdit.editableText.toString())
+        repsEditText.addTextChangedListener {
+            if (!repsEditText.editableText.isNullOrEmpty()) {
+                sessionToAdd.actualReps = toInt(repsEditText.editableText.toString())
             }
         }
-        binding.summaryLayout.roundsEdit.addTextChangedListener {
-            if (!binding.summaryLayout.roundsEdit.editableText.isNullOrEmpty()) {
-                sessionToAdd.actualRounds = toInt(binding.summaryLayout.roundsEdit.editableText.toString())
-            }
-        }
-        binding.summaryLayout.notesEdit.addTextChangedListener {
-            if (!binding.summaryLayout.notesEdit.editableText.isNullOrEmpty()) {
-                sessionToAdd.notes = binding.summaryLayout.notesEdit.editableText.toString()
+        roundsEditText.addTextChangedListener {
+            if (!roundsEditText.editableText.isNullOrEmpty()) {
+                sessionToAdd.actualRounds = toInt(roundsEditText.editableText.toString())
             }
         }
 
+        val notesEditText = binding.summaryLayout.notesLayout.editText
+        notesEditText.addTextChangedListener {
+            if (!notesEditText.editableText.isNullOrEmpty()) {
+                sessionToAdd.notes = notesEditText.editableText.toString()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
         startConfetti()
     }
 
@@ -163,20 +169,17 @@ class FinishedWorkoutFragment  : Fragment(), KodeinAware {
     }
 
     private fun createSummaryRow(session: SessionSkeleton, duration: Int = 0): ConstraintLayout {
-        val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
+        val layout = layoutInflater.inflate(R.layout.row_summary, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
         image.setImageDrawable(ResourcesHelper.getDrawableFor(session.type))
 
         text.text = "${StringUtils.toString(session.type)}  ${StringUtils.toFavoriteFormat(session)}"
-        if (session.type == SessionType.FOR_TIME) {
-            text.text = "${text.text} (${StringUtils.secondsToNiceFormat(duration)})"
-        }
         return layout
     }
 
     private fun createSummaryRowCustomHeader(name: String): ConstraintLayout {
-        val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
+        val layout = layoutInflater.inflate(R.layout.row_summary, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
         image.setImageDrawable(ResourcesHelper.getCustomWorkoutDrawable())
@@ -186,7 +189,7 @@ class FinishedWorkoutFragment  : Fragment(), KodeinAware {
     }
 
     private fun createSummaryTotalRow(totalSeconds: Int): ConstraintLayout {
-        val layout = layoutInflater.inflate(R.layout.row_summary_header, null, false) as ConstraintLayout
+        val layout = layoutInflater.inflate(R.layout.row_summary, null, false) as ConstraintLayout
         val image = layout.findViewById<ImageView>(R.id.summary_drawable)
         val text = layout.findViewById<TextView>(R.id.summary_text)
 

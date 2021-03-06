@@ -3,7 +3,6 @@ package goodtime.training.wod.timer.ui.timer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
-import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.repository.AppRepository
 import kotlinx.coroutines.launch
 
@@ -27,7 +26,7 @@ class TimerViewModel(
     fun getDurations() = workoutManager.durations
     fun getPreparedSession() = workoutManager.sessionToAdd
 
-    fun finalize() {
+    fun storeWorkout() {
         // don't save sessions interrupted during the pre-workout countdown
         if (workoutManager.sessionToAdd.actualDuration == 0) return
 
@@ -42,7 +41,7 @@ class TimerViewModel(
 
     fun storeIncompleteWorkout() {
         workoutManager.prepareSessionToAdd(false)
-        finalize()
+        storeWorkout()
     }
 
     fun init(sessionsRaw: String, name: String?) {

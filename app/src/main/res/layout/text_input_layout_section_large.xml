@@ -27,7 +27,7 @@
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="96dp"
+                android:minHeight="80dp"
                 android:gravity="top|start"
                 android:inputType="textMultiLine"
                 android:textColor="@color/grey200"

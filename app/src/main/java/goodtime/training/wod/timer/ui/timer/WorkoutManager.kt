@@ -370,5 +370,6 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
      */
     fun setInactive() {
         _timerState.value = TimerState.INACTIVE
+        notifier.stop()
     }
 }
