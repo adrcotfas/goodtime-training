@@ -159,7 +159,7 @@ class FinishedWorkoutFragment  : Fragment(), KodeinAware {
                 -50f,
                 -50f
             )
-            .streamFor(50, StreamEmitter.INDEFINITE)
+            .streamFor(50, 3000)
     }
 
     private fun createSummaryRow(session: SessionSkeleton, duration: Int = 0): ConstraintLayout {

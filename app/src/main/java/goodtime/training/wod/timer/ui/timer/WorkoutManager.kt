@@ -174,6 +174,7 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     fun prepareSessionToAdd(completed: Boolean = true) {
         val index = getCurrentSessionIdx()
         if (isCustomWorkout) {
+            sessionToAdd.skeleton.type = SessionType.CUSTOM
             sessionToAdd.notes = ""
             for (session in sessions.withIndex()) {
                 if (session.index == 0) continue
@@ -184,14 +185,6 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
 
                 sessionToAdd.actualDuration += duration
                 sessionToAdd.actualRounds += countedRounds
-                sessionToAdd.notes +=
-                    "${StringUtils.toFavoriteFormatExtended(session.value)} " +
-                            "/ ${StringUtils.secondsToNiceFormat(duration)}"
-                if (countedRounds > 0) {
-                    sessionToAdd.notes += " / $countedRounds rounds"
-                }
-                sessionToAdd.notes +=
-                    if (session.index < sessions.size - 1) "\n" else "(incomplete)"
             }
             sessionToAdd.isTimeBased = sessions.find { it.type == SessionType.FOR_TIME } != null
             sessionToAdd.isCompleted = completed
