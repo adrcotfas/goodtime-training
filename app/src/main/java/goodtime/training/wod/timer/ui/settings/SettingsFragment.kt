@@ -30,8 +30,6 @@ class SettingsFragment :
     private val repo: AppRepository by instance()
 
     private lateinit var timePickerPreference: Preference
-    private lateinit var enableSoundPreference: SwitchPreferenceCompat
-    private lateinit var enableVoicePreference: SwitchPreferenceCompat
     private lateinit var soundProfilePreference: Preference
 
     companion object {
@@ -42,7 +40,6 @@ class SettingsFragment :
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.preferenceDataStore = preferenceHelper.dataStore
         setPreferencesFromResource(R.xml.preferences, rootKey)
-        setupSoundPreference()
         setupReminderPreference()
         setupSoundProfilePreference()
         setupBackupButtons()
@@ -51,17 +48,6 @@ class SettingsFragment :
     override fun onResume() {
         super.onResume()
         setupDndPreference()
-    }
-
-    private fun setupSoundPreference() {
-        enableSoundPreference = findPreference(PreferenceHelper.SOUND_ENABLED)!!
-        enableVoicePreference = findPreference(PreferenceHelper.VOICE_ENABLED)!!
-        enableSoundPreference.setOnPreferenceClickListener {
-            if (!enableSoundPreference.isChecked && enableVoicePreference.isChecked) {
-                enableVoicePreference.isChecked = false
-            }
-            true
-        }
     }
 
     private fun setupDndPreference() {

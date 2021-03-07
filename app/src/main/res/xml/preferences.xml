@@ -28,7 +28,6 @@
             app:key="pref_voice"
             app:title="Voice"
             app:defaultValue="true"
-            android:dependency="pref_sound"
             app:iconSpaceReserved="false"/>
 
         <SwitchPreferenceCompat
