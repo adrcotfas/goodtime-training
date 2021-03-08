@@ -3,7 +3,6 @@ package goodtime.training.wod.timer.ui.timer
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import goodtime.training.wod.timer.GoodtimeApplication.Companion.context
 import goodtime.training.wod.timer.common.notifications.NotificationHelper
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import org.kodein.di.KodeinAware
@@ -28,7 +27,7 @@ class TimerService: Service(), KodeinAware{
 
     override fun onCreate() {
         super.onCreate()
-        dndHandler = DNDHandler(context)
+        dndHandler = DNDHandler(this)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -37,7 +36,7 @@ class TimerService: Service(), KodeinAware{
             START -> {
                 //TODO: move all of these operations to the ViewModel and leave only notification related work?
                 workoutManager.startWorkout()
-                startForeground(GOODTIME_NOTIFICATION_ID, NotificationHelper.getNotification(context))
+                startForeground(GOODTIME_NOTIFICATION_ID, NotificationHelper.getNotification(this))
             }
             TOGGLE -> workoutManager.toggleTimer()
             FINALIZE -> {

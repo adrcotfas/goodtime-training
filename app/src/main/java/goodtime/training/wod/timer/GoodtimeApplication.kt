@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.res.Resources
@@ -44,6 +45,7 @@ class GoodtimeApplication : Application(), KodeinAware {
             return res
         }
 
+        @SuppressLint("StaticFieldLeak") // should be fine in this class
         lateinit var context: Context
             private set
 
