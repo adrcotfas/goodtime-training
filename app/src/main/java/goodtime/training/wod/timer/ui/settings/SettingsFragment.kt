@@ -9,6 +9,7 @@ import android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
 import android.text.format.DateFormat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
@@ -43,6 +44,7 @@ class SettingsFragment :
         setupReminderPreference()
         setupSoundProfilePreference()
         setupBackupButtons()
+        setupHelpAndFeedbackSection()
     }
 
     override fun onResume() {
@@ -159,6 +161,13 @@ class SettingsFragment :
                 putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(intentType))
             }
             startActivityForResult(intent, IMPORT_BACKUP_SMART_WOD_REQUEST)
+            true
+        }
+    }
+
+    private fun setupHelpAndFeedbackSection() {
+        findPreference<Preference>("open_source_licences")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            startActivity(Intent(requireContext(), OssLicensesMenuActivity::class.java))
             true
         }
     }

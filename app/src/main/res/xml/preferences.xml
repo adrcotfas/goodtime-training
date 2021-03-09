@@ -120,4 +120,13 @@
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:title="Help and feedback"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            app:key="open_source_licences"
+            app:title="Open-source licences"
+            app:iconSpaceReserved="false"/>
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -34,6 +34,13 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:theme="@style/Theme" />
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
+            android:theme="@style/Theme" />
+
         <service android:name=".ui.timer.TimerService" android:enabled="true"/>
 
         <receiver android:name=".common.preferences.reminders.BootReceiver">

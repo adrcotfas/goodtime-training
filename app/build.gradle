@@ -5,6 +5,8 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: "com.google.android.gms.oss-licenses-plugin"
+
 
 android {
     compileSdkVersion 30
@@ -76,12 +78,19 @@ dependencies {
     // Preferences
     implementation "androidx.preference:preference-ktx:1.1.1"
 
+    // For the finished workout screen
     implementation 'nl.dionsegijn:konfetti:1.2.5'
 
+    // For the intro tutorial
     implementation "com.github.skydoves:balloon:1.2.9"
 
+    // For the statistics
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'org.greenrobot:eventbus:3.2.0'
+
+    // to parse the SmartWOD csv
     implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:0.15.0'
+
+    implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
 }
