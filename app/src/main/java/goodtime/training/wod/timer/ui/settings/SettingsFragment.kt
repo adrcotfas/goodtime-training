@@ -18,6 +18,7 @@ import goodtime.training.wod.timer.BuildConfig
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.DeviceInfo
 import goodtime.training.wod.timer.common.StringUtils
+import goodtime.training.wod.timer.common.openStorePage
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.db.GoodtimeDatabase
 import goodtime.training.wod.timer.data.repository.AppRepository
@@ -203,26 +204,6 @@ class SettingsFragment :
             startActivity(Intent.createChooser(email, "Send Feedback"))
         } catch (ex: ActivityNotFoundException) {
             Toast.makeText(requireContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun openStorePage(c: Context) {
-        val uri = Uri.parse("market://details?id=" + c.packageName)
-        val goToMarket = Intent(Intent.ACTION_VIEW, uri)
-        goToMarket.addFlags(
-            Intent.FLAG_ACTIVITY_NO_HISTORY or
-                    Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
-                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-        )
-        try {
-            c.startActivity(goToMarket)
-        } catch (e: ActivityNotFoundException) {
-            c.startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("http://play.google.com/store/apps/details?id=" + c.packageName)
-                )
-            )
         }
     }
 

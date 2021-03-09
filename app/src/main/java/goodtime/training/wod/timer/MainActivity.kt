@@ -1,7 +1,9 @@
 package goodtime.training.wod.timer
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -22,9 +24,9 @@ import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
+import goodtime.training.wod.timer.common.openStorePage
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
-import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.FullscreenHelper
 import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
@@ -33,7 +35,7 @@ import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
 import goodtime.training.wod.timer.ui.stats.EditWeeklyGoalDialog
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModel
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -126,14 +128,14 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         fullscreenHelper = FullscreenHelper(binding.contentMain.mainLayout)
 
         appBarConfiguration = AppBarConfiguration(
-                setOf(
-                        R.id.nav_amrap,
-                        R.id.nav_for_time,
-                        R.id.nav_intervals,
-                        R.id.nav_hiit,
-                        R.id.nav_custom
-                ),
-                binding.drawerLayout
+            setOf(
+                R.id.nav_amrap,
+                R.id.nav_for_time,
+                R.id.nav_intervals,
+                R.id.nav_hiit,
+                R.id.nav_custom
+            ),
+            binding.drawerLayout
         )
 
         bottomNavigationView = binding.contentMain.bottomNavigationView
@@ -191,6 +193,22 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             navController.navigate(MobileNavigationDirections.toStats())
             binding.drawerLayout.closeDrawers()
         }
+
+        setupDrawerFooter()
+    }
+
+    private fun setupDrawerFooter() {
+        binding.drawerLayout.privacy_policy_button.setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://goodtimetraining.policytrail.com/privacy-policy.html")
+                )
+            )
+        }
+        //TODO: mention "PRO" if the app is payed
+        binding.drawerLayout.app_version_button.text = "version ${BuildConfig.VERSION_NAME}"
+        binding.drawerLayout.app_version_button.setOnClickListener { openStorePage(this) }
     }
 
     private fun setupWeeklyGoal() {
@@ -222,12 +240,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             val sessions = fragment.getSelectedSessions()
             if (fragment is CustomWorkoutFragment) {
                 SelectCustomWorkoutDialog.newInstance(fragment).show(
-                        supportFragmentManager,
-                        "SelectFavorite"
+                    supportFragmentManager,
+                    "SelectFavorite"
                 )
             } else {
                 SelectFavoriteDialog.newInstance(sessions[0], fragment)
-                        .show(supportFragmentManager, "SelectFavorite")
+                    .show(supportFragmentManager, "SelectFavorite")
             }
         }
     }
@@ -240,7 +258,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     }
 
     private fun getVisibleFragment() =
-            (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
+        (supportFragmentManager.currentNavigationFragment as WorkoutTypeFragment)
 
     private fun setStartButtonStateWithColor(enabled: Boolean) {
         setStartButtonState(enabled)
@@ -274,8 +292,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun toggleMinimalistMode(enabled: Boolean) {
         bottomNavigationView.labelVisibilityMode =
-                if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
-                else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+            if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
+            else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
 
         if (enabled) {
             val startPadding = dpToPx(this, 10f).toFloat()

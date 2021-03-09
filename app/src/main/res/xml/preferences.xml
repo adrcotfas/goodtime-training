@@ -141,7 +141,7 @@
 
         <Preference
             app:key="open_source_licences"
-            app:title="Open-source licences"
+            app:title="Open source licences"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

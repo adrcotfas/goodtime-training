@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.calculateRowHeight
@@ -91,6 +92,8 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
     }
 
     private fun showBalloonsIfNeeded() {
+        val margin = dpToPx(requireContext(),8f)
+        val largeMargin = dpToPx(requireContext(),16f)
         if (sessionType == SessionType.FOR_TIME && preferenceHelper.showForTimeBalloons()) {
             preferenceHelper.setForTimeBalloons(false)
             binding.pickerSeparator.post {
@@ -103,8 +106,8 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
                         "Use the time pickers to change the time cap.",
                         false, 0.5f
                 )
-                balloon.relayShowAlignTop(anotherBalloon, binding.pickerSeparator, 0, 12)
-                balloon.showAlignTop(binding.pickerSeparator, 0, 12)
+                balloon.relayShowAlignTop(anotherBalloon, binding.pickerSeparator, 0, margin)
+                balloon.showAlignTop(binding.pickerSeparator, 0, margin)
             }
         } else if (sessionType == SessionType.AMRAP && preferenceHelper.showMainBalloons()) {
                 preferenceHelper.setMainBalloons(false)
@@ -133,11 +136,11 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
                         "Press the action button to start the workout using the current selection.",
                         false, 0.5f
                     )
-                    bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, binding.bottom, 0, 12)
-                        .relayShowAlignTop(timePickersBalloon, binding.pickerSeparator, 0, 12)
-                        .relayShowAlignTop(favoriteButtonBalloon, binding.top, 0, 90)
-                        .relayShowAlignBottom(startButtonBalloon, binding.bottom, 0, -180)
-                    bottomMenuBalloon.showAlignBottom(binding.bottom, 0, 12)
+                    bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, binding.bottom, 0, largeMargin * 2)
+                        .relayShowAlignTop(timePickersBalloon, binding.pickerSeparator, 0, margin)
+                        .relayShowAlignTop(favoriteButtonBalloon, binding.top, 0, -largeMargin)
+                        .relayShowAlignBottom(startButtonBalloon, binding.bottom, 0, -(largeMargin * 1.75f).toInt())
+                    bottomMenuBalloon.showAlignBottom(binding.bottom, 0, largeMargin * 2)
                 }
         }
     }

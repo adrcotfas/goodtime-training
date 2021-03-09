@@ -56,6 +56,12 @@
         <item name="colorPrimary">@color/green_goodtime</item>
     </style>
 
+    <style name="TextAppearance.SmallButton" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/app_font</item>
+        <item name="android:fontFamily">@font/app_font</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
     <style name="ShapeAppearance.MediumComponent"
         parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">rounded</item>
