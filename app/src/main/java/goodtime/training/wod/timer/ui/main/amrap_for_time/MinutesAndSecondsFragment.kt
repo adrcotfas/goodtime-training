@@ -106,6 +106,39 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
                 balloon.relayShowAlignTop(anotherBalloon, binding.pickerSeparator, 0, 12)
                 balloon.showAlignTop(binding.pickerSeparator, 0, 12)
             }
+        } else if (sessionType == SessionType.AMRAP && preferenceHelper.showMainBalloons()) {
+                preferenceHelper.setMainBalloons(false)
+                binding.root.post {
+                    val bottomMenuBalloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "Use the bottom menu to change the workout type."
+                    )
+                    val amrapBalloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time.",
+                        false, 0.05f
+                    )
+                    val timePickersBalloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "Use the time pickers to change the duration.",
+                        false, 0.5f
+                    )
+                    val favoriteButtonBalloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "Use the favorites section to save, remove and load timer presets.",
+                        true, 0.83f
+                    )
+                    val startButtonBalloon = CustomBalloonFactory.create(
+                        requireContext(), this,
+                        "Press the action button to start the workout using the current selection.",
+                        false, 0.5f
+                    )
+                    bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, binding.bottom, 0, 12)
+                        .relayShowAlignTop(timePickersBalloon, binding.pickerSeparator, 0, 12)
+                        .relayShowAlignTop(favoriteButtonBalloon, binding.top, 0, 90)
+                        .relayShowAlignBottom(startButtonBalloon, binding.bottom, 0, -180)
+                    bottomMenuBalloon.showAlignBottom(binding.bottom, 0, 12)
+                }
         }
     }
 

@@ -125,6 +125,21 @@
         app:iconSpaceReserved="false">
 
         <Preference
+            app:key="tutorial_button"
+            app:title="Tutorial"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            app:key="feedback_button"
+            app:title="Send Feedback"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            app:key="rate_this_app_button"
+            app:title="Rate this app"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
             app:key="open_source_licences"
             app:title="Open-source licences"
             app:iconSpaceReserved="false"/>

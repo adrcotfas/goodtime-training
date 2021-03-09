@@ -82,11 +82,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        showBalloonsIfNeeded()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
@@ -300,42 +295,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             newCustomWorkoutButton.text = getString(R.string.new_title)
             newCustomWorkoutButton.chipEndPadding = padding
             newCustomWorkoutButton.chipStartPadding = padding
-        }
-    }
-
-    private fun showBalloonsIfNeeded() {
-        if (preferenceHelper.showMainBalloons()) {
-            preferenceHelper.setMainBalloons(false)
-            binding.root.post {
-                val bottomMenuBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Use the bottom menu to change the workout type."
-                )
-                val amrapBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time."
-                )
-                val timePickersBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Use the time pickers to change the duration.",
-                        false, 0.5f
-                )
-                val favoriteButtonBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Use the favorites section to save, remove and load timer presets.",
-                        true, 0.83f
-                )
-                val startButtonBalloon = CustomBalloonFactory.create(
-                        this, this,
-                        "Press the action button to start the workout using the current selection.",
-                        false, 0.5f
-                )
-                bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, bottomNavigationView, 0, 12)
-                        .relayShowAlignBottom(timePickersBalloon, toolbar, 0, 12)
-                        .relayShowAlignBottom(favoriteButtonBalloon, favoritesButton, 0, 12)
-                        .relayShowAlignTop(startButtonBalloon, startButton, 0, -12)
-                bottomMenuBalloon.showAlignTop(bottomNavigationView, 0, -12)
-            }
         }
     }
 
