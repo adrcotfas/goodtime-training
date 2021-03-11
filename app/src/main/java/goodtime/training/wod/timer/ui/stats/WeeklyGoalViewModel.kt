@@ -2,6 +2,7 @@ package goodtime.training.wod.timer.ui.stats
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.common.CombinedLiveData
 import goodtime.training.wod.timer.common.TimeUtils
@@ -61,5 +62,14 @@ class WeeklyGoalViewModel(private val repo: AppRepository) : ViewModel() {
                 repo.updateWeeklyGoal(data.goal)
             }
         }
+    }
+}
+
+class WeeklyGoalViewModelFactory(private val appRepository: AppRepository)
+    : ViewModelProvider.NewInstanceFactory() {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return WeeklyGoalViewModel(appRepository) as T
     }
 }

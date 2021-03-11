@@ -121,4 +121,24 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         setHiitBalloons(enabled)
         setCustomBalloons(enabled)
     }
+
+    //TODO: implement these after internal testing
+    fun setAskedForReviewTime(currentTimeMillis: Long) {
+    }
+
+    fun getAskedForReviewTime() : Long {
+        return 0
+    }
+
+    fun resetCompletedWorkoutsForReview() {
+
+    }
+
+    fun incrementCompletedWorkoutsForReview() {
+
+    }
+
+    fun getCompletedWorkoutsForReview(): Int {
+        return 0
+    }
 }

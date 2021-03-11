@@ -1,6 +1,7 @@
 package goodtime.training.wod.timer.ui.finished_workout
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +16,19 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.DimensionsUtils
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.toInt
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.databinding.FragmentFinishedWorkoutBinding
+import goodtime.training.wod.timer.ui.main.ReviewsViewModel
+import goodtime.training.wod.timer.ui.main.ReviewsViewModelFactory
 import goodtime.training.wod.timer.ui.timer.TimerViewModel
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import nl.dionsegijn.konfetti.models.Shape
@@ -39,6 +45,16 @@ class FinishedWorkoutFragment : Fragment(), KodeinAware {
     private lateinit var binding: FragmentFinishedWorkoutBinding
     private lateinit var sessionToAdd: Session
 
+    private val preferenceHelper: PreferenceHelper by instance()
+
+    private lateinit var reviewManager: ReviewManager
+    private lateinit var reviewViewModel: ReviewsViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        reviewManager = ReviewManagerFactory.create(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,6 +64,10 @@ class FinishedWorkoutFragment : Fragment(), KodeinAware {
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TimerViewModel::class.java)
         viewModel.setInactive()
         viewModel.prepareSession()
+
+        reviewViewModel =
+            ViewModelProvider(requireActivity(), ReviewsViewModelFactory(reviewManager, preferenceHelper)).get(ReviewsViewModel::class.java)
+        reviewViewModel.preWarmReview()
     }
 
     override fun onDestroy() {
