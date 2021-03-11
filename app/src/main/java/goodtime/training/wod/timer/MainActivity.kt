@@ -5,7 +5,9 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -16,6 +18,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import com.alphelios.iap.DataWrappers
+import com.alphelios.iap.IapConnector
+import com.alphelios.iap.InAppEventsListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.google.android.material.chip.Chip
@@ -73,6 +78,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private val weeklyGoalViewModelFactory: WeeklyGoalViewModelFactory by instance()
     private lateinit var weeklyGoalViewModel: WeeklyGoalViewModel
+
+    private val iapConnector: IapConnector by instance()
 
     override fun onStart() {
         super.onStart()
@@ -195,6 +202,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         }
 
         setupDrawerFooter()
+        setupIAP()
     }
 
     private fun setupDrawerFooter() {
@@ -316,6 +324,40 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         }
     }
 
+    private fun setupIAP() {
+        iapConnector.setOnInAppEventsListener(object : InAppEventsListener {
+
+            override fun onSubscriptionsFetched(skuDetailsList: List<DataWrappers.SkuInfo>) {}
+
+            override fun onInAppProductsFetched(skuDetailsList: List<DataWrappers.SkuInfo>) {
+                Log.i("MainActivity", "Retrieved SKU details list : $skuDetailsList")
+            }
+
+            override fun onPurchaseAcknowledged(purchase: DataWrappers.PurchaseInfo) {}
+
+            override fun onProductsPurchased(purchases: List<DataWrappers.PurchaseInfo>) {
+                purchases.forEach {
+                    when (it.sku) {
+                        "pro" -> {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "You are PRO",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+
+            override fun onError(
+                inAppConnector: IapConnector,
+                result: DataWrappers.BillingResponse?
+            ) {
+                Log.i("MainActivity", "IAP error")
+            }
+        })
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: Events.Companion.FilterSelectedEvent) {
         filterButton.text = event.name
@@ -338,5 +380,10 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: Events.Companion.SetStartButtonStateWithColor) {
         setStartButtonStateWithColor(event.enabled)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: Events.Companion.MakePurchase) {
+        iapConnector.makePurchase(this, "pro")
     }
 }

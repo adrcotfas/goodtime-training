@@ -98,4 +98,7 @@ dependencies {
 
     // open source licences list
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+
+    // IAP
+    implementation 'com.github.adrcotfas:Google-IAP:separate_activity-SNAPSHOT'
 }

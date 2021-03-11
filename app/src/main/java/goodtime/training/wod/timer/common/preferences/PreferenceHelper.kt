@@ -49,6 +49,8 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         const val IMPORT_BACKUP = "pref_import_backup"
         const val IMPORT_BACKUP_SMART_WOD = "pref_import_backup_smart_wod"
 
+        const val UNLOCK_FEATURES = "pref_unlock"
+
         fun generatePreWorkoutSession(seconds: Int): SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
         }

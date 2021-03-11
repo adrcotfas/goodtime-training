@@ -8,5 +8,6 @@ class Events {
         class AddToStatisticsClickEvent
         class SetStartButtonState(val enabled: Boolean)
         class SetStartButtonStateWithColor(val enabled: Boolean)
+        class MakePurchase
     }
 }

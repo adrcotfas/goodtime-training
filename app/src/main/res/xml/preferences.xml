@@ -59,6 +59,12 @@
             app:allowDividerAbove="false"
             app:iconSpaceReserved="false"/>
 
+        <Preference
+            app:key="pref_unlock"
+            app:title="Unlock features!"
+            app:iconSpaceReserved="false"/>
+        <!--            app:layout="@layout/preference_unlock_features"-->
+
         <CheckBoxPreference
             app:key="pref_extra_minimalist"
             app:title="Minimalist mode"

@@ -17,12 +17,15 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import goodtime.training.wod.timer.BuildConfig
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.DeviceInfo
+import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.openStorePage
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper.Companion.UNLOCK_FEATURES
 import goodtime.training.wod.timer.data.db.GoodtimeDatabase
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
+import org.greenrobot.eventbus.EventBus
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -52,6 +55,11 @@ class SettingsFragment :
         setupSoundProfilePreference()
         setupBackupButtons()
         setupHelpAndFeedbackSection()
+
+        findPreference<Preference>(UNLOCK_FEATURES)!!.setOnPreferenceClickListener {
+            EventBus.getDefault().post(Events.Companion.MakePurchase())
+            true
+        }
     }
 
     override fun onResume() {
