@@ -41,7 +41,9 @@
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/Theme" />
 
-        <service android:name=".ui.timer.TimerService" android:enabled="true"/>
+        <service android:name=".ui.timer.TimerService"
+            android:enabled="true"
+            android:stopWithTask="false"/>
 
         <receiver android:name=".common.preferences.reminders.BootReceiver">
             <intent-filter>

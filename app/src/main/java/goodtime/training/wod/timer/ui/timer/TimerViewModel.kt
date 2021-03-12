@@ -1,15 +1,14 @@
 package goodtime.training.wod.timer.ui.timer
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.repository.AppRepository
 import kotlinx.coroutines.launch
 
 class TimerViewModel(
     private val workoutManager: WorkoutManager,
-    private val repository: AppRepository,
-    private val preferenceHelper: PreferenceHelper
+    private val repository: AppRepository
 ) : ViewModel() {
 
     fun getTimerState() = workoutManager.timerState
@@ -48,16 +47,22 @@ class TimerViewModel(
         workoutManager.init(sessionsRaw, name)
     }
 
-    override fun onCleared() {
-        preferenceHelper.setKilledDuringWorkout(true)
-        super.onCleared()
-    }
-
     fun setInactive() {
         workoutManager.setInactive()
     }
 
     fun prepareSession() {
         workoutManager.prepareSessionToAdd(true)
+    }
+}
+
+class TimerViewModelFactory(
+    private val workoutManager: WorkoutManager,
+    private val appRepository: AppRepository
+) : ViewModelProvider.NewInstanceFactory() {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return TimerViewModel(workoutManager, appRepository) as T
     }
 }

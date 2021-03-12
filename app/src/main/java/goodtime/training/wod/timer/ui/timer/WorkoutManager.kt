@@ -160,7 +160,7 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
         }
     }
 
-    private fun stopTimer() {
+    fun stopTimer() {
         timer.cancel()
         notifier.stop()
         _timerState.value = TimerState.INACTIVE

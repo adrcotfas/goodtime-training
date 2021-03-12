@@ -125,11 +125,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        if (preferenceHelper.wasKilledDuringWorkout()) {
-            preferenceHelper.setKilledDuringWorkout(false)
-            navController.navigate(R.id.to_workout)
-        }
-
         setSupportActionBar(toolbar)
 
         fullscreenHelper = FullscreenHelper(binding.contentMain.mainLayout)

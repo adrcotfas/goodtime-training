@@ -81,7 +81,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { StatisticsViewModelFactory(instance()) }
         bind() from provider { WeeklyGoalViewModelFactory(instance()) }
-        bind() from provider { TimerViewModelFactory(instance(), instance(), instance()) }
+        bind() from provider { TimerViewModelFactory(instance(), instance()) }
 
         bind<IapConnector>() with eagerSingleton { IapConnector(
                 applicationContext, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0qp0" +

@@ -59,9 +59,13 @@ class TimerService: Service(), KodeinAware{
         stopSelf()
     }
 
-    override fun onDestroy() {
-        preferenceHelper.setKilledDuringWorkout(false)
-        super.onDestroy()
+    /**
+     * When the user clears the app from the recent apps list, stop the ongoing workout
+     */
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        workoutManager.stopTimer()
+        onStop()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
