@@ -60,4 +60,8 @@ class ItemTouchCallback : ItemTouchHelper.SimpleCallback(
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+
+    override fun isLongPressDragEnabled(): Boolean {
+        return false
+    }
 }
