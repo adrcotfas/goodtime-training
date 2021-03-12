@@ -44,7 +44,7 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
                 .setContentText("Training in progress.")
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.drawable.ic_menu_share)
+                .setSmallIcon(R.drawable.ic_status_goodtime)
                 .setOngoing(true)
                 .setAutoCancel(true)
                 .setShowWhen(false)
