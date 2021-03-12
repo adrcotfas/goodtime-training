@@ -60,6 +60,7 @@ abstract class WorkoutTypeFragment :
             val reviewInfo = reviewViewModel.obtainReviewInfo()
             if (reviewInfo != null) {
                 Log.i("WorkoutTypeFragment", "launching review...")
+                //TODO: this causes the activity to be paused and resumed twice; probably expected behavior but occurs even if no dialog is shown
                 reviewManager.launchReview(requireActivity(), reviewInfo)
                 reviewViewModel.notifyAskedForReview()
             }
