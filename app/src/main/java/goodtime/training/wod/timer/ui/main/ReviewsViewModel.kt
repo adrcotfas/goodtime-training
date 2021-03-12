@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer.ui.main
 
+import android.util.Log
 import androidx.annotation.Keep
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,7 @@ class ReviewsViewModel @Keep constructor(
      */
     @MainThread
     fun preWarmReview() {
+        Log.i("ReviewsViewModel", "preWarmReview")
         preferenceHelper.incrementCompletedWorkoutsForReview()
         shouldAskForReview = true
         //TODO: implement this after internal track testing
@@ -33,7 +35,10 @@ class ReviewsViewModel @Keep constructor(
 //                (preferenceHelper.getCompletedWorkoutsForReview() >= 5)
 
         if (shouldAskForReview && reviewInfo == null) {
-            reviewInfo = viewModelScope.async { reviewManager.requestReview() }
+            reviewInfo = viewModelScope.async {
+                Log.i("ReviewsViewModel", "requestReview")
+                reviewManager.requestReview()
+            }
         }
     }
 
@@ -43,6 +48,7 @@ class ReviewsViewModel @Keep constructor(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun obtainReviewInfo(): ReviewInfo? = withContext(Dispatchers.Main.immediate) {
+        Log.i("ReviewsViewModel", "obtainReviewInfo")
         if (reviewInfo?.isCompleted == true && reviewInfo?.isCancelled == false) {
             reviewInfo?.getCompleted().also {
                 reviewInfo = null
@@ -57,6 +63,7 @@ class ReviewsViewModel @Keep constructor(
      * @see shouldAskForReview
      */
     fun notifyAskedForReview() {
+        Log.i("ReviewsViewModel", "notifyAskedForReview")
         preferenceHelper.setAskedForReviewTime(System.currentTimeMillis())
         preferenceHelper.resetCompletedWorkoutsForReview()
         shouldAskForReview = false

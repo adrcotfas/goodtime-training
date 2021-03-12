@@ -56,8 +56,10 @@ abstract class WorkoutTypeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            Log.i("WorkoutTypeFragment", "obtaining review info...")
             val reviewInfo = reviewViewModel.obtainReviewInfo()
             if (reviewInfo != null) {
+                Log.i("WorkoutTypeFragment", "launching review...")
                 reviewManager.launchReview(requireActivity(), reviewInfo)
                 reviewViewModel.notifyAskedForReview()
             }

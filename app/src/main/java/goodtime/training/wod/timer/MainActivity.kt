@@ -353,7 +353,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                 inAppConnector: IapConnector,
                 result: DataWrappers.BillingResponse?
             ) {
-                Log.i("MainActivity", "IAP error")
+                Log.i("MainActivity", "IAP error: ${result?.message}")
             }
         })
     }

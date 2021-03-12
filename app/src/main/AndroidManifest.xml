@@ -52,7 +52,7 @@
         <receiver android:name=".common.preferences.reminders.ReminderReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="@string/reminder_action"/>
+                <action android:name="goodtime.training.reminder_action"/>
             </intent-filter>
         </receiver>
 
