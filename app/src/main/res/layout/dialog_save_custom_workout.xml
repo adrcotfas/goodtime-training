@@ -1,94 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp">
+
+        <ImageButton
+            android:id="@+id/close_button"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/actionBarItemBackground"
+            android:src="@drawable/ic_close"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/title"
+            style="@style/DialogTitleTextStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save custom workout"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="24dp"
-            android:layout_marginHorizontal="24dp"
-            style="@style/MaterialAlertDialog.Title.Text"/>
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical"
+            android:text="Add session"
+            android:textColor="@color/grey200"
+            app:layout_constraintStart_toEndOf="@+id/close_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            style="@style/Widget.App.Button"
+            android:layout_marginEnd="16dp"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:text="@android:string/ok"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/overwrite_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            app:layout_constraintStart_toStartOf="parent"
-            android:paddingEnd="4dp"
-            android:clickable="true"
+            android:layout_marginHorizontal="24dp"
             android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="24dp">
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:paddingEnd="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title">
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/overwrite_radio_button"
+                style="@style/MaterialAlertDialog.Body.Actions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Overwrite"
                 android:checked="true"
-                style="@style/MaterialAlertDialog.Body.Actions"/>
+                android:text="Overwrite" />
 
             <TextView
                 android:id="@+id/workout_name"
+                style="@style/MaterialAlertDialog.Body.Actions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:layout_marginStart="12dp"
-                android:textStyle="italic"
-                android:lines="1"
+                android:clickable="true"
                 android:ellipsize="end"
-                style="@style/MaterialAlertDialog.Body.Actions"
-                tools:text="Sample Workout"/>
+                android:lines="1"
+                android:textStyle="italic"
+                tools:text="Sample Workout" />
         </LinearLayout>
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/save_as_radio_button"
+            style="@style/MaterialAlertDialog.Body.Actions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="4dp"
-            app:layout_constraintTop_toBottomOf="@id/overwrite_section"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginHorizontal="24dp"
+            android:paddingEnd="4dp"
             android:text="Save as"
-            style="@style/MaterialAlertDialog.Body.Actions"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/overwrite_section" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            app:layout_constraintTop_toBottomOf="@id/save_as_radio_button"
-            app:errorEnabled="true"
-            app:errorContentDescription="Enter a valid name"
             android:enabled="false"
-            android:hint="Name">
+            android:hint="Name"
+            app:errorContentDescription="Enter a valid name"
+            app:errorEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/save_as_radio_button">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:imeOptions="actionDone"
-                android:scrollbars="horizontal"
                 android:maxLength="25"
                 android:maxLines="1"
                 android:minWidth="80sp"
+                android:scrollbars="horizontal"
                 android:selectAllOnFocus="true"
-                android:ellipsize="end"
                 android:singleLine="true"
-                tools:text="Sample workout"/>
+                tools:text="Sample workout" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

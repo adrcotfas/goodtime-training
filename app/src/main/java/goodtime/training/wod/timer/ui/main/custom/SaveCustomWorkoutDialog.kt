@@ -1,15 +1,13 @@
 package goodtime.training.wod.timer.ui.main.custom
 
-import android.annotation.SuppressLint
-import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.DialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import goodtime.training.wod.timer.common.hideKeyboardFrom
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
@@ -18,7 +16,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
+class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
     override val kodein by closestKodein()
 
     private val repo: AppRepository by instance()
@@ -27,8 +25,8 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
     private lateinit var binding: DialogSaveCustomWorkoutBinding
     private lateinit var listener: Listener
 
-    private lateinit var originalName : String
-    private lateinit var customName : String
+    private lateinit var originalName: String
+    private lateinit var customName: String
 
     // the workout to be saved does not already exist
     private var isFresh = false
@@ -50,15 +48,13 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onCreateDialog(savedInstBundle: Bundle?): Dialog {
-        val b = MaterialAlertDialogBuilder(requireContext())
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSaveCustomWorkoutBinding.inflate(layoutInflater)
 
         val customWorkoutSkeletonsLd = repo.getCustomWorkoutSkeletons()
         customWorkoutSkeletonsLd.observe(this, {
             favorites = it
-            binding.saveAsRadioButton.setOnCheckedChangeListener{ _, isChecked ->
+            binding.saveAsRadioButton.setOnCheckedChangeListener { _, isChecked ->
                 binding.overwriteRadioButton.isChecked = !isChecked
                 refreshPositiveButtonState(binding.editText.text)
                 binding.textInputLayout.isEnabled = true
@@ -76,8 +72,8 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
             binding.textInputLayout.isEnabled = true
         } else {
             binding.workoutName.text = "$originalName "
-            binding.workoutName.setOnClickListener{ binding.overwriteRadioButton.isChecked = true}
-            binding.overwriteRadioButton.setOnCheckedChangeListener{ _, isChecked ->
+            binding.workoutName.setOnClickListener { binding.overwriteRadioButton.isChecked = true }
+            binding.overwriteRadioButton.setOnCheckedChangeListener { _, isChecked ->
                 binding.saveAsRadioButton.isChecked = !isChecked
                 togglePositiveButtonState(true)
                 if (isChecked) {
@@ -91,20 +87,24 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
             refreshPositiveButtonState(it)
         }
 
-        b.apply {
-            setView(binding.root)
-            setPositiveButton(android.R.string.ok) { _, _ ->
-                listener.onCustomWorkoutSaved(
-                        if (isFresh) {
-                            customName
-                        } else {
-                            if (binding.overwriteRadioButton.isChecked) originalName
-                            else customName
-                        })
-                hideKeyboardFrom(requireContext(), binding.root)
-            }
+        setupButtons()
+        return binding.root
+    }
+
+    private fun setupButtons() {
+        binding.closeButton.setOnClickListener { dismiss() }
+        binding.saveButton.setOnClickListener {
+            listener.onCustomWorkoutSaved(
+                if (isFresh) {
+                    customName
+                } else {
+                    if (binding.overwriteRadioButton.isChecked) originalName
+                    else customName
+                }
+            )
+            dismiss()
+            hideKeyboardFrom(requireContext(), binding.root)
         }
-        return b.create()
     }
 
     private fun refreshPositiveButtonState(text: Editable?) {
@@ -122,10 +122,7 @@ class SaveCustomWorkoutDialog: DialogFragment(), KodeinAware {
     }
 
     private fun togglePositiveButtonState(enabled: Boolean) {
-        val dialog = dialog as AlertDialog?
-        if (dialog != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = enabled
-        }
+        binding.saveButton.isEnabled = enabled
         binding.textInputLayout.error = if (enabled) null else "Enter a valid name"
     }
 
