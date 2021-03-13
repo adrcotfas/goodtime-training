@@ -74,13 +74,6 @@
             android:enabled="true"/>
 
         <Preference
-            app:key="pref_theme"
-            app:title="Theme"
-            android:summary="Coming soon"
-            app:iconSpaceReserved="false"
-            android:enabled="false"/>
-
-        <Preference
             app:key="pref_sound_profile"
             app:title="Sound profile"
             android:layout="@layout/preference_compact"
