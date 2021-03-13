@@ -2,9 +2,10 @@ package goodtime.training.wod.timer.common
 
 import android.content.Context
 import android.os.Build
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowInsets
-import androidx.core.view.WindowInsetsCompat
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import kotlin.math.roundToInt
 
@@ -32,29 +33,28 @@ class DimensionsUtils {
         }
 
         inline val Fragment.windowHeight: Int
-            get() {
-                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    val metrics = requireActivity().windowManager.currentWindowMetrics
-                    val insets = metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
-                    metrics.bounds.height() - insets.bottom - insets.top
-                } else {
-                    val view = requireActivity().window.decorView
-                    val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets).systemWindowInsets
-                    resources.displayMetrics.heightPixels - insets.bottom - insets.top
-                }
-            }
+            get() = getWindowProperty(WindowProperty.HEIGHT, requireContext())
 
         inline val Fragment.windowWidth: Int
-            get() {
-                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    val metrics = requireActivity().windowManager.currentWindowMetrics
-                    val insets = metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
-                    metrics.bounds.width() - insets.left - insets.right
-                } else {
-                    val view = requireActivity().window.decorView
-                    val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets).systemWindowInsets
-                    resources.displayMetrics.widthPixels - insets.left - insets.right
-                }
+            get() = getWindowProperty(WindowProperty.WIDTH, requireContext())
+
+        enum class WindowProperty {
+            WIDTH,
+            HEIGHT
+        }
+
+        fun getWindowProperty(property: WindowProperty, context: Context): Int {
+            val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val metrics = windowManager.currentWindowMetrics
+                val insets = metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
+                if (property == WindowProperty.WIDTH) metrics.bounds.width() - insets.left - insets.right
+                else metrics.bounds.height() - insets.bottom - insets.top
+            } else {
+                val displayMetrics = DisplayMetrics()
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                return if (property == WindowProperty.WIDTH) displayMetrics.widthPixels else displayMetrics.heightPixels
             }
+        }
     }
 }
