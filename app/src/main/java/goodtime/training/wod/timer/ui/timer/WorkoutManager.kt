@@ -172,6 +172,9 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     }
 
     fun prepareSessionToAdd(completed: Boolean = true) {
+        sessionToAdd.actualDuration = 0
+        sessionToAdd.actualRounds = 0
+
         val index = getCurrentSessionIdx()
         if (isCustomWorkout) {
             sessionToAdd.skeleton.type = SessionType.CUSTOM
