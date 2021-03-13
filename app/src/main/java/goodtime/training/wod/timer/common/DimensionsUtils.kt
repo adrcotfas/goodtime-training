@@ -1,10 +1,13 @@
 package goodtime.training.wod.timer.common
 
 import android.content.Context
-import android.util.DisplayMetrics
+import android.os.Build
 import android.util.TypedValue
-import android.view.WindowManager
+import android.view.WindowInsets
+import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import kotlin.math.roundToInt
+
 
 class DimensionsUtils {
 
@@ -28,15 +31,30 @@ class DimensionsUtils {
             return px / context.resources.displayMetrics.scaledDensity
         }
 
-        fun getScreenResolution(context: Context): Pair<Int, Int> {
-            val wm =
-                context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            val display = wm.defaultDisplay
-            val metrics = DisplayMetrics()
-            display.getMetrics(metrics)
-            val width = metrics.widthPixels
-            val height = metrics.heightPixels
-            return Pair(width, height)
-        }
+        inline val Fragment.windowHeight: Int
+            get() {
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val metrics = requireActivity().windowManager.currentWindowMetrics
+                    val insets = metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
+                    metrics.bounds.height() - insets.bottom - insets.top
+                } else {
+                    val view = requireActivity().window.decorView
+                    val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets).systemWindowInsets
+                    resources.displayMetrics.heightPixels - insets.bottom - insets.top
+                }
+            }
+
+        inline val Fragment.windowWidth: Int
+            get() {
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val metrics = requireActivity().windowManager.currentWindowMetrics
+                    val insets = metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
+                    metrics.bounds.width() - insets.left - insets.right
+                } else {
+                    val view = requireActivity().window.decorView
+                    val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets).systemWindowInsets
+                    resources.displayMetrics.widthPixels - insets.left - insets.right
+                }
+            }
     }
 }

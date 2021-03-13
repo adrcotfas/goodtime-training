@@ -5,14 +5,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import goodtime.training.wod.timer.R
+import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
+import goodtime.training.wod.timer.common.DimensionsUtils.Companion.windowHeight
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
+import goodtime.training.wod.timer.common.calculateTextViewHeight
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.*
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
@@ -22,10 +27,10 @@ import org.greenrobot.eventbus.EventBus
 import org.kodein.di.generic.instance
 
 class CustomWorkoutFragment :
-        WorkoutTypeFragment(),
-        CustomWorkoutAdapter.Listener,
-        SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
-        SaveCustomWorkoutDialog.Listener {
+    WorkoutTypeFragment(),
+    CustomWorkoutAdapter.Listener,
+    SelectCustomWorkoutDialog.Listener, AddEditSessionDialog.Listener,
+    SaveCustomWorkoutDialog.Listener {
 
     private val viewModelFactory: CustomWorkoutViewModelFactory by instance()
     private val preferenceHelper: PreferenceHelper by instance()
@@ -44,9 +49,9 @@ class CustomWorkoutFragment :
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentCustomBinding.inflate(inflater, container, false)
 
@@ -55,7 +60,7 @@ class CustomWorkoutFragment :
         binding.saveButton.root.setOnClickListener {
             if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
                 SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
-                        .show(parentFragmentManager, "SaveCustomWorkoutDialog")
+                    .show(parentFragmentManager, "SaveCustomWorkoutDialog")
             }
         }
 
@@ -68,6 +73,8 @@ class CustomWorkoutFragment :
             }
         }
 
+        resizeCardViewHeightToFitNicely()
+
         showBalloonsIfNeeded()
         return binding.root
     }
@@ -76,12 +83,12 @@ class CustomWorkoutFragment :
         if (preferenceHelper.showCustomBalloons()) {
             preferenceHelper.setCustomBalloons(false)
             val balloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "Add, remove, edit and rearrange sessions in any combination for a custom workout."
+                requireContext(), this,
+                "Add, remove, edit and rearrange sessions in any combination for a custom workout."
             )
             val anotherBalloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "Create new presets and add them to the favorites."
+                requireContext(), this,
+                "Create new presets and add them to the favorites."
             )
 
             binding.cardContainer.post {
@@ -110,7 +117,7 @@ class CustomWorkoutFragment :
                     for (fav in it) {
                         if (fav.name == name) {
                             viewModel.currentWorkout = fav
-                            binding.title.text = fav.name
+                            binding.title.text.text = fav.name
                             found = true
                             break
                         }
@@ -118,7 +125,7 @@ class CustomWorkoutFragment :
                 }
                 if (!found) {
                     viewModel.currentWorkout = it.first()
-                    binding.title.text = viewModel.currentWorkout.name
+                    binding.title.text.text = viewModel.currentWorkout.name
                 }
                 updateTotalDuration()
                 toggleEmptyState(false)
@@ -132,9 +139,12 @@ class CustomWorkoutFragment :
 
     override fun onStartWorkout() {
         val action = CustomWorkoutFragmentDirections.toWorkout(
-                viewModel.currentWorkout.name,
-                TypeConverter.toString(sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
-                        + getSelectedSessions().toTypedArray()))
+            viewModel.currentWorkout.name,
+            TypeConverter.toString(
+                sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
+                        + getSelectedSessions().toTypedArray()
+            )
+        )
         findNavController().navigate(action)
     }
 
@@ -145,23 +155,23 @@ class CustomWorkoutFragment :
         if (visible) {
             binding.emptyState.isVisible = true
             binding.saveButton.root.isVisible = false
-            binding.totalTime.isVisible = false
-            binding.title.text = "New workout"
+            binding.totalTime.text.isVisible = false
+            binding.title.text.text = "New workout"
             viewModel.currentWorkout.name = "New workout"
             viewModel.hasUnsavedSession = false
         } else {
             binding.emptyState.isVisible = false
-            binding.totalTime.isVisible = true
+            binding.totalTime.text.isVisible = true
         }
     }
 
     private fun setupRecycler() {
-        binding.title.text = viewModel.currentWorkout.name
+        binding.title.text.text = viewModel.currentWorkout.name
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             listAdapter = CustomWorkoutAdapter(
-                    viewModel.currentWorkout.sessions,
-                    this@CustomWorkoutFragment
+                viewModel.currentWorkout.sessions,
+                this@CustomWorkoutFragment
             )
             adapter = listAdapter
         }
@@ -218,7 +228,7 @@ class CustomWorkoutFragment :
 
     override fun onChipClicked(position: Int) {
         AddEditSessionDialog.newInstance(this, position, listAdapter.data[position])
-                .show(parentFragmentManager, "")
+            .show(parentFragmentManager, "")
     }
 
     override fun onScrollHandleTouch(holder: CustomWorkoutAdapter.ViewHolder) {
@@ -230,7 +240,7 @@ class CustomWorkoutFragment :
 
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
         viewModel.currentWorkout = workout
-        binding.title.text = viewModel.currentWorkout.name
+        binding.title.text.text = viewModel.currentWorkout.name
         listAdapter.data = viewModel.currentWorkout.sessions
         listAdapter.notifyDataSetChanged()
         setSaveButtonVisibility(false)
@@ -252,13 +262,13 @@ class CustomWorkoutFragment :
     @SuppressLint("SetTextI18n")
     private fun setSaveButtonVisibility(visible: Boolean) {
         binding.saveButton.root.isVisible = visible
-        binding.title.setTextColor(if (visible) ResourcesHelper.grey800 else ResourcesHelper.grey500)
+        binding.title.text.setTextColor(if (visible) ResourcesHelper.grey800 else ResourcesHelper.grey500)
     }
 
     override fun onCustomWorkoutSaved(name: String) {
         viewModel.currentWorkout.name = name
         viewModel.saveCurrentSelection()
-        binding.title.text = name
+        binding.title.text.text = name
         setSaveButtonVisibility(false)
         viewModel.hasUnsavedSession = false
         preferenceHelper.setCurrentCustomWorkoutFavoriteName(name)
@@ -266,8 +276,8 @@ class CustomWorkoutFragment :
 
     private fun updateTotalDuration() {
         val total = Session.calculateTotal(viewModel.currentWorkout.sessions)
-        binding.totalTime.isVisible = total != 0
-        binding.totalTime.text = StringUtils.secondsToNiceFormat(total)
+        binding.totalTime.text.isVisible = total != 0
+        binding.totalTime.text.text = StringUtils.secondsToNiceFormat(total)
     }
 
     fun onNewCustomWorkoutButtonClick() {
@@ -275,7 +285,7 @@ class CustomWorkoutFragment :
         viewModel.currentWorkout.name = name
         viewModel.currentWorkout.sessions.clear()
 
-        binding.title.text = name
+        binding.title.text.text = name
         listAdapter.notifyDataSetChanged()
         setSaveButtonVisibility(false)
         toggleEmptyState(true)
@@ -286,5 +296,33 @@ class CustomWorkoutFragment :
 
     private fun refreshStartButtonState(state: Boolean = viewModel.currentWorkout.sessions.isNotEmpty()) {
         EventBus.getDefault().post(Events.Companion.SetStartButtonStateWithColor(state))
+    }
+
+    /**
+     * Resize the main card view height so that we don't see half rows
+     */
+    private fun resizeCardViewHeightToFitNicely() {
+        val titleHeight = calculateTextViewHeight(layoutInflater, R.layout.section_custom_workout_title)
+        val subtitleHeight = calculateTextViewHeight(layoutInflater, R.layout.section_custom_workout_subtitle)
+        val bottomButtonHeight = requireContext().resources.displayMetrics.density * 42
+        val cardVerticalMargin = requireContext().resources.displayMetrics.density * 26
+
+        val cardHeight =
+            windowHeight - dpToPx(
+                requireContext(),
+                56f /*toolbar*/ + 12 /*padding top*/ + 56f /*bottom toolbar*/ + 70 /*fab*/ + 12 /*padding between fab and bottom toolbar*/
+            )
+        val cardHeightExceptRecycler = titleHeight + subtitleHeight + bottomButtonHeight + cardVerticalMargin
+
+        val defaultRecyclerHeight = cardHeight - cardHeightExceptRecycler
+
+        val rowHeight = requireContext().resources.displayMetrics.density * 42
+        val newRecyclerHeight = defaultRecyclerHeight - defaultRecyclerHeight % rowHeight
+
+        binding.cardContainer.apply {
+            layoutParams.height =
+                (newRecyclerHeight + cardHeightExceptRecycler).toInt()
+            layoutParams.width = MATCH_PARENT
+        }
     }
 }

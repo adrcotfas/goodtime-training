@@ -19,7 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import goodtime.training.wod.timer.R
-import goodtime.training.wod.timer.common.DimensionsUtils
+import goodtime.training.wod.timer.common.DimensionsUtils.Companion.windowWidth
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
@@ -181,7 +181,7 @@ class FinishedWorkoutFragment : Fragment(), KodeinAware {
             .addSizes(Size(6))
             .setPosition(
                 -50f,
-                DimensionsUtils.getScreenResolution(requireContext()).first + 50f,
+                windowWidth + 50f,
                 -50f,
                 -50f
             )

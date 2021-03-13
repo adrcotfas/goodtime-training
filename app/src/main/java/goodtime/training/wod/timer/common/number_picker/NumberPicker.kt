@@ -1,6 +1,7 @@
 package goodtime.training.wod.timer.common.number_picker
 
 import android.content.Context
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bekawestberg.loopinglayout.library.LoopingLayoutManager
@@ -50,7 +51,7 @@ class NumberPicker(
             layoutManager = loopingLayoutManager
             adapter = viewAdapter
             layoutParams.height = 3 * rowHeight.toInt()
-            layoutParams.width = rowHeight.toInt()
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             setHasFixedSize(true)
         }
 

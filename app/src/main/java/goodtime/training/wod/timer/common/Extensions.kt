@@ -68,6 +68,13 @@ fun calculateRowHeight(layoutInflater: LayoutInflater, size: PickerSize = Picker
     return fm.descent - fm.ascent
 }
 
+fun calculateTextViewHeight(layoutInflater: LayoutInflater, layout: Int): Float {
+    val textView = layoutInflater
+        .inflate(layout, null) as TextView
+    val fm = textView.paint.fontMetrics
+    return fm.descent - fm.ascent
+}
+
 val FragmentManager.currentNavigationFragment: Fragment?
     get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
 
