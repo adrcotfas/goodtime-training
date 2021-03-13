@@ -1,11 +1,13 @@
 package goodtime.training.wod.timer.common
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import kotlin.math.roundToInt
 
@@ -54,6 +56,21 @@ class DimensionsUtils {
                 val displayMetrics = DisplayMetrics()
                 windowManager.defaultDisplay.getMetrics(displayMetrics)
                 return if (property == WindowProperty.WIDTH) displayMetrics.widthPixels else displayMetrics.heightPixels
+            }
+        }
+
+        fun getHeight2(activity: Activity): Int {
+            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val metrics = windowManager.currentWindowMetrics
+                val insets = metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
+                metrics.bounds.height() - insets.bottom - insets.top
+            } else {
+                // for some reason, the else of the above function fails for FinishedWorkoutFragmnet at orientation change
+                //TODO: investigate later
+                val view = activity.window.decorView
+                val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets).systemWindowInsets
+                activity.resources.displayMetrics.heightPixels - insets.bottom - insets.top
             }
         }
     }

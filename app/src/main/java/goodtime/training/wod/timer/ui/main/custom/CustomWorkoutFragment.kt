@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
-import goodtime.training.wod.timer.common.DimensionsUtils.Companion.windowHeight
+import goodtime.training.wod.timer.common.DimensionsUtils.Companion.getHeight2
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.StringUtils
@@ -308,7 +308,7 @@ class CustomWorkoutFragment :
         val cardVerticalMargin = requireContext().resources.displayMetrics.density * 26
 
         val cardHeight =
-            windowHeight - dpToPx(
+            getHeight2(requireActivity()) - dpToPx(
                 requireContext(),
                 56f /*toolbar*/ + 12 /*padding top*/ + 56f /*bottom toolbar*/ + 70 /*fab*/ + 12 /*padding between fab and bottom toolbar*/
             )
