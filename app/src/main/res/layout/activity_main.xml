@@ -86,7 +86,7 @@
                             layout="@layout/row_drawer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:drawable="@{@drawable/ic_filter}"
+                            app:drawable="@{@drawable/ic_settings_outline}"
                             app:title="@{`Settings`}" />
 
                         <include

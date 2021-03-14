@@ -10,7 +10,7 @@
         android:title="@string/session_type_for_time" />
     <item
         android:id="@+id/nav_intervals"
-        android:icon="@drawable/ic_hourglass"
+        android:icon="@drawable/ic_status_goodtime"
         android:title="@string/session_type_intervals" />
     <item
         android:id="@+id/nav_hiit"
