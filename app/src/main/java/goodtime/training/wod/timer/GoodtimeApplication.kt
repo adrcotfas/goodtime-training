@@ -105,9 +105,9 @@ class GoodtimeApplication : Application(), KodeinAware {
         TextAppearanceConfig.setShouldLoadFontSynchronously(true)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         val preferenceHelper: PreferenceHelper by instance()
-        if (preferenceHelper.isFirstRun()) {
+        if (preferenceHelper.getFirstRunTime() == 0L) {
             generateDefaultSessions()
-            preferenceHelper.setIsFirstRun(false)
+            preferenceHelper.updateFirstRunTime()
         }
     }
 
@@ -195,7 +195,7 @@ class GoodtimeApplication : Application(), KodeinAware {
                 )
             )
 
-            repo.addWeeklyGoal(WeeklyGoal(75, TimeUtils.firstDayOfLastWeekMillis(), 0, 0))
+            repo.updateWeeklyGoal(WeeklyGoal(75, TimeUtils.firstDayOfLastWeekMillis(), 0, 0))
         }
     }
 }

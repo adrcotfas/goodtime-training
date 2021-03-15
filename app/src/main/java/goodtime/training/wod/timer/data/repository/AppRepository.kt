@@ -23,7 +23,6 @@ interface AppRepository {
     suspend fun editCustomWorkoutSkeleton(workout: CustomWorkoutSkeleton)
     suspend fun removeCustomWorkoutSkeleton(name: String)
 
-    suspend fun addWeeklyGoal(goal: WeeklyGoal)
     suspend fun updateWeeklyGoal(goal: WeeklyGoal)
     fun getWeeklyGoal() : LiveData<WeeklyGoal>
 }

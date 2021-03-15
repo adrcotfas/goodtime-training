@@ -58,10 +58,6 @@ class AppRepositoryImpl(
         customWorkoutSkeletonDao.remove(name)
     }
 
-    override suspend fun addWeeklyGoal(goal: WeeklyGoal) {
-        weeklyGoalDao.add(goal)
-    }
-
     override suspend fun updateWeeklyGoal(goal: WeeklyGoal) {
         weeklyGoalDao.update(goal)
     }

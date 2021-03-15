@@ -9,7 +9,7 @@ import java.time.LocalTime
 class PreferenceHelper(val dataStore: PreferenceDataStore) {
 
     companion object {
-        private const val IS_FIRST_RUN = "pref_is_first_run"
+        private const val FIRST_RUN_TIME = "pref_first_run_time"
         private const val SHOW_DELETE_CONFIRMATION_DIALOG = "pref_show_delete_confirmation_dialog"
 
         const val INVALID_FAVORITE_ID = -1L
@@ -20,7 +20,6 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         private const val CUSTOM_WORKOUT_FAVORITE_NAME = "custom_workout_favorite_id"
 
         const val MINIMALIST_MODE_ENABLED = "pref_extra_minimalist"
-        private const val THEME = "pref_theme"
         const val SOUND_PROFILE = "pref_sound_profile"
 
         const val SOUND_ENABLED = "pref_sound"
@@ -49,13 +48,18 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
 
         const val UNLOCK_FEATURES = "pref_unlock"
 
+        private const val ASKED_FOR_REVIEW_INITIAL = "pref_asked_for_review_initial"
+        private const val ASKED_FOR_REVIEW_TIME = "pref_asked_for_review_time"
+        private const val COMPLETED_WORKOUTS_FOR_REVIEW = "pref_completed_workouts_for_review"
+
         fun generatePreWorkoutSession(seconds: Int): SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
         }
     }
 
-    fun isFirstRun() = dataStore.getBoolean(IS_FIRST_RUN, true)
-    fun setIsFirstRun(state: Boolean) = dataStore.putBoolean(IS_FIRST_RUN, state)
+    fun getFirstRunTime() = dataStore.getLong(FIRST_RUN_TIME, 0)
+    fun updateFirstRunTime() = dataStore.putLong(FIRST_RUN_TIME, System.currentTimeMillis())
+
     fun showDeleteConfirmationDialog() = dataStore.getBoolean(SHOW_DELETE_CONFIRMATION_DIALOG, true)
     fun setShowDeleteConfirmationDialog(state: Boolean) = dataStore.putBoolean(SHOW_DELETE_CONFIRMATION_DIALOG, state)
     fun setCurrentFavoriteId(sessionType: SessionType, id: Long) = dataStore.putLong(toPrefId(sessionType), id)
@@ -74,7 +78,6 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     }
 
     fun isMinimalistEnabled() = dataStore.getBoolean(MINIMALIST_MODE_ENABLED, false)
-    fun getTheme() = dataStore.getInt(THEME, 0)
 
     fun setSoundProfile(idx: Int) = dataStore.putInt(SOUND_PROFILE, idx)
     fun getSoundProfile() = dataStore.getInt(SOUND_PROFILE, 0)
@@ -106,7 +109,7 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     fun setIntervalsBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_INTERVALS_BALLOONS, enabled)
     fun setHiitBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_HIIT_BALLOONS, enabled)
     fun setCustomBalloons(enabled: Boolean) = dataStore.putBoolean(SHOW_CUSTOM_BALLOONS, enabled)
-    
+
     fun setBalloons(enabled: Boolean) = run {
         setMainBalloons(enabled)
         setForTimeBalloons(enabled)
@@ -115,23 +118,13 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         setCustomBalloons(enabled)
     }
 
-    //TODO: implement these after internal testing
-    fun setAskedForReviewTime(currentTimeMillis: Long) {
-    }
+    fun askedForReviewInitial() = dataStore.getBoolean(ASKED_FOR_REVIEW_INITIAL, false)
+    fun setAskedForReviewInitial(value: Boolean = true) = dataStore.putBoolean(ASKED_FOR_REVIEW_INITIAL, value)
 
-    fun getAskedForReviewTime() : Long {
-        return 0
-    }
+    fun getAskedForReviewTime() = dataStore.getLong(ASKED_FOR_REVIEW_TIME, 0)
+    fun updateAskedForReviewTime() = dataStore.putLong(ASKED_FOR_REVIEW_TIME, System.currentTimeMillis())
 
-    fun resetCompletedWorkoutsForReview() {
-
-    }
-
-    fun incrementCompletedWorkoutsForReview() {
-
-    }
-
-    fun getCompletedWorkoutsForReview(): Int {
-        return 0
-    }
+    fun getCompletedWorkoutsForReview(): Int = dataStore.getInt(COMPLETED_WORKOUTS_FOR_REVIEW, 0)
+    fun incrementCompletedWorkoutsForReview() =
+        dataStore.putInt(COMPLETED_WORKOUTS_FOR_REVIEW, getCompletedWorkoutsForReview() + 1)
 }

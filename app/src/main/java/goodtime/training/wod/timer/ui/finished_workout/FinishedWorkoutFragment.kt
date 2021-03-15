@@ -67,7 +67,8 @@ class FinishedWorkoutFragment : Fragment(), KodeinAware {
 
         reviewViewModel =
             ViewModelProvider(requireActivity(), ReviewsViewModelFactory(reviewManager, preferenceHelper)).get(ReviewsViewModel::class.java)
-        reviewViewModel.preWarmReview()
+        preferenceHelper.incrementCompletedWorkoutsForReview()
+        reviewViewModel.preWarmReviewIfNeeded()
     }
 
     override fun onDestroy() {

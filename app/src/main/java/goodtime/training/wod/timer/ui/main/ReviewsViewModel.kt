@@ -1,6 +1,5 @@
 package goodtime.training.wod.timer.ui.main
 
-import android.util.Log
 import androidx.annotation.Keep
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
@@ -11,6 +10,7 @@ import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 class ReviewsViewModel @Keep constructor(
     private val reviewManager: ReviewManager,
@@ -21,22 +21,23 @@ class ReviewsViewModel @Keep constructor(
     private var reviewInfo: Deferred<ReviewInfo>? = null
 
     /**
-     * Start requesting the review info that will be needed later in advance
-     * only if 7 days have passed since the last review request (or 7 days since app install)
-     * and if at least 5 workouts were completed.
+     * Start requesting the review info that will be needed later in advance if:
+     * - 7 days since app install and at least 5 workouts were completed.
+     * - 30 days have passed since the last review request
      */
     @MainThread
-    fun preWarmReview() {
-        Log.i("ReviewsViewModel", "preWarmReview")
-        preferenceHelper.incrementCompletedWorkoutsForReview()
-        shouldAskForReview = true
-        //TODO: implement this after internal track testing
-//            (System.currentTimeMillis() - preferenceHelper.getAskedForReviewTime() > TimeUnit.DAYS.toMillis(7)) &&
-//                (preferenceHelper.getCompletedWorkoutsForReview() >= 5)
+    fun preWarmReviewIfNeeded() {
+        shouldAskForReview =
+                // 7 days since install and 5 completed workouts
+            (!preferenceHelper.askedForReviewInitial()
+                    && (System.currentTimeMillis() - preferenceHelper.getFirstRunTime() >= TimeUnit.DAYS.toMillis(7))
+                    && (preferenceHelper.getCompletedWorkoutsForReview() >= 5))
+                    ||
+                    // every 30 days after the first review request
+                    (System.currentTimeMillis() - preferenceHelper.getAskedForReviewTime() >= TimeUnit.DAYS.toMillis(30))
 
         if (shouldAskForReview && reviewInfo == null) {
             reviewInfo = viewModelScope.async {
-                Log.i("ReviewsViewModel", "requestReview")
                 reviewManager.requestReview()
             }
         }
@@ -48,7 +49,6 @@ class ReviewsViewModel @Keep constructor(
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun obtainReviewInfo(): ReviewInfo? = withContext(Dispatchers.Main.immediate) {
-        Log.i("ReviewsViewModel", "obtainReviewInfo")
         if (reviewInfo?.isCompleted == true && reviewInfo?.isCancelled == false) {
             reviewInfo?.getCompleted().also {
                 reviewInfo = null
@@ -63,9 +63,11 @@ class ReviewsViewModel @Keep constructor(
      * @see shouldAskForReview
      */
     fun notifyAskedForReview() {
-        Log.i("ReviewsViewModel", "notifyAskedForReview")
-        preferenceHelper.setAskedForReviewTime(System.currentTimeMillis())
-        preferenceHelper.resetCompletedWorkoutsForReview()
+        if (!preferenceHelper.askedForReviewInitial()) {
+            preferenceHelper.setAskedForReviewInitial(true)
+        } else {
+            preferenceHelper.updateAskedForReviewTime()
+        }
         shouldAskForReview = false
     }
 }
@@ -76,6 +78,7 @@ class ReviewsViewModelFactory(
     private val preferenceHelper: PreferenceHelper
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(ReviewManager::class.java, PreferenceHelper::class.java).newInstance(manager, preferenceHelper)
+        return modelClass.getConstructor(ReviewManager::class.java, PreferenceHelper::class.java)
+            .newInstance(manager, preferenceHelper)
     }
 }
