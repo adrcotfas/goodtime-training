@@ -35,7 +35,6 @@ abstract class WorkoutTypeFragment :
     override fun onResume() {
         super.onResume()
         showContent()
-        //TODO: show review here
     }
 
     override fun onPause() {
@@ -56,11 +55,8 @@ abstract class WorkoutTypeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            Log.i("WorkoutTypeFragment", "obtaining review info...")
             val reviewInfo = reviewViewModel.obtainReviewInfo()
             if (reviewInfo != null) {
-                Log.i("WorkoutTypeFragment", "launching review...")
-                //TODO: this causes the activity to be paused and resumed twice; probably expected behavior but occurs even if no dialog is shown
                 reviewManager.launchReview(requireActivity(), reviewInfo)
                 reviewViewModel.notifyAskedForReview()
             }

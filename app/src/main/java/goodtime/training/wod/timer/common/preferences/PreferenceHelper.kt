@@ -24,7 +24,7 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
 
         const val SOUND_ENABLED = "pref_sound"
         const val VOICE_ENABLED = "pref_voice"
-        private const val VIBRATION_ENABLED = "pref_vibration"
+        const val VIBRATION_ENABLED = "pref_vibration"
         const val FLASH_ENABLED = "pref_flash"
         private const val MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED = "pref_mid_training_notification"
         const val PRE_WORKOUT_COUNTDOWN_SECONDS = "pref_countdown"
@@ -32,8 +32,8 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         const val REMINDER_TIME = "pref_reminder_time"
         const val REMINDER_DAYS = "pref_reminder_days"
 
-        private const val LOG_INCOMPLETE = "pref_log_incomplete"
-        private const val FULLSCREEN_MODE = "pref_fullscreen"
+        const val LOG_INCOMPLETE = "pref_log_incomplete"
+        const val FULLSCREEN_MODE = "pref_fullscreen"
         const val DND_MODE_ENABLED = "pref_dnd_mode"
 
         private const val SHOW_MAIN_BALLOONS = "show_main_balloons"
@@ -51,6 +51,8 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         private const val ASKED_FOR_REVIEW_INITIAL = "pref_asked_for_review_initial"
         private const val ASKED_FOR_REVIEW_TIME = "pref_asked_for_review_time"
         private const val COMPLETED_WORKOUTS_FOR_REVIEW = "pref_completed_workouts_for_review"
+
+        private const val IS_PRO = "pref_pro"
 
         fun generatePreWorkoutSession(seconds: Int): SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
@@ -78,19 +80,31 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     }
 
     fun isMinimalistEnabled() = dataStore.getBoolean(MINIMALIST_MODE_ENABLED, false)
+    private fun setMinimalistMode(enabled: Boolean) = dataStore.putBoolean(MINIMALIST_MODE_ENABLED, enabled)
 
     fun setSoundProfile(idx: Int) = dataStore.putInt(SOUND_PROFILE, idx)
     fun getSoundProfile() = dataStore.getInt(SOUND_PROFILE, 0)
 
     fun isSoundEnabled() = dataStore.getBoolean(SOUND_ENABLED, true)
     fun isVoiceEnabled() = dataStore.getBoolean(VOICE_ENABLED, true)
+
     fun isVibrationEnabled() = dataStore.getBoolean(VIBRATION_ENABLED, false)
+    private fun setVibrationEnabled(enabled: Boolean) = dataStore.putBoolean(VIBRATION_ENABLED, enabled)
+
     fun isFlashEnabled() = dataStore.getBoolean(FLASH_ENABLED, false)
+    private fun setFlashEnabled(enabled: Boolean) = dataStore.putBoolean(FLASH_ENABLED, enabled)
+
     fun isMidNotificationEnabled() = dataStore.getBoolean(MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED, true)
     fun getPreWorkoutCountdown() = dataStore.getInt(PRE_WORKOUT_COUNTDOWN_SECONDS, 10)
+
     fun logIncompleteSessions() = dataStore.getBoolean(LOG_INCOMPLETE, false)
+    private fun setLogIncompleteSessions(enabled: Boolean) = dataStore.putBoolean(LOG_INCOMPLETE, enabled)
+
     fun isFullscreenModeEnabled() = dataStore.getBoolean(FULLSCREEN_MODE, false)
+    private fun setFullscreenMode(enabled: Boolean) = dataStore.putBoolean(FULLSCREEN_MODE, enabled)
+
     fun isDndModeEnabled() = dataStore.getBoolean(DND_MODE_ENABLED, false)
+    private fun setDndMode(enabled: Boolean) = dataStore.putBoolean(DND_MODE_ENABLED, enabled)
 
     fun isReminderEnabled() = getReminderDays().contains(true)
     fun isReminderEnabledFor(dayOfWeek: DayOfWeek) = getReminderDays()[dayOfWeek.ordinal]
@@ -127,4 +141,17 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     fun getCompletedWorkoutsForReview(): Int = dataStore.getInt(COMPLETED_WORKOUTS_FOR_REVIEW, 0)
     fun incrementCompletedWorkoutsForReview() =
         dataStore.putInt(COMPLETED_WORKOUTS_FOR_REVIEW, getCompletedWorkoutsForReview() + 1)
+
+    fun isPro() = dataStore.getBoolean(IS_PRO, false)
+    fun setPro(value: Boolean) = dataStore.putBoolean(IS_PRO, value)
+
+    fun resetPreferencesOnRefund() {
+        setMinimalistMode(false)
+        setSoundProfile(0)
+        setFullscreenMode(false)
+        setDndMode(false)
+        setLogIncompleteSessions(false)
+        setVibrationEnabled(false)
+        setFlashEnabled(false)
+    }
 }

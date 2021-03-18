@@ -40,8 +40,9 @@ class SettingsFragment :
     private val preferenceHelper by instance<PreferenceHelper>()
     private val repo: AppRepository by instance()
 
-    private lateinit var timePickerPreference: Preference
-    private lateinit var soundProfilePreference: Preference
+    private lateinit var timePickerPref: Preference
+    private lateinit var soundProfilePref: Preference
+    private lateinit var unlockFeaturesPref: Preference
 
     companion object {
         private const val IMPORT_BACKUP_REQUEST = 0
@@ -51,15 +52,11 @@ class SettingsFragment :
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.preferenceDataStore = preferenceHelper.dataStore
         setPreferencesFromResource(R.xml.preferences, rootKey)
+
         setupReminderPreference()
         setupSoundProfilePreference()
-        setupBackupButtons()
+        setupProVersionPrefs()
         setupHelpAndFeedbackSection()
-
-        findPreference<Preference>(UNLOCK_FEATURES)!!.setOnPreferenceClickListener {
-            EventBus.getDefault().post(Events.Companion.MakePurchase())
-            true
-        }
     }
 
     override fun onResume() {
@@ -110,8 +107,8 @@ class SettingsFragment :
     }
 
     private fun setupReminderPreference() {
-        timePickerPreference = findPreference(PreferenceHelper.REMINDER_TIME)!!
-        timePickerPreference.setOnPreferenceClickListener {
+        timePickerPref = findPreference(PreferenceHelper.REMINDER_TIME)!!
+        timePickerPref.setOnPreferenceClickListener {
             val dialog = TimePickerDialogBuilder(requireContext())
                 .buildDialog(preferenceHelper.getReminderTime())
             dialog.addOnPositiveButtonClickListener {
@@ -126,14 +123,14 @@ class SettingsFragment :
     }
 
     private fun updateReminderTimeSummary() {
-        timePickerPreference.summary = StringUtils.secondsOfDayToTimerFormat(
+        timePickerPref.summary = StringUtils.secondsOfDayToTimerFormat(
             preferenceHelper.getReminderTime(), DateFormat.is24HourFormat(context)
         )
     }
 
     private fun setupSoundProfilePreference() {
-        soundProfilePreference = findPreference(PreferenceHelper.SOUND_PROFILE)!!
-        soundProfilePreference.setOnPreferenceClickListener {
+        soundProfilePref = findPreference(PreferenceHelper.SOUND_PROFILE)!!
+        soundProfilePref.setOnPreferenceClickListener {
             val dialog = SoundProfileDialog.newInstance(preferenceHelper.getSoundProfile(), this)
             dialog.show(childFragmentManager, "SoundProfileDialog")
             true
@@ -142,7 +139,7 @@ class SettingsFragment :
     }
 
     private fun updateSoundProfileSummary() {
-        soundProfilePreference.summary =
+        soundProfilePref.summary =
             resources.getStringArray(R.array.pref_sound_profile_entries)[preferenceHelper.getSoundProfile()]
     }
 
@@ -228,6 +225,52 @@ class SettingsFragment :
                 GoodtimeDatabase.getDatabase(requireContext())
                 SmartWODBackupOperations.doImportSmartWOD(lifecycleScope, repo, requireContext(), uri)
             }
+        }
+    }
+
+    private fun setupProVersionPrefs() {
+
+        val vibrationPref = findPreference<SwitchPreferenceCompat>(PreferenceHelper.VIBRATION_ENABLED)!!
+        val flashPref = findPreference<SwitchPreferenceCompat>(PreferenceHelper.FLASH_ENABLED)!!
+        val minimalistModePref = findPreference<CheckBoxPreference>(PreferenceHelper.MINIMALIST_MODE_ENABLED)!!
+        val fullscreenModePref = findPreference<CheckBoxPreference>(PreferenceHelper.FULLSCREEN_MODE)!!
+        val dndPref = findPreference<CheckBoxPreference>(PreferenceHelper.DND_MODE_ENABLED)!!
+        val logIncompletePref = findPreference<CheckBoxPreference>(PreferenceHelper.LOG_INCOMPLETE)!!
+        val exportBackupPref = findPreference<Preference>(PreferenceHelper.EXPORT_BACKUP)!!
+        val importBackupPref = findPreference<Preference>(PreferenceHelper.IMPORT_BACKUP)!!
+        val importBackupSmartWODPref = findPreference<Preference>(PreferenceHelper.IMPORT_BACKUP_SMART_WOD)!!
+
+        unlockFeaturesPref = findPreference(UNLOCK_FEATURES)!!
+
+        if (preferenceHelper.isPro()) {
+            unlockFeaturesPref.isVisible = false
+            vibrationPref.isEnabled = true
+            flashPref.isEnabled = true
+            soundProfilePref.isEnabled = true
+            minimalistModePref.isEnabled = true
+            fullscreenModePref.isEnabled = true
+            dndPref.isEnabled = true
+            logIncompletePref.isEnabled = true
+            exportBackupPref.isEnabled = true
+            importBackupPref.isEnabled = true
+            importBackupSmartWODPref.isEnabled = true
+            setupBackupButtons()
+        } else {
+            unlockFeaturesPref.isVisible = true
+            unlockFeaturesPref.setOnPreferenceClickListener {
+                EventBus.getDefault().post(Events.Companion.MakePurchase())
+                true
+            }
+            vibrationPref.isEnabled = false
+            flashPref.isEnabled = false
+            soundProfilePref.isEnabled = false
+            minimalistModePref.isEnabled = false
+            fullscreenModePref.isEnabled = false
+            dndPref.isEnabled = false
+            logIncompletePref.isEnabled = false
+            exportBackupPref.isEnabled = false
+            importBackupPref.isEnabled = false
+            importBackupSmartWODPref.isEnabled = false
         }
     }
 }

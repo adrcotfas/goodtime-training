@@ -94,6 +94,14 @@
                             layout="@layout/row_drawer_weekly_goal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
+
+                        <include
+                            android:id="@+id/button_pro"
+                            layout="@layout/row_drawer_green"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:drawable="@{@drawable/ic_diamond}"
+                            app:title="@{`Upgrade to PRO`}" />
                     </LinearLayout>
                 </ScrollView>
 

@@ -58,9 +58,13 @@ class CustomWorkoutFragment :
         initCurrentWorkout()
 
         binding.saveButton.root.setOnClickListener {
-            if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
-                SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
-                    .show(parentFragmentManager, "SaveCustomWorkoutDialog")
+            if (preferenceHelper.isPro()) {
+                if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
+                    SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
+                        .show(parentFragmentManager, "SaveCustomWorkoutDialog")
+                }
+            } else {
+                EventBus.getDefault().post(Events.Companion.MakePurchase())
             }
         }
 

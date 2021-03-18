@@ -207,4 +207,9 @@
         <item name="android:textColor">@color/grey200</item>
     </style>
 
+    <style name="PreferenceStyle" parent="">
+        <item name="android:textColor">@color/gold</item>
+    </style>
+
+
 </resources>

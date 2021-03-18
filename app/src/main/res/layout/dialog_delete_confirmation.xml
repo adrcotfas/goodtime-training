@@ -12,7 +12,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:textColor="@color/grey200"
-        android:textSize="@dimen/smallerTextSize"
+        android:textSize="@dimen/smallTextSize"
         android:layout_marginStart="16dp"
         android:layout_height="wrap_content"/>
 

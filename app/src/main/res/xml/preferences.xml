@@ -61,9 +61,8 @@
 
         <Preference
             app:key="pref_unlock"
-            app:title="Unlock features!"
-            app:iconSpaceReserved="false"/>
-        <!--            app:layout="@layout/preference_unlock_features"-->
+            app:title="Unlock more features"
+            app:layout="@layout/preference_unlock_features"/>
 
         <CheckBoxPreference
             app:key="pref_extra_minimalist"
@@ -71,35 +70,35 @@
             app:summary="Hide the text labels from the main screen buttons"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            android:enabled="true"/>
+            android:enabled="false"/>
 
         <Preference
             app:key="pref_sound_profile"
             app:title="Sound profile"
             android:layout="@layout/preference_compact"
             app:iconSpaceReserved="false"
-            android:enabled="true"/>
+            android:enabled="false"/>
 
         <CheckBoxPreference
             app:key="pref_fullscreen"
             app:title="Fullscreen mode"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            android:enabled="true"/>
+            android:enabled="false"/>
 
         <CheckBoxPreference
             app:key="pref_dnd_mode"
             app:title="Do not disturb mode"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            android:enabled="true"/>
+            android:enabled="false"/>
 
         <CheckBoxPreference
             app:key="pref_log_incomplete"
             app:title="Log incomplete workouts"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
-            android:enabled="true"/>
+            android:enabled="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -109,15 +108,18 @@
             app:key="pref_export_backup"
             app:title="Export Backup"
             app:iconSpaceReserved="false"
-            android:summary="The file can be imported back"/>
+            android:summary="The file can be imported back"
+            android:enabled="false"/>
         <Preference
             app:key="pref_import_backup"
             app:title="Import backup"
-            app:iconSpaceReserved="false"/>
+            app:iconSpaceReserved="false"
+            android:enabled="false"/>
         <Preference
             app:key="pref_import_backup_smart_wod"
             app:title="Import CSV backup from SmartWOD"
-            app:iconSpaceReserved="false"/>
+            app:iconSpaceReserved="false"
+            android:enabled="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory

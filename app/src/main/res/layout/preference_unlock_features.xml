@@ -7,8 +7,7 @@
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:paddingEnd="?android:attr/scrollbarSize"
-    android:paddingStart="16dip"
-    android:background="@color/green_goodtime_darker">
+    android:paddingStart="16dip">
 
     <RelativeLayout
         android:layout_width="0dip"
@@ -26,7 +25,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:singleLine="true"
-            android:textColor="@color/grey500"
+            android:textColor="@color/gold"
             android:textSize="16sp"/>
 
         <TextView
