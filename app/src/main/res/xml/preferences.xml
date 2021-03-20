@@ -145,5 +145,10 @@
             app:key="open_source_licences"
             app:title="Open source licences"
             app:iconSpaceReserved="false"/>
+
+        <Preference
+            app:key="vote_for_next_features"
+            app:title="Vote for the next features"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

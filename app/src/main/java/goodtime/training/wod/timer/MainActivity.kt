@@ -39,6 +39,7 @@ import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
 import goodtime.training.wod.timer.ui.stats.EditWeeklyGoalDialog
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModel
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
+import goodtime.training.wod.timer.ui.upgrade.UpgradeDialog
 import kotlinx.android.synthetic.main.activity_main.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -181,7 +182,13 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         startButton.setOnClickListener { getVisibleFragment().onStartWorkout() }
 
         favoritesButton = binding.contentMain.buttonFavorites.root
-        favoritesButton.setOnClickListener { onFavoritesButtonClick() }
+        favoritesButton.setOnClickListener {
+            if (currentDestination.label != "CustomWorkout" && !preferenceHelper.isPro()) {
+                EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
+            } else {
+                onFavoritesButtonClick()
+            }
+        }
 
         newCustomWorkoutButton = binding.contentMain.buttonNew.root
         newCustomWorkoutButton.setOnClickListener { onNewCustomWorkoutButtonClick() }
@@ -190,11 +197,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     private fun setupStatisticsButtons() {
         filterButton = binding.contentMain.buttonFilter.root // used on the statistics page
         filterButton.setOnClickListener {
-            if (!preferenceHelper.isPro()) {
-                //TODO: launch upgrade dialog
-            } else {
-                EventBus.getDefault().post(Events.Companion.FilterButtonClickEvent())
-            }
+            EventBus.getDefault().post(Events.Companion.FilterButtonClickEvent())
         }
         filterButton.setOnCloseIconClickListener {
             EventBus.getDefault().post(Events.Companion.FilterClearButtonClickEvent())
@@ -203,7 +206,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         addSessionButton = binding.contentMain.buttonAddSession.root
         addSessionButton.setOnClickListener {
             if (!preferenceHelper.isPro()) {
-                //TODO: launch upgrade dialog
+                EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
             } else {
                 EventBus.getDefault().post(Events.Companion.AddToStatisticsClickEvent())
             }
@@ -214,7 +217,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         if (!preferenceHelper.isPro()) {
             binding.drawerLayout.button_pro.isVisible = true
             binding.drawerLayout.button_pro.setOnClickListener {
-                EventBus.getDefault().post(Events.Companion.MakePurchase())
+                EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
             }
         } else {
             binding.drawerLayout.button_pro.isVisible = false
@@ -230,7 +233,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                 )
             )
         }
-        binding.drawerLayout.app_version_button.text = "version ${BuildConfig.VERSION_NAME} ${if (preferenceHelper.isPro()) "PRO" else ""}"
+        binding.drawerLayout.app_version_button.text =
+            "version ${BuildConfig.VERSION_NAME} ${if (preferenceHelper.isPro()) "PRO" else ""}"
         binding.drawerLayout.app_version_button.setOnClickListener { openStorePage(this) }
 
         binding.buttonSettings.root.setOnClickListener {
@@ -386,6 +390,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                     }
                 }
             }
+
             override fun onProductsPurchased(purchases: List<DataWrappers.PurchaseInfo>) {
                 purchases.forEach {
                     Log.i(TAG, "onProductsPurchased: $it")
@@ -430,8 +435,14 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: Events.Companion.MakePurchase) {
-        iapConnector.makePurchase(this, "pro")
+    fun onMessageEvent(event: Events.Companion.ShowUpgradeDialog) {
+        if (supportFragmentManager.findFragmentByTag("UpgradeDialog") == null) {
+            UpgradeDialog.newInstance(object : UpgradeDialog.Listener {
+                override fun onUpgradeButtonClicked() {
+                    iapConnector.makePurchase(this@MainActivity, "pro")
+                }
+            }).show(supportFragmentManager, "UpgradeDialog")
+        }
     }
 
     companion object {

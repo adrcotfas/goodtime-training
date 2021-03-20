@@ -58,13 +58,13 @@ class CustomWorkoutFragment :
         initCurrentWorkout()
 
         binding.saveButton.root.setOnClickListener {
-            if (preferenceHelper.isPro()) {
+            if (!preferenceHelper.isPro() && viewModel.numberOfFavorites < 3) {
                 if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
                     SaveCustomWorkoutDialog.newInstance(viewModel.currentWorkout.name, this, isFresh)
                         .show(parentFragmentManager, "SaveCustomWorkoutDialog")
                 }
             } else {
-                EventBus.getDefault().post(Events.Companion.MakePurchase())
+                EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
             }
         }
 
@@ -110,6 +110,7 @@ class CustomWorkoutFragment :
     private fun initCurrentWorkout() {
         val workoutList = viewModel.getWorkoutList()
         workoutList.observe(viewLifecycleOwner, {
+            viewModel.numberOfFavorites = it.size
             if (it.isEmpty()) {
                 viewModel.currentWorkout = CustomWorkoutSkeleton("New workout", arrayListOf())
                 toggleEmptyState(true)
@@ -136,8 +137,6 @@ class CustomWorkoutFragment :
                 setSaveButtonVisibility(false)
             }
             setupRecycler()
-            // observe once, no need to repeat this when new data is added to the custom workouts
-            workoutList.removeObservers(viewLifecycleOwner)
         })
     }
 

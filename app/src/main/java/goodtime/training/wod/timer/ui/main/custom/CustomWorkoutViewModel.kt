@@ -12,6 +12,7 @@ class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewMod
 
     lateinit var currentWorkout: CustomWorkoutSkeleton
     var hasUnsavedSession = false
+    var numberOfFavorites: Int = 0
 
     fun saveCurrentSelection() {
         viewModelScope.launch {

@@ -239,6 +239,7 @@ class SettingsFragment :
         val exportBackupPref = findPreference<Preference>(PreferenceHelper.EXPORT_BACKUP)!!
         val importBackupPref = findPreference<Preference>(PreferenceHelper.IMPORT_BACKUP)!!
         val importBackupSmartWODPref = findPreference<Preference>(PreferenceHelper.IMPORT_BACKUP_SMART_WOD)!!
+        val voteForNextFeaturesPref = findPreference<Preference>("vote_for_next_features")!!
 
         unlockFeaturesPref = findPreference(UNLOCK_FEATURES)!!
 
@@ -254,11 +255,21 @@ class SettingsFragment :
             exportBackupPref.isEnabled = true
             importBackupPref.isEnabled = true
             importBackupSmartWODPref.isEnabled = true
+            voteForNextFeaturesPref.isEnabled = true
+            voteForNextFeaturesPref.setOnPreferenceClickListener {
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://forms.gle/W9XRcYAjoxJsU9j78")
+                    )
+                )
+                true
+            }
             setupBackupButtons()
         } else {
             unlockFeaturesPref.isVisible = true
             unlockFeaturesPref.setOnPreferenceClickListener {
-                EventBus.getDefault().post(Events.Companion.MakePurchase())
+                EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
                 true
             }
             vibrationPref.isEnabled = false
@@ -271,6 +282,7 @@ class SettingsFragment :
             exportBackupPref.isEnabled = false
             importBackupPref.isEnabled = false
             importBackupSmartWODPref.isEnabled = false
+            voteForNextFeaturesPref.isEnabled = false
         }
     }
 }

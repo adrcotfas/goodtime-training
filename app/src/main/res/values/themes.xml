@@ -13,6 +13,7 @@
         <item name="fontFamily">@font/app_font</item>
         <item name="elevationOverlayEnabled">false</item>
         <item name="bottomAppBarStyle">@style/BottomAppBar</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.AlertDialog</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialAlertDialog</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="radioButtonStyle">@style/Widget.App.RadioButton</item>
@@ -30,8 +31,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="ThemeOverlay.MaterialAlertDialog"
-        parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <!--    using this for the legacy AlertDialog UpgradeDialog -->
+    <style name="ThemeOverlay.AlertDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="colorSurface">@color/grey1000</item>
+        <item name="colorOnSurface">@color/grey200</item>
+        <item name="dialogCornerRadius">16dp</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorPrimary">@color/green_goodtime</item>
         <item name="colorSecondary">@color/green_goodtime</item>
         <item name="colorSurface">@color/grey1000</item>
@@ -44,8 +53,7 @@
         <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
     </style>
 
-    <style name="ThemeOverlay.MaterialTimePicker"
-        parent="ThemeOverlay.MaterialComponents.TimePicker">
+    <style name="ThemeOverlay.MaterialTimePicker" parent="ThemeOverlay.MaterialComponents.TimePicker">
         <item name="colorPrimary">@color/green_goodtime</item>
         <item name="colorSecondary">@color/green_goodtime</item>
         <item name="colorSurface">@color/grey1000</item>
