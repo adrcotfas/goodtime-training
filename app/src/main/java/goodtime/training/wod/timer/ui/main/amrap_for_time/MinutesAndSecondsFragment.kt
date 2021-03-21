@@ -22,8 +22,8 @@ import org.greenrobot.eventbus.EventBus
 import org.kodein.di.generic.instance
 
 open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>(
-        private val sessionType: SessionType)
-    : WorkoutTypeFragment() {
+    private val sessionType: SessionType
+) : WorkoutTypeFragment() {
 
     private var pickersAreSetup = false
     private val preferenceHelper: PreferenceHelper by instance()
@@ -56,9 +56,9 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentAmrapForTimeBinding.inflate(inflater, container, false)
 
@@ -74,15 +74,15 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
             setupNumberPickers()
 
             viewModel.timeData.get().observe(
-                    viewLifecycleOwner, { duration ->
-                viewModel.session = SessionSkeleton(
+                viewLifecycleOwner, { duration ->
+                    viewModel.session = SessionSkeleton(
                         duration = duration,
                         breakDuration = 0,
                         numRounds = 0,
                         type = sessionType
-                )
-                updateMainButtonsState(duration)
-            }
+                    )
+                    updateMainButtonsState(duration)
+                }
             )
         })
 
@@ -92,80 +92,80 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
     }
 
     private fun showBalloonsIfNeeded() {
-        val margin = dpToPx(requireContext(),8f)
-        val largeMargin = dpToPx(requireContext(),16f)
         if (sessionType == SessionType.FOR_TIME && preferenceHelper.showForTimeBalloons()) {
             preferenceHelper.setForTimeBalloons(false)
             binding.pickerSeparator.post {
                 val balloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "FOR TIME enforces a time cap and the goal is to complete the workout as fast as possible."
+                    requireContext(), this,
+                    "FOR TIME enforces a time cap and the goal is to complete the workout as fast as possible."
                 )
                 val anotherBalloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "Use the time pickers to change the time cap.",
-                        false, 0.5f
+                    requireContext(), this,
+                    "Use the time pickers to change the time cap.",
+                    false, 0.5f
                 )
-                balloon.relayShowAlignTop(anotherBalloon, binding.pickerSeparator, 0, margin)
-                balloon.showAlignTop(binding.pickerSeparator, 0, margin)
+                balloon.relayShowAlignTop(anotherBalloon, binding.topGuideline)
+                balloon.showAlignTop(binding.bottomGuideline)
             }
         } else if (sessionType == SessionType.AMRAP && preferenceHelper.showMainBalloons()) {
-                preferenceHelper.setMainBalloons(false)
-                binding.root.post {
-                    val bottomMenuBalloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "Use the bottom menu to change the workout type."
-                    )
-                    val amrapBalloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time.",
-                        false, 0.05f
-                    )
-                    val timePickersBalloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "Use the time pickers to change the duration.",
-                        false, 0.5f
-                    )
-                    val favoriteButtonBalloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "Use the favorites section to save, remove and load timer presets.",
-                        true, 0.83f
-                    )
-                    val startButtonBalloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "Press the action button to start the workout using the current selection.",
-                        false, 0.5f
-                    )
-                    bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, binding.bottom, 0, largeMargin * 2)
-                        .relayShowAlignTop(timePickersBalloon, binding.pickerSeparator, 0, margin)
-                        .relayShowAlignTop(favoriteButtonBalloon, binding.top, 0, -largeMargin)
-                        .relayShowAlignBottom(startButtonBalloon, binding.bottom, 0, -(largeMargin * 1.75f).toInt())
-                    bottomMenuBalloon.showAlignBottom(binding.bottom, 0, largeMargin * 2)
-                }
+            preferenceHelper.setMainBalloons(false)
+            binding.root.post {
+                val bottomMenuBalloon = CustomBalloonFactory.create(
+                    requireContext(), this,
+                    "Use the bottom menu to change the workout type."
+                )
+                val amrapBalloon = CustomBalloonFactory.create(
+                    requireContext(), this,
+                    "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time.",
+                    false, 0.05f
+                )
+                val timePickersBalloon = CustomBalloonFactory.create(
+                    requireContext(), this,
+                    "Use the time pickers to change the duration.",
+                    false, 0.5f
+                )
+                val favoriteButtonBalloon = CustomBalloonFactory.create(
+                    requireContext(), this,
+                    "Use the favorites section to save, remove and load timer presets.",
+                    true, 0.83f
+                )
+                val startButtonBalloon = CustomBalloonFactory.create(
+                    requireContext(), this,
+                    "Press the action button to start the workout using the current selection.",
+                    false, 0.5f
+                )
+                bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, binding.bottomGuideline)
+                    .relayShowAlignTop(timePickersBalloon, binding.pickerSeparator)
+                    .relayShowAlignTop(favoriteButtonBalloon, binding.topGuideline)
+                    .relayShowAlignBottom(startButtonBalloon, binding.startButtonGuideline)
+                bottomMenuBalloon.showAlignBottom(binding.bottomGuideline)
+            }
         }
     }
 
     private fun setupNumberPickers() {
         val rowHeight = calculateRowHeight(layoutInflater)
         minutePicker = NumberPicker(
-                requireContext(), binding.pickerMinutes,
-                viewModel.minutesPickerData,
-                viewModel.timeData.getMinutes(), rowHeight, scrollListener = minuteListener
+            requireContext(), binding.pickerMinutes,
+            viewModel.minutesPickerData,
+            viewModel.timeData.getMinutes(), rowHeight, scrollListener = minuteListener
         )
         secondsPicker = NumberPicker(
-                requireContext(), binding.pickerSeconds,
-                viewModel.secondsPickerData,
-                viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener
+            requireContext(), binding.pickerSeconds,
+            viewModel.secondsPickerData,
+            viewModel.timeData.getSeconds(), rowHeight, scrollListener = secondsListener
         )
     }
 
     override fun onStartWorkout() {
         val action = AmrapFragmentDirections.toWorkout(
-                sessions =
-                TypeConverter.toString(
-                        sessions = arrayOf(
-                                PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
-                                + getSelectedSessions().toTypedArray())
+            sessions =
+            TypeConverter.toString(
+                sessions = arrayOf(
+                    PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown())
+                )
+                        + getSelectedSessions().toTypedArray()
+            )
         )
         findNavController().navigate(action)
     }

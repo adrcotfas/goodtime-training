@@ -93,14 +93,14 @@ class CustomWorkoutFragment :
                 requireContext(), this,
                 "Add, remove, edit and rearrange sessions in any combination for a custom workout."
             )
-            val anotherBalloon = CustomBalloonFactory.create(
+            val favorites = CustomBalloonFactory.create(
                 requireContext(), this,
-                "Create new presets and add them to the favorites."
+                "Create new presets and add them to the favorites.", true, 0.83f
             )
 
             binding.cardContainer.post {
-                balloon.relayShowAlignTop(anotherBalloon, binding.cardContainer)
-                balloon.showAlignTop(binding.cardContainer)
+                balloon.relayShowAlignTop(favorites, binding.root, 0, dpToPx(requireContext(), 56f))
+                balloon.showAlignTop(binding.root, 0, dpToPx(requireContext(), 56f))
             }
         }
     }
@@ -327,6 +327,7 @@ class CustomWorkoutFragment :
             layoutParams.width = MATCH_PARENT
         }
     }
+
     companion object {
         const val newWorkoutName = "New workout"
     }
