@@ -15,7 +15,7 @@ import goodtime.training.wod.timer.R
 
 class NotificationHelper(context: Context) : ContextWrapper(context) {
 
-    companion object{
+    companion object {
         private const val TRAINING_CHANNEL_ID = "goodtime.training.notification"
         private const val TRAINING_NOTIFICATION_ID = 42
 
@@ -39,7 +39,7 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
             manager.cancel(TRAINING_NOTIFICATION_ID)
         }
 
-        private fun getBasicNotificationBuilder(context: Context) : NotificationCompat.Builder {
+        private fun getBasicNotificationBuilder(context: Context): NotificationCompat.Builder {
             return NotificationCompat.Builder(context, TRAINING_CHANNEL_ID)
                 .setContentText("Training in progress.")
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
@@ -58,16 +58,17 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             return PendingIntent.getActivity(
                 context, 0,
-                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            )
         }
 
         @TargetApi(Build.VERSION_CODES.O)
         private fun NotificationManager.initIfNeeded() {
-            if (this.getNotificationChannel(TRAINING_CHANNEL_ID) == null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (this.getNotificationChannel(TRAINING_CHANNEL_ID) == null) {
                     val channel = NotificationChannel(
-                            TRAINING_CHANNEL_ID, "Goodtime Training",
-                            NotificationManager.IMPORTANCE_LOW
+                        TRAINING_CHANNEL_ID, "Goodtime Training",
+                        NotificationManager.IMPORTANCE_LOW
                     )
                     channel.apply {
                         setBypassDnd(true)

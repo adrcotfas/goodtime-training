@@ -34,18 +34,15 @@ class DimensionsUtils {
             return px / context.resources.displayMetrics.scaledDensity
         }
 
-        inline val Fragment.windowHeight: Int
-            get() = getWindowProperty(WindowProperty.HEIGHT, requireContext())
-
-        inline val Fragment.windowWidth: Int
-            get() = getWindowProperty(WindowProperty.WIDTH, requireContext())
+        fun getWindowHeight(context: Context) = getWindowProperty(WindowProperty.HEIGHT, context)
+        fun getWindowWidth(context: Context) = getWindowProperty(WindowProperty.WIDTH, context)
 
         enum class WindowProperty {
             WIDTH,
             HEIGHT
         }
 
-        fun getWindowProperty(property: WindowProperty, context: Context): Int {
+        private fun getWindowProperty(property: WindowProperty, context: Context): Int {
             val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 val metrics = windowManager.currentWindowMetrics
@@ -55,22 +52,10 @@ class DimensionsUtils {
             } else {
                 val displayMetrics = DisplayMetrics()
                 windowManager.defaultDisplay.getMetrics(displayMetrics)
-                return if (property == WindowProperty.WIDTH) displayMetrics.widthPixels else displayMetrics.heightPixels
-            }
-        }
-
-        fun getHeight2(activity: Activity): Int {
-            val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val metrics = windowManager.currentWindowMetrics
-                val insets = metrics.windowInsets.getInsets(WindowInsets.Type.systemBars())
-                metrics.bounds.height() - insets.bottom - insets.top
-            } else {
-                // for some reason, the else of the above function fails for FinishedWorkoutFragmnet at orientation change
-                //TODO: investigate later
-                val view = activity.window.decorView
-                val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets).systemWindowInsets
-                activity.resources.displayMetrics.heightPixels - insets.bottom - insets.top
+                return if (property == WindowProperty.WIDTH) displayMetrics.widthPixels else displayMetrics.heightPixels - dpToPx(
+                    context,
+                    56f // add a small padding here since the behavior is different on older devices
+                )
             }
         }
     }
