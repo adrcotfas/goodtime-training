@@ -111,7 +111,6 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     }
 
     private fun setupSessionTypeChips() {
-        sectionAddEdit.sessionTypeChips
         for (sessionType in SessionType.values()) {
             if (sessionType == SessionType.CUSTOM) {
                 continue
@@ -124,11 +123,16 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
                 id = sessionType.ordinal
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
+                        binding.sectionAddEdit.radioGroup.isVisible = true // hiding details until a session type is selected
                         togglePositiveButtonState(false)
                         refreshActiveSection(sessionType)
                         if (isInCustomSection()) {
+                            binding.sectionAddEdit.customSectionContainer.customSection.isVisible = true
                             sessionEditTextHelper.resetToDefaults()
                             setDescription(StringUtils.toFavoriteDescriptionDetailed(sessionEditTextHelper.generateFromCurrentSelection()))
+                        } else {
+                            // hiding details until a session type is selected
+                            binding.sectionAddEdit.favoritesContainer.isVisible = true
                         }
                         setupFavorites(sessionType)
                     }
@@ -136,8 +140,9 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
             }
             sectionAddEdit.sessionTypeChips.addView(chip)
         }
-        sectionAddEdit.sessionTypeChips.check(if (isEditMode()) candidate.type.value else 0)
-        if (!isEditMode()) refreshActiveSection(SessionType.AMRAP)
+        if (isEditMode()){
+            sectionAddEdit.sessionTypeChips.check(candidate.type.value)
+        }
     }
 
     private fun setupRadioGroup() {

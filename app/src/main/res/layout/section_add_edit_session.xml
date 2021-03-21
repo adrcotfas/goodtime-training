@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-<!--    rename this file-->
+    <!--    rename this file-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,90 +21,100 @@
             tools:background="@color/grey800"
             tools:layout_height="100dp" />
 
-        <RadioGroup
-            android:id="@+id/radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:checkedButton="@id/radio_button_from_favorites"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/favorites_container"
-            app:layout_constraintTop_toBottomOf="@id/session_type_chips">
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radio_button_from_favorites"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginHorizontal="24dp"
-                android:paddingStart="8dp"
-                android:text="From favorites"
-                android:textSize="16dp" />
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/radio_button_select_custom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="16dp"
-                android:paddingStart="8dp"
-                android:singleLine="true"
-                android:text="Custom"
-                android:textSize="16dp" />
-        </RadioGroup>
-
-        <LinearLayout
-            android:id="@+id/favorites_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/custom_section_container"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_max="235dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radio_group"
-            tools:visibility="gone">
-
-            <TextView
-                android:id="@+id/empty_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="32dp"
-                android:text="No items"
-                android:textColor="@color/grey800"
-                android:textSize="16dp"
+            <RadioGroup
                 android:visibility="gone"
-                tools:visibility="visible" />
-
-            <ScrollView
+                android:id="@+id/radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                tools:background="@color/grey500"
-                tools:layout_height="600dp">
+                android:layout_marginTop="16dp"
+                android:checkedButton="@id/radio_button_from_favorites"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/favorites_container"
+                app:layout_constraintTop_toBottomOf="@id/session_type_chips">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/favorites"
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/radio_button_from_favorites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="24dp"
+                    android:paddingStart="8dp"
+                    android:text="From favorites"
+                    android:textSize="16dp" />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/radio_button_select_custom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:paddingStart="8dp"
+                    android:singleLine="true"
+                    android:text="Custom"
+                    android:textSize="16dp" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/favorites_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@id/custom_section_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_max="235dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/radio_group"
+                tools:visibility="gone">
+
+                <TextView
+                    android:id="@+id/empty_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="32dp"
+                    android:text="No items"
+                    android:textColor="@color/grey800"
+                    android:textSize="16dp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:chipSpacingHorizontal="16dp"
-                    app:selectionRequired="true"
-                    app:singleSelection="true" />
-            </ScrollView>
-        </LinearLayout>
+                    android:overScrollMode="never"
+                    tools:background="@color/grey500"
+                    tools:layout_height="600dp">
 
-        <include
-            android:id="@+id/custom_section_container"
-            layout="@layout/section_edit_text_views"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/favorites_container" />
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/favorites"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:chipSpacingHorizontal="16dp"
+                        app:selectionRequired="true"
+                        app:singleSelection="true" />
+                </ScrollView>
+            </LinearLayout>
+
+            <include
+                android:visibility="gone"
+                android:id="@+id/custom_section_container"
+                layout="@layout/section_edit_text_views"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/favorites_container" />
+
+<!--        <androidx.constraintlayout.widget.Group-->
+<!--            android:id="@+id/bottom_section"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            app:constraint_referenced_ids="radio_group, favorites_container,custom_section_container"-->
+<!--            android:visibility="gone"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
