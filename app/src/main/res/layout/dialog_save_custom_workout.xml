@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
             android:gravity="center_vertical"
-            android:text="Add session"
+            android:text="Save favorite"
             android:textColor="@color/grey200"
             app:layout_constraintStart_toEndOf="@+id/close_button"
             app:layout_constraintTop_toTopOf="parent" />
