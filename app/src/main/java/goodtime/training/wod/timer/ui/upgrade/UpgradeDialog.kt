@@ -33,7 +33,7 @@ class UpgradeDialog : DialogFragment() {
                     Pair("Do not Disturb mode", R.drawable.ic_dnd),
                     Pair("Log incomplete workouts", R.drawable.ic_incomplete_workouts),
                     Pair("Backup export and import" + "\n" + "Import CSV backup from SmartWOD", R.drawable.ic_cloud),
-                    Pair("Timer favorites" + "\n" + "Unlimited custom workout favorites", R.drawable.ic_favorite),
+                    Pair("Unlock favorites" + "\n" + "Unlimited custom workout favorites", R.drawable.ic_favorite),
                     Pair("Manually add completed workouts to the statistics", R.drawable.ic_trending),
                     Pair("Vote for next features", R.drawable.ic_vote),
                     Pair("One time payment" + "\n" + "All future features for free", R.drawable.ic_resource_try),

@@ -204,6 +204,7 @@ class SettingsFragment :
         email.putExtra(Intent.EXTRA_SUBJECT, "[Goodtime Training] Feedback")
         email.putExtra(
             Intent.EXTRA_TEXT, "\nMy device info: \n" + DeviceInfo.deviceInfo + "\nApp version: " + BuildConfig.VERSION_NAME
+                    + if (preferenceHelper.isPro()) "PRO" else ""
         )
         try {
             startActivity(Intent.createChooser(email, "Send Feedback"))
