@@ -20,6 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keepattributes LineNumberTable,SourceFile
 -keepattributes *Annotation*
 -keepclassmembers class * {
     @org.greenrobot.eventbus.Subscribe <methods>;
