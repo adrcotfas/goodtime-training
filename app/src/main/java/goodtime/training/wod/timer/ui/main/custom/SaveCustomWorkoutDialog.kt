@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.hideKeyboardFrom
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSaveCustomWorkoutBinding
+import org.greenrobot.eventbus.EventBus
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -20,6 +23,8 @@ class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
     override val kodein by closestKodein()
 
     private val repo: AppRepository by instance()
+    private val preferenceHelper: PreferenceHelper by instance()
+
     private lateinit var favorites: List<CustomWorkoutSkeleton>
 
     private lateinit var binding: DialogSaveCustomWorkoutBinding
@@ -94,15 +99,19 @@ class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
     private fun setupButtons() {
         binding.closeButton.setOnClickListener { dismiss() }
         binding.saveButton.setOnClickListener {
-            listener.onCustomWorkoutSaved(
-                if (isFresh) {
-                    customName
-                } else {
-                    if (binding.overwriteRadioButton.isChecked) originalName
-                    else customName
-                }
-            )
-            dismiss()
+            if (preferenceHelper.isPro() || (!preferenceHelper.isPro() && (favorites.size < 3 || binding.overwriteRadioButton.isChecked))) {
+                listener.onCustomWorkoutSaved(
+                    if (isFresh) {
+                        customName
+                    } else {
+                        if (binding.overwriteRadioButton.isChecked) originalName
+                        else customName
+                    }
+                )
+                dismiss()
+            } else {
+                EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
+            }
             hideKeyboardFrom(requireContext(), binding.root)
         }
     }

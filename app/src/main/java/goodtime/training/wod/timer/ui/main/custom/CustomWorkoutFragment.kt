@@ -57,17 +57,13 @@ class CustomWorkoutFragment :
         initCurrentWorkout()
 
         binding.saveButton.root.setOnClickListener {
-            if (preferenceHelper.isPro() || (!preferenceHelper.isPro() && viewModel.favorites.size < 3)) {
-                if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
-                    SaveCustomWorkoutDialog.newInstance(
-                        viewModel.currentWorkoutName,
-                        this,
-                        !viewModel.favoritesContainCurrentWorkoutName()
-                    )
-                        .show(parentFragmentManager, "SaveCustomWorkoutDialog")
-                }
-            } else {
-                EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
+            if (parentFragmentManager.findFragmentByTag("SaveCustomWorkoutDialog") == null) {
+                SaveCustomWorkoutDialog.newInstance(
+                    viewModel.currentWorkoutName,
+                    this,
+                    !viewModel.favoritesContainCurrentWorkoutName()
+                )
+                    .show(parentFragmentManager, "SaveCustomWorkoutDialog")
             }
         }
 
