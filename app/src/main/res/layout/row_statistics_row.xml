@@ -138,7 +138,7 @@
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/white_5percent"
+        android:background="@color/white_10percent"
         android:visibility="gone"
 
         app:layout_constraintBottom_toBottomOf="parent"
