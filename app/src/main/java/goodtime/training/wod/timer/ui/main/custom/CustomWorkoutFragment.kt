@@ -61,6 +61,7 @@ class CustomWorkoutFragment :
                 SaveCustomWorkoutDialog.newInstance(
                     viewModel.currentWorkoutName,
                     this,
+                    viewModel.favorites,
                     !viewModel.favoritesContainCurrentWorkoutName()
                 )
                     .show(parentFragmentManager, "SaveCustomWorkoutDialog")

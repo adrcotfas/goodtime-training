@@ -12,7 +12,6 @@ import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.hideKeyboardFrom
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
-import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.databinding.DialogSaveCustomWorkoutBinding
 import org.greenrobot.eventbus.EventBus
 import org.kodein.di.KodeinAware
@@ -22,7 +21,6 @@ import org.kodein.di.generic.instance
 class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
     override val kodein by closestKodein()
 
-    private val repo: AppRepository by instance()
     private val preferenceHelper: PreferenceHelper by instance()
 
     private lateinit var favorites: List<CustomWorkoutSkeleton>
@@ -41,10 +39,16 @@ class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
     }
 
     companion object {
-        fun newInstance(name: String, listener: Listener, isFresh: Boolean): SaveCustomWorkoutDialog {
+        fun newInstance(
+            name: String,
+            listener: Listener,
+            favorites: List<CustomWorkoutSkeleton>,
+            isFresh: Boolean
+        ): SaveCustomWorkoutDialog {
             val dialog = SaveCustomWorkoutDialog()
             dialog.listener = listener
             dialog.originalName = name
+            dialog.favorites = favorites
             dialog.isFresh = isFresh
             if (isFresh) {
                 dialog.customName = name
@@ -56,16 +60,20 @@ class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogSaveCustomWorkoutBinding.inflate(layoutInflater)
 
-        val customWorkoutSkeletonsLd = repo.getCustomWorkoutSkeletons()
-        customWorkoutSkeletonsLd.observe(this, {
-            favorites = it
-            binding.saveAsRadioButton.setOnCheckedChangeListener { _, isChecked ->
-                binding.overwriteRadioButton.isChecked = !isChecked
-                refreshPositiveButtonState(binding.editText.text)
-                binding.textInputLayout.isEnabled = true
+        binding.saveAsRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            binding.overwriteRadioButton.isChecked = !isChecked
+            refreshPositiveButtonState(binding.editText.text)
+            binding.textInputLayout.isEnabled = true
+        }
+
+        binding.overwriteRadioButton.setOnCheckedChangeListener { _, isChecked ->
+            binding.saveAsRadioButton.isChecked = !isChecked
+            togglePositiveButtonState(true)
+            if (isChecked) {
+                hideKeyboardFrom(requireContext(), binding.root)
             }
-            customWorkoutSkeletonsLd.removeObservers(this)
-        })
+            binding.textInputLayout.isEnabled = false
+        }
 
         if (isFresh) {
             binding.overwriteRadioButton.visibility = View.GONE
@@ -78,14 +86,6 @@ class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
         } else {
             binding.workoutName.text = "$originalName "
             binding.workoutName.setOnClickListener { binding.overwriteRadioButton.isChecked = true }
-            binding.overwriteRadioButton.setOnCheckedChangeListener { _, isChecked ->
-                binding.saveAsRadioButton.isChecked = !isChecked
-                togglePositiveButtonState(true)
-                if (isChecked) {
-                    hideKeyboardFrom(requireContext(), binding.root)
-                }
-                binding.textInputLayout.isEnabled = false
-            }
         }
 
         binding.editText.addTextChangedListener {
