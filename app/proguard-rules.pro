@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepattributes LineNumberTable,SourceFile
+-keepattributes Exceptions, InnerClasses, Signature, Deprecated, SourceFile, LineNumberTable, Annotation, EnclosingMethod, SourceFile
 -keepattributes *Annotation*
 -keepclassmembers class * {
     @org.greenrobot.eventbus.Subscribe <methods>;
@@ -31,3 +31,18 @@
 -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
     <init>(java.lang.Throwable);
 }
+
+-keep class goodtime.training.wod.timer.ui.stats.EditWeeklyGoalDialog { *; }
+
+-keep class goodtime.training.wod.timer.data.model.WeeklyGoal { *; }
+-keep class goodtime.training.wod.timer.data.model.Session { *; }
+-keep class goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton { *; }
+-keep class goodtime.training.wod.timer.data.model.SessionSkeleton { *; }
+-keep class goodtime.training.wod.timer.data.model.SessionType { *; }
+-keep class goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao { *; }
+-keep class goodtime.training.wod.timer.data.db.SessionDao { *; }
+-keep class goodtime.training.wod.timer.data.db.WeeklyGoalDao { *; }
+-keep class goodtime.training.wod.timer.data.db.SessionSkeletonDao { *; }
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
