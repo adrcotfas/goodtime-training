@@ -32,6 +32,7 @@
                 android:inputType="textMultiLine"
                 android:textColor="@color/grey200"
                 android:textSize="@dimen/smallTextSize"
+                android:maxLines="32"
                 android:maxLength="500"
                 app:fontFamily="@font/app_font"
                 android:includeFontPadding="false"
