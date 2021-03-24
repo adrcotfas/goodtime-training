@@ -12,6 +12,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.R
+import goodtime.training.wod.timer.common.ResourcesHelper
 
 class NotificationHelper(context: Context) : ContextWrapper(context) {
 
@@ -44,7 +45,8 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
                 .setContentText("Training in progress.")
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.drawable.ic_status_goodtime)
+                .setSmallIcon(R.drawable.ic_run)
+                .setColor(ResourcesHelper.green)
                 .setOngoing(true)
                 .setAutoCancel(true)
                 .setShowWhen(false)

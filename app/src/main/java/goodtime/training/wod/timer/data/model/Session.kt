@@ -85,7 +85,7 @@ data class Session(
         fun calculateTotal(sessions: ArrayList<SessionSkeleton>): Int {
             var total = 0
             for (i in sessions.withIndex()) {
-                total += when (i.value.type) { //TODO: this ended up being null but how?
+                total += when (i.value.type) {
                     SessionType.AMRAP, SessionType.FOR_TIME, SessionType.REST -> i.value.duration
                     SessionType.INTERVALS -> (i.value.duration * i.value.numRounds)
                     SessionType.HIIT -> (i.value.duration * i.value.numRounds + i.value.breakDuration * i.value.numRounds) -
@@ -106,7 +106,7 @@ data class Session(
             var total = 0
             var numberOfForTimeWorkouts = 0
             for (i in sessions.withIndex()) {
-                total += when (i.value.type) { //TODO: this ended up being null but how?
+                total += when (i.value.type) {
                     SessionType.AMRAP, SessionType.REST -> i.value.duration
                     SessionType.INTERVALS -> (i.value.duration * i.value.numRounds)
                     SessionType.HIIT -> (i.value.duration * i.value.numRounds + i.value.breakDuration * i.value.numRounds) -

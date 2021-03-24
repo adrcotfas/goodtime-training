@@ -154,51 +154,25 @@ class GoodtimeApplication : Application(), KodeinAware {
             val rest30Sec = SessionSkeleton(0, 30, 0, 0, SessionType.REST)
             val rest1Min = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 0, SessionType.REST)
 
-            //TODO: remove before release
-            val dummyAmrap = SessionSkeleton(0, 5, type = SessionType.AMRAP)
-            val dummyForTime = SessionSkeleton(0, 5, type = SessionType.FOR_TIME)
-            val dummyHiit = SessionSkeleton(
-                0, 3, 3, 3,
-                SessionType.HIIT
-            )
-            val dummyIntervals = SessionSkeleton(
-                0, 3, 0, 2,
-                SessionType.INTERVALS
-            )
-            val dummyRest = SessionSkeleton(0, 30, 5, 0, SessionType.REST)
-            repo.addCustomWorkoutSkeleton(
-                CustomWorkoutSkeleton(
-                    "Dummy",
-                    arrayListOf(
-                        dummyAmrap,
-                        dummyForTime,
-                        dummyHiit,
-                        dummyRest,
-                        dummyIntervals,
-                        dummyRest,
-                        dummyAmrap
-                    )
-                )
-            )
-
             repo.addSessionSkeleton(rest30Sec)
             repo.addSessionSkeleton(rest1Min)
 
             //Custom workouts
-            repo.addSessionSkeleton(tabata)
-            repo.addCustomWorkoutSkeleton(
-                CustomWorkoutSkeleton(
-                    "3 x Tabata", arrayListOf(
-                        tabata, rest30Sec, tabata, rest30Sec, tabata
-                    )
-                )
-            )
 
             val intervals5 = SessionSkeleton(0, TimeUnit.MINUTES.toSeconds(1).toInt(), 0, 5, SessionType.INTERVALS)
             repo.addCustomWorkoutSkeleton(
                 CustomWorkoutSkeleton(
                     "Power Intervals", arrayListOf(
                         intervals5, rest1Min, intervals5, rest1Min, intervals5
+                    )
+                )
+            )
+
+            repo.addSessionSkeleton(tabata)
+            repo.addCustomWorkoutSkeleton(
+                CustomWorkoutSkeleton(
+                    "4 x Tabata", arrayListOf(
+                        tabata, rest1Min, tabata, rest1Min, tabata, rest1Min, tabata
                     )
                 )
             )

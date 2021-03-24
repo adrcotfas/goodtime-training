@@ -99,7 +99,6 @@ class NumberPicker(
             adjustScrollToSnap(position)
             scrollListener.onScrollFinished(getCurrentValue())
         } else {
-            // TODO: do I need this?
             // center of the picker was clicked
         }
     }

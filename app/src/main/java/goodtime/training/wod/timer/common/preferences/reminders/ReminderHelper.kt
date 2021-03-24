@@ -173,7 +173,7 @@ class ReminderHelper(context: Context?) : ContextWrapper(context), KodeinAware,
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
             val builder = NotificationCompat.Builder(context, GOODTIME_REMINDER_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_status_goodtime) //TODO: use another icon maybe
+                    .setSmallIcon(R.drawable.ic_run)
                     .setCategory(NotificationCompat.CATEGORY_REMINDER)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setContentIntent(pendingIntent)

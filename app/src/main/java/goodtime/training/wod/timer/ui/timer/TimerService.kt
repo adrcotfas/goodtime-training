@@ -39,6 +39,8 @@ class TimerService: Service(), KodeinAware{
             START -> {
                 Log.i(TAG, "START")
                 //TODO: move all of these operations to the ViewModel and leave only notification related work?
+                if (preferenceHelper.isDndModeEnabled()) dndHandler.toggleDndMode(true)
+                workoutManager.notifyGetReady()
                 workoutManager.startWorkout()
                 startForeground(GOODTIME_NOTIFICATION_ID, NotificationHelper.getNotification(this))
             }
@@ -48,7 +50,7 @@ class TimerService: Service(), KodeinAware{
             }
             FINALIZE -> {
                 Log.i(TAG, "FINALIZE")
-                if (preferenceHelper.isDndModeEnabled()) dndHandler.toggleDndMode(true)
+                if (preferenceHelper.isDndModeEnabled()) dndHandler.toggleDndMode(false)
                 workoutManager.setInactive()
                 onStop()
             }

@@ -15,8 +15,8 @@ android {
         applicationId "goodtime.training.wod.timer"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 19
-        versionName "0.9.33"
+        versionCode 20
+        versionName "0.9.34"
     }
 
     compileOptions {

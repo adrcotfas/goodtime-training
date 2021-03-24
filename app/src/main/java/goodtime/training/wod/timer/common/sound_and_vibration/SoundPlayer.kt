@@ -9,14 +9,14 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
     private val soundPool = SoundPool.Builder()
         .setAudioAttributes(
             AudioAttributes.Builder()
-                .setLegacyStreamType(AudioManager.STREAM_NOTIFICATION)
+                .setLegacyStreamType(AudioManager.STREAM_MUSIC)
                 .build()
         )
         .setMaxStreams(3)
         .build()
 
     private var sounds = HashMap<Int, Int>(4)
-    private var streamID = 0
+    private var streamIds = arrayListOf<Int>()
 
     init {
         sounds[START_COUNTDOWN] = soundPool.load(applicationContext, START_COUNTDOWN, 1)
@@ -68,10 +68,11 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
     }
 
     fun play(soundId: Int) {
-        streamID = soundPool.play(sounds[soundId]!!, 1.0f, 1.0f, 1, 0, 1.0f)
+        streamIds.add(soundPool.play(sounds[soundId]!!, 1.0f, 1.0f, 1, 0, 1.0f))
     }
 
     fun stop() {
-        soundPool.stop(streamID)
+        streamIds.forEach { soundPool.stop(it) }
+        streamIds.clear()
     }
 }

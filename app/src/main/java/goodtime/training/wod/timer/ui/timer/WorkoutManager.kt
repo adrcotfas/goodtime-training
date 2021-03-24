@@ -131,14 +131,16 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
         isCustomWorkout = sessions.size > 2 // 2 because of the pre-workout countdown
     }
 
+    fun notifyGetReady() {
+        if (getCurrentSessionIdx() == 0) {
+            notifier.notifyGetReady()
+        }
+    }
+
     /**
      * Called at the start of each session
      */
     fun startWorkout() {
-        if (getCurrentSessionIdx() == 0) {
-            notifier.notifyGetReady()
-        }
-
         Log.i(TAG, "startWorkout")
         _timerState.value = TimerState.ACTIVE
         val index = _currentSessionIdx.value!!
@@ -172,10 +174,10 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
         if (_timerState.value == TimerState.ACTIVE) {
             timer.cancel()
             _timerState.value = TimerState.PAUSED
-            notifier.stop()
         } else if (_timerState.value == TimerState.PAUSED) {
             startWorkout()
         }
+        notifier.stop()
     }
 
     fun stopTimer() {

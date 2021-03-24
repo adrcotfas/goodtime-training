@@ -3,6 +3,7 @@ package goodtime.training.wod.timer.ui.settings
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -17,6 +18,8 @@ import java.util.*
 
 class BackupOperations {
     companion object {
+        private const val TAG = "BackupOperations"
+
         fun doImport(scope: LifecycleCoroutineScope, context: Context, uri: Uri) {
             scope.executeAsyncTask(
                 onPreExecute = {},
@@ -52,9 +55,11 @@ class BackupOperations {
                 },
                 onPostExecute = {
                     val success = it
+                    val message = if (success) "Backup import successful" else "Backup import failed"
+                    Log.i(TAG, message)
                     Toast.makeText(
                         context,
-                        if (success) "Backup import successful" else "Backup import failed",
+                        message,
                         Toast.LENGTH_SHORT
                     ).show()
                 })
@@ -96,6 +101,7 @@ class BackupOperations {
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
+                        Log.i(TAG, "Backup export failed")
                         Toast.makeText(
                             context,
                             "Backup export failed",

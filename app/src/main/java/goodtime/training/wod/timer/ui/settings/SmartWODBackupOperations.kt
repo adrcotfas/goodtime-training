@@ -2,6 +2,7 @@ package goodtime.training.wod.timer.ui.settings
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
@@ -26,6 +27,8 @@ class SmartWODBackupOperations {
 
         private val ONE_HOUR = TimeUnit.HOURS.toSeconds(1).toInt()
         private const val MAX_ROUNDS = 60
+
+        private const val TAG = "SmartWODBackupOperation"
 
         /**
          * Imports a CSV file exported from SmartWOD
@@ -54,9 +57,11 @@ class SmartWODBackupOperations {
                 onPostExecute = {
                     val result = it
                     val success = result.first
+                    val message = if (success) "Backup import successful" else "Backup import failed"
+                    Log.i(TAG, message)
                     Toast.makeText(
                         context,
-                        if (success) "Backup import successful" else "Backup import failed",
+                        message,
                         Toast.LENGTH_SHORT
                     ).show()
                     if (it.second != null) {

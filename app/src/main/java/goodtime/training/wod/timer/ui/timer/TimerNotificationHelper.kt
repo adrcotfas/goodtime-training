@@ -1,6 +1,7 @@
 package goodtime.training.wod.timer.ui.timer
 
 import android.content.Context
+import android.util.Log
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
 import goodtime.training.wod.timer.common.sound_and_vibration.TorchHelper
@@ -131,6 +132,7 @@ class TimerNotificationHelper(
     }
 
     fun stop() {
+        Log.i("TimerNotificationHelper", "stop")
         soundPlayer.stop()
         vibrator.stop()
         torchHandler.stop()

@@ -151,16 +151,16 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     fun incrementCompletedWorkoutsForReview() =
         dataStore.putInt(COMPLETED_WORKOUTS_FOR_REVIEW, getCompletedWorkoutsForReview() + 1)
 
-    fun isPro() = dataStore.getBoolean(IS_PRO, false)
+    fun isPro() = true //dataStore.getBoolean(IS_PRO, false)
     fun setPro(value: Boolean) = dataStore.putBoolean(IS_PRO, value)
 
     fun resetPreferencesOnRefund() {
-        setMinimalistMode(false)
-        setSoundProfile(0)
-        setFullscreenMode(false)
-        setDndMode(false)
-        setLogIncompleteSessions(false)
-        setVibrationEnabled(false)
-        setFlashEnabled(false)
+//        setMinimalistMode(false)
+//        setSoundProfile(0)
+//        setFullscreenMode(false)
+//        setDndMode(false)
+//        setLogIncompleteSessions(false)
+//        setVibrationEnabled(false)
+//        setFlashEnabled(false)
     }
 }
