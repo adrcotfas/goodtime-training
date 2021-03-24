@@ -33,8 +33,7 @@ import java.time.LocalTime
 
 class SettingsFragment :
     PreferenceFragmentCompat(),
-    KodeinAware,
-    SoundProfileDialog.Listener {
+    KodeinAware {
 
     override val kodein by closestKodein()
     private val preferenceHelper by instance<PreferenceHelper>()
@@ -42,6 +41,7 @@ class SettingsFragment :
 
     private lateinit var timePickerPref: Preference
     private lateinit var soundProfilePref: Preference
+    private lateinit var voiceProfilePref: Preference
     private lateinit var unlockFeaturesPref: Preference
 
     companion object {
@@ -131,11 +131,29 @@ class SettingsFragment :
     private fun setupSoundProfilePreference() {
         soundProfilePref = findPreference(PreferenceHelper.SOUND_PROFILE)!!
         soundProfilePref.setOnPreferenceClickListener {
-            val dialog = SoundProfileDialog.newInstance(preferenceHelper.getSoundProfile(), this)
+            val dialog = SoundProfileDialog.newInstance(preferenceHelper.getSoundProfile(), object : SoundProfileDialog.Listener {
+                override fun onSoundProfileSelected(idx: Int) {
+                    preferenceHelper.setSoundProfile(idx)
+                    updateSoundProfileSummary()
+                }
+            })
             dialog.show(childFragmentManager, "SoundProfileDialog")
             true
         }
         updateSoundProfileSummary()
+
+        voiceProfilePref = findPreference(PreferenceHelper.VOICE_PROFILE)!!
+        voiceProfilePref.setOnPreferenceClickListener {
+            val dialog = SoundProfileDialog.newInstance(preferenceHelper.getVoiceProfile(), object : SoundProfileDialog.Listener {
+                override fun onSoundProfileSelected(idx: Int) {
+                    preferenceHelper.setVoiceProfile(idx)
+                    updateVoiceProfileSummary()
+                }
+            }, true)
+            dialog.show(childFragmentManager, "VoiceProfileDialog")
+            true
+        }
+        updateVoiceProfileSummary()
     }
 
     private fun updateSoundProfileSummary() {
@@ -143,9 +161,9 @@ class SettingsFragment :
             resources.getStringArray(R.array.pref_sound_profile_entries)[preferenceHelper.getSoundProfile()]
     }
 
-    override fun onSoundProfileSelected(idx: Int) {
-        preferenceHelper.setSoundProfile(idx)
-        updateSoundProfileSummary()
+    private fun updateVoiceProfileSummary() {
+        voiceProfilePref.summary =
+            resources.getStringArray(R.array.pref_voice_profile_entries)[preferenceHelper.getVoiceProfile()]
     }
 
     private fun setupBackupButtons() {
@@ -249,6 +267,7 @@ class SettingsFragment :
             vibrationPref.isEnabled = true
             flashPref.isEnabled = true
             soundProfilePref.isEnabled = true
+            voiceProfilePref.isEnabled = true
             minimalistModePref.isEnabled = true
             fullscreenModePref.isEnabled = true
             dndPref.isEnabled = true
@@ -276,6 +295,7 @@ class SettingsFragment :
             vibrationPref.isEnabled = false
             flashPref.isEnabled = false
             soundProfilePref.isEnabled = false
+            voiceProfilePref.isEnabled = false
             minimalistModePref.isEnabled = false
             fullscreenModePref.isEnabled = false
             dndPref.isEnabled = false

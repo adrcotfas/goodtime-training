@@ -19,12 +19,20 @@
         <item>@string/session_type_rest</item>
     </string-array>
 
-    <string name="pref_sound_profile_default">Default</string>
+    <string name="pref_sound_profile_default">Competition</string>
     <string name="pref_sound_profile_gym">Gym</string>
 
     <string-array name="pref_sound_profile_entries">
         <item>@string/pref_sound_profile_default</item>
         <item>@string/pref_sound_profile_gym</item>
+    </string-array>
+
+    <string name="pref_voice_profile_eric">Eric</string>
+    <string name="pref_voice_profile_katie">Katie</string>
+
+    <string-array name="pref_voice_profile_entries">
+        <item>@string/pref_voice_profile_katie</item>
+        <item>@string/pref_voice_profile_eric</item>
     </string-array>
 
     <string name="reminder_title">"Workout reminder"</string>

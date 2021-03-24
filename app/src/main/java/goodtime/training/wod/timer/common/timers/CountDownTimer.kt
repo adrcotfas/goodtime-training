@@ -7,6 +7,8 @@ class CountDownTimer(secondsInTheFuture: Long, originalSeconds: Long, private va
     : android.os.CountDownTimer(TimeUnit.SECONDS.toMillis(secondsInTheFuture), 1000) {
 
     private val halfway = ceil(originalSeconds / 2.0).toInt() - 1
+    private val shouldNotifyTenSecRemaining = originalSeconds >= 40
+    private val shouldNotifyLastMinute = originalSeconds >= 180
 
     var seconds = 0
         private set
@@ -15,6 +17,8 @@ class CountDownTimer(secondsInTheFuture: Long, originalSeconds: Long, private va
         fun onTick(seconds : Int)
         fun onFinishSet()
         fun onHalfwayThere()
+        fun onTenSecRemaining()
+        fun onLastMinute()
     }
 
     override fun onTick(millisUntilFinished: Long) {
@@ -29,6 +33,12 @@ class CountDownTimer(secondsInTheFuture: Long, originalSeconds: Long, private va
 
         if (seconds == halfway) {
             listener.onHalfwayThere()
+        }
+        if (seconds == 9 && shouldNotifyTenSecRemaining) {
+            listener.onTenSecRemaining()
+        }
+        if (seconds == 59 && shouldNotifyLastMinute) {
+            listener.onLastMinute()
         }
     }
 

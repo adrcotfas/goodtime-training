@@ -21,12 +21,15 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
 
         const val MINIMALIST_MODE_ENABLED = "pref_extra_minimalist"
         const val SOUND_PROFILE = "pref_sound_profile"
+        const val VOICE_PROFILE = "pref_voice_profile"
 
         const val SOUND_ENABLED = "pref_sound"
         const val VOICE_ENABLED = "pref_voice"
         const val VIBRATION_ENABLED = "pref_vibration"
         const val FLASH_ENABLED = "pref_flash"
         private const val MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED = "pref_mid_training_notification"
+        private const val LAST_MINUTE_NOTIFICATION_ENABLED = "pref_last_minute_notification"
+        private const val TEN_SECONDS_NOTIFICATION_ENABLED = "pref_ten_sec_notification"
         const val PRE_WORKOUT_COUNTDOWN_SECONDS = "pref_countdown"
 
         const val REMINDER_TIME = "pref_reminder_time"
@@ -85,6 +88,9 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     fun setSoundProfile(idx: Int) = dataStore.putInt(SOUND_PROFILE, idx)
     fun getSoundProfile() = dataStore.getInt(SOUND_PROFILE, 0)
 
+    fun setVoiceProfile(idx: Int) = dataStore.putInt(VOICE_PROFILE, idx)
+    fun getVoiceProfile() = dataStore.getInt(VOICE_PROFILE, 0)
+
     fun isSoundEnabled() = dataStore.getBoolean(SOUND_ENABLED, true)
     fun isVoiceEnabled() = dataStore.getBoolean(VOICE_ENABLED, true)
 
@@ -95,6 +101,9 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
     private fun setFlashEnabled(enabled: Boolean) = dataStore.putBoolean(FLASH_ENABLED, enabled)
 
     fun isMidNotificationEnabled() = dataStore.getBoolean(MIDDLE_OF_TRAINING_NOTIFICATION_ENABLED, true)
+    fun isLastMinuteNotificationEnabled() = dataStore.getBoolean(LAST_MINUTE_NOTIFICATION_ENABLED, true)
+    fun isTenSecRemainingNotificationEnabled() = dataStore.getBoolean(TEN_SECONDS_NOTIFICATION_ENABLED, true)
+
     fun getPreWorkoutCountdown() = dataStore.getInt(PRE_WORKOUT_COUNTDOWN_SECONDS, 10)
 
     fun logIncompleteSessions() = dataStore.getBoolean(LOG_INCOMPLETE, false)

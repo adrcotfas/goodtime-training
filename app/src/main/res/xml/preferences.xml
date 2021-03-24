@@ -49,6 +49,18 @@
             app:title="Mid-workout notification"
             app:defaultValue="true"
             app:iconSpaceReserved="false"/>
+
+        <SwitchPreferenceCompat
+            app:key="pref_last_minute_notification"
+            app:title="Last minute notification"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreferenceCompat
+            app:key="pref_ten_sec_notification"
+            app:title="Ten seconds remaining notification"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory>
@@ -75,6 +87,13 @@
         <Preference
             app:key="pref_sound_profile"
             app:title="Sound profile"
+            android:layout="@layout/preference_compact"
+            app:iconSpaceReserved="false"
+            android:enabled="false"/>
+
+        <Preference
+            app:key="pref_voice_profile"
+            app:title="Voice profile"
             android:layout="@layout/preference_compact"
             app:iconSpaceReserved="false"
             android:enabled="false"/>

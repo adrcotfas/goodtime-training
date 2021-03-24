@@ -1,8 +1,8 @@
 package goodtime.training.wod.timer.ui.timer
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.timers.CountDownTimer
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.data.model.SessionSkeleton
@@ -25,6 +25,17 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
         override fun onHalfwayThere() {
             if (!getIsResting()) {
                 notifier.notifyMiddleOfTraining()
+            }
+        }
+
+        override fun onTenSecRemaining() {
+            if (isLastSession()) {
+                notifier.notifyTenSecRemaining()
+            }
+        }
+        override fun onLastMinute() {
+            if (isLastSession()) {
+                notifier.notifyLastMinute()
             }
         }
     }
@@ -98,6 +109,7 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     private fun isLastRound() = sessions[_currentSessionIdx.value!!].numRounds == _currentRoundIdx.value!! + 1
 
     fun init(sessionsRaw: String, name: String?) {
+        Log.i(TAG, "init")
         sessions = TypeConverter.toSessionSkeletons(sessionsRaw)
         sessionToAdd = Session()
         sessionToAdd.name = name
@@ -123,6 +135,11 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
      * Called at the start of each session
      */
     fun startWorkout() {
+        if (getCurrentSessionIdx() == 0) {
+            notifier.notifyGetReady()
+        }
+
+        Log.i(TAG, "startWorkout")
         _timerState.value = TimerState.ACTIVE
         val index = _currentSessionIdx.value!!
         val session = sessions[index]
@@ -151,6 +168,7 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     }
 
     fun toggleTimer() {
+        Log.i(TAG, "toggleTimer")
         if (_timerState.value == TimerState.ACTIVE) {
             timer.cancel()
             _timerState.value = TimerState.PAUSED
@@ -161,12 +179,14 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     }
 
     fun stopTimer() {
+        Log.i(TAG, "stopTimer")
         timer.cancel()
         notifier.stop()
         _timerState.value = TimerState.INACTIVE
     }
 
     fun abandonWorkout() {
+        Log.i(TAG, "abandonWorkout")
         stopTimer()
         updateDuration(getCurrentSessionIdx(), false)
     }
@@ -219,7 +239,7 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
         _secondsUntilFinished.value = seconds
         if (seconds == 2) {
             //TODO: handle bug when pausing exactly here -> sound should not restart
-            notifier.notifyCountDown()
+            notifier.notifyCountDown(getCurrentSessionIdx() == 0)
         }
     }
 
@@ -354,25 +374,32 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
 
         startWorkout()
 
-        if (sessions[getCurrentSessionIdx()].type == SessionType.REST)
+        if (sessions[getCurrentSessionIdx()].type == SessionType.REST) {
             notifier.notifyRest()
-        else
+        }
+        else {
             notifier.notifyStart()
+        }
     }
 
     /**
      * The last session of the workout was completed
      */
     private fun handleCompletion() {
-        _timerState.value = TimerState.FINISHED
+        Log.i(TAG, "handleCompletion")
         notifier.notifyTrainingComplete()
+        _timerState.value = TimerState.FINISHED
     }
 
     /**
      * This is called when the user leaves the timer workout screen
      */
     fun setInactive() {
+        Log.i(TAG, "setInactive")
         _timerState.value = TimerState.INACTIVE
-        notifier.stop()
+    }
+
+    companion object {
+        private const val TAG = "WorkoutManager"
     }
 }
