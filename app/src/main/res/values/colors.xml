@@ -14,11 +14,11 @@
     <color name="grey1000">#141414</color>
     <color name="grey1200">#0A0A0A</color>
 
-    <color name="green_goodtime">#4CAF50</color>
-    <color name="green_goodtime_dark">#17501B</color>
-    <color name="green_goodtime_darker">#0b2c17</color>
+    <color name="green_goodtime">#65C12A</color>
+    <color name="green_goodtime_dark">#275509</color>
+    <color name="green_goodtime_darker">#142B05</color>
 
-    <color name="red_goodtime">#F44336</color>
+    <color name="red_goodtime">#E42618</color>
     <color name="red_goodtime_dark">#421000</color>
 
     <color name="white">#FFFFFF</color>
