@@ -51,13 +51,13 @@ class ResourcesHelper {
                             R.drawable.ic_break
                         }
                         SessionType.CUSTOM -> {
-                            R.drawable.ic_science
+                            R.drawable.ic_intersection
                         }
                     }, null
             )!!
         }
 
         fun getCustomWorkoutDrawable() = ResourcesCompat.getDrawable(
-                    GoodtimeApplication.getRes(), R.drawable.ic_science, null)!!
+                    GoodtimeApplication.getRes(), R.drawable.ic_intersection, null)!!
     }
 }

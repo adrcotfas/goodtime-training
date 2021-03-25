@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer.ui.timer
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,7 @@ class TimerViewModel(
         // don't save sessions interrupted during the pre-workout countdown
         if (workoutManager.sessionToAdd.actualDuration == 0) return
 
+        Log.i(TAG, "sessionToAdd: ${workoutManager.sessionToAdd}")
         viewModelScope.launch {
             repository.addSession(workoutManager.sessionToAdd)
         }
@@ -53,6 +55,10 @@ class TimerViewModel(
 
     fun prepareSession() {
         workoutManager.prepareSessionToAdd(true)
+    }
+
+    companion object {
+        private const val TAG = "TimerViewModel"
     }
 }
 

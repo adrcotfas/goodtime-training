@@ -144,7 +144,7 @@ class CustomWorkoutFragment :
 
     override fun onStartWorkout() {
         val action = CustomWorkoutFragmentDirections.toWorkout(
-            viewModel.currentWorkoutName,
+            if (viewModel.hasUnsavedSession) null else viewModel.currentWorkoutName,
             TypeConverter.toString(
                 sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
                         + getSelectedSessions().toTypedArray()

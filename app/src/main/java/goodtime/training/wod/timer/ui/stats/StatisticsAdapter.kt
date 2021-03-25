@@ -92,8 +92,7 @@ class StatisticsAdapter(private val listener: Listener) : RecyclerView.Adapter<S
 
         fun bind(session: Session, prId: Long) {
             if (session.isCustom()) {
-                // empty string for registered custom workouts whose skeleton was deleted
-                title.text = session.name ?: ""
+                title.text = session.name ?: "Custom Workout"
                 icon.setImageDrawable(ResourcesHelper.getCustomWorkoutDrawable())
             } else {
                 icon.setImageDrawable(ResourcesHelper.getDrawableFor(session.skeleton.type))
