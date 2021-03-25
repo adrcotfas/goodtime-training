@@ -12,10 +12,10 @@ class SoundPlayer(base: Context) : ContextWrapper(base) {
                 .setLegacyStreamType(AudioManager.STREAM_MUSIC)
                 .build()
         )
-        .setMaxStreams(3)
+        .setMaxStreams(4)
         .build()
 
-    private var sounds = HashMap<Int, Int>(4)
+    private var sounds = HashMap<Int, Int>(21)
     private var streamIds = arrayListOf<Int>()
 
     init {
