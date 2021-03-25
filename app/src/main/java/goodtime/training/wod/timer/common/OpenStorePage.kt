@@ -24,3 +24,10 @@ fun openStorePage(c: Context) {
         )
     }
 }
+
+fun openStoreAppsList(c: Context) {
+    val url = "https://play.google.com/store/apps/developer?id=Goodtime"
+    val i = Intent(Intent.ACTION_VIEW)
+    i.data = Uri.parse(url)
+    c.startActivity(i)
+}

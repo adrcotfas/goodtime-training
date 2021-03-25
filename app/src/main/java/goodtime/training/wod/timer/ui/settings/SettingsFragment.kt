@@ -16,10 +16,7 @@ import androidx.preference.*
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import goodtime.training.wod.timer.BuildConfig
 import goodtime.training.wod.timer.R
-import goodtime.training.wod.timer.common.DeviceInfo
-import goodtime.training.wod.timer.common.Events
-import goodtime.training.wod.timer.common.StringUtils
-import goodtime.training.wod.timer.common.openStorePage
+import goodtime.training.wod.timer.common.*
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper.Companion.UNLOCK_FEATURES
 import goodtime.training.wod.timer.data.db.GoodtimeDatabase
@@ -196,21 +193,25 @@ class SettingsFragment :
     }
 
     private fun setupHelpAndFeedbackSection() {
-        findPreference<Preference>("tutorial_button")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        findPreference<Preference>("tutorial_button")!!.setOnPreferenceClickListener {
             preferenceHelper.setBalloons(true)
             findNavController().popBackStack()
             true
         }
-        findPreference<Preference>("feedback_button")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        findPreference<Preference>("feedback_button")!!.setOnPreferenceClickListener {
             openFeedback()
             true
         }
-        findPreference<Preference>("rate_this_app_button")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        findPreference<Preference>("rate_this_app_button")!!.setOnPreferenceClickListener {
             openStorePage(requireContext())
             true
         }
-        findPreference<Preference>("open_source_licences")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        findPreference<Preference>("open_source_licences")!!.setOnPreferenceClickListener {
             startActivity(Intent(requireContext(), OssLicensesMenuActivity::class.java))
+            true
+        }
+        findPreference<Preference>("other_apps")!!.setOnPreferenceClickListener {
+            openStoreAppsList(requireContext())
             true
         }
     }
