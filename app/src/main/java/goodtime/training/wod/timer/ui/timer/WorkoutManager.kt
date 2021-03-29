@@ -109,7 +109,8 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     private fun isLastRound() = sessions[_currentSessionIdx.value!!].numRounds == _currentRoundIdx.value!! + 1
 
     fun init(sessionsRaw: String, name: String?) {
-        Log.i(TAG, "init")
+        Log.i(TAG, "init ${this.hashCode()}")
+        _timerState.value = TimerState.ACTIVE
         sessions = TypeConverter.toSessionSkeletons(sessionsRaw)
         sessionToAdd = Session()
         sessionToAdd.name = name
