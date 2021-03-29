@@ -8,6 +8,7 @@
     <color name="white_10percent">#1AFFFFFF</color>
     <color name="transparent_dark_red">#4D510000</color>
 
+    <color name="grey50">#FAFAFA</color>
     <color name="grey200">#EEEEEE</color>
     <color name="grey500">#9E9E9E</color>
     <color name="grey800">#424242</color>
