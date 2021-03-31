@@ -34,8 +34,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.intro.IntroActivity"/>
-
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/Theme" />

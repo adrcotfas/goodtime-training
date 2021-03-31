@@ -9,7 +9,6 @@ import java.time.LocalTime
 class PreferenceHelper(val dataStore: PreferenceDataStore) {
 
     companion object {
-        private const val INTRO_WAS_SHOWN = "pref_intro_was_shown"
         private const val FIRST_RUN_TIME = "pref_first_run_time"
         private const val SHOW_DELETE_CONFIRMATION_DIALOG = "pref_show_delete_confirmation_dialog"
 
@@ -62,9 +61,6 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)
         }
     }
-
-    fun wasIntroShown() = dataStore.getBoolean(INTRO_WAS_SHOWN, false)
-    fun setIntroWasShown(value: Boolean) = dataStore.putBoolean(INTRO_WAS_SHOWN, value)
 
     fun getFirstRunTime() = dataStore.getLong(FIRST_RUN_TIME, 0)
     fun updateFirstRunTime() = dataStore.putLong(FIRST_RUN_TIME, System.currentTimeMillis())

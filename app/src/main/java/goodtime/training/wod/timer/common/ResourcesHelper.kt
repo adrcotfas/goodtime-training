@@ -17,7 +17,6 @@ class ResourcesHelper {
         val darkerGreen = getColor(R.color.green_goodtime_darker)
         val red = getColor(R.color.red_goodtime)
         val darkRed = getColor(R.color.red_goodtime_dark)
-        val grey50 = getColor(R.color.grey50)
         val grey200 = getColor(R.color.grey200)
         val grey500 = getColor(R.color.grey500)
         val grey800 = getColor(R.color.grey800)

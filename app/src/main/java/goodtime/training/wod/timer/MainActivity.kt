@@ -31,7 +31,6 @@ import goodtime.training.wod.timer.common.currentNavigationFragment
 import goodtime.training.wod.timer.common.openStorePage
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.databinding.ActivityMainBinding
-import goodtime.training.wod.timer.ui.intro.IntroActivity
 import goodtime.training.wod.timer.ui.main.FullscreenHelper
 import goodtime.training.wod.timer.ui.main.SelectFavoriteDialog
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
@@ -99,9 +98,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        handleIntro()
-
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         preferenceHelper.dataStore.preferences.registerOnSharedPreferenceChangeListener(this)
 
@@ -179,14 +175,6 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         setupDrawer()
         refreshDrawerUpgradeButton()
         setupIAP()
-    }
-
-    private fun handleIntro() {
-        if (!preferenceHelper.wasIntroShown()) {
-            val intent = Intent(this, IntroActivity::class.java)
-            startActivity(intent)
-            preferenceHelper.setIntroWasShown(true)
-        }
     }
 
     private fun setupTopLevelButtons() {

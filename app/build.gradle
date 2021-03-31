@@ -102,7 +102,4 @@ dependencies {
 
     // IAP
     implementation 'com.github.adrcotfas:Google-IAP:5632147a45'
-
-    //AppIntro
-    implementation 'com.github.adrcotfas:AppIntro:fb93551c03'
 }
