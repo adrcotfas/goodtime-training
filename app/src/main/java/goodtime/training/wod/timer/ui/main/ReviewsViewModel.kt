@@ -33,8 +33,8 @@ class ReviewsViewModel @Keep constructor(
                     && (System.currentTimeMillis() - preferenceHelper.getFirstRunTime() >= TimeUnit.DAYS.toMillis(7))
                     && (preferenceHelper.getCompletedWorkoutsForReview() >= 5))
                     ||
-                    // every 30 days after the first review request
-                    (System.currentTimeMillis() - preferenceHelper.getAskedForReviewTime() >= TimeUnit.DAYS.toMillis(30))
+                    (preferenceHelper.askedForReviewInitial()
+                            && (System.currentTimeMillis() - preferenceHelper.getAskedForReviewTime() >= TimeUnit.DAYS.toMillis(30)))
 
         if (shouldAskForReview && reviewInfo == null) {
             reviewInfo = viewModelScope.async {
