@@ -93,7 +93,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     override fun onResume() {
         super.onResume()
-        iapConnector.getAllPurchases()
+        try {
+            iapConnector.getAllPurchases()
+        } catch (e: NullPointerException) {
+            Log.e(TAG, "Something went when retrieving the IAPs")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -179,7 +183,13 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun setupTopLevelButtons() {
         startButton = binding.contentMain.startButton
-        startButton.setOnClickListener { getVisibleFragment().onStartWorkout() }
+        startButton.setOnClickListener {
+            try {
+                getVisibleFragment().onStartWorkout()
+            } catch (e: ClassCastException) {
+                Log.e(TAG, "Why do I have access to the start button in this fragment?")
+            }
+        }
 
         favoritesButton = binding.contentMain.buttonFavorites.root
         favoritesButton.setOnClickListener {

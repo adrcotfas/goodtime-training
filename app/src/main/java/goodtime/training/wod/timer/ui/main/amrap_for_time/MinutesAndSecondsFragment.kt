@@ -92,6 +92,9 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
     }
 
     private fun showBalloonsIfNeeded() {
+        if (!isAdded) {
+            return
+        }
         if (sessionType == SessionType.FOR_TIME && preferenceHelper.showForTimeBalloons()) {
             preferenceHelper.setForTimeBalloons(false)
             binding.pickerSeparator.post {
