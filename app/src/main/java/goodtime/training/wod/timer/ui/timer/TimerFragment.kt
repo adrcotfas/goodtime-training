@@ -22,9 +22,7 @@ import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.workout.TimerState
 import goodtime.training.wod.timer.databinding.FragmentTimerBinding
-import goodtime.training.wod.timer.ui.timer.TimerService.Companion.FOR_TIME_COMPLETE
 import goodtime.training.wod.timer.ui.timer.TimerService.Companion.START
-import goodtime.training.wod.timer.ui.timer.TimerService.Companion.TOGGLE
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -45,7 +43,7 @@ class TimerFragment : Fragment(), KodeinAware {
         if (viewModel.getTimerState().value == TimerState.INACTIVE) {
             // Not the most elegant but should do for now
             // Initializing the WorkoutManager through the ViewModel because its LiveData would not be ready to be observed otherwise
-            viewModel.init(args.sessions, args.name)
+            viewModel.start(args.sessions, args.name)
             val intent = IntentWithAction(requireContext(), TimerService::class.java, START)
             startForegroundService(requireContext(), intent)
         }
@@ -92,15 +90,13 @@ class TimerFragment : Fragment(), KodeinAware {
         })
 
         binding.finishButton.setOnClickListener {
-            val intent = IntentWithAction(requireContext(), TimerService::class.java, FOR_TIME_COMPLETE)
-            startForegroundService(requireContext(), intent)
+            viewModel.finishForTime()
         }
 
         setupCounter()
 
         binding.timer.setOnClickListener {
-            val intent = IntentWithAction(requireContext(), TimerService::class.java, TOGGLE)
-            startForegroundService(requireContext(), intent)
+            viewModel.toggle()
         }
         return binding.root
     }
@@ -162,6 +158,7 @@ class TimerFragment : Fragment(), KodeinAware {
             TimerState.FINISHED -> {
                 val intent = IntentWithAction(requireContext(), TimerService::class.java, TimerService.FINALIZE)
                 startForegroundService(requireContext(), intent)
+                viewModel.finalize()
                 findNavController().navigate(R.id.action_nav_timer_to_nav_finished_workout)
             }
             else -> return // do nothing

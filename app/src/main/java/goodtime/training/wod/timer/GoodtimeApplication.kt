@@ -27,16 +27,14 @@ import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
 import goodtime.training.wod.timer.ui.settings.PreferenceDataStore
 import goodtime.training.wod.timer.ui.stats.StatisticsViewModelFactory
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
+import goodtime.training.wod.timer.ui.timer.DNDHandler
 import goodtime.training.wod.timer.ui.timer.TimerNotificationHelper
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import goodtime.training.wod.timer.ui.timer.WorkoutManager
 import kotlinx.coroutines.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.eagerSingleton
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
+import org.kodein.di.generic.*
 import java.util.concurrent.TimeUnit
 
 class GoodtimeApplication : Application(), KodeinAware {
@@ -85,7 +83,8 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind() from provider { CustomWorkoutViewModelFactory(instance()) }
         bind() from provider { StatisticsViewModelFactory(instance()) }
         bind() from provider { WeeklyGoalViewModelFactory(instance()) }
-        bind() from provider { TimerViewModelFactory(instance(), instance()) }
+        bind<DNDHandler>() with singleton { DNDHandler(applicationContext) }
+        bind() from provider { TimerViewModelFactory(instance(), instance(), instance(), instance()) }
 
         bind<IapConnector>() with eagerSingleton {
             IapConnector(

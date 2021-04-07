@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.repository.AppRepository
 import kotlinx.coroutines.launch
 
 class TimerViewModel(
     private val workoutManager: WorkoutManager,
-    private val repository: AppRepository
+    private val repository: AppRepository,
+    private val preferenceHelper: PreferenceHelper,
+    private var dndHandler: DNDHandler
 ) : ViewModel() {
 
     fun getTimerState() = workoutManager.timerState
@@ -36,17 +39,16 @@ class TimerViewModel(
         }
     }
 
+    fun start(sessionsRaw: String, name: String?) {
+        workoutManager.init(sessionsRaw, name)
+
+        if (preferenceHelper.isDndModeEnabled()) dndHandler.toggleDndMode(true)
+        workoutManager.notifyGetReady()
+        workoutManager.startWorkout()
+    }
+
     fun addRound() {
         workoutManager.addRound()
-    }
-
-    fun storeIncompleteWorkout() {
-        workoutManager.prepareSessionToAdd(false)
-        storeWorkout()
-    }
-
-    fun init(sessionsRaw: String, name: String?) {
-        workoutManager.init(sessionsRaw, name)
     }
 
     fun setInactive() {
@@ -57,6 +59,35 @@ class TimerViewModel(
         workoutManager.prepareSessionToAdd(true)
     }
 
+    fun toggle() {
+        workoutManager.toggleTimer()
+    }
+
+    fun finalize() {
+        if (preferenceHelper.isDndModeEnabled()) dndHandler.toggleDndMode(false)
+        workoutManager.setInactive()
+    }
+
+    fun abandon() {
+        if (preferenceHelper.isDndModeEnabled()) {
+            dndHandler.toggleDndMode(false)
+        }
+
+        workoutManager.abandonWorkout()
+        if (preferenceHelper.logIncompleteSessions()) {
+            storeIncompleteWorkout()
+        }
+    }
+
+    fun finishForTime() {
+        workoutManager.onForTimeComplete()
+    }
+
+    private fun storeIncompleteWorkout() {
+        workoutManager.prepareSessionToAdd(false)
+        storeWorkout()
+    }
+
     companion object {
         private const val TAG = "TimerViewModel"
     }
@@ -64,11 +95,13 @@ class TimerViewModel(
 
 class TimerViewModelFactory(
     private val workoutManager: WorkoutManager,
-    private val appRepository: AppRepository
+    private val appRepository: AppRepository,
+    private val preferenceHelper: PreferenceHelper,
+    private var dndHandler: DNDHandler
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return TimerViewModel(workoutManager, appRepository) as T
+        return TimerViewModel(workoutManager, appRepository, preferenceHelper, dndHandler) as T
     }
 }
