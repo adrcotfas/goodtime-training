@@ -39,6 +39,7 @@ import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
 import goodtime.training.wod.timer.ui.stats.EditWeeklyGoalDialog
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModel
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
+import goodtime.training.wod.timer.ui.upgrade.SKU
 import goodtime.training.wod.timer.ui.upgrade.UpgradeDialog
 import kotlinx.android.synthetic.main.activity_main.view.*
 import org.greenrobot.eventbus.EventBus
@@ -388,7 +389,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
             override fun onPurchaseAcknowledged(purchase: DataWrappers.PurchaseInfo) {
                 Log.i(TAG, "onPurchaseAcknowledged: $purchase")
-                if (purchase.sku == "pro") {
+                if (purchase.sku == SKU) {
                     if (!preferenceHelper.isPro()) {
                         preferenceHelper.setPro(true)
                         Toast.makeText(
@@ -449,7 +450,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         if (supportFragmentManager.findFragmentByTag("UpgradeDialog") == null) {
             UpgradeDialog.newInstance(object : UpgradeDialog.Listener {
                 override fun onUpgradeButtonClicked() {
-                    iapConnector.makePurchase(this@MainActivity, "pro")
+                    iapConnector.makePurchase(this@MainActivity, SKU)
                 }
             }).show(supportFragmentManager, "UpgradeDialog")
         }

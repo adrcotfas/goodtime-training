@@ -31,6 +31,7 @@ import goodtime.training.wod.timer.ui.timer.DNDHandler
 import goodtime.training.wod.timer.ui.timer.TimerNotificationHelper
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import goodtime.training.wod.timer.ui.timer.WorkoutManager
+import goodtime.training.wod.timer.ui.upgrade.SKU
 import kotlinx.coroutines.*
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -95,7 +96,7 @@ class GoodtimeApplication : Application(), KodeinAware {
                         "+Z6tT4Vzo2HcvrxH9Lwg+QAuVkycZomZpfaUBQxu70LOyMUnzmQ6OJNBjwAag" +
                         "+6Wh5HLPOoP5tr7FRB3pUQYrhPIso9xAZhWTK81sccCRu/TjqRet9pFoTQIDAQAB"
             )
-                .setInAppProductIds(listOf("pro"))
+                .setInAppProductIds(listOf(SKU))
                 .autoAcknowledge()
                 .connect()
         }
