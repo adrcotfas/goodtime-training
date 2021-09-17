@@ -23,10 +23,11 @@ class DayOfWeekPreference @JvmOverloads constructor(
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-
-        chipGroup = holder.findViewById(R.id.chip_group) as ChipGroup
-        chipGroup.removeAllViews()
-        setupDayChips()
+        if (!this::chipGroup.isInitialized) {
+            chipGroup = holder.findViewById(R.id.chip_group) as ChipGroup
+            chipGroup.removeAllViews()
+            setupDayChips()
+        }
     }
 
     private fun setupDayChips() {
