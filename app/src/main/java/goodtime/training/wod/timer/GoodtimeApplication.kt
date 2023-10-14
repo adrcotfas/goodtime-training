@@ -5,12 +5,17 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
+import goodtime.training.wod.timer.billing.BillingViewModel
 import goodtime.training.wod.timer.common.DimensionsUtils.Companion.getWindowHeight
 import goodtime.training.wod.timer.common.TimeUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.common.preferences.reminders.ReminderHelper
 import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
-import goodtime.training.wod.timer.data.db.*
+import goodtime.training.wod.timer.data.db.CustomWorkoutSkeletonDao
+import goodtime.training.wod.timer.data.db.GoodtimeDatabase
+import goodtime.training.wod.timer.data.db.SessionDao
+import goodtime.training.wod.timer.data.db.SessionSkeletonDao
+import goodtime.training.wod.timer.data.db.WeeklyGoalDao
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
@@ -20,8 +25,8 @@ import goodtime.training.wod.timer.data.repository.AppRepositoryImpl
 import goodtime.training.wod.timer.ui.main.amrap_for_time.AmrapViewModelFactory
 import goodtime.training.wod.timer.ui.main.amrap_for_time.ForTimeViewModelFactory
 import goodtime.training.wod.timer.ui.main.custom.CustomWorkoutViewModelFactory
-import goodtime.training.wod.timer.ui.main.intervals.IntervalsViewModelFactory
 import goodtime.training.wod.timer.ui.main.hiit.HiitViewModelFactory
+import goodtime.training.wod.timer.ui.main.intervals.IntervalsViewModelFactory
 import goodtime.training.wod.timer.ui.settings.PreferenceDataStore
 import goodtime.training.wod.timer.ui.stats.StatisticsViewModelFactory
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
@@ -29,11 +34,15 @@ import goodtime.training.wod.timer.ui.timer.DNDHandler
 import goodtime.training.wod.timer.ui.timer.TimerNotificationHelper
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import goodtime.training.wod.timer.ui.timer.WorkoutManager
-import goodtime.training.wod.timer.ui.upgrade.SKU
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
-import org.kodein.di.generic.*
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.eagerSingleton
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.provider
+import org.kodein.di.generic.singleton
 import java.util.concurrent.TimeUnit
 
 class GoodtimeApplication : Application(), KodeinAware {
@@ -85,19 +94,7 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<DNDHandler>() with singleton { DNDHandler(applicationContext) }
         bind() from provider { TimerViewModelFactory(instance(), instance(), instance(), instance()) }
 
-//        bind<IapConnector>() with eagerSingleton {
-//            IapConnector(
-//                applicationContext, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0qp0" +
-//                        "+Gec2NYEOqf8kEVN4PIZJ3w0eF4bq7FiOKx7MUOFeKjQex6nnMQORztnkSFVqL2qhyyBhqlvuL3" +
-//                        "/7S4JOChrslGi4HaTU6rhZ0uUGV23KMa5J6Jq/9FTuKHTq2YGfEhhDBaz2iXZSSaTHLUK9l3FvC4wJt" +
-//                        "+V8jCIBfzlovw1C0YhWYZq0ngDWE1LkFkbxurjtjLjG4SlJMAvTPALIjZuQwXPgij" +
-//                        "+Z6tT4Vzo2HcvrxH9Lwg+QAuVkycZomZpfaUBQxu70LOyMUnzmQ6OJNBjwAag" +
-//                        "+6Wh5HLPOoP5tr7FRB3pUQYrhPIso9xAZhWTK81sccCRu/TjqRet9pFoTQIDAQAB"
-//            )
-//                .setInAppProductIds(listOf(SKU))
-//                .autoAcknowledge()
-//                .connect()
-//        }
+        bind<BillingViewModel>() with eagerSingleton { BillingViewModel(this@GoodtimeApplication, instance())}
     }
 
     override fun onCreate() {

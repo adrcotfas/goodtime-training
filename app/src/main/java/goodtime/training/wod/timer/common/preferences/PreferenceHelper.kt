@@ -55,7 +55,7 @@ class PreferenceHelper(val dataStore: PreferenceDataStore) {
         private const val ASKED_FOR_REVIEW_TIME = "pref_asked_for_review_time"
         private const val COMPLETED_WORKOUTS_FOR_REVIEW = "pref_completed_workouts_for_review"
 
-        private const val IS_PRO = "pref_pro"
+        const val IS_PRO = "pref_pro"
 
         fun generatePreWorkoutSession(seconds: Int): SessionSkeleton {
             return SessionSkeleton(duration = seconds, breakDuration = 0, numRounds = 0, type = SessionType.REST)

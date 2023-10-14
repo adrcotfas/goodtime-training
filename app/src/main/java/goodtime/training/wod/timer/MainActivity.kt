@@ -23,6 +23,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
+import goodtime.training.wod.timer.billing.BillingViewModel
+import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
@@ -37,7 +39,6 @@ import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
 import goodtime.training.wod.timer.ui.stats.EditWeeklyGoalDialog
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModel
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
-import goodtime.training.wod.timer.ui.upgrade.SKU
 import goodtime.training.wod.timer.ui.upgrade.UpgradeDialog
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -48,7 +49,8 @@ import org.kodein.di.generic.instance
 import java.lang.Integer.min
 
 
-class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnSharedPreferenceChangeListener {
+class MainActivity : AppCompatActivity(), KodeinAware,
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     override val kodein by closestKodein()
 
@@ -77,7 +79,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     private val weeklyGoalViewModelFactory: WeeklyGoalViewModelFactory by instance()
     private lateinit var weeklyGoalViewModel: WeeklyGoalViewModel
 
-    //private val iapConnector: IapConnector by instance()
+    private val billingViewModel: BillingViewModel by instance()
 
     override fun onStart() {
         super.onStart()
@@ -89,22 +91,14 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        try {
-            //iapConnector.getAllPurchases()
-        } catch (e: NullPointerException) {
-            Log.e(TAG, "Something went when retrieving the IAPs")
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         preferenceHelper.dataStore.preferences.registerOnSharedPreferenceChangeListener(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        weeklyGoalViewModel = ViewModelProvider(this, weeklyGoalViewModelFactory).get(WeeklyGoalViewModel::class.java)
+        weeklyGoalViewModel =
+            ViewModelProvider(this, weeklyGoalViewModelFactory)[WeeklyGoalViewModel::class.java]
 
         setupWeeklyGoalButton()
         setupTopLevelButtons()
@@ -113,7 +107,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         val toolbar = binding.contentMain.toolbar
         setContentView(binding.root)
 
-        navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
         setSupportActionBar(toolbar)
@@ -140,7 +135,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
             toolbar.setNavigationIcon(if (isTopLevel) R.drawable.ic_menu_open else R.drawable.ic_arrow_back)
             binding.drawerLayout.setDrawerLockMode(if (isTopLevel) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
-            supportActionBar?.title = if (isTopLevel || destination.label == "Statistics") null else destination.label
+            supportActionBar?.title =
+                if (isTopLevel || destination.label == "Statistics") null else destination.label
             bottomNavigationView.isVisible = isTopLevel
             startButton.apply { if (isTopLevel) show() else hide() }
 
@@ -176,7 +172,10 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
         setupDrawer()
         refreshDrawerUpgradeButton()
-        //setupIAP()
+
+        billingViewModel.proPending.observe(this) {
+            Log.i(TAG, "pro pending: $it")
+        }
     }
 
     private fun setupTopLevelButtons() {
@@ -333,6 +332,15 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         if (key == PreferenceHelper.MINIMALIST_MODE_ENABLED) {
             val enabled = preferenceHelper.isMinimalistEnabled()
             toggleMinimalistMode(enabled)
+        } else if (key == PreferenceHelper.IS_PRO) {
+            if (preferenceHelper.isPro()) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Enjoy the PRO version!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            refreshDrawerUpgradeButton()
         }
     }
 
@@ -345,73 +353,26 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         // current issue is that top right buttons don't refresh to minimalist mode
         // because of data binding or at least that's what I think
 
-        //        if (enabled) {
-        //            val startPadding = dpToPx(this, 10f).toFloat()
-        //            favoritesButton.text = ""
-        //            favoritesButton.chipEndPadding = 0f
-        //            favoritesButton.chipStartPadding = startPadding
-        //
-        //            newCustomWorkoutButton.text = ""
-        //            newCustomWorkoutButton.chipEndPadding = 0f
-        //            newCustomWorkoutButton.chipStartPadding = startPadding
-        //        } else {
-        //            val padding = dpToPx(this, 4f).toFloat()
-        //            favoritesButton.text = getString(R.string.favorites)
-        //            favoritesButton.chipEndPadding = padding
-        //            favoritesButton.chipStartPadding = padding
-        //
-        //            newCustomWorkoutButton.text = getString(R.string.new_title)
-        //            newCustomWorkoutButton.chipEndPadding = padding
-        //            newCustomWorkoutButton.chipStartPadding = padding
-        //        }
-    }
+        if (enabled) {
+            val startPadding = dpToPx(this, 10f).toFloat()
+            favoritesButton.text = ""
+            favoritesButton.chipEndPadding = 0f
+            favoritesButton.chipStartPadding = startPadding
 
-//    private fun setupIAP() {
-//        iapConnector.setOnInAppEventsListener(object : InAppEventsListener {
-//            override fun onInAppProductsFetched(skuDetailsList: List<DataWrappers.SkuInfo>) {
-//                iapConnector.getAllPurchases()
-//            }
-//
-//            override fun onNoOwnedProductsFound() {
-//                Log.i(TAG, "onNoPurchasedProductsFound")
-//                if (preferenceHelper.isPro()) {
-//                    handleRefund()
-//                }
-//            }
-//
-//            override fun onNotOwnedProductFound(sku: String) {
-//                Log.i(TAG, "onNotOwnedProductFound: $sku")
-//                if (preferenceHelper.isPro()) {
-//                    handleRefund()
-//                }
-//            }
-//
-//            override fun onPurchaseAcknowledged(purchase: DataWrappers.PurchaseInfo) {
-//                Log.i(TAG, "onPurchaseAcknowledged: $purchase")
-//                if (purchase.sku == SKU) {
-//                    if (!preferenceHelper.isPro()) {
-//                        preferenceHelper.setPro(true)
-//                        Toast.makeText(
-//                            this@MainActivity,
-//                            "Enjoy the PRO version!",
-//                            Toast.LENGTH_LONG
-//                        ).show()
-//                        refreshDrawerUpgradeButton()
-//                    }
-//                }
-//            }
-//
-//            override fun onProductsPurchased(purchases: List<DataWrappers.PurchaseInfo>) {
-//                purchases.forEach {
-//                    Log.i(TAG, "onProductsPurchased: $it")
-//                }
-//            }
-//
-//            override fun onError(inAppConnector: IapConnector, result: DataWrappers.BillingResponse?) {
-//                Log.i(TAG, "IAP error: $result")
-//            }
-//        })
-//    }
+            newCustomWorkoutButton.text = ""
+            newCustomWorkoutButton.chipEndPadding = 0f
+            newCustomWorkoutButton.chipStartPadding = startPadding
+        } else {
+            val padding = dpToPx(this, 4f).toFloat()
+            favoritesButton.text = getString(R.string.favorites)
+            favoritesButton.chipEndPadding = padding
+            favoritesButton.chipStartPadding = padding
+
+            newCustomWorkoutButton.text = getString(R.string.new_title)
+            newCustomWorkoutButton.chipEndPadding = padding
+            newCustomWorkoutButton.chipStartPadding = padding
+        }
+    }
 
     private fun handleRefund() {
         Log.i(TAG, "Purchase was cancelled")
@@ -449,7 +410,11 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         if (supportFragmentManager.findFragmentByTag("UpgradeDialog") == null) {
             UpgradeDialog.newInstance(object : UpgradeDialog.Listener {
                 override fun onUpgradeButtonClicked() {
-                    //iapConnector.makePurchase(this@MainActivity, SKU)
+                    if (billingViewModel.billingConnectionState.value == true) {
+                        billingViewModel.buy(this@MainActivity)
+                    } else {
+                        Log.e(TAG, "Billing client is not connected")
+                    }
                 }
             }).show(supportFragmentManager, "UpgradeDialog")
         }
