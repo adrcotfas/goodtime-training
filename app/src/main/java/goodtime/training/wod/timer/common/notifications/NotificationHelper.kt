@@ -60,7 +60,7 @@ class NotificationHelper(context: Context) : ContextWrapper(context) {
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             return PendingIntent.getActivity(
                 context, 0,
-                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         }
 

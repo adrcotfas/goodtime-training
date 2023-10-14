@@ -82,26 +82,30 @@ class IntervalsFragment : WorkoutTypeFragment() {
         binding = FragmentIntervalsBinding.inflate(inflater, container, false)
 
         val favoritesLd = viewModel.getFavorites()
-        favoritesLd.observe(viewLifecycleOwner, { favorites ->
+        favoritesLd.observe(viewLifecycleOwner) { favorites ->
             val id = preferenceHelper.getCurrentFavoriteId(SessionType.INTERVALS)
             val idx = favorites.indexOfFirst { it.id == id }
 
             //TODO: extract defaults to constants
-            val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 60)
+            val minutesAndSeconds =
+                StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 60)
             val rounds = if (idx != -1) favorites[idx].numRounds else 20
-            viewModel.data = IntervalsSpinnerData(minutesAndSeconds.first, minutesAndSeconds.second, rounds)
+            viewModel.data =
+                IntervalsSpinnerData(minutesAndSeconds.first, minutesAndSeconds.second, rounds)
             favoritesLd.removeObservers(viewLifecycleOwner)
 
             setupNumberPickers()
 
             viewModel.data.get().observe(
-                    viewLifecycleOwner, { data ->
-                val duration = data.first
-                viewModel.session = SessionSkeleton(duration = duration, breakDuration = 0,
-                        numRounds = data.second, type = SessionType.INTERVALS)
-                updateMainButtonsState(duration)
-            })
-        })
+                viewLifecycleOwner, { data ->
+                    val duration = data.first
+                    viewModel.session = SessionSkeleton(
+                        duration = duration, breakDuration = 0,
+                        numRounds = data.second, type = SessionType.INTERVALS
+                    )
+                    updateMainButtonsState(duration)
+                })
+        }
 
         showBalloonsIfNeeded()
 
@@ -156,7 +160,7 @@ class IntervalsFragment : WorkoutTypeFragment() {
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
+    override fun getSelectedSessions(): List<SessionSkeleton> = arrayListOf(viewModel.session)
 
     override fun onFavoriteSelected(session: SessionSkeleton) {
         val duration = StringUtils.secondsToMinutesAndSeconds(session.duration)

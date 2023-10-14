@@ -57,22 +57,24 @@ class ReminderHelper(context: Context?) : ContextWrapper(context), KodeinAware,
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key.contains(PreferenceHelper.REMINDER_DAYS)) {
-            Log.d(TAG, "onSharedPreferenceChanged: $key")
-            val idx = key.last().toInt() - '0'.toInt()
-            val reminderDay = DayOfWeek.of(idx + 1)
-            if (preferenceHelper.isReminderEnabledFor(reminderDay)) {
-                toggleBootReceiver(true)
-                scheduleNotification(reminderDay)
-            } else {
-                cancelNotification(reminderDay)
-                toggleBootReceiver(false)
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (key != null) {
+            if (key.contains(PreferenceHelper.REMINDER_DAYS)) {
+                Log.d(TAG, "onSharedPreferenceChanged: $key")
+                val idx = key.last().toInt() - '0'.toInt()
+                val reminderDay = DayOfWeek.of(idx + 1)
+                if (preferenceHelper.isReminderEnabledFor(reminderDay)) {
+                    toggleBootReceiver(true)
+                    scheduleNotification(reminderDay)
+                } else {
+                    cancelNotification(reminderDay)
+                    toggleBootReceiver(false)
+                }
+            } else if (key == PreferenceHelper.REMINDER_TIME) {
+                Log.d(TAG, "onSharedPreferenceChanged: REMINDER_TIME")
+                cancelNotifications()
+                scheduleNotifications()
             }
-        } else if (key == PreferenceHelper.REMINDER_TIME) {
-            Log.d(TAG, "onSharedPreferenceChanged: REMINDER_TIME")
-            cancelNotifications()
-            scheduleNotifications()
         }
     }
 
@@ -96,7 +98,7 @@ class ReminderHelper(context: Context?) : ContextWrapper(context), KodeinAware,
                 this,
                 REMINDER_REQUEST_CODE + index,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         }
         return pendingIntents[index]!!
@@ -104,7 +106,7 @@ class ReminderHelper(context: Context?) : ContextWrapper(context), KodeinAware,
 
     private fun cancelNotifications() {
         Log.d(TAG, "cancelNotifications")
-        for (day in DayOfWeek.values()) {
+        for (day in DayOfWeek.entries) {
             cancelNotification(day)
         }
     }
@@ -170,7 +172,7 @@ class ReminderHelper(context: Context?) : ContextWrapper(context), KodeinAware,
                 context,
                 0,
                 openMainIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             val builder = NotificationCompat.Builder(context, GOODTIME_REMINDER_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_run)

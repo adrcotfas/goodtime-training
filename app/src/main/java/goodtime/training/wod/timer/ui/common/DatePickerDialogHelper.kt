@@ -2,7 +2,7 @@ package goodtime.training.wod.timer.ui.common
 
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 import java.time.ZoneId
 

@@ -101,7 +101,7 @@ class TimerViewModelFactory(
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return TimerViewModel(workoutManager, appRepository, preferenceHelper, dndHandler) as T
     }
 }

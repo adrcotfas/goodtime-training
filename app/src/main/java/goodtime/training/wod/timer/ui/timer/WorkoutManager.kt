@@ -41,7 +41,7 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     }
 
     var sessionToAdd = Session()
-    var sessions = ArrayList<SessionSkeleton>()
+    lateinit var sessions : List<SessionSkeleton>
 
     private val _timerState = MutableLiveData(TimerState.INACTIVE)
     val timerState: LiveData<TimerState>

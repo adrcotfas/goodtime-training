@@ -5,8 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
-import com.alphelios.iap.IapConnector
-import com.google.android.material.resources.TextAppearanceConfig
 import goodtime.training.wod.timer.common.DimensionsUtils.Companion.getWindowHeight
 import goodtime.training.wod.timer.common.TimeUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
@@ -87,19 +85,19 @@ class GoodtimeApplication : Application(), KodeinAware {
         bind<DNDHandler>() with singleton { DNDHandler(applicationContext) }
         bind() from provider { TimerViewModelFactory(instance(), instance(), instance(), instance()) }
 
-        bind<IapConnector>() with eagerSingleton {
-            IapConnector(
-                applicationContext, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0qp0" +
-                        "+Gec2NYEOqf8kEVN4PIZJ3w0eF4bq7FiOKx7MUOFeKjQex6nnMQORztnkSFVqL2qhyyBhqlvuL3" +
-                        "/7S4JOChrslGi4HaTU6rhZ0uUGV23KMa5J6Jq/9FTuKHTq2YGfEhhDBaz2iXZSSaTHLUK9l3FvC4wJt" +
-                        "+V8jCIBfzlovw1C0YhWYZq0ngDWE1LkFkbxurjtjLjG4SlJMAvTPALIjZuQwXPgij" +
-                        "+Z6tT4Vzo2HcvrxH9Lwg+QAuVkycZomZpfaUBQxu70LOyMUnzmQ6OJNBjwAag" +
-                        "+6Wh5HLPOoP5tr7FRB3pUQYrhPIso9xAZhWTK81sccCRu/TjqRet9pFoTQIDAQAB"
-            )
-                .setInAppProductIds(listOf(SKU))
-                .autoAcknowledge()
-                .connect()
-        }
+//        bind<IapConnector>() with eagerSingleton {
+//            IapConnector(
+//                applicationContext, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0qp0" +
+//                        "+Gec2NYEOqf8kEVN4PIZJ3w0eF4bq7FiOKx7MUOFeKjQex6nnMQORztnkSFVqL2qhyyBhqlvuL3" +
+//                        "/7S4JOChrslGi4HaTU6rhZ0uUGV23KMa5J6Jq/9FTuKHTq2YGfEhhDBaz2iXZSSaTHLUK9l3FvC4wJt" +
+//                        "+V8jCIBfzlovw1C0YhWYZq0ngDWE1LkFkbxurjtjLjG4SlJMAvTPALIjZuQwXPgij" +
+//                        "+Z6tT4Vzo2HcvrxH9Lwg+QAuVkycZomZpfaUBQxu70LOyMUnzmQ6OJNBjwAag" +
+//                        "+6Wh5HLPOoP5tr7FRB3pUQYrhPIso9xAZhWTK81sccCRu/TjqRet9pFoTQIDAQAB"
+//            )
+//                .setInAppProductIds(listOf(SKU))
+//                .autoAcknowledge()
+//                .connect()
+//        }
     }
 
     override fun onCreate() {
@@ -110,7 +108,6 @@ class GoodtimeApplication : Application(), KodeinAware {
         windowHeightPortrait = getWindowHeight(applicationContext)
         reminderHelper = ReminderHelper(this)
 
-        TextAppearanceConfig.setShouldLoadFontSynchronously(true)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         val preferenceHelper: PreferenceHelper by instance()
         if (preferenceHelper.getFirstRunTime() == 0L) {

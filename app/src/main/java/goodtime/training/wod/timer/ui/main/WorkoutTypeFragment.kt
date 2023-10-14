@@ -65,7 +65,7 @@ abstract class WorkoutTypeFragment :
 
     abstract fun onStartWorkout()
 
-    abstract fun getSelectedSessions(): ArrayList<SessionSkeleton>
+    abstract fun getSelectedSessions(): List<SessionSkeleton>
 
     fun updateMainButtonsState(duration: Int) {
         if (isDurationValid && duration != 0 || !isDurationValid && duration == 0) {

@@ -3,13 +3,12 @@ package goodtime.training.wod.timer.data.model
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlin.collections.ArrayList
 
 class TypeConverter {
 
     @TypeConverter
     fun fromInt(data: Int): SessionType {
-        for (type in SessionType.values()) {
+        for (type in SessionType.entries) {
             if (type.value == data) {
                 return type
             }
@@ -23,14 +22,14 @@ class TypeConverter {
     }
 
     @TypeConverter
-    fun toString(sessions: ArrayList<SessionSkeleton>): String {
+    fun toString(sessions: List<SessionSkeleton>): String {
         return Gson().toJson(sessions)
     }
 
     @TypeConverter
-    fun toSessionSkeletons(string: String): ArrayList<SessionSkeleton> {
+    fun toSessionSkeletons(string: String): List<SessionSkeleton> {
         val gson = Gson()
-        val typeToken = object : TypeToken<ArrayList<SessionSkeleton>>() {}
+        val typeToken = object : TypeToken<List<SessionSkeleton>>() {}
         return gson.fromJson(string, typeToken.type)
     }
 
@@ -53,14 +52,14 @@ class TypeConverter {
     }
 
     @TypeConverter
-    fun intToString(ints: ArrayList<Int>): String {
+    fun intToString(ints: List<Int>): String {
         return Gson().toJson(ints)
     }
 
     @TypeConverter
-    fun stringToInts(string: String): ArrayList<Int> {
+    fun stringToInts(string: String): List<Int> {
         val gson = Gson()
-        val typeToken = object : TypeToken<ArrayList<Int>>() {}
+        val typeToken = object : TypeToken<List<Int>>() {}
         return gson.fromJson(string, typeToken.type)
     }
 
@@ -71,9 +70,9 @@ class TypeConverter {
             return gson.toJson(listOf(*sessions))
         }
 
-        fun toSessionSkeletons(string : String) : ArrayList<SessionSkeleton> {
+        fun toSessionSkeletons(string : String) : List<SessionSkeleton> {
             val gson = Gson()
-            val typeToken = object : TypeToken<ArrayList<SessionSkeleton>>() {}
+            val typeToken = object : TypeToken<List<SessionSkeleton>>() {}
             return gson.fromJson(string, typeToken.type)
         }
     }

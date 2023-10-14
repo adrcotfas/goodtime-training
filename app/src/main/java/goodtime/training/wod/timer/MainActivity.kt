@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
@@ -18,13 +19,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
-import com.alphelios.iap.DataWrappers
-import com.alphelios.iap.IapConnector
-import com.alphelios.iap.InAppEventsListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationBarView
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
@@ -41,7 +39,6 @@ import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModel
 import goodtime.training.wod.timer.ui.stats.WeeklyGoalViewModelFactory
 import goodtime.training.wod.timer.ui.upgrade.SKU
 import goodtime.training.wod.timer.ui.upgrade.UpgradeDialog
-import kotlinx.android.synthetic.main.activity_main.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -80,7 +77,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     private val weeklyGoalViewModelFactory: WeeklyGoalViewModelFactory by instance()
     private lateinit var weeklyGoalViewModel: WeeklyGoalViewModel
 
-    private val iapConnector: IapConnector by instance()
+    //private val iapConnector: IapConnector by instance()
 
     override fun onStart() {
         super.onStart()
@@ -95,7 +92,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
     override fun onResume() {
         super.onResume()
         try {
-            iapConnector.getAllPurchases()
+            //iapConnector.getAllPurchases()
         } catch (e: NullPointerException) {
             Log.e(TAG, "Something went when retrieving the IAPs")
         }
@@ -179,7 +176,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
         setupDrawer()
         refreshDrawerUpgradeButton()
-        setupIAP()
+        //setupIAP()
     }
 
     private fun setupTopLevelButtons() {
@@ -226,17 +223,18 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun refreshDrawerUpgradeButton() {
         if (!preferenceHelper.isPro()) {
-            binding.drawerLayout.button_pro.isVisible = true
-            binding.drawerLayout.button_pro.setOnClickListener {
+            binding.buttonPro.root.isVisible = true
+            binding.buttonPro.root.setOnClickListener {
                 EventBus.getDefault().post(Events.Companion.ShowUpgradeDialog())
             }
         } else {
-            binding.drawerLayout.button_pro.isVisible = false
+            binding.buttonPro.root.isVisible = false
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupDrawer() {
-        binding.drawerLayout.privacy_policy_button.setOnClickListener {
+        binding.privacyPolicyButton.setOnClickListener {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
@@ -244,9 +242,9 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                 )
             )
         }
-        binding.drawerLayout.app_version_button.text =
+        binding.appVersionButton.text =
             "version ${BuildConfig.VERSION_NAME} ${if (preferenceHelper.isPro()) "PRO" else ""}"
-        binding.drawerLayout.app_version_button.setOnClickListener { openStorePage(this) }
+        binding.appVersionButton.setOnClickListener { openStorePage(this) }
 
         binding.buttonSettings.root.setOnClickListener {
             navController.navigate(MobileNavigationDirections.toSettings())
@@ -258,11 +256,12 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupWeeklyGoalButton() {
         binding.weeklyGoalSection.root.setOnClickListener {
             EditWeeklyGoalDialog().show(supportFragmentManager, "EditWeeklyGoalDialog")
         }
-        weeklyGoalViewModel.getWeeklyGoalData().observe(this, {
+        weeklyGoalViewModel.getWeeklyGoalData().observe(this) {
             val thereIsNoGoal = it.goal.minutes == 0
 
             binding.weeklyGoalSection.description.isVisible = !thereIsNoGoal
@@ -274,7 +273,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
                 binding.weeklyGoalSection.description.text =
                     "${progress}% (${it.minutesThisWeek} minutes / ${it.goal.minutes} minutes)"
             }
-        })
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -330,7 +329,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         }
     }
 
-    override fun onSharedPreferenceChanged(preference: SharedPreferences, key: String) {
+    override fun onSharedPreferenceChanged(preference: SharedPreferences?, key: String?) {
         if (key == PreferenceHelper.MINIMALIST_MODE_ENABLED) {
             val enabled = preferenceHelper.isMinimalistEnabled()
             toggleMinimalistMode(enabled)
@@ -339,8 +338,8 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
 
     private fun toggleMinimalistMode(enabled: Boolean) {
         bottomNavigationView.labelVisibilityMode =
-            if (enabled) LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
-            else LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+            if (enabled) NavigationBarView.LABEL_VISIBILITY_UNLABELED
+            else NavigationBarView.LABEL_VISIBILITY_LABELED
 
         //TODO: fix and re-enable this later
         // current issue is that top right buttons don't refresh to minimalist mode
@@ -367,52 +366,52 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         //        }
     }
 
-    private fun setupIAP() {
-        iapConnector.setOnInAppEventsListener(object : InAppEventsListener {
-            override fun onInAppProductsFetched(skuDetailsList: List<DataWrappers.SkuInfo>) {
-                iapConnector.getAllPurchases()
-            }
-
-            override fun onNoOwnedProductsFound() {
-                Log.i(TAG, "onNoPurchasedProductsFound")
-                if (preferenceHelper.isPro()) {
-                    handleRefund()
-                }
-            }
-
-            override fun onNotOwnedProductFound(sku: String) {
-                Log.i(TAG, "onNotOwnedProductFound: $sku")
-                if (preferenceHelper.isPro()) {
-                    handleRefund()
-                }
-            }
-
-            override fun onPurchaseAcknowledged(purchase: DataWrappers.PurchaseInfo) {
-                Log.i(TAG, "onPurchaseAcknowledged: $purchase")
-                if (purchase.sku == SKU) {
-                    if (!preferenceHelper.isPro()) {
-                        preferenceHelper.setPro(true)
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Enjoy the PRO version!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        refreshDrawerUpgradeButton()
-                    }
-                }
-            }
-
-            override fun onProductsPurchased(purchases: List<DataWrappers.PurchaseInfo>) {
-                purchases.forEach {
-                    Log.i(TAG, "onProductsPurchased: $it")
-                }
-            }
-
-            override fun onError(inAppConnector: IapConnector, result: DataWrappers.BillingResponse?) {
-                Log.i(TAG, "IAP error: $result")
-            }
-        })
-    }
+//    private fun setupIAP() {
+//        iapConnector.setOnInAppEventsListener(object : InAppEventsListener {
+//            override fun onInAppProductsFetched(skuDetailsList: List<DataWrappers.SkuInfo>) {
+//                iapConnector.getAllPurchases()
+//            }
+//
+//            override fun onNoOwnedProductsFound() {
+//                Log.i(TAG, "onNoPurchasedProductsFound")
+//                if (preferenceHelper.isPro()) {
+//                    handleRefund()
+//                }
+//            }
+//
+//            override fun onNotOwnedProductFound(sku: String) {
+//                Log.i(TAG, "onNotOwnedProductFound: $sku")
+//                if (preferenceHelper.isPro()) {
+//                    handleRefund()
+//                }
+//            }
+//
+//            override fun onPurchaseAcknowledged(purchase: DataWrappers.PurchaseInfo) {
+//                Log.i(TAG, "onPurchaseAcknowledged: $purchase")
+//                if (purchase.sku == SKU) {
+//                    if (!preferenceHelper.isPro()) {
+//                        preferenceHelper.setPro(true)
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "Enjoy the PRO version!",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                        refreshDrawerUpgradeButton()
+//                    }
+//                }
+//            }
+//
+//            override fun onProductsPurchased(purchases: List<DataWrappers.PurchaseInfo>) {
+//                purchases.forEach {
+//                    Log.i(TAG, "onProductsPurchased: $it")
+//                }
+//            }
+//
+//            override fun onError(inAppConnector: IapConnector, result: DataWrappers.BillingResponse?) {
+//                Log.i(TAG, "IAP error: $result")
+//            }
+//        })
+//    }
 
     private fun handleRefund() {
         Log.i(TAG, "Purchase was cancelled")
@@ -450,7 +449,7 @@ class MainActivity : AppCompatActivity(), KodeinAware, SharedPreferences.OnShare
         if (supportFragmentManager.findFragmentByTag("UpgradeDialog") == null) {
             UpgradeDialog.newInstance(object : UpgradeDialog.Listener {
                 override fun onUpgradeButtonClicked() {
-                    iapConnector.makePurchase(this@MainActivity, SKU)
+                    //iapConnector.makePurchase(this@MainActivity, SKU)
                 }
             }).show(supportFragmentManager, "UpgradeDialog")
         }

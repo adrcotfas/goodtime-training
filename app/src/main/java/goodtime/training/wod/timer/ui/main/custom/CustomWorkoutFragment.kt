@@ -44,7 +44,7 @@ class CustomWorkoutFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(CustomWorkoutViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[CustomWorkoutViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -108,7 +108,7 @@ class CustomWorkoutFragment :
     }
 
     private fun initCurrentWorkout() {
-        viewModel.getWorkoutList().observe(viewLifecycleOwner, {
+        viewModel.getWorkoutList().observe(viewLifecycleOwner) {
             viewModel.favorites = it
             if (it.isEmpty()) {
                 viewModel.currentWorkoutName = newWorkoutName
@@ -122,7 +122,7 @@ class CustomWorkoutFragment :
                     for (fav in it) {
                         if (fav.name == name) {
                             viewModel.currentWorkoutName = fav.name
-                            viewModel.currentWorkoutSessions = fav.sessions
+                            viewModel.currentWorkoutSessions = fav.sessions.toMutableList()
                             binding.title.text.text = fav.name
                             found = true
                             break
@@ -131,7 +131,7 @@ class CustomWorkoutFragment :
                 }
                 if (!found) {
                     viewModel.currentWorkoutName = it.first().name
-                    viewModel.currentWorkoutSessions = it.first().sessions
+                    viewModel.currentWorkoutSessions = it.first().sessions.toMutableList()
                     binding.title.text.text = viewModel.currentWorkoutName
                 }
                 updateTotalDuration()
@@ -139,22 +139,22 @@ class CustomWorkoutFragment :
                 setSaveButtonVisibility(false)
             }
             setupRecycler()
-        })
+        }
     }
 
     override fun onStartWorkout() {
         val action = CustomWorkoutFragmentDirections.toWorkout(
-            if (viewModel.hasUnsavedSession) null else viewModel.currentWorkoutName,
             TypeConverter.toString(
                 sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
                         + getSelectedSessions().toTypedArray()
-            )
+            ),
+            if (viewModel.hasUnsavedSession) "" else viewModel.currentWorkoutName,
         )
         findNavController().navigate(action)
     }
 
     //TODO: extract duplicate code
-    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = viewModel.currentWorkoutSessions
+    override fun getSelectedSessions(): List<SessionSkeleton> = viewModel.currentWorkoutSessions
 
     private fun toggleEmptyState(visible: Boolean) {
         if (visible) {
@@ -184,7 +184,7 @@ class CustomWorkoutFragment :
     }
 
     override fun onSessionAdded(session: SessionSkeleton) {
-        viewModel.currentWorkoutSessions.add(session)
+        viewModel.currentWorkoutSessions += session
         viewModel.hasUnsavedSession = true
 
         toggleEmptyState(false)
@@ -242,9 +242,10 @@ class CustomWorkoutFragment :
     override fun onFavoriteSelected(session: SessionSkeleton) { /* do nothing*/
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onFavoriteSelected(workout: CustomWorkoutSkeleton) {
         viewModel.currentWorkoutName = workout.name
-        viewModel.currentWorkoutSessions = workout.sessions
+        viewModel.currentWorkoutSessions = workout.sessions.toMutableList()
         binding.title.text.text = viewModel.currentWorkoutName
         listAdapter.data = viewModel.currentWorkoutSessions
         listAdapter.notifyDataSetChanged()
@@ -284,6 +285,7 @@ class CustomWorkoutFragment :
         binding.totalTime.text.text = StringUtils.secondsToNiceFormat(total)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun onNewCustomWorkoutButtonClick() {
         viewModel.currentWorkoutSessions.clear()
         listAdapter.notifyDataSetChanged()

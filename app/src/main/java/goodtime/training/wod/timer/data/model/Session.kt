@@ -1,8 +1,8 @@
 package goodtime.training.wod.timer.data.model
 
 import androidx.room.*
-import androidx.room.ForeignKey.CASCADE
-import androidx.room.ForeignKey.SET_DEFAULT
+import androidx.room.ForeignKey.Companion.CASCADE
+import androidx.room.ForeignKey.Companion.SET_DEFAULT
 import java.lang.IllegalArgumentException
 
 @Entity(
@@ -82,7 +82,7 @@ data class Session(
             )
         }
 
-        fun calculateTotal(sessions: ArrayList<SessionSkeleton>): Int {
+        fun calculateTotal(sessions: List<SessionSkeleton>): Int {
             var total = 0
             for (i in sessions.withIndex()) {
                 total += when (i.value.type) {
@@ -102,7 +102,7 @@ data class Session(
          * For example, you would hypothetically need at least 1 minute and 1 second to complete
          * a 1 minute AMRAM and a 1 minute FOR_TIME
          */
-        fun calculateMinimumToComplete(sessions: ArrayList<SessionSkeleton>): Int {
+        fun calculateMinimumToComplete(sessions: List<SessionSkeleton>): Int {
             var total = 0
             var numberOfForTimeWorkouts = 0
             for (i in sessions.withIndex()) {

@@ -68,9 +68,9 @@ class CircleProgressBar @JvmOverloads constructor(
         super.onSizeChanged(w, h, oldw, oldh)
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas?.drawCircle(centerX, centerY, radius, backgroundPaint)
-        canvas?.drawArc(oval, 270f, 360f * progress, false, progressPaint)
+        canvas.drawCircle(centerX, centerY, radius, backgroundPaint)
+        canvas.drawArc(oval, 270f, 360f * progress, false, progressPaint)
     }
 }

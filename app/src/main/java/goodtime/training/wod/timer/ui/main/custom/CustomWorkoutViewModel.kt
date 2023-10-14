@@ -13,7 +13,7 @@ class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewMod
     var favorites = listOf<CustomWorkoutSkeleton>()
 
     lateinit var currentWorkoutName: String
-    var currentWorkoutSessions = arrayListOf<SessionSkeleton>()
+    var currentWorkoutSessions = mutableListOf<SessionSkeleton>()
 
     var hasUnsavedSession = false
 

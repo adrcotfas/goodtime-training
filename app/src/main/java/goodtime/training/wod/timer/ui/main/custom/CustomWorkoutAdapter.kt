@@ -18,13 +18,13 @@ import goodtime.training.wod.timer.data.model.SessionType
 import java.util.Collections
 
 class CustomWorkoutAdapter(
-        var data: ArrayList<SessionSkeleton>,
+        var data: MutableList<SessionSkeleton>,
         private val listener: Listener
 ) : RecyclerView.Adapter<CustomWorkoutAdapter.ViewHolder>() {
     /**
      * Use this to compare the data before and after releasing the drag handle for rearranging
      */
-    private lateinit var tmpData: ArrayList<SessionSkeleton>
+    private lateinit var tmpData: List<SessionSkeleton>
 
     interface Listener {
         fun onDeleteButtonClicked(position: Int)
@@ -44,7 +44,7 @@ class CustomWorkoutAdapter(
 
         holder.scrollHandle.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                tmpData = data.clone() as ArrayList<SessionSkeleton>
+                tmpData = ArrayList(data)
                 listener.onScrollHandleTouch(holder)
             }
             return@setOnTouchListener true

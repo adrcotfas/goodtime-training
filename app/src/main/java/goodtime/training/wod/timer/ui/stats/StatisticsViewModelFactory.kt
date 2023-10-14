@@ -8,7 +8,7 @@ class StatisticsViewModelFactory(private val appRepository: AppRepository)
     : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return StatisticsViewModel(appRepository) as T
     }
 }

@@ -9,5 +9,6 @@ import androidx.room.TypeConverters
 class CustomWorkoutSkeleton(
     @PrimaryKey
     var name: String,
-    var sessions: ArrayList<SessionSkeleton>
+    //TODO: check if migration is required for refactoring to List
+    var sessions: List<SessionSkeleton>
 )

@@ -2,6 +2,8 @@ package goodtime.training.wod.timer.ui.timer
 
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import goodtime.training.wod.timer.common.notifications.NotificationHelper
@@ -27,7 +29,11 @@ class TimerService: Service(), KodeinAware{
         when(intent.action) {
             START -> {
                 Log.i(TAG, "START")
-                startForeground(GOODTIME_NOTIFICATION_ID, NotificationHelper.getNotification(this))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        startForeground(GOODTIME_NOTIFICATION_ID, NotificationHelper.getNotification(this), FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                } else {
+                    startForeground(GOODTIME_NOTIFICATION_ID, NotificationHelper.getNotification(this))
+                }
             }
             FINALIZE -> {
                 Log.i(TAG, "FINALIZE")
@@ -38,7 +44,7 @@ class TimerService: Service(), KodeinAware{
     }
 
     private fun onStop() {
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 

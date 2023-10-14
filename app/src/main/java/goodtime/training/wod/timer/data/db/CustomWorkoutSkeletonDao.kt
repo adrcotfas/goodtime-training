@@ -2,7 +2,7 @@ package goodtime.training.wod.timer.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.TypeConverter
@@ -26,5 +26,5 @@ interface CustomWorkoutSkeletonDao {
 
     @Query("update CustomWorkoutSkeleton set name = :newName, sessions = :newSessions where name = :name")
     @TypeConverters(TypeConverter::class)
-    fun edit(name: String, newName: String, newSessions: ArrayList<SessionSkeleton>)
+    fun edit(name: String, newName: String, newSessions: List<SessionSkeleton>)
 }

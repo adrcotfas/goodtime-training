@@ -160,7 +160,7 @@ class HiitFragment : WorkoutTypeFragment() {
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
+    override fun getSelectedSessions(): List<SessionSkeleton> = arrayListOf(viewModel.session)
 
     override fun onFavoriteSelected(session: SessionSkeleton) {
         secondsWorkPicker.smoothScrollToValue(session.duration)

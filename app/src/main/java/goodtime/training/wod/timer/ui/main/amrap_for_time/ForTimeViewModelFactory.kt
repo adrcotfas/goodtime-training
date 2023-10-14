@@ -7,7 +7,7 @@ import goodtime.training.wod.timer.data.repository.AppRepository
 class ForTimeViewModelFactory(private val repo: AppRepository)
     : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ForTimeViewModel(repo) as T
     }
 }

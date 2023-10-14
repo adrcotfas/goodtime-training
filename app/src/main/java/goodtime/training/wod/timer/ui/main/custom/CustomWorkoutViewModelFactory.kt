@@ -7,7 +7,7 @@ import goodtime.training.wod.timer.data.repository.AppRepository
 class CustomWorkoutViewModelFactory(private val appRepository: AppRepository)
     : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return CustomWorkoutViewModel(appRepository) as T
     }
 }

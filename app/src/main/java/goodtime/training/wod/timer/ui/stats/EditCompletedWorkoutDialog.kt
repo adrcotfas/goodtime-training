@@ -53,17 +53,17 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
     ): View {
         binding = DialogEditCompletedWorkoutBinding.inflate(inflater)
 
-        repo.getSession(candidateIdx).observe(this, { session ->
+        repo.getSession(candidateIdx).observe(this) { session ->
             candidate = session
             if (candidate.isCustom()) {
                 if (candidate.name != null) {
-                    repo.getCustomWorkoutSkeleton(candidate.name!!).observe(this, { customWorkout ->
+                    repo.getCustomWorkoutSkeleton(candidate.name!!).observe(this) { customWorkout ->
                         customWorkoutSelection = customWorkout
                         minimumMinutesAndSeconds =
                             Session.calculateMinimumToComplete(customWorkout.sessions)
                         maximumMinutesAndSeconds = Session.calculateTotal(customWorkout.sessions)
                         doSetup()
-                    })
+                    }
                 } else { // the custom workout was deleted and this is a leftover
                     minimumMinutesAndSeconds =
                         if (candidate.isTimeBased) 1
@@ -78,7 +78,7 @@ class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
                 maximumMinutesAndSeconds = candidate.skeleton.getActualDuration()
                 doSetup()
             }
-        })
+        }
         return binding.root
     }
 

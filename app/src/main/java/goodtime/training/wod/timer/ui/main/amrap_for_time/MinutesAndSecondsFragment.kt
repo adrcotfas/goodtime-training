@@ -173,7 +173,7 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
         findNavController().navigate(action)
     }
 
-    override fun getSelectedSessions(): ArrayList<SessionSkeleton> = arrayListOf(viewModel.session)
+    override fun getSelectedSessions(): List<SessionSkeleton> = arrayListOf(viewModel.session)
 
     //TODO: extract the two functions to a common interface;
     //use the viewModel to access the repo and get the corresponding workout or session
