@@ -87,7 +87,7 @@ class BillingClientWrapper(
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    Log.d(TAG, "Billing response OK")
+                    Log.i(TAG, "Billing response OK")
                     // The BillingClient is ready. You can query purchases and product details here
                     queryPurchases()
                     queryProductDetails()
@@ -199,7 +199,7 @@ class BillingClientWrapper(
             && !purchases.isNullOrEmpty()
         ) {
             // Post new purchase List to _purchases
-            _purchases.postValue(purchases!!)
+            _purchases.postValue(purchases)
 
             // Then, handle the purchases
             for (purchase in purchases) {

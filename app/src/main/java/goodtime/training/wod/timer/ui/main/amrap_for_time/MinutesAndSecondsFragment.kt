@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.calculateRowHeight

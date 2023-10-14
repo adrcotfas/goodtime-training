@@ -24,7 +24,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
 import goodtime.training.wod.timer.billing.BillingViewModel
-import goodtime.training.wod.timer.common.DimensionsUtils.Companion.dpToPx
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
 import goodtime.training.wod.timer.common.currentNavigationFragment
@@ -175,6 +174,9 @@ class MainActivity : AppCompatActivity(), KodeinAware,
 
         billingViewModel.proPending.observe(this) {
             Log.i(TAG, "pro pending: $it")
+//            Log.i(TAG, "Purchase was cancelled")
+//            preferenceHelper.setPro(false)
+//            preferenceHelper.resetPreferencesOnRefund()
         }
     }
 
@@ -348,37 +350,6 @@ class MainActivity : AppCompatActivity(), KodeinAware,
         bottomNavigationView.labelVisibilityMode =
             if (enabled) NavigationBarView.LABEL_VISIBILITY_UNLABELED
             else NavigationBarView.LABEL_VISIBILITY_LABELED
-
-        //TODO: fix and re-enable this later
-        // current issue is that top right buttons don't refresh to minimalist mode
-        // because of data binding or at least that's what I think
-
-        if (enabled) {
-            val startPadding = dpToPx(this, 10f).toFloat()
-            favoritesButton.text = ""
-            favoritesButton.chipEndPadding = 0f
-            favoritesButton.chipStartPadding = startPadding
-
-            newCustomWorkoutButton.text = ""
-            newCustomWorkoutButton.chipEndPadding = 0f
-            newCustomWorkoutButton.chipStartPadding = startPadding
-        } else {
-            val padding = dpToPx(this, 4f).toFloat()
-            favoritesButton.text = getString(R.string.favorites)
-            favoritesButton.chipEndPadding = padding
-            favoritesButton.chipStartPadding = padding
-
-            newCustomWorkoutButton.text = getString(R.string.new_title)
-            newCustomWorkoutButton.chipEndPadding = padding
-            newCustomWorkoutButton.chipStartPadding = padding
-        }
-    }
-
-    private fun handleRefund() {
-        Log.i(TAG, "Purchase was cancelled")
-        preferenceHelper.setPro(false)
-        preferenceHelper.resetPreferencesOnRefund()
-        refreshDrawerUpgradeButton()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
