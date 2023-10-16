@@ -32,13 +32,13 @@ class CustomBalloonFactory {
                 setMarginLeft(24)
                 setMarginRight(24)
                 setTextGravity(Gravity.START)
-                setTextColorResource(R.color.grey200)
-                setBackgroundColorResource(R.color.red_goodtime_dark)
+                setTextColorResource(android.R.color.black)
+                setBackgroundColorResource(android.R.color.white)
                 setDismissWhenClicked(true)
                 setBalloonAnimation(BalloonAnimation.FADE)
                 setLifecycleOwner(lifecycle)
                 setOverlayShape(BalloonOverlayCircle(0f))
-                setOverlayColorResource(R.color.transparent_dark_red)
+                setOverlayColorResource(R.color.white_30percent)
                 setIsVisibleOverlay(true)
             }
         }

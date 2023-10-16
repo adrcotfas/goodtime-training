@@ -6,6 +6,7 @@
     <color name="transparent_dark">#80000000</color>
     <color name="white_5percent">#0DFFFFFF</color>
     <color name="white_10percent">#1AFFFFFF</color>
+    <color name="white_30percent">#4DFFFFFF</color>
     <color name="transparent_dark_red">#4D510000</color>
 
     <color name="grey200">#EEEEEE</color>
