@@ -20,13 +20,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
         coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     buildTypes {
@@ -34,8 +34,6 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
-            debuggable true
         }
     }
 
@@ -86,7 +84,7 @@ dependencies {
     implementation 'nl.dionsegijn:konfetti:1.2.5'
 
     // For the intro tutorial
-    implementation "com.github.skydoves:balloon:1.2.9"
+    implementation "com.github.skydoves:balloon:1.6.1"
 
     // For the statistics
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'

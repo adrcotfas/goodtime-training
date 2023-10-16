@@ -114,7 +114,11 @@ class BillingClientWrapper(
         ) { billingResult, purchaseList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 Log.i(TAG, "onQueryPurchasesResponse: ${purchaseList.map { it.toString() }}")
-                _purchases.value = purchaseList
+                if (purchaseList.isNotEmpty()) {
+                    _purchases.value = purchaseList
+                } else {
+                    _purchases.value = emptyList()
+                }
             } else {
                 Log.e(TAG, billingResult.debugMessage)
             }
@@ -168,10 +172,6 @@ class BillingClientWrapper(
                         it.productId
                     }
                 }
-                Log.i(
-                    TAG,
-                    "setting productDetails: $newMap"
-                )
                 _productWithProductDetails.value = newMap
             }
 
@@ -207,7 +207,7 @@ class BillingClientWrapper(
             && !purchases.isNullOrEmpty()
         ) {
             // Post new purchase List to _purchases
-            _purchases.value = purchases!!
+            _purchases.value = purchases
 
             // Then, handle the purchases
             for (purchase in purchases) {
@@ -255,6 +255,6 @@ class BillingClientWrapper(
 
     companion object {
         private const val TAG = "BillingClient"
-        const val PRO_VERSION = "test"
+        const val PRO_VERSION = "pro"
     }
 }

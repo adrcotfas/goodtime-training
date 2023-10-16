@@ -21,18 +21,12 @@ import android.app.Application
 import android.util.Log
 import androidx.annotation.Keep
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asFlow
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.ProductDetails
-import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -60,17 +54,27 @@ class BillingViewModel @Keep constructor(
 
     init {
         viewModelScope.launch {
-            billingClient.isNewPurchaseAcknowledged.collectLatest {
-                if (!preferenceHelper.isPro()) {
-                    preferenceHelper.setPro(it)
-                }
-            }
-            billingClient.hasPro.collectLatest {
-                Log.i(TAG, "Purchase state is: $it")
-                if (preferenceHelper.isPro() && it == false) {
-                    Log.i(TAG, "Purchase was cancelled")
-                    preferenceHelper.setPro(false)
-                    preferenceHelper.resetPreferencesOnRefund()
+            handlePro()
+        }
+    }
+
+    private suspend fun handlePro() {
+        data class ProState(val hasPro: Boolean?, val acknowledged: Boolean)
+        billingClient.hasPro.combine(billingClient.isNewPurchaseAcknowledged) { hasPro, acknowledged ->
+            ProState(hasPro, acknowledged)
+        }.collect {
+            Log.i(TAG, "Purchase state is: $it, persisted value: ${preferenceHelper.isPro()}")
+            if (preferenceHelper.isPro() && it.hasPro == false) {
+                Log.i(TAG, "Purchase was cancelled")
+                preferenceHelper.setPro(false)
+                preferenceHelper.resetPreferencesOnRefund()
+            } else if (!preferenceHelper.isPro()) {
+                if (it.hasPro == true) {
+                    Log.i(TAG, "Purchase was restored")
+                    preferenceHelper.setPro(true)
+                } else if (it.acknowledged) {
+                    Log.i(TAG, "Purchase was confirmed")
+                    preferenceHelper.setPro(true)
                 }
             }
         }
