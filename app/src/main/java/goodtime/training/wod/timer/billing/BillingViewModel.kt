@@ -18,15 +18,22 @@ package goodtime.training.wod.timer.billing
 
 import android.app.Activity
 import android.app.Application
+import android.util.Log
 import androidx.annotation.Keep
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.ProductDetails
+import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /**
@@ -51,13 +58,19 @@ class BillingViewModel @Keep constructor(
         billingClient.startBillingConnection(billingConnectionState = _billingConnectionState)
     }
 
-    val proPending = billingClient.proPending
-
     init {
         viewModelScope.launch {
             billingClient.isNewPurchaseAcknowledged.collectLatest {
                 if (!preferenceHelper.isPro()) {
                     preferenceHelper.setPro(it)
+                }
+            }
+            billingClient.hasPro.collectLatest {
+                Log.i(TAG, "Purchase state is: $it")
+                if (preferenceHelper.isPro() && it == false) {
+                    Log.i(TAG, "Purchase was cancelled")
+                    preferenceHelper.setPro(false)
+                    preferenceHelper.resetPreferencesOnRefund()
                 }
             }
         }
@@ -69,15 +82,14 @@ class BillingViewModel @Keep constructor(
      * @param productDetails ProductDetails object returned by the library.
      * @return [BillingFlowParams] builder.
      */
-    private fun billingFlowParamsBuilder(productDetails: ProductDetails): BillingFlowParams.Builder {
-        return BillingFlowParams.newBuilder().setProductDetailsParamsList(
+    private fun billingFlowParamsBuilder(productDetails: ProductDetails) =
+        BillingFlowParams.newBuilder().setProductDetailsParamsList(
             listOf(
                 BillingFlowParams.ProductDetailsParams.newBuilder()
                     .setProductDetails(productDetails)
                     .build()
             )
         )
-    }
 
     /**
      * Use the Google Play Billing Library to make a purchase.
@@ -89,10 +101,15 @@ class BillingViewModel @Keep constructor(
             billingClient.launchBillingFlow(
                 activity, billingFlowParamsBuilder(productDetails = it).build()
             )
-        }
+        } ?: Log.e(TAG, "buy: Invalid product details")
     }
 
     // When an activity is destroyed the viewModel's onCleared is called, so we terminate the
     // billing connection.
     override fun onCleared() = billingClient.terminateBillingConnection()
+
+    companion object {
+        private const val TAG = "BillingViewModel"
+    }
 }
+

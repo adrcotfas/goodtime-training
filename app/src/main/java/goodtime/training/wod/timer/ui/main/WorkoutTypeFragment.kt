@@ -2,7 +2,6 @@ package goodtime.training.wod.timer.ui.main
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -31,16 +30,6 @@ abstract class WorkoutTypeFragment :
 
     private lateinit var reviewManager: ReviewManager
     private lateinit var reviewViewModel: ReviewsViewModel
-
-    override fun onResume() {
-        super.onResume()
-        showContent()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        hideContent()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,28 +62,6 @@ abstract class WorkoutTypeFragment :
         }
         isDurationValid = duration != 0
         EventBus.getDefault().post(Events.Companion.SetStartButtonStateWithColor(isDurationValid))
-    }
-
-    private fun hideContent() {
-        view?.apply {
-            alpha = 1f
-            visibility = View.VISIBLE
-            animate()
-                .alpha(0f)
-                .setDuration(FADE_ANIMATION_DURATION)
-                .setListener(null)
-        }
-    }
-
-    private fun showContent() {
-        view?.apply {
-            alpha = 0f
-            visibility = View.VISIBLE
-            animate()
-                .alpha(1f)
-                .setDuration(FADE_ANIMATION_DURATION)
-                .setListener(null)
-        }
     }
 
     companion object {

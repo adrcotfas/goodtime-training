@@ -55,7 +55,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
                         android:gravity="center"
                         android:text="Goodtime Training"
                         android:textColor="@color/grey500"
@@ -117,7 +116,7 @@
                         android:id="@+id/app_version_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="version 0.9.0"
+                        tools:text="version 0.9.0"
                         android:textColor="@color/grey800"
                         android:textSize="@dimen/smallerTextSize"
                         android:textAppearance="@style/TextAppearance.SmallButton"/>

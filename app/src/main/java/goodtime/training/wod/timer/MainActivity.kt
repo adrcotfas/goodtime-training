@@ -171,13 +171,6 @@ class MainActivity : AppCompatActivity(), KodeinAware,
 
         setupDrawer()
         refreshDrawerUpgradeButton()
-
-        billingViewModel.proPending.observe(this) {
-            Log.i(TAG, "pro pending: $it")
-//            Log.i(TAG, "Purchase was cancelled")
-//            preferenceHelper.setPro(false)
-//            preferenceHelper.resetPreferencesOnRefund()
-        }
     }
 
     private fun setupTopLevelButtons() {

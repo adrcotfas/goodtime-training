@@ -50,9 +50,25 @@
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 -dontwarn org.slf4j.impl.StaticMarkerBinder
 
--keep, allowobfuscation, allowoptimization class org.kodein.type.TypeReference
--keep, allowobfuscation, allowoptimization class org.kodein.type.JVMAbstractTypeToken$Companion$WrappingTest
+-keep, allowobfuscation, allowoptimization class org.kodein.di.TypeReference
+-keep, allowobfuscation, allowoptimization class * extends org.kodein.di.TypeReference
 
--keep, allowobfuscation, allowoptimization class * extends org.kodein.type.TypeReference
--keep, allowobfuscation, allowoptimization class * extends org.kodein.type.JVMAbstractTypeToken$Companion$WrappingTest
+-keep class androidx.databinding.** { *; }
+-keepclassmembers class * {
+    @androidx.databinding.BindingAdapter *;
+}
+-keepclassmembers interface * {
+    @androidx.databinding.BindingAdapter *;
+}
 
+# Gson uses generic type information stored in a class file when working with
+# fields. Proguard removes such information by default, keep it.
+-keepattributes Signature
+
+# This is also needed for R8 in compat mode since multiple
+# optimizations will remove the generic signature such as class
+# merging and argument removal. See:
+# https://r8.googlesource.com/r8/+/refs/heads/main/compatibility-faq.md#troubleshooting-gson-gson
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+-keepattributes AnnotationDefault,RuntimeVisibleAnnotations

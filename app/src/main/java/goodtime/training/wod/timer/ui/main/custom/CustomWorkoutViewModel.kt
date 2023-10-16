@@ -1,5 +1,6 @@
 package goodtime.training.wod.timer.ui.main.custom
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
@@ -9,7 +10,10 @@ import kotlinx.coroutines.launch
 
 class CustomWorkoutViewModel(private val appRepository: AppRepository) : ViewModel() {
 
-    fun getWorkoutList() = appRepository.getCustomWorkoutSkeletons()
+    fun getWorkoutList(): LiveData<List<CustomWorkoutSkeleton>> {
+      return appRepository.getCustomWorkoutSkeletons()
+    }
+
     var favorites = listOf<CustomWorkoutSkeleton>()
 
     lateinit var currentWorkoutName: String

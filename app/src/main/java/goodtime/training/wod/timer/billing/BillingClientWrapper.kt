@@ -19,9 +19,7 @@ package goodtime.training.wod.timer.billing
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -34,6 +32,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -60,12 +59,11 @@ class BillingClientWrapper(
             it.containsKey(PRO_VERSION)
         }.map { it[PRO_VERSION]!! }.stateIn(externalScope, SharingStarted.Eagerly, null)
 
-    // Current Purchases
     private val _purchases =
-        MutableLiveData<List<Purchase>>(listOf())
+        MutableStateFlow<List<Purchase>?>(null)
 
-    val proPending: LiveData<Boolean> = _purchases.map { purchaseList ->
-        purchaseList.any { purchase ->
+    val hasPro: Flow<Boolean?> = _purchases.map { purchaseList ->
+        purchaseList?.any { purchase ->
             purchase.products.contains(PRO_VERSION)
         }
     }
@@ -83,7 +81,6 @@ class BillingClientWrapper(
 
     // Establish a connection to Google Play.
     fun startBillingConnection(billingConnectionState: MutableLiveData<Boolean>) {
-
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -116,7 +113,8 @@ class BillingClientWrapper(
                 .build()
         ) { billingResult, purchaseList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                _purchases.postValue(purchaseList)
+                Log.i(TAG, "onQueryPurchasesResponse: ${purchaseList.map { it.toString() }}")
+                _purchases.value = purchaseList
             } else {
                 Log.e(TAG, billingResult.debugMessage)
             }
@@ -134,7 +132,6 @@ class BillingClientWrapper(
                 .build()
         )
         params.setProductList(productList).let { productDetailsParams ->
-            Log.i(TAG, "queryProductDetailsAsync")
             billingClient.queryProductDetailsAsync(productDetailsParams.build(), this)
         }
     }
@@ -149,9 +146,10 @@ class BillingClientWrapper(
         val responseCode = billingResult.responseCode
         val debugMessage = billingResult.debugMessage
 
-        Log.i(
+        Log.d(
             TAG,
-            "onProductDetailsResponse: $responseCode / ${productDetailsList.map { it.toString() }}"
+            "onProductDetailsResponse: responseCode: $responseCode, debugMessage: $debugMessage " +
+                    "productDetails: ${productDetailsList.map { it.toString() }}"
         )
 
         when (responseCode) {
@@ -170,6 +168,10 @@ class BillingClientWrapper(
                         it.productId
                     }
                 }
+                Log.i(
+                    TAG,
+                    "setting productDetails: $newMap"
+                )
                 _productWithProductDetails.value = newMap
             }
 
@@ -181,7 +183,7 @@ class BillingClientWrapper(
 
     // Launch Purchase flow
     fun launchBillingFlow(activity: Activity, params: BillingFlowParams) {
-        Log.i(TAG, "launchBillingFlow")
+        Log.d(TAG, "launchBillingFlow...")
         if (!billingClient.isReady) {
             Log.e(TAG, "launchBillingFlow: BillingClient is not ready")
         }
@@ -194,18 +196,24 @@ class BillingClientWrapper(
         billingResult: BillingResult,
         purchases: List<Purchase>?
     ) {
-        Log.i(TAG, "onPurchasesUpdated: ${purchases?.map { it.toString() }}")
-        if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
+        val responseCode = billingResult.responseCode
+        val debugMessage = billingResult.debugMessage
+
+        Log.d(
+            TAG,
+            "onPurchasesUpdated: responseCode: $responseCode, debugMessage: $debugMessage purchases: ${purchases?.map { it.toString() }}"
+        )
+        if (responseCode == BillingClient.BillingResponseCode.OK
             && !purchases.isNullOrEmpty()
         ) {
             // Post new purchase List to _purchases
-            _purchases.postValue(purchases)
+            _purchases.value = purchases!!
 
             // Then, handle the purchases
             for (purchase in purchases) {
                 acknowledgePurchases(purchase)
             }
-        } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+        } else if (responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             // Handle an error caused by a user cancelling the purchase flow.
             Log.e(TAG, "User has cancelled")
         } else {
@@ -224,9 +232,12 @@ class BillingClientWrapper(
                 billingClient.acknowledgePurchase(
                     params
                 ) { billingResult ->
-                    Log.i(TAG, "onAcknowledgePurchaseResponse: " +
-                            "${billingResult.responseCode} / ${it.purchaseState}")
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK &&
+                    val responseCode = billingResult.responseCode
+                    Log.d(
+                        TAG, "onAcknowledgePurchaseResponse: " +
+                                "responseCode: $responseCode, purchaseState: ${it.purchaseState}"
+                    )
+                    if (responseCode == BillingClient.BillingResponseCode.OK &&
                         it.purchaseState == Purchase.PurchaseState.PURCHASED
                     ) {
                         _isNewPurchaseAcknowledged.value = true
@@ -244,6 +255,6 @@ class BillingClientWrapper(
 
     companion object {
         private const val TAG = "BillingClient"
-        const val PRO_VERSION = "test_item"
+        const val PRO_VERSION = "test"
     }
 }

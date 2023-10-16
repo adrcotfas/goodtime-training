@@ -62,28 +62,29 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
         binding = FragmentAmrapForTimeBinding.inflate(inflater, container, false)
 
         val favoritesLd = viewModel.getFavorites()
-        favoritesLd.observe(viewLifecycleOwner, { favorites ->
+        favoritesLd.observe(viewLifecycleOwner) { favorites ->
             val id = preferenceHelper.getCurrentFavoriteId(sessionType)
             val idx = favorites.indexOfFirst { it.id == id }
 
-            val minutesAndSeconds = StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 900)
+            val minutesAndSeconds =
+                StringUtils.secondsToMinutesAndSeconds(if (idx != -1) favorites[idx].duration else 900)
             viewModel.timeData = TimeSpinnerData(minutesAndSeconds.first, minutesAndSeconds.second)
             favoritesLd.removeObservers(viewLifecycleOwner)
 
             setupNumberPickers()
 
             viewModel.timeData.get().observe(
-                viewLifecycleOwner, { duration ->
-                    viewModel.session = SessionSkeleton(
-                        duration = duration,
-                        breakDuration = 0,
-                        numRounds = 0,
-                        type = sessionType
-                    )
-                    updateMainButtonsState(duration)
-                }
-            )
-        })
+                viewLifecycleOwner
+            ) { duration ->
+                viewModel.session = SessionSkeleton(
+                    duration = duration,
+                    breakDuration = 0,
+                    numRounds = 0,
+                    type = sessionType
+                )
+                updateMainButtonsState(duration)
+            }
+        }
 
         showBalloonsIfNeeded()
 

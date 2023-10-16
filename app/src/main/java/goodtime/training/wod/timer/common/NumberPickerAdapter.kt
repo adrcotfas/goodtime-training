@@ -37,7 +37,7 @@ class NumberPickerAdapter(
     class ViewHolder private constructor(itemView: View, private val prefixWithZero: Boolean)
         : RecyclerView.ViewHolder(itemView) {
 
-        private val text: TextView = itemView.findViewById(R.id.text)
+        private val text: TextView = itemView.findViewById(R.id.row_number_picker_tv)
         fun bind(item: Int) {
             text.text =
                 if (prefixWithZero) {

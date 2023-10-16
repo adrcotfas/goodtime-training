@@ -89,7 +89,7 @@ class NumberPicker(
 
     fun getCurrentValue(): Int {
         val center = snapHelper.findSnapView(recyclerView.layoutManager)
-        return (center?.findViewById(R.id.text) as TextView).text.toString().toInt()
+        return (center?.findViewById(R.id.row_number_picker_tv) as TextView).text.toString().toInt()
     }
 
     override fun onClick(position: Int) {
