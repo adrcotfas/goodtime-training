@@ -27,8 +27,10 @@ import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.ProductDetails
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * The [AndroidViewModel] implementation combines all flows from the repo into a single one
@@ -49,7 +51,11 @@ class BillingViewModel @Keep constructor(
 
     // Start the billing connection when the viewModel is initialized.
     init {
-        billingClient.startBillingConnection(billingConnectionState = _billingConnectionState)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                billingClient.startBillingConnection(billingConnectionState = _billingConnectionState)
+            }
+        }
     }
 
     init {

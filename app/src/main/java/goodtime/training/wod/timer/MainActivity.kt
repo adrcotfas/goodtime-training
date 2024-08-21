@@ -23,6 +23,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import goodtime.training.wod.timer.billing.BillingViewModel
 import goodtime.training.wod.timer.common.Events
 import goodtime.training.wod.timer.common.ResourcesHelper
@@ -79,6 +86,21 @@ class MainActivity : AppCompatActivity(), KodeinAware,
     private lateinit var weeklyGoalViewModel: WeeklyGoalViewModel
 
     private val billingViewModel: BillingViewModel by instance()
+    private var appUpdateManager: AppUpdateManager? = null
+    private val updateType = AppUpdateType.IMMEDIATE
+    private var updateInfo: AppUpdateInfo? = null
+
+    override fun onResume() {
+        super.onResume()
+        appUpdateManager?.let {
+            it.appUpdateInfo.addOnSuccessListener { info ->
+                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    Log.i(TAG, "DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS")
+                    startUpdate(info)
+                }
+            }
+        }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -92,6 +114,9 @@ class MainActivity : AppCompatActivity(), KodeinAware,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        checkForUpdate()
+
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         preferenceHelper.dataStore.preferences.registerOnSharedPreferenceChangeListener(this)
 
@@ -384,7 +409,44 @@ class MainActivity : AppCompatActivity(), KodeinAware,
         }
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == UPDATE_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                Log.e(TAG, "Update flow failed! Result code: $resultCode")
+            }
+        }
+    }
+
+    private fun checkForUpdate() {
+        Log.i(TAG, "Checking for update")
+        appUpdateManager?.let {
+            it.appUpdateInfo.addOnSuccessListener { info ->
+                val isUpdateAvailable =
+                    info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                val isUpdateAllowed = info.isImmediateUpdateAllowed
+                Log.i(TAG, "isUpdateAvailable: $isUpdateAvailable, isUpdateAllowed: $isUpdateAllowed")
+                if (isUpdateAvailable && isUpdateAllowed) {
+                    startUpdate(info)
+                }
+            }
+        }
+    }
+
+    private fun startUpdate(info: AppUpdateInfo) {
+        Log.i(TAG, "Starting update")
+        updateInfo = info
+        appUpdateManager?.startUpdateFlowForResult(
+            info,
+            this,
+            AppUpdateOptions.newBuilder(updateType).setAllowAssetPackDeletion(true).build(),
+            UPDATE_REQUEST_CODE
+        )
+    }
+
     companion object {
         private const val TAG = "MainActivity"
+        private const val UPDATE_REQUEST_CODE = 100
     }
 }
