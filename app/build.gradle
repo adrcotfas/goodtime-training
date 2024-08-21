@@ -15,8 +15,8 @@ android {
         applicationId "goodtime.training.wod.timer"
         minSdkVersion 24
         targetSdkVersion 34
-        versionCode 31
-        versionName "0.9.10"
+        versionCode 32
+        versionName "0.9.11"
     }
 
     compileOptions {
@@ -38,6 +38,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
         dataBinding true
     }
@@ -48,20 +49,19 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // to use the latest java features (needed java.time)
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.recyclerview:recyclerview:1.3.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.4'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.8.4"
 
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.4'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
 
     implementation 'com.github.beksomega:loopinglayout:0.3.2'
 
@@ -70,12 +70,12 @@ dependencies {
     implementation 'org.kodein.di:kodein-di-framework-android-x:6.5.5'
 
     // Room Database
-    implementation "androidx.room:room-runtime:2.5.2"
-    implementation "androidx.room:room-ktx:2.5.2"
-    annotationProcessor "androidx.room:room-compiler:2.5.2"
-    ksp "androidx.room:room-compiler:2.5.2"
+    implementation "androidx.room:room-runtime:2.6.1"
+    implementation "androidx.room:room-ktx:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
+    ksp "androidx.room:room-compiler:2.6.1"
 
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     // Preferences
     implementation "androidx.preference:preference-ktx:1.2.1"
@@ -95,11 +95,10 @@ dependencies {
     implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:0.15.0'
 
     // for in-app-reviews
-    implementation 'com.google.android.play:core:1.10.3'
     implementation 'com.google.android.play:core-ktx:1.8.1'
 
     // open source licences list
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.1.0'
 
     // IAP
     def billing_version = "6.0.1"
