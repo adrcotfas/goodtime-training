@@ -25,11 +25,13 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.ProductDetailsResponseListener
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryProductDetailsResult
 import com.android.billingclient.api.QueryPurchasesParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -76,7 +78,8 @@ class BillingClientWrapper(
     // Initialize the BillingClient.
     private val billingClient = BillingClient.newBuilder(context)
         .setListener(this)
-        .enablePendingPurchases()
+        .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
+        .enableAutoServiceReconnection()
         .build()
 
     // Establish a connection to Google Play.
@@ -145,11 +148,11 @@ class BillingClientWrapper(
     // to [_productWithProductDetails].
     override fun onProductDetailsResponse(
         billingResult: BillingResult,
-        productDetailsList: MutableList<ProductDetails>
+        result: QueryProductDetailsResult,
     ) {
         val responseCode = billingResult.responseCode
         val debugMessage = billingResult.debugMessage
-
+        val productDetailsList = result.productDetailsList
         Log.d(
             TAG,
             "onProductDetailsResponse: responseCode: $responseCode, debugMessage: $debugMessage " +

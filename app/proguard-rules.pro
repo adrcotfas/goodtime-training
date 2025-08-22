@@ -50,6 +50,10 @@
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 -dontwarn org.slf4j.impl.StaticMarkerBinder
 
+# Google Play Services - handle missing internal annotations
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
+-dontwarn com.google.android.gms.**
+
 -keep, allowobfuscation, allowoptimization class org.kodein.di.TypeReference
 -keep, allowobfuscation, allowoptimization class * extends org.kodein.di.TypeReference
 

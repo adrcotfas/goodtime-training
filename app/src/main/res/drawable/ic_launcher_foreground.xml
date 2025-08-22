@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="379"
+    android:viewportHeight="379">
+    <group
+        android:name="launcher_foreground"
+        android:pivotX="189.5"
+        android:pivotY="189.5"
+        android:scaleX="0.45"
+        android:scaleY="0.45">
+        <path
+            android:fillColor="#65C12A"
+            android:pathData="m212.5,187.7l103.8,-103.8c7.4,-7.4 9.5,-18.4 5.6,-28 -4,-9.6 -13.3,-15.8 -23.7,-15.8h-214.2c-10.4,0 -19.8,6.2 -23.7,15.8 -4,9.6 -1.8,20.6 5.5,28l103.8,103.8 -103.8,103.8c-7.3,7.3 -9.5,18.3 -5.5,27.9 3.9,9.6 13.3,15.8 23.7,15.8h214.2c10.4,0 19.7,-6.2 23.7,-15.8 3.9,-9.6 1.8,-20.6 -5.6,-27.9zM288.5,69.7l-97.4,97.4 -97.4,-97.4zM93.6,305.6l97.5,-97.4 97.4,97.4z"
+            android:strokeWidth="0" />
+    </group>
+</vector>
