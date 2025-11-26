@@ -9,13 +9,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.sound_and_vibration.SoundPlayer
 import goodtime.training.wod.timer.databinding.DialogSoundProfileBinding
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class SoundProfileDialog: DialogFragment(), KodeinAware {
+class SoundProfileDialog: DialogFragment(), DIAware {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
     private val soundPlayer: SoundPlayer by instance()
 
     private lateinit var binding: DialogSoundProfileBinding

@@ -18,7 +18,7 @@ import goodtime.training.wod.timer.databinding.FragmentAmrapForTimeBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 
 open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>(
     private val sessionType: SessionType

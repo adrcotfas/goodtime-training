@@ -3,7 +3,7 @@ package goodtime.training.wod.timer.ui.main.amrap_for_time
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import goodtime.training.wod.timer.data.model.SessionType
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 
 class AmrapFragment : MinutesAndSecondsFragment<AmrapViewModel>(SessionType.AMRAP) {
 

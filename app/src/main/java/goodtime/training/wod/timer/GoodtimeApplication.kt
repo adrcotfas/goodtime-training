@@ -36,16 +36,17 @@ import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import goodtime.training.wod.timer.ui.timer.WorkoutManager
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.eagerSingleton
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.provider
-import org.kodein.di.generic.singleton
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.bind
+import org.kodein.di.bindProvider
+import org.kodein.di.eagerSingleton
+import org.kodein.di.instance
+import org.kodein.di.provider
+import org.kodein.di.singleton
 import java.util.concurrent.TimeUnit
 
-class GoodtimeApplication : Application(), KodeinAware {
+class GoodtimeApplication : Application(), DIAware {
 
     companion object {
         private lateinit var res: Resources
@@ -68,7 +69,7 @@ class GoodtimeApplication : Application(), KodeinAware {
             private set
     }
 
-    override val kodein = Kodein.lazy {
+    override val di = DI.lazy {
         bind<SessionDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).sessionsDao() }
         bind<SessionSkeletonDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).sessionSkeletonDao() }
         bind<CustomWorkoutSkeletonDao>() with eagerSingleton { getDatabase(this@GoodtimeApplication).customWorkoutSkeletonDao() }
@@ -84,15 +85,15 @@ class GoodtimeApplication : Application(), KodeinAware {
             )
         }
         bind<WorkoutManager>() with eagerSingleton { WorkoutManager(instance()) }
-        bind() from provider { AmrapViewModelFactory(instance()) }
-        bind() from provider { ForTimeViewModelFactory(instance()) }
-        bind() from provider { IntervalsViewModelFactory(instance()) }
-        bind() from provider { HiitViewModelFactory(instance()) }
-        bind() from provider { CustomWorkoutViewModelFactory(instance()) }
-        bind() from provider { StatisticsViewModelFactory(instance()) }
-        bind() from provider { WeeklyGoalViewModelFactory(instance()) }
+        bindProvider { AmrapViewModelFactory(instance()) }
+        bindProvider { ForTimeViewModelFactory(instance()) }
+        bindProvider { IntervalsViewModelFactory(instance()) }
+        bindProvider { HiitViewModelFactory(instance()) }
+        bindProvider { CustomWorkoutViewModelFactory(instance()) }
+        bindProvider { StatisticsViewModelFactory(instance()) }
+        bindProvider { WeeklyGoalViewModelFactory(instance()) }
         bind<DNDHandler>() with singleton { DNDHandler(applicationContext) }
-        bind() from provider { TimerViewModelFactory(instance(), instance(), instance(), instance()) }
+        bindProvider { TimerViewModelFactory(instance(), instance(), instance(), instance()) }
 
         bind<BillingViewModel>() with eagerSingleton { BillingViewModel(this@GoodtimeApplication, instance())}
     }

@@ -14,17 +14,17 @@ import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.ui.main.custom.SelectCustomWorkoutDialog
 import org.greenrobot.eventbus.EventBus
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
 abstract class WorkoutTypeFragment :
     Fragment(),
-    KodeinAware,
+    DIAware,
     SelectFavoriteDialog.Listener,
     SelectCustomWorkoutDialog.Listener {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
     private var isDurationValid = true
     private val preferenceHelper: PreferenceHelper by instance()
 

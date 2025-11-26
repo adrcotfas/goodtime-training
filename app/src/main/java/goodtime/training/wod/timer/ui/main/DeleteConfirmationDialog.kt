@@ -8,13 +8,13 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.databinding.DialogDeleteConfirmationBinding
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class DeleteConfirmationDialog: DialogFragment(), KodeinAware {
+class DeleteConfirmationDialog: DialogFragment(), DIAware {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
 
     private lateinit var binding: DialogDeleteConfirmationBinding
     private lateinit var listener: Listener

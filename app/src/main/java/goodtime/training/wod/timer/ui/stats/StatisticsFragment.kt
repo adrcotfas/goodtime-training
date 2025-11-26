@@ -12,12 +12,12 @@ import goodtime.training.wod.timer.databinding.FragmentStatisticsBinding
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class StatisticsFragment : Fragment(), KodeinAware, FilterDialog.Listener {
-    override val kodein by closestKodein()
+class StatisticsFragment : Fragment(), DIAware, FilterDialog.Listener {
+    override val di by closestDI()
 
     private lateinit var binding: FragmentStatisticsBinding
 

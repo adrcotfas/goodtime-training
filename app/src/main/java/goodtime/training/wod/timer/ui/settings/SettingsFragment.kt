@@ -23,16 +23,16 @@ import goodtime.training.wod.timer.data.db.GoodtimeDatabase
 import goodtime.training.wod.timer.data.repository.AppRepository
 import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import org.greenrobot.eventbus.EventBus
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import java.time.LocalTime
 
 class SettingsFragment :
     PreferenceFragmentCompat(),
-    KodeinAware {
+    DIAware {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
     private val preferenceHelper by instance<PreferenceHelper>()
     private val repo: AppRepository by instance()
 

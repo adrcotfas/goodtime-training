@@ -20,7 +20,7 @@ import goodtime.training.wod.timer.databinding.FragmentHiitBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 
 class HiitFragment : WorkoutTypeFragment() {
 

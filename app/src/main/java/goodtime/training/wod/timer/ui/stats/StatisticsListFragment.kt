@@ -17,13 +17,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.databinding.FragmentStatisticsListBinding
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class StatisticsListFragment : Fragment(), KodeinAware, ActionModeCallback.Listener {
+class StatisticsListFragment : Fragment(), DIAware, ActionModeCallback.Listener {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
     private lateinit var binding: FragmentStatisticsListBinding
 
     private val viewModelFactory: StatisticsViewModelFactory by instance()

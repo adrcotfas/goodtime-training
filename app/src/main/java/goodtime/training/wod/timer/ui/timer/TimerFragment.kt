@@ -23,12 +23,12 @@ import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.workout.TimerState
 import goodtime.training.wod.timer.databinding.FragmentTimerBinding
 import goodtime.training.wod.timer.ui.timer.TimerService.Companion.START
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class TimerFragment : Fragment(), KodeinAware {
-    override val kodein by closestKodein()
+class TimerFragment : Fragment(), DIAware {
+    override val di by closestDI()
 
     private val viewModelFactory: TimerViewModelFactory by instance()
     private lateinit var viewModel: TimerViewModel

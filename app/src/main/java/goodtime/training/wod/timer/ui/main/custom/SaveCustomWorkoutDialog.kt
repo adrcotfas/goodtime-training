@@ -14,12 +14,12 @@ import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.CustomWorkoutSkeleton
 import goodtime.training.wod.timer.databinding.DialogSaveCustomWorkoutBinding
 import org.greenrobot.eventbus.EventBus
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), KodeinAware {
-    override val kodein by closestKodein()
+class SaveCustomWorkoutDialog : BottomSheetDialogFragment(), DIAware {
+    override val di by closestDI()
 
     private val preferenceHelper: PreferenceHelper by instance()
 

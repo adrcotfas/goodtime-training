@@ -22,7 +22,7 @@ import goodtime.training.wod.timer.databinding.FragmentIntervalsBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 
 class IntervalsFragment : WorkoutTypeFragment() {
 

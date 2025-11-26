@@ -17,12 +17,12 @@ import goodtime.training.wod.timer.databinding.DialogAddSessionToCustomWorkoutBi
 import goodtime.training.wod.timer.databinding.SectionAddEditSessionBinding
 import goodtime.training.wod.timer.databinding.SectionEditTextViewsBinding
 import goodtime.training.wod.timer.ui.main.SessionEditTextHelper
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEditTextHelper.Listener {
-    override val kodein by closestKodein()
+class AddEditSessionDialog : BottomSheetDialogFragment(), DIAware, SessionEditTextHelper.Listener {
+    override val di by closestDI()
     private val repo: AppRepository by instance()
 
     private lateinit var binding: DialogAddSessionToCustomWorkoutBinding
@@ -111,7 +111,7 @@ class AddEditSessionDialog : BottomSheetDialogFragment(), KodeinAware, SessionEd
     }
 
     private fun setupSessionTypeChips() {
-        for (sessionType in SessionType.values()) {
+        for (sessionType in SessionType.entries) {
             if (sessionType == SessionType.CUSTOM) {
                 continue
             }

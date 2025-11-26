@@ -24,7 +24,7 @@ import goodtime.training.wod.timer.databinding.FragmentCustomBinding
 import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
-import org.kodein.di.generic.instance
+import org.kodein.di.instance
 
 //TODO: rewrite this class
 class CustomWorkoutFragment :

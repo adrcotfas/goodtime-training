@@ -49,16 +49,16 @@ import goodtime.training.wod.timer.ui.upgrade.UpgradeDialog
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.lang.Integer.min
 
 
-class MainActivity : AppCompatActivity(), KodeinAware,
+class MainActivity : AppCompatActivity(), DIAware,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
 
     private val preferenceHelper by instance<PreferenceHelper>()
 

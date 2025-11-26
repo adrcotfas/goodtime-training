@@ -1,6 +1,7 @@
 package goodtime.training.wod.timer.common.number_picker
 
 import android.content.Context
+import android.os.Parcelable
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -11,15 +12,15 @@ import goodtime.training.wod.timer.common.NumberPickerAdapter
 import goodtime.training.wod.timer.common.smoothSnapToPosition
 
 class NumberPicker(
-        context: Context,
-        private val recyclerView: RecyclerView,
-        data: ArrayList<Int>,
-        defaultValue: Int,
-        private val rowHeight: Float,
-        prefixWithZero: Boolean = true,
-        textSize: PickerSize = PickerSize.LARGE,
-        textColor: Color = Color.GREEN,
-        private val scrollListener: ScrollListener
+    context: Context,
+    private val recyclerView: RecyclerView,
+    data: ArrayList<Int>,
+    defaultValue: Int,
+    private val rowHeight: Float,
+    prefixWithZero: Boolean = true,
+    textSize: PickerSize = PickerSize.LARGE,
+    textColor: Color = Color.GREEN,
+    private val scrollListener: ScrollListener
 ) : NumberPickerAdapter.Listener {
 
     companion object {
@@ -40,7 +41,11 @@ class NumberPicker(
         fun onScroll()
     }
 
-    private val loopingLayoutManager = LoopingLayoutManager(context)
+    private val loopingLayoutManager = object : LoopingLayoutManager(context) {
+        // Disable state restoration to avoid crashes when the LayoutRequest is not initialized
+        // This happens when the activity is stopped and Android tries to save instance state
+        override fun onSaveInstanceState(): Parcelable? = null
+    }
     private val viewAdapter: NumberPickerAdapter =
             NumberPickerAdapter(data, this, prefixWithZero, textSize, textColor)
     private val snapHelper = LoopingSnapHelper()

@@ -15,19 +15,19 @@ import goodtime.training.wod.timer.MainActivity
 import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.temporal.TemporalAdjusters
 
-class ReminderHelper(context: Context?) : ContextWrapper(context), KodeinAware,
+class ReminderHelper(context: Context?) : ContextWrapper(context), DIAware,
         OnSharedPreferenceChangeListener {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
     private val preferenceHelper by instance<PreferenceHelper>()
     private var pendingIntents : Array<PendingIntent?> = arrayOfNulls(7)
     private val alarmManager: AlarmManager by lazy {

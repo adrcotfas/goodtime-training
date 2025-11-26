@@ -14,13 +14,13 @@ import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.StringUtils.Companion.formatSecondsToOverviewTime
 import goodtime.training.wod.timer.data.model.Session
 import goodtime.training.wod.timer.databinding.FragmentStatisticsOverviewBinding
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class StatisticsOverviewFragment : Fragment(), KodeinAware {
+class StatisticsOverviewFragment : Fragment(), DIAware {
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
 
     private lateinit var binding: FragmentStatisticsOverviewBinding
     private lateinit var historyChartWrapper: HistoryChartWrapper

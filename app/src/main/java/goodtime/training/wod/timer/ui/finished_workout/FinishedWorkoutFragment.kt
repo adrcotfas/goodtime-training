@@ -33,12 +33,12 @@ import goodtime.training.wod.timer.ui.timer.TimerViewModel
 import goodtime.training.wod.timer.ui.timer.TimerViewModelFactory
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class FinishedWorkoutFragment : Fragment(), KodeinAware {
-    override val kodein by closestKodein()
+class FinishedWorkoutFragment : Fragment(), DIAware {
+    override val di by closestDI()
 
     private val viewModelFactory: TimerViewModelFactory by instance()
     private lateinit var viewModel: TimerViewModel

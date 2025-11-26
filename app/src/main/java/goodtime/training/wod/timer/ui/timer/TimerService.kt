@@ -7,11 +7,11 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import goodtime.training.wod.timer.common.notifications.NotificationHelper
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 
-class TimerService: Service(), KodeinAware{
+class TimerService: Service(), DIAware{
 
     companion object {
         var START = "goodtime.action.start"
@@ -21,7 +21,7 @@ class TimerService: Service(), KodeinAware{
         private const val TAG = "TimerService"
     }
 
-    override val kodein by closestKodein()
+    override val di by closestDI()
     private val workoutManager: WorkoutManager by instance()
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {

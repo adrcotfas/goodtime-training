@@ -16,17 +16,17 @@ import goodtime.training.wod.timer.databinding.DialogEditCompletedWorkoutBinding
 import goodtime.training.wod.timer.ui.common.DatePickerDialogHelper
 import goodtime.training.wod.timer.ui.common.TimePickerDialogBuilder
 import kotlinx.coroutines.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 
-class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), KodeinAware,
+class EditCompletedWorkoutDialog : BottomSheetDialogFragment(), DIAware,
     MinutesAndSecondsEditTexts.Listener {
-    override val kodein by closestKodein()
+    override val di by closestDI()
     private val repo: AppRepository by instance()
     private lateinit var binding: DialogEditCompletedWorkoutBinding
 

@@ -15,12 +15,12 @@ import goodtime.training.wod.timer.R
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.ui.main.DeleteConfirmationDialog
 import kotlinx.coroutines.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
-import org.kodein.di.generic.instance
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.closestDI
+import org.kodein.di.instance
 
-class SelectCustomWorkoutDialog: BottomSheetDialogFragment(), KodeinAware, DeleteConfirmationDialog.Listener {
-    override val kodein by closestKodein()
+class SelectCustomWorkoutDialog: BottomSheetDialogFragment(), DIAware, DeleteConfirmationDialog.Listener {
+    override val di by closestDI()
     private val preferenceHelper: PreferenceHelper by instance()
 
     private val repo: AppRepository by instance()
