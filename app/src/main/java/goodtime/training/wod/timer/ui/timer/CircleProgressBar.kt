@@ -14,8 +14,8 @@ import android.view.animation.LinearInterpolator
 class CircleProgressBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private val backgroundWidth = 7.5f
-    private val progressWidth = 7.5f
+    private val backgroundWidth = 36f
+    private val progressWidth = 36f
 
     private val backgroundPaint = Paint().apply {
         color = Color.DKGRAY

@@ -1,10 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Goodtime Productivity
+    Copyright (C) 2025 Adrian Cotfas
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="512"
-    android:viewportHeight="512">
-    <path
-        android:fillColor="#EEEEEE"
-        android:name="&lt;Shape 1&gt;"
-        android:pathData="m432 96v34c0 16.5 -13.5 30 -30 30h-18v-64zm-80 0c0 0 0 176 0 176c0 35.1 -28.9 64 -64 64h-112c-35.1 0 -64 -28.9 -64 -64v-176zm-256 -32c-8.8 0 -16 7.2 -16 16v192c0 52.7 43.3 96 96 96h112c52.7 0 96 -43.3 96 -96v-80h18c34 0 62 -28 62 -62v-34c0 -17.6 -14.4 -32 -32 -32zm-32 336c-8.8 0 -16 7.2 -16 16c-0 8.8 7.2 16 16 16h336c8.8 -0 16 -7.2 16 -16c-0 -8.8 -7.2 -16 -16 -16c-0 0 -0 0 -0 0h-336c-0 0 -0 0 -0 0z" />
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <path
+      android:pathData="M200,840q-17,0 -28.5,-11.5T160,800q0,-17 11.5,-28.5T200,760h560q17,0 28.5,11.5T800,800q0,17 -11.5,28.5T760,840L200,840ZM320,680q-66,0 -113,-47t-47,-113v-320q0,-33 23.5,-56.5T240,120h560q33,0 56.5,23.5T880,200v120q0,33 -23.5,56.5T800,400h-80v120q0,66 -47,113t-113,47L320,680ZM320,600h240q33,0 56.5,-23.5T640,520v-320L240,200v320q0,33 23.5,56.5T320,600ZM720,320h80v-120h-80v120ZM320,600h-80,400 -320Z"
+      android:fillColor="#ffffff"/>
 </vector>
