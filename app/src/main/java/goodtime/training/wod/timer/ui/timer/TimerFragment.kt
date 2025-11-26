@@ -53,12 +53,16 @@ class TimerFragment : Fragment(), DIAware {
     private fun setupHandleOnBackPressed() {
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (viewModel.getTimerState().value != TimerState.FINISHED) {
-                    findNavController().navigate(R.id.nav_dialog_stop_workout)
-                }
+                handleCloseAction()
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun handleCloseAction() {
+        if (viewModel.getTimerState().value != TimerState.FINISHED) {
+            findNavController().navigate(R.id.nav_dialog_stop_workout)
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -91,6 +95,10 @@ class TimerFragment : Fragment(), DIAware {
 
         binding.finishButton.setOnClickListener {
             viewModel.finishForTime()
+        }
+
+        binding.closeButton.setOnClickListener {
+            handleCloseAction()
         }
 
         setupCounter()
