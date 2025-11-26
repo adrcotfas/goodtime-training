@@ -12,7 +12,7 @@
         app:tabInlineLabel="false"
         app:tabMode="fixed" />
 
-    <androidx.viewpager.widget.ViewPager
+    <goodtime.training.wod.timer.ui.stats.NonSwipeableViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
