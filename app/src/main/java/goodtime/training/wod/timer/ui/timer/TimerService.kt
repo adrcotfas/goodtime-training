@@ -24,7 +24,11 @@ class TimerService: Service(), DIAware{
     override val di by closestDI()
     private val workoutManager: WorkoutManager by instance()
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent == null || intent.action == null) {
+            Log.i(TAG, "onStartCommand: intent or action is null")
+            return START_NOT_STICKY
+        }
         val result = START_STICKY
         when(intent.action) {
             START -> {

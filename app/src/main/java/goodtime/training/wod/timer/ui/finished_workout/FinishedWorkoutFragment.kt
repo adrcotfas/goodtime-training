@@ -62,6 +62,14 @@ class FinishedWorkoutFragment : Fragment(), DIAware {
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(TimerViewModel::class.java)
+
+        // Check if workout was properly initialized before proceeding
+        if (!viewModel.isWorkoutInitialized()) {
+            // Navigate back if no valid workout data exists (e.g., after process death)
+            findNavController().popBackStack()
+            return
+        }
+
         viewModel.setInactive()
         viewModel.prepareSession()
 
@@ -110,6 +118,11 @@ class FinishedWorkoutFragment : Fragment(), DIAware {
         binding.congrats.text = StringUtils.generateCongrats()
         sessionToAdd = viewModel.getPreparedSession()
 
+        // Safety check: only draw session details if workout was properly initialized
+        if (!viewModel.isWorkoutInitialized()) {
+            return
+        }
+
         if (viewModel.getPreparedSession().isCustom()) {
             val name = sessionToAdd.name
             if (name != null) {
@@ -117,9 +130,13 @@ class FinishedWorkoutFragment : Fragment(), DIAware {
             }
         } else {
             // 0 corresponds to the pre-workout countdown
-            val session = viewModel.getSessions()[1]
-            val duration = viewModel.getDurations()[1]
-            binding.summaryContainer.addView(createSummaryRow(session, duration))
+            val sessions = viewModel.getSessions()
+            val durations = viewModel.getDurations()
+            if (sessions.size > 1 && durations.size > 1) {
+                val session = sessions[1]
+                val duration = durations[1]
+                binding.summaryContainer.addView(createSummaryRow(session, duration))
+            }
         }
 
         val rounds = sessionToAdd.actualRounds

@@ -43,6 +43,8 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     var sessionToAdd = Session()
     lateinit var sessions : List<SessionSkeleton>
 
+    fun isInitialized() = ::sessions.isInitialized
+
     private val _timerState = MutableLiveData(TimerState.INACTIVE)
     val timerState: LiveData<TimerState>
         get() = _timerState
@@ -195,6 +197,12 @@ class WorkoutManager(private val notifier: TimerNotificationHelper) {
     }
 
     fun prepareSessionToAdd(completed: Boolean = true) {
+        // Safety check: ensure sessions is initialized before accessing it
+        if (!::sessions.isInitialized) {
+            Log.w(TAG, "prepareSessionToAdd called but sessions not initialized")
+            return
+        }
+
         sessionToAdd.actualDuration = 0
         sessionToAdd.actualRounds = 0
 

@@ -25,6 +25,7 @@ class TimerViewModel(
     fun getCurrentSessionDuration() = workoutManager.getCurrentSessionDuration()
     fun getCurrentSessionCountedRounds() = workoutManager.getCurrentSessionCountedRounds()
 
+    fun isWorkoutInitialized() = workoutManager.isInitialized()
     fun getSessions() = workoutManager.sessions
     fun getDurations() = workoutManager.durations
     fun getPreparedSession() = workoutManager.sessionToAdd
