@@ -148,7 +148,7 @@ class CustomWorkoutFragment :
                 sessions = arrayOf(PreferenceHelper.generatePreWorkoutSession(preferenceHelper.getPreWorkoutCountdown()))
                         + getSelectedSessions().toTypedArray()
             ),
-            if (viewModel.hasUnsavedSession) "" else viewModel.currentWorkoutName,
+            if (viewModel.hasUnsavedSession) null else viewModel.currentWorkoutName,
         )
         findNavController().navigate(action)
     }
