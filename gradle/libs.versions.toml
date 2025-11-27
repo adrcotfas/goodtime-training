@@ -38,7 +38,6 @@ kotlinCsv = "1.10.0"
 eventbus = "3.3.1"
 loopinglayout = "0.5.0"
 konfetti = "1.3.2"
-balloon = "1.6.13"
 mpAndroidChart = "v3.1.0"
 
 [libraries]
@@ -83,7 +82,6 @@ eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "eventbu
 # UI Components
 loopinglayout = { group = "com.github.beksomega", name = "loopinglayout", version.ref = "loopinglayout" }
 konfetti = { group = "nl.dionsegijn", name = "konfetti", version.ref = "konfetti" }
-balloon = { group = "com.github.skydoves", name = "balloon", version.ref = "balloon" }
 
 # Charts
 mp-android-chart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpAndroidChart" }

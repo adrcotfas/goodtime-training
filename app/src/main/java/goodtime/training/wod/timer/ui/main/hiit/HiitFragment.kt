@@ -17,7 +17,6 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentHiitBinding
-import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
 import org.kodein.di.instance
@@ -99,29 +98,7 @@ class HiitFragment : WorkoutTypeFragment() {
                                 numRounds = hiitData.third, type = SessionType.HIIT)
             })
         })
-
-        showBalloonsIfNeeded()
-
         return binding.root
-    }
-
-    private fun showBalloonsIfNeeded() {
-        if (preferenceHelper.showHiitBalloons()) {
-            preferenceHelper.setHiitBalloons(false)
-            binding.separator1.post {
-                val balloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "HIIT stands for high intensity interval training and the default setting is the Tabata workout."
-                )
-                val anotherBalloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "The work and rest duration are specified in seconds.",
-                        false, 0.7f
-                )
-                balloon.relayShowAlignTop(anotherBalloon, binding.separator1, 0, 12)
-                balloon.showAlignTop(binding.separator1, 0, 12)
-            }
-        }
     }
 
     private fun setupNumberPickers() {

@@ -94,7 +94,6 @@ dependencies {
     // UI Components
     implementation(libs.loopinglayout)
     implementation(libs.konfetti)
-    implementation(libs.balloon)
 
     // Charts for Statistics
     implementation(libs.mp.android.chart)

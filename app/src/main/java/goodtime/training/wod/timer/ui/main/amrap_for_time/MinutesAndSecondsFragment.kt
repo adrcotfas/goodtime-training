@@ -15,7 +15,6 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentAmrapForTimeBinding
-import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
 import org.kodein.di.instance
@@ -86,64 +85,7 @@ open class MinutesAndSecondsFragment<ViewModelType : MinutesAndSecondsViewModel>
             }
         }
 
-        showBalloonsIfNeeded()
-
         return binding.root
-    }
-
-    private fun showBalloonsIfNeeded() {
-        if (!isAdded) {
-            return
-        }
-        if (sessionType == SessionType.FOR_TIME && preferenceHelper.showForTimeBalloons()) {
-            preferenceHelper.setForTimeBalloons(false)
-            binding.pickerSeparator.post {
-                val balloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "FOR TIME enforces a time cap and the goal is to complete the workout as fast as possible."
-                )
-                val anotherBalloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "Use the time pickers to change the time cap.",
-                    false, 0.5f
-                )
-                balloon.relayShowAlignTop(anotherBalloon, binding.topGuideline)
-                balloon.showAlignTop(binding.bottomGuideline)
-            }
-        } else if (sessionType == SessionType.AMRAP && preferenceHelper.showMainBalloons()) {
-            preferenceHelper.setMainBalloons(false)
-            binding.root.post {
-                val bottomMenuBalloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "Use the bottom menu to change the workout type."
-                )
-                val amrapBalloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "The goal for AMRAP workouts is to complete as many rounds as possible in the allocated time.",
-                    false, 0.05f
-                )
-                val timePickersBalloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "Use the time pickers to change the duration.",
-                    false, 0.5f
-                )
-                val favoriteButtonBalloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "Use the favorites section to save, remove and load timer presets.",
-                    true, 0.83f
-                )
-                val startButtonBalloon = CustomBalloonFactory.create(
-                    requireContext(), this,
-                    "Press the action button to start the workout using the current selection.",
-                    false, 0.5f
-                )
-                bottomMenuBalloon.relayShowAlignBottom(amrapBalloon, binding.bottomGuideline)
-                    .relayShowAlignTop(timePickersBalloon, binding.pickerSeparator)
-                    .relayShowAlignTop(favoriteButtonBalloon, binding.topGuideline)
-                    .relayShowAlignBottom(startButtonBalloon, binding.startButtonGuideline)
-                bottomMenuBalloon.showAlignBottom(binding.bottomGuideline)
-            }
-        }
     }
 
     private fun setupNumberPickers() {

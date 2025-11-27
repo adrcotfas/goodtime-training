@@ -21,7 +21,6 @@ import goodtime.training.wod.timer.common.calculateTextViewHeight
 import goodtime.training.wod.timer.common.preferences.PreferenceHelper
 import goodtime.training.wod.timer.data.model.*
 import goodtime.training.wod.timer.databinding.FragmentCustomBinding
-import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
 import org.kodein.di.instance
@@ -78,28 +77,7 @@ class CustomWorkoutFragment :
         }
 
         resizeCardViewHeightToFitNicely()
-
-        showBalloonsIfNeeded()
         return binding.root
-    }
-
-    private fun showBalloonsIfNeeded() {
-        if (preferenceHelper.showCustomBalloons()) {
-            preferenceHelper.setCustomBalloons(false)
-            val balloon = CustomBalloonFactory.create(
-                requireContext(), this,
-                "Add, remove, edit and rearrange sessions in any combination for a custom workout."
-            )
-            val favorites = CustomBalloonFactory.create(
-                requireContext(), this,
-                "Create new presets and add them to the favorites.", true, 0.83f
-            )
-
-            binding.cardContainer.post {
-                balloon.relayShowAlignTop(favorites, binding.root, 0, dpToPx(requireContext(), 56f))
-                balloon.showAlignTop(binding.root, 0, dpToPx(requireContext(), 56f))
-            }
-        }
     }
 
     override fun onPause() {

@@ -19,7 +19,6 @@ import goodtime.training.wod.timer.data.model.SessionSkeleton
 import goodtime.training.wod.timer.data.model.SessionType
 import goodtime.training.wod.timer.data.model.TypeConverter
 import goodtime.training.wod.timer.databinding.FragmentIntervalsBinding
-import goodtime.training.wod.timer.ui.main.CustomBalloonFactory
 import goodtime.training.wod.timer.ui.main.WorkoutTypeFragment
 import org.greenrobot.eventbus.EventBus
 import org.kodein.di.instance
@@ -107,23 +106,9 @@ class IntervalsFragment : WorkoutTypeFragment() {
                 })
         }
 
-        showBalloonsIfNeeded()
-
         return binding.root
     }
 
-    private fun showBalloonsIfNeeded() {
-        if (preferenceHelper.showIntervalsBalloons()) {
-            preferenceHelper.setIntervalsBalloons(false)
-            binding.separator1.post {
-                val balloon = CustomBalloonFactory.create(
-                        requireContext(), this,
-                        "With INTERVALS you can select the number of rounds and their duration."
-                )
-                balloon.showAlignTop(binding.separator1)
-            }
-        }
-    }
 
     private fun setupNumberPickers() {
         val rowHeight = calculateRowHeight(layoutInflater, PickerSize.MEDIUM)
