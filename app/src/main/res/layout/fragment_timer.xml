@@ -65,8 +65,8 @@
 
         <goodtime.training.wod.timer.ui.timer.CircleProgressBar
             android:id="@+id/circle_progress"
-            android:layout_width="320sp"
-            android:layout_height="320sp"
+            android:layout_width="320dp"
+            android:layout_height="320dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
